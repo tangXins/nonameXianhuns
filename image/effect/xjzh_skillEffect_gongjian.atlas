@@ -1,0 +1,90 @@
+
+xjzh_skillEffect_gongjian.png
+size: 295,280
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fxsk101_0001
+  rotate: true
+  xy: 220, 67
+  size: 44, 64
+  orig: 100, 125
+  offset: 20, 34
+  index: -1
+fxsk101_0002
+  rotate: false
+  xy: 2, 15
+  size: 66, 100
+  orig: 100, 125
+  offset: 14, 14
+  index: -1
+fxsk101_0003
+  rotate: true
+  xy: 182, 113
+  size: 63, 111
+  orig: 100, 125
+  offset: 16, 5
+  index: -1
+fxsk102
+  rotate: false
+  xy: 2, 169
+  size: 109, 109
+  orig: 109, 109
+  offset: 0, 0
+  index: -1
+fxsk103_0001
+  rotate: false
+  xy: 2, 117
+  size: 178, 50
+  orig: 275, 50
+  offset: 94, 0
+  index: -1
+fxsk103_0002
+  rotate: false
+  xy: 113, 229
+  size: 179, 49
+  orig: 275, 50
+  offset: 52, 0
+  index: -1
+fxsk103_0003
+  rotate: false
+  xy: 113, 178
+  size: 175, 49
+  orig: 275, 50
+  offset: 11, 0
+  index: -1
+fxsk103_0004
+  rotate: true
+  xy: 220, 17
+  size: 48, 38
+  orig: 275, 50
+  offset: 0, 4
+  index: -1
+fxsk103_0005
+  rotate: false
+  xy: 70, 76
+  size: 108, 39
+  orig: 275, 50
+  offset: 16, 5
+  index: -1
+fxsk103_0007
+  rotate: true
+  xy: 180, 2
+  size: 109, 38
+  orig: 275, 50
+  offset: 9, 5
+  index: -1
+fxsk103_0008
+  rotate: false
+  xy: 70, 2
+  size: 102, 35
+  orig: 275, 50
+  offset: 6, 6
+  index: -1
+fxsk103_0010
+  rotate: false
+  xy: 70, 39
+  size: 103, 35
+  orig: 275, 50
+  offset: 9, 6
+  index: -1

@@ -1,0 +1,62 @@
+
+xjzh_skillEffect_leiji.png
+size: 345,530
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+6
+  rotate: true
+  xy: 235, 104
+  size: 160, 58
+  orig: 160, 58
+  offset: 0, 0
+  index: -1
+guangquan
+  rotate: true
+  xy: 295, 179
+  size: 93, 40
+  orig: 100, 40
+  offset: 4, 0
+  index: -1
+guangzhu
+  rotate: false
+  xy: 235, 4
+  size: 90, 98
+  orig: 100, 110
+  offset: 5, 6
+  index: -1
+shandian01
+  rotate: false
+  xy: 143, 2
+  size: 90, 262
+  orig: 143, 280
+  offset: 26, 9
+  index: -1
+shandian02
+  rotate: false
+  xy: 147, 266
+  size: 95, 262
+  orig: 143, 280
+  offset: 24, 9
+  index: -1
+shandian03
+  rotate: false
+  xy: 2, 2
+  size: 139, 263
+  orig: 143, 280
+  offset: 4, 9
+  index: -1
+shandian04
+  rotate: false
+  xy: 2, 267
+  size: 143, 261
+  orig: 143, 280
+  offset: 0, 12
+  index: -1
+shandian05
+  rotate: false
+  xy: 244, 274
+  size: 99, 254
+  orig: 143, 280
+  offset: 22, 15
+  index: -1

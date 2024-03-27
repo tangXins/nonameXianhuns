@@ -1,0 +1,402 @@
+
+@font-face{
+  font-family: lier;
+  src: url("font/font_fzlier.ttf");
+}
+@font-face{
+  font-family: hwxinkai;
+  src: url("font/华文行楷.ttf");
+}
+@font-face{
+  font-family: lb;
+  src: url("font/font_fzlb.ttf");
+}
+
+@font-face{
+  font-family: biaokaiti;
+  src: url("font/font_biaokaiti.ttf");
+}
+
+@font-face{
+  font-family: sxsgysj;
+  src: url("font/font_sxsgysj.ttf");
+}
+
+.xjzh_animation{
+    transition: transform 0s;
+    animation: none;
+    background-repeat: no-repeat;
+    display: block;
+    z-index: 998;
+    overflow: hidden;
+    pointer-events:none;
+}
+.player>.xjzh_animation_onplayer{
+    transition: transform 0s;
+    animation: none;
+    background-repeat: no-repeat;
+    display: block;
+    z-index: 998;
+    overflow: hidden;
+    pointer-events:none;
+}
+
+.xjzh-dialog {
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 1000px;
+	height: 528px;
+	background-size: 100% 100%;
+	background-image: url('images/ui/xjzh_info0.png');
+	transform: translate(-50%, -50%);
+	z-index: 51;
+}
+
+/*词条解释的文字属性*/
+.xjzh-dialog-div {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.801);
+}
+
+.xjzh-dialog>
+.xjzh-dialog-text {
+	position: absolute;
+	margin: 5px;
+	top: 130px;
+	left: 500px;
+	width: 326px;
+	height: 300px;
+	font-family: biaokaiti;
+	letter-spacing: 1px;
+	line-height: 1.2;
+	overflow: scroll;
+	font-size: 25px;
+	color: #885f33;
+	text-align: justify;
+	overflow-y:auto;
+	text-shadow: none;
+	-webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+
+/*词条名的文字属性*/
+
+.xjzh-dialog>
+.xjzh-dialog-name {
+	position: absolute;
+	margin: 5px;
+	top: 196px;
+	left: 407px;
+	width: 20px;
+	height: 20px;
+	font-family: sxsgysj;
+	font-size: 30px;
+	color: #f0cb85;
+	text-shadow: none;
+	-webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+.xjzh-dialog>
+.xjzh-dialog-remove {
+	position: absolute;
+	margin: 5px;
+	right: 10px;
+	top: 5px;
+	height: 20px;
+	width: 20px;
+	background-size: 100% 100%;
+	background-image: url('image/ui/xjzh_pic_close.jpg');
+}
+.xjzh-loading {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 500px;
+    height: 300px;
+    background-size: 100% 100%;
+    background-image: url('images/ui/xjzh_info.png');
+    transform: translate(-50%, -50%);
+    z-index: 22;
+}
+.xjzh-loading>.xjzh-loading-text {
+    display: table-cell;
+    position: absolute;
+    margin: 5px;
+    top: 55%;
+    left: 50%;
+    width: 380px;
+    height: 100px;
+    font-family: 'xinwei';
+    overflow: scroll;
+    font-size: 18px;
+    transform: translate(-50%, -50%);
+    color: black !important;
+    text-align: center;
+    vertical-align: middle;
+}
+.save{
+	background-color: rgba(0,0,0,0.5);
+	width: 100%;
+	height: 100%;
+	z-index: 7;
+	background-size: cover;
+}
+.xjzh_save {
+	z-index: 10 !important;
+}
+.xjzh_save2 {
+	position: absolute;
+	width: calc(50% - 200px);
+	top: calc(50% - 200px);
+
+}
+.xjzh_dialog {
+	background-image: url('images/lamasi/background.jpg');
+	width: 400px;
+	height: 250px;
+	font-size: 20px;
+	padding: 25px;
+	overflow: auto;
+	vertical-align:middle;
+	line-height: 250px;
+	background-size: 100% 100%;
+	left: calc(50% - 200px);
+	top: calc(50% - 150px);
+	animation: 0.2s xjzh_tanchu linear;
+}
+@keyframes xjzh_tanchu {
+	from {
+		transform: scaleY(0);
+	}
+
+	to {
+		transform: scaleY(1);
+	}
+}
+.xjzh_select {
+	width: 300px;
+	height: 30px;
+	left: calc(50% - 125px);
+	top: calc(50% + 180px);
+	text-align: center;
+}
+.xjzh_select>div {
+	background-image: url('images/lamasi/select.png');
+	width: 45%;
+	height: 100%;
+	font-size: 25px;
+	padding: 5px;
+	background-size: 100% 100%;
+	position: unset;
+}
+.xjzh_select>div:active {
+	background-image: url('images/lamasi/select.png');
+}
+.player.zhaohuan {
+	z-index: 1;
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+}
+.player .mp{
+  position:absolute;
+  top:-20px;
+  left:0;
+  width:100%;
+  height:15px;
+  border-radius: 7px;
+  background-color: darkgray;
+  z-index: 89;
+}
+.player .mp .mpdiv{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background-color: blue;
+  line-height: 1;
+}
+.player .mp .mpdiv .mptext{
+  padding-left: 5px;
+}
+.player .xjzhhp{
+  position:absolute;
+  top:-15px;
+  left:0;
+  width:100%;
+  height:15px;
+  border-radius: 7px;
+  background-color: darkgray;
+  z-index: 89;
+}
+.player .xjzhhp .xjzhhpdiv{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background-color: red;
+  line-height: 1;
+}
+.player .xjzhhp .xjzhhpdiv .xjzhhptext{
+  padding-left: 5px;
+}
+
+/*字体渐变方法  百度的    */
+/*基础样式：*/
+/*****************************************************************************************/
+.gradient-text {
+    text-align: left;
+    text-indent: 25px;
+    line-height: 25px;
+    font-size: 25px;
+    font-weight: bolder;
+    position: relative;
+}
+.gradient-text-one{  
+    background-image:-webkit-linear-gradient(bottom,red,#fd8403,yellow); 
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+/*方法*/
+/*`<div class="gradient-text gradient-text-one" >更新内容</div>`*/
+/*****************************************************************************************/
+.gradient-text-two {
+    color: red;
+}
+.gradient-text-two[data-content]::after {
+    content: attr(data-content);
+    display: block;
+    position: absolute;
+    color: yellow;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
+    from(yellow), to(rgba(0, 0, 255, 0)));
+}
+/*方法*/
+/*`<div class="gradient-text gradient-text-two" data-content="更新内容">更新内容</div>`*/
+/*****************************************************************************************/
+.gradient-text2 {
+    font-family: '微软雅黑';
+    font-weight: bolder;
+    position: relative;
+}
+.gradient-text2-two {
+    color: red;
+}
+.gradient-text2-two[data-content]::after {
+    content: attr(data-content);
+    display: block;
+    position: absolute;
+    color: yellow;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
+    from(yellow), to(rgba(0, 0, 255, 0)));
+}
+/*方法*/
+/*`<div class="gradient-text2 gradient-text2-two" data-content="更新内容">更新内容</div>`*/
+/*****************************************************************************************/
+.gradient-text3 {
+    color: blue;
+}
+.gradient-text3[data-content]::after {
+    content: attr(data-content);
+    display: block;
+    position: absolute;
+    color: red;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
+    from(red), to(rgba(0, 0, 255, 0)));
+}
+.gradient-text3[data-content]::before {
+    content: attr(data-content);
+    display: block;
+    position: absolute;
+    color: yellow;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
+    from(yellow), to(rgba(0, 0, 70, 0)));
+}
+/*方法*/
+/*`<div class="gradient-text3 " data-content="更新内容">更新内容</div>`*/
+/*****************************************************************************************/
+/*变色代码*/
+@keyframes xjzh_jianbian {
+    0% {
+        text-shadow: rgb(255, 0, 0) 0 0 1px,
+        rgb(255, 0, 0) 0 0 2px,
+        rgb(255, 0, 0) 0 0 5px,
+        rgb(255, 0, 0) 0 0 10px,
+        rgb(255, 0, 0) 0 0 10px;
+    }
+    14.3% {
+        text-shadow: rgb(255, 165, 0) 0 0 1px,
+        rgb(255, 165, 0) 0 0 2px,
+        rgb(255, 165, 0) 0 0 5px,
+        rgb(255, 165, 0) 0 0 10px,
+        rgb(255, 165, 0) 0 0 10px;
+    }
+    28.6% {
+        text-shadow: rgb(255, 255, 0) 0 0 1px,
+        rgb(255, 255, 0) 0 0 2px,
+        rgb(255, 255, 0) 0 0 5px,
+        rgb(255, 255, 0) 0 0 10px,
+        rgb(255, 255, 0) 0 0 10px;
+    }
+    42.9% {
+        text-shadow: rgb(0, 255, 0) 0 0 1px,
+        rgb(0, 255, 0) 0 0 2px,
+        rgb(0, 255, 0) 0 0 5px,
+        rgb(0, 255, 0) 0 0 10px,
+        rgb(0, 255, 0) 0 0 10px;
+    }
+    57.2% {
+        text-shadow: rgb(0, 0, 255) 0 0 1px,
+        rgb(0, 0, 255) 0 0 2px,
+        rgb(0, 0, 255) 0 0 5px,
+        rgb(0, 0, 255) 0 0 10px,
+        rgb(0, 0, 255) 0 0 10px;
+    }
+    71.5% {
+        text-shadow: rgb(6,82,121) 0 0 1px,
+        rgb(6,82,121) 0 0 2px,
+        rgb(6,82,121) 0 0 5px,
+        rgb(6,82,121) 0 0 10px,
+        rgb(6,82,121) 0 0 10px;
+    }
+    85.8% {
+        text-shadow: rgb(128, 0, 128) 0 0 1px,
+        rgb(128, 0, 128) 0 0 2px,
+        rgb(128, 0, 128) 0 0 5px,
+        rgb(128, 0, 128) 0 0 10px,
+        rgb(128, 0, 128) 0 0 10px;
+    }
+    100% {
+        text-shadow: rgb(255, 0, 0) 0 0 1px,
+        rgb(255, 0, 0) 0 0 2px,
+        rgb(255, 0, 0) 0 0 5px,
+        rgb(255, 0, 0) 0 0 10px,
+        rgb(255, 0, 0) 0 0 10px;
+    }
+}
+xjzh_bianse {
+    animation: xjzh_jianbian 4s infinite;  
+}
+/*方法*/
+/*`<xjzh_bianse>更新内容</xjzh_bianse>`*/

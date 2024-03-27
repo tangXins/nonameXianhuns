@@ -1,0 +1,327 @@
+.xjzh-bookWindow {
+    display: block;
+    background-size: cover;
+    z-index: 21;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.xjzh-bookWindow-bk {
+    z-index: 1;
+    display: block;
+    background-size: 100% 100%;
+    width: 50%;
+    height: 50%;
+    background-image: url('images/homePage/background.png');
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+}
+
+.xjzh-bookWindow-return {
+    z-index: 7;
+    background-size: 100% 100%;
+    display: block;
+    left: 77%;
+    top: 7%;
+    background-image: url('images/achievement/exit_icon.png');
+    width: 4vw;
+    height: 4vw;
+}
+
+.xjzh-bookWindow-openAchi-character {
+    background-size: 100% 100%;
+    left: 50%;
+    top: 7%;
+    background-image: url('images/homePage/button_character.png');
+    width: 20%;
+    padding: 19% 0 0;
+}
+
+.xjzh-bookWindow-openAchi-game {
+    background-size: 100% 100%;
+    left: 62%;
+    top: 31%;
+    background-image: url('images/homePage/button_game.png');
+    width: 20%;
+    padding: 21% 0 0;
+}
+
+.xjzh-bookWindow-openAchi-special-bk {
+    background-size: 100% 100%;
+    display: block;
+    left: 50%;
+    top: 56%;
+    background-image: url('images/homePage/button_special_bk.png');
+    width: 33%;
+    padding: 22% 0 0;
+}
+
+.xjzh-bookWindow-openAchi-special {
+    background-size: 100% 100%;
+    display: block;
+    left: 12%;
+    top: 31%;
+    background-image: url('images/homePage/button_special.png');
+    width: 35%;
+    padding: 33% 0 0;
+}
+
+.xjzh-bookWindow-scoreSheet-bk {
+    background-size: 100%;
+    left: 15%;
+    top: 27%;
+    transform: rotate(-3deg);
+    background-image: url('images/homePage/scoreSheet.png');
+    width: 36%;
+    height: 35%;
+}
+
+.xjzh-bookWindow-scoreSheet {
+    background-size: 100% 100%;
+    display: block;
+    left: 42.2%;
+    top: 24%;
+    transform: rotate(3deg);
+    width: 32.1%;
+    height: 65%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13vh;
+}
+
+.xjzh-bookWindow-openReward {
+    background-size: 100%;
+    display: block;
+    left: 15%;
+    top: 1%;
+    background-image: url('images/homePage/button_reward.png');
+    width: 15%;
+    padding: 100% 0 0;
+}
+
+.xjzh-bookWindow-openReward-decorate {
+    background-size: 100%;
+    display: block;
+    left: 16.5%;
+    top: 70%;
+    transform: rotate(-5deg);
+    background-image: url('images/homePage/decorate3.png');
+    width: 15%;
+    padding: 7% 0 0;
+}
+
+.xjzh-bookWindow-page-main {
+    background-size: 100%;
+    display: block;
+    left: 8.6%;
+    top: 18%;
+    background-image: url('images/homePage/page_main.png');
+    width: 7%;
+    padding: 8.4% 0 0;
+}
+
+.xjzh-bookWindow-page-parts {
+    background-size: 100%;
+    display: block;
+    left: 83.4%;
+    top: 58%;
+    transform: rotate(1deg);
+    background-image: url('images/homePage/page_parts.png');
+    width: 7%;
+    padding: 8.4% 0 0;
+}
+
+.xjzh-bookWindow-page-world {
+    background-size: 100%;
+    display: block;
+    left: 82.8%;
+    top: 74%;
+    background-image: url('images/homePage/page_world.png');
+    width: 7.5%;
+    padding: 9% 0 0;
+}
+.xjzh-bookWindow-page-parts {
+    background-size: 100% 100%;
+    display: block;
+    left: 82.5%;
+    top: 70%;
+    transform: rotate(1deg);
+    background-image: url('images/homePage/page_parts.png');
+    width: 10%;
+    height: 8%;
+    padding: 8.4% 0 0;
+}
+.xjzh-bookWindow-page-parts-box {
+    background-size: 100%;
+    left:20%;
+    right:20%;
+    top:0;
+    bottom: 0;
+}
+.xjzh-equipPage-equipMark{
+    background-size: 100%;
+    right: 79.5%;
+    top: 58%;
+    height: 18%;
+    background-image: url('images/qishuyaojian/equipMark.png');
+    width: 10%;
+}
+.xjzh-equipPage-arrow{
+    background-size: 100%;
+    background-image: url('images/qishuyaojian/arrow.png');
+    top:85%;
+    right:16%;
+    height: 8%;
+    width: 8%;
+}
+.xjzh-equipPage-arrow2{
+    background-size: 100%;
+    background-image: url('images/qishuyaojian/arrow.png');
+    top:85%;
+    left:16%;
+    height: 8%;
+    width: 8%;
+    transform: rotateY(180deg);
+}
+.xjzh-equipPage-equipShow{
+    height: 30%;
+    width: 13%;
+    background-size: 100%;
+}
+.xjzh-equipPage-equipRandom{
+    background-size: 100% 100%;
+    display: block;
+    left: 82.5%;
+    top: 70%;
+    transform: rotate(1deg);
+    background-image: url('images/qishuyaojian/equipRandom.png');
+    width: 10%;
+    height: 8%;
+    padding: 8.4% 0 0;
+}
+@keyframes xjzhFazhen1{
+    from {
+        transform: rotateZ(0deg);
+        left: calc(59% - 50px);
+        top: calc(50% - 50px);
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+    to {
+        transform: rotateZ(720deg);
+        left: calc(59% - 300px);
+        top: calc(50% - 300px);
+        width: 600px;
+        height: 600px;
+        opacity: 1;
+    }
+}
+@keyframes xjzhFazhen2{
+    from {
+        transform: rotateZ(0deg);
+        left: calc(59% - 50px);
+        top: calc(50% - 50px);
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+    to {
+        transform: rotateZ(-720deg);
+        left: calc(59% - 300px);
+        top: calc(50% - 300px);
+        width: 600px;
+        height: 600px;
+        opacity: 1;
+    }
+}
+@keyframes xjzhFazhen3{
+    0% {
+        transform: rotateZ(0deg);
+        left: calc(59% - 50px);
+        top: calc(50% - 50px);
+        width: 100px;
+        height: 100px;
+        opacity:0;
+    }
+    50%{
+        transform: rotateZ(-180deg);
+        left: calc(59% - 175px);
+        top: calc(50% - 175px);
+        width: 350px;
+        height: 350px;
+        opacity:1;
+    }
+    100% {
+        transform: rotateZ(-360deg);
+        left: calc(59% - 300px);
+        top: calc(50% - 300px);
+        width: 600px;
+        height: 600px;
+        opacity:0;
+    }
+}
+.xjzh-fazhen1 {
+	background-size: cover;
+	background-image: url(images/qishuyaojian/fazhen1.png);
+	animation: 2s xjzhFazhen1 ease-out;
+    animation-fill-mode: forwards;
+    z-index: -1;
+    overflow: visible;
+}
+.xjzh-fazhen2 {
+	background-size: 100% 100%;
+	background-image: url(images/qishuyaojian/fazhen2.png);
+	animation: 2s xjzhFazhen2 ease-out;
+    animation-fill-mode: forwards;
+    z-index: -2;
+}
+.xjzh-fazhen3 {
+	background-size: 100% 100%;
+	background-image: url(images/qishuyaojian/fazhen3.png);
+	animation: 2s xjzhFazhen3 linear;
+    animation-fill-mode: forwards;
+    z-index: -3;
+}
+.xjzh-choujiang-result{
+    height: 26%;width: 20%;
+    background-size:100%;
+    animation: 200ms xjzhShow linear;
+}
+.xjzh-equipPage-cailiao{
+    background-size: 100% 100%;
+    display: block;
+    left: 82.5%;
+    top: 46.5%;
+    transform: rotate(1deg);
+    background-image: url('images/qishuyaojian/cailiao.png');
+    width: 10%;
+    height: 8%;
+    padding: 8.4% 0 0;
+}
+.xjzh-blackboard{
+    transform: translate(-50%, -50%);
+    top: 50%;height: 80%;
+    left: 50%;width: 70%;
+    background-position: 50% 50%;
+    background-size: 100%;background-repeat: no-repeat;
+    background-image: url('images/qishuyaojian/blackboard.png');
+}
+
+.xjzh-duihuan-gain{
+    background-size: 100% 100%;
+    display: block;
+    left: 7.2%;
+    top: 70%;
+    transform: rotate(1deg);
+    background-image: url('images/qishuyaojian/duihuan.png');
+    width: 10%;
+    height: 8%;
+    padding: 8.4% 0 0;
+}
