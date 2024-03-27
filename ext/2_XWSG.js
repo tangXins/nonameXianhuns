@@ -11946,9 +11946,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					audio:"ext:仙家之魂/audio/skill:2",
                     filter:function(event,player){
                         if(!event.cards||!event.cards.length) return false;
-                        var info=get.info(event.card);
+                        var info=get.info(event.cards[0]);
                         if(!event.source) return false;
-						if(info.allowMultiple==false) return false;
+						if(info&&info.allowMultiple!=undefined&&info.allowMultiple==false) return false;
 						if(info.multitarget) return false;
                         return !event.numFixed&&!event.cancelled;
                     },

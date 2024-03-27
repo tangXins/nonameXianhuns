@@ -1,15 +1,17 @@
 window.xjzh_updateversion={
-	version:'3.03261',
-	update:'3.03212',
+	version:'3.03271',
+	update:'3.03261',
 	changeLog:[
-		"新增在线更新扩展，更新源为github，可能需要魔法",
+		"新增在线更新扩展，更新源默认为github，可能需要魔法",
 		"为未安装十周年ui的玩家可能出现的技能特效弹窗再上一层保险",
-	    "修复许多bug",
-    	"优化许多细节",
+		"修复华雄〖恃勇〗报错",
+		"修复许多bug",
+		"优化许多细节",
 	],
 	files:[	
 			"LICENSE",
 			"info.json",
+			"extension.js",
 
 			"ext/0_Cards.js",
 			"ext/1_Skin.js",

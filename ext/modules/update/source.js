@@ -1,6 +1,7 @@
 window.xjzh_updateSource=[
 	"LICENSE",
 	"info.json",
+	"extension.js",
 
 	"ext/0_Cards.js",
 	"ext/1_Skin.js",
