@@ -44,7 +44,9 @@ window.xjzh_updateversion={
 
 			"ext/modules/update/update.js",
 
-			"ext/modules/version/index.js"
+			"ext/modules/version/index.js",
+			
+			"image/title/xjzh_updateVersion.png"
 
 	],
 };
