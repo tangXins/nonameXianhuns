@@ -1,12 +1,43 @@
+import { lib, get, _status, ui, game, ai } from '../../noname.js';
 import { CHRskills as xjzhCHRskills } from './ext/modules/CHRskills/index.js';
-import { xjzhVersions } from './ext/modules/version/index.js';
 import { xjzhTitle } from './ext/modules/Title/index.js';
 import { xjzh_updateURLS } from './ext/modules/update/updateURLS.js';
-import './ext/modules/update/index.js';
-import { lib } from '../../noname.js';
+import { xjzhUpdateLog } from './ext/modules/update/index.js';
+//import './ext/modules/update/index.js';
 //还是有很多提示，消一下
 Array.prototype.contains=Array.prototype.includes;
 lib.xjzhTitle=xjzhTitle;
+
+//检测无名杀版本
+(async function getVersionUpdate(){
+	let getVersionUpdate2=function(a,b){
+		if(!a )a="0.0.0";
+		if(!b) b="0.0.0";
+		let arr1=a.split(".");
+		let arr2=b.split(".");
+		for(let i=0;i<Math.min(arr1.length,arr2.length);i++){
+			let num1=parseInt(arr1[i]);
+			let num2=parseInt(arr2[i]);
+			if(num1<num2) return -1;
+			if(num1>num2) return 1;
+		}
+		if(arr1.length>arr2.length){
+			return 1;
+		}
+		else if(arr1.length<arr2.length){
+			return -1;
+		}
+		return 0;
+	};
+	if(lib.version&&!lib.config.xjzhNotMetionNonameVersion){
+		if(getVersionUpdate2(lib.version,"1.10.10")<0){
+			alert("当前无名杀版本"+lib.version+"落后于【仙家之魂】最低支持版本1.10.10，已为你关闭本扩展");
+			game.saveExtensionConfig("仙家之魂","enable",false);
+			game.reload();
+		}
+	};
+})();
+
 
 game.import("extension",function(lib,game,ui,get,ai,_status){
 	return {
@@ -157,10 +188,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 	        });
 			
 	        lib.arenaReady.push(function(){
-				if((!game.xjzhHasExtension("十周年UI")||!game.getExtensionConfig('十周年UI','enable'))&&lib.config.xjzh_playSkillEffect){
+				if(!game.hasExtension("十周年UI")&&game.getExtensionConfig("仙家之魂","xjzh_playSkillEffect")){
 					alert("检测到你没有安装十周年UI切开启了技能特效选项，将为你关闭！");
-					game.saveConfig('extension_仙家之魂_xjzh_playSkillEffect',false);
-					game.saveConfig('xjzh_playSkillEffect',false);
+					game.saveExtensionConfig("仙家之魂","xjzh_playSkillEffect",false);
 					setTimeout(function(){
 						game.reload();
 					},1500);
@@ -295,17 +325,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                 };
             };
 	    });
-        game.xjzhHasExtension = function(str){
-            return lib.config.extensions && lib.config.extensions.includes(str) && lib.config['extension_'+str+'_enable'];
-        };
-        game.xjzhHasExtensionInstalled = function(str){
-            return lib.config.extensions && lib.config.extensions.includes(str);
-        };
     	if(!lib.config.xjzh_importTips2){
     		alert('声明：本扩展（《仙家之魂》）完全免费且开源，到目前为止仅在QQ群697310426和545844827发布且从未进行过任何宣发，若你通过其他来源获得此扩展所产生的任何问题均与作者无关。');
     		var ret=confirm("请确保你已仔细阅读以上提示，点击『确定』关闭本提示，点击『取消』将关闭【仙家之魂】扩展");
     		if(!ret){
-    			if(game.xjzhHasExtension("仙家之魂")){
+    			if(game.hasExtension("仙家之魂")){
     				alert("你点击了取消，将为你关闭【仙家之魂】扩展");
     				game.saveConfig('extension_仙家之魂_enable',false);
     				var ret2=confirm('是否需要删除【仙家之魂】扩展文件内容？')
@@ -721,7 +745,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			if(str&&typeof str=='string') text.innerHTML=str;
 			return dialog;
 		};
-		window.xjzhHasExtension=game.xjzhHasExtension;
 		// ---------------------------------------显示手牌上限------------------------------------------//
 		if(config.xjzh_ShowmaxHandcard){
 			lib.skill._xjzh_ShowmaxHandcard={
@@ -833,14 +856,14 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			else {
 				game.broadcastAll() + ui.background.setBackgroundImage('image/background/' + lib.config.image_background + '.jpg');
 			}
-			var item = lib.config['extension_仙家之魂_xjzh_Background_Picture'];
+			var item = game.getExtensionConfig("仙家之魂","xjzh_Background_Picture");
 			if (item != "auto") {
 				if (_status.xjzh_Background_Picture_timeout) {
 					clearTimeout(_status.xjzh_Background_Picture_timeout);
 				};
 			}
 			else if (item == "auto") {
-				var autotime = lib.config['extension_仙家之魂_xjzh_Background_Picture_auto'];
+				var autotime = game.getExtensionConfig("仙家之魂","xjzh_Background_Picture_auto");
 				var Timeout = autotime ? parseInt(autotime) :30000;
 				///////////////////////////////////////////////////////
 				var Timeout2 = _status.xjzh_Background_Picture_Timeout2;
@@ -862,7 +885,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			});
 		};
 		// ---------------------------------------增益技能------------------------------------------//
-		if(lib.config.xjzh_zengyiSetting!=='close'){
+		if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")!=='close'){
 			lib.skill._xjzh_zengyix={
 				trigger:{
 					global:["gameStart"],
@@ -890,7 +913,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						"chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 					];
 					if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
-					switch(lib.config.xjzh_zengyiSetting){
+					switch(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")){
 						case "player":{
 							let skills=list.randomGet();
 							player.addSkill("xjzh_zengyi_off",false);
@@ -912,6 +935,131 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			};
 		};
 		// ---------------------------------------定义函数------------------------------------------//
+		//以下代码借鉴自《金庸群侠传》
+		//显示更新内容
+		get.xjzh_update=function(){
+			let update=xjzhUpdateLog;
+			lib.extensionPack['仙家之魂'].version=xjzhUpdateLog.version;
+			let gengxing=update[update.version]
+			if(lib.extensionPack['仙家之魂']&&lib.extensionPack['仙家之魂'].version!=game.getExtensionConfig("仙家之魂","changelog")){
+				game.saveExtensionConfig("仙家之魂","changelog",lib.extensionPack['仙家之魂'].version);
+			}
+			else{
+				return false;
+			};
+			if(gengxing.romoveFiles&&typeof gengxing.romoveFiles=="function") gengxing.romoveFiles();
+			let ul=document.createElement('ul');
+			ul.style.textAlign='left';
+			let caption;
+			let version=update.version;
+			let players=gengxing.players||[];
+			let cards=gengxing.cards||[];
+			let changeLog=gengxing.changeLog||[];
+			caption='仙家之魂更新';
+			for(let i of changeLog){
+				let li=document.createElement('li');
+				li.innerHTML=i;
+				ul.appendChild(li);
+			};
+			let dialog=ui.create.dialog(caption,'hidden');
+			dialog.add(version);
+			dialog.forcebutton=true;
+			dialog.classList.add('forcebutton');
+			let lic=ui.create.div(dialog.content);
+			lic.style.display='block';
+			ul.style.display='inline-block';
+			ul.style.marginLeft='20px';
+			lic.appendChild(ul);
+			if(players.length){
+				for(let i=0;i<players.length;i++){
+					if(!lib.character[players[i]]){
+						let result=get.character(players[i]);
+						if(result){
+							if(!result[4]){
+								result[4]=[];
+							};
+							lib.character[players[i]]=result;
+						};
+					};
+					if(!lib.character[players[i]]){
+						players.splice(i--,1);
+					};
+				};
+				if(players.length){
+					dialog.addText('武将更新');
+					dialog.add([players,'character']);
+					//dialog.addSmall([players,'character']);
+				};
+			};
+			if(cards.length){
+				for(let i=0;i<cards.length;i++){
+					if(!lib.card[cards[i]]){
+						cards.splice(i--,1);
+					};
+				};
+				if(cards.length){
+					for(let i=0;i<cards.length;i++){
+						cards[i]=[get.translation(get.type(cards[i])),'',cards[i]];
+					};
+					dialog.addText('卡牌更新');
+					dialog.add([cards,'vcard']);
+					//dialog.addSmall([cards,'vcard']);
+				}
+			}
+			dialog.addText('-----------------END-----------------');
+			dialog.open();
+			let hidden=false;
+			if(!ui.auto.classList.contains('hidden')){
+				ui.auto.hide();
+				hidden=true;
+			};
+			game.pause();
+			let control=ui.create.control('确定',function(){
+				dialog.close();
+				control.close();
+				if(hidden) ui.auto.show();
+				game.resume();
+			});
+			lib.init.onfree();
+		};
+		let _showChangeLog=game.showChangeLog;
+		game.showChangeLog=function(){
+			_showChangeLog();
+			let next=game.createEvent('xjzh_update',false);
+			next.setContent(function () {
+				get.xjzh_update();
+			});
+		};
+		//以上代码借鉴自《金庸群侠传》
+		//删除文件及文件夹
+		//为防止滥用，只支持操作本扩展目录
+		game.xjzh_removeFiles=(files)=>{
+			if(lib.node&&lib.node.fs) try{
+				const deleteFolderRecursive=path=>{
+					if(!lib.node.fs.existsSync(path)) return;
+					lib.node.fs.readdirSync(path).forEach((file,index)=>{
+						const currentPath = `${path}/${file}`;
+						if (lib.node.fs.lstatSync(currentPath).isDirectory()) deleteFolderRecursive(currentPath);
+						else lib.node.fs.unlinkSync(currentPath);
+					});
+					lib.node.fs.rmdirSync(path);
+				};
+				deleteFolderRecursive(`${__dirname}/extension/仙家之魂/${files}`);
+			}
+			catch(error){
+				console.log(error);
+			}
+			else new Promise((resolve,reject)=>window.resolveLocalFileSystemURL(`${lib.assetURL}extension/仙家之魂/${files}`,resolve,reject)).then(directoryEntry=>directoryEntry.removeRecursively());
+		};
+		//获取localStorage储存数据
+		/*get.xjzh_config=function(key){
+			return lib.config[`${key}`];
+		};
+		game.xjzh_removeConfig=function(extension,key){
+			let localStorage=window.localStorage;
+			extension=extension?`extension_${extension}_${key}`:key;
+			localStorage.removeItem(lib.config[extension]);
+		};*/
 		//重置所有技能
 		lib.element.player.xjzh_resetSkill=function(){
 			var skills=this.skills.slice(0),list=[];
@@ -965,12 +1113,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 		},
 		//播放技能特效(需十周年支持)
 		game.xjzh_playEffect=function(name,target,obj){
-			if(!game.xjzhHasExtension("十周年UI")||!game.getExtensionConfig('十周年UI','enable')){
+			if(!game.hasExtension("十周年UI")){
 				console.log("技能特效需十周年UI支持，请安装十周年UI");
 				return;
 			}
 			if(!decadeUI) return;
-			if(!lib.config.extension_仙家之魂_xjzh_playSkillEffect||!decadeUI.config.gameAnimationEffect){
+			if(!game.getExtensionConfig("仙家之魂","xjzh_playSkillEffect")||!game.getExtensionConfig("十周年UI","gameAnimationEffect")){
 				console.log("未开启“技能特效”或十周年“游戏动画特效”");
 				return;
 			}
@@ -2491,31 +2639,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			return next;
 		};
 		
-		// ---------------------------------------国战补充------------------------------------------//
-		/*if(config.xjzh_modeguozhan){
-			if(lib.characterPack.mode_guozhan){
-				//魏
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_caiyan=["female","wei",2,["xjzh_sanguo_caiqing","xjzh_sanguo_zhishu","xjzh_sanguo_guihan"],[]],
-				//蜀
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_zhaoyun=["male","shu",2,["xjzh_sanguo_juejing","xjzh_sanguo_longhun","xjzh_sanguo_peijian"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_weiyan=["male","shu",4,["xjzh_sanguo_kuanggu","xjzh_sanguo_kuangxi","xjzh_sanguo_aogu"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_huangzhong=["male","shu",4,["xjzh_sanguo_liegong","xjzh_sanguo_chuzhen","xjzh_sanguo_zhujian"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_machao=["male","shu","3/5",["xjzh_sanguo_tieji","xjzh_sanguo_jieqiang","xjzh_sanguo_xiongbin"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_zhangfei=["male","shu",3,["xjzh_sanguo_shijiu","xjzh_sanguo_shayi","xjzh_sanguo_zhenhun"],[]],
-				//吴
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_daxiaoqiao=["female","wu",3,["xjzh_sanguo_guose","xjzh_sanguo_tianxiang","xjzh_sanguo_lixiang"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_luxun=["male","wu",3,["xjzh_sanguo_shishu","xjzh_sanguo_huoling","xjzh_sanguo_zhijiluxun","xjzh_sanguo_fenyin"],[]],
-				//群
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_huatuo=["male","qun","2/3",["xjzh_sanguo_shengxin","xjzh_sanguo_jishi","xjzh_sanguo_liangyi"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_sanguo_tongyuan=["male","qun",4,["xjzh_sanguo_keluan","xjzh_sanguo_cuifeng","xjzh_sanguo_chaohuang"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_zxzh_linlingshiyu=["male","qun",4,["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_zhouling"],[]],
-				lib.characterPack.mode_guozhan.gz_xjzh_zxzh_yuanyuan=["female","qun",4,["xjzh_zxzh_renxin","xjzh_zxzh_xianghun","xjzh_zxzh_xunqing"],[]]
-				//晋
-				//珠联璧合
-				lib.perfectPair.gz_xjzh_sanguo_zhongda=['gz_xjzh_sanguo_chunhua']
-			}
-		};*/
-		
 		},
 		precontent:function (xjzh){
 			// ---------------------------------------素材复制------------------------------------------//
@@ -2542,9 +2665,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				'5_XWDM.js',
 				'6_XWTZ.js',
 				'7_JLBC.js',
-				//'8_PoeMode.js',
 				'gonglve.js',
-				'updateLog.js',
 				'9_Buff.js',
 				'animation.js',
 				"mathList.js",
@@ -2554,7 +2675,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					lib.init.js(extURL,null,()=>{},()=>{alert(''+i+'导入失败!')});
 				};
 				//导入奇术要件文件
-				if(lib.config.xjzh_qishuyaojianOption){
+				if(game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")){
 				    lib.init.js(lib.assetURL +'extension/仙家之魂/ext/qishuyaojians.js');
 				    lib.init.js(lib.assetURL +'extension/仙家之魂/ext/qsyjOption.js');
 				};
@@ -2659,7 +2780,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				};
 				// ---------------------------------------分界线------------------------------------------//
     			//游戏特效（需十周年UI支持）
-    			if(lib.config.extensions&&lib.config.extensions.includes("十周年UI")&&lib.config['extension_十周年UI_enable']&&game.getExtensionConfig('十周年UI','enable')&&lib.config.extension_仙家之魂_xjzh_playSkillEffect&&lib.config.extension_十周年UI_gameAnimationEffect){
+				if(game.hasExtension("十周年UI")&&game.getExtensionConfig("仙家之魂","xjzh_playSkillEffect")&&game.getExtensionConfig("十周年UI","gameAnimationEffect")){
     			    lib.arenaReady.push(function(){
 						if(!window.decadeUI) return;
         			    var fileInfoList=[
@@ -2728,8 +2849,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				"clear":true,
 				"onclick":function(){
 					let list,data;
-					if(lib.config.xjzhAchiStorage){
-						list=JSON.stringify(lib.config.xjzhAchiStorage);
+					if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")){
+						list=JSON.stringify(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 						data="成就存档备份："+list.slice(0);
 						game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','成就存档备份.json',function(err){});
 					}
@@ -2818,8 +2939,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
             							}
             							else if(data.indexOf("成就存档备份")==0){
 											var data=JSON.parse(data.slice(7));
-											lib.config.xjzhAchiStorage=data;
-											game.xjzhAchi.saveConfig();
+											game.saveExtensionConfig("仙家之魂","xjzhAchiStorage",data);
 											alert("正在为你覆盖存档，将于3秒后重启");
 											setTimeout(function(){
 												game.reload();
@@ -3007,7 +3127,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							return url;
 						}
 					}
-					game.saveConfig('xjzh_update_link', 'GitHub');
 					game.saveExtensionConfig('仙家之魂', 'xjzh_update_link', 'GitHub');
 					lib.xjzh_updateURL = xjzh_updateURLS['GitHub'];
 					return 'GitHub';
@@ -3021,7 +3140,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						delete window.xjzh_updateversion;
 						delete window.xjzh_updateSource;
 						if (xjzh_updateURLS[item]) {
-							game.saveConfig('xjzh_update_link', item);
 							game.saveExtensionConfig('仙家之魂', 'xjzh_update_link', item);
 							lib.xjzh_updateURL = xjzh_updateURLS[item];
 						} else {
@@ -3032,9 +3150,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				},
 			},
 			"xjzh_updateAll":{
-				init:false,
-				intro:'更新游戏时，下载所有主要文件',
 				name:'强制更新所有主文件',
+				intro:'更新游戏时，下载所有主要文件',
+				init:false,
 				onclick: (bool) => {
 					game.saveExtensionConfig('仙家之魂', 'xjzh_updateAll', bool);
 				},
@@ -3400,7 +3518,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							 * @param { boolean } [skipDownload] 是否跳过下载
 							 */
 							function success(FileEntry, skipDownload) {
-								if (FileEntry && !skipDownload && ['config', 'xuanwu'].includes(lib.config.update_link)) {
+								if (FileEntry && !skipDownload && ['config', 'xuanwu'].includes(game.getExtensionConfig("仙家之魂","update_link"))) {
 									FileEntry.file(file => {
 										const fileReader = new FileReader();
 										fileReader.onload = e => {
@@ -3802,10 +3920,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 
 							let str = '有新版本' + update.version + '可用，是否下载？';
 							if (navigator.notification && navigator.notification.confirm) {
-								let str2 = update.changeLog[0];
-								for (let i = 1; i < update.changeLog.length; i++) {
-									if (update.changeLog[i].indexOf('://') == -1) {
-										str2 += '；' + update.changeLog[i];
+								let str2 = xjzhUpdateLog.changeLog[0];
+								for (let i = 1; i < xjzhUpdateLog.changeLog.length; i++) {
+									if (xjzhUpdateLog.changeLog[i].indexOf('://') == -1) {
+										str2 += '；' + xjzhUpdateLog.changeLog[i];
 									}
 								}
 								navigator.notification.confirm(
@@ -3855,7 +3973,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			"xjzh_Background_Music":{
 				name:"背景音乐",
 				intro:"背景音乐：可随意点播、切换优质动听的背景音乐",
-				init:lib.config.extension_仙家之魂_xjzh_Background_Music === undefined ? "1" :lib.config.extension_仙家之魂_xjzh_Background_Music,
+				init:game.getExtensionConfig("仙家之魂","xjzh_Background_Music")=== undefined ? "1" :game.getExtensionConfig("仙家之魂","xjzh_Background_Music"),
 				item:{
 					"0":"随机播放",
 					"1":"默认音乐",
@@ -3865,7 +3983,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					"5":"痛苦之村",
 				},
 				onclick:function (item) {
-					game.saveConfig('extension_仙家之魂_xjzh_Background_Music', item);
+					game.saveExtensionConfig("仙家之魂","xjzh_Background_Music",item);
 					game.xjzhplayBackgroundMusic();
 					ui.backgroundMusic.addEventListener('ended', game.xjzhplayBackgroundMusic);
 				},
@@ -3879,7 +3997,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			"xjzh_Background_Picture":{
 				name:"背景图片",
 				intro:"背景图片：可随意切换精美高清的背景图片。",
-				init:lib.config.extension_仙家之魂_xjzh_Background_Picture === undefined ? "1" :lib.config.extension_仙家之魂_xjzh_Background_Picture,
+				init:game.getExtensionConfig("仙家之魂","xjzh_Background_Picture")===undefined ? "1":game.getExtensionConfig("仙家之魂","xjzh_Background_Picture"),
 				item:{
 					"1":"默认背景",
 					"xjzh_Background1":"火影博人",
@@ -3890,7 +4008,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					"auto":"自动换背景",
 				},
 				onclick:function (item) {
-					game.saveConfig('extension_仙家之魂_xjzh_Background_Picture', item);
+					game.saveExtensionConfig("仙家之魂","xjzh_Background_Picture",item);
 					game.xjzhBackground_Picture();
 				},
 				"visualMenu":function (node, link) {
@@ -3907,7 +4025,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			"xjzh_Background_Picture_auto":{
 				name:"自动换背景时间",
 				intro:"设置自动换背景的时间",
-				init:lib.config['extension_仙家之魂_xjzh_Background_Picture_auto'] === undefined ? "30000" :lib.config['extension_仙家之魂_xjzh_Background_Picture_auto'],
+				init:game.getExtensionConfig("仙家之魂","xjzh_Background_Picture_auto")===undefined?"30000":game.getExtensionConfig("仙家之魂","xjzh_Background_Picture_auto"),
 				item:{
 					'5000':'五秒',
 					'10000':'十秒',
@@ -3918,8 +4036,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					'300000':'五分钟',
 				},
 				onclick:function (item) {
-					game.saveConfig('extension_仙家之魂_xjzh_Background_Picture_auto', item);
-					if (lib.config.extension_仙家之魂_xjzh_Background_Picture == 'auto') {
+					game.saveExtensionConfig("仙家之魂","xjzh_Background_Picture_auto",item);
+					if(game.getExtensionConfig("仙家之魂","xjzh_Background_Picture_auto")=="auto"){
 						game.xjzhBackground_Picture();
 					}
 				},
@@ -3936,9 +4054,8 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                 "intro":"在安装十周年的情况下无需将本扩展素材复制至十周年文件夹即可显示美化素材（其他UI若需要美化素材请手动复制），若你不喜欢十周年UI风格素材，请关闭此选项，默认关闭",
                 "init":false,
                 onclick:function(item){
-                    if(game.getExtensionConfig('十周年UI','enable')){
-                        game.saveConfig('extension_仙家之魂_xjzh_tenuiCardcopy',item);
-                        game.saveConfig('xjzh_tenuiCardcopy',item);
+                    if(game.hasExtension("十周年UI")){
+                        game.saveExtensionConfig("仙家之魂","xjzh_tenuiCardcopy",item);
                     }else{
                         alert("你未安装或未开启十周年UI，无法使用此功能");
                     };
@@ -3949,28 +4066,19 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                 "intro":"开启奇术要件功能，关闭将关闭所有奇术要件相关功能、UI等，默认关闭",
                 "init":false,
                 onclick:function(item){
-                    game.saveConfig('extension_仙家之魂_xjzh_qishuyaojianOption',item);
-                    game.saveConfig('xjzh_qishuyaojianOption',item);
+                    game.saveExtensionConfig("仙家之魂","xjzh_qishuyaojianOption",item);
                 }
             },
-			//poe模式
-			/*"xjzh_poemode":{
-			    name:"poe模式（尚未完成）",
-			    intro:"体验poe游戏模式",
-			    init:false,
-			},*/
 			"xjzh_playSkillEffect":{
                 "name":"技能特效",
                 "intro":"播放部分角色技能特效（需要十周年UI扩展支持），第一次开启请在下方“安装扩展素材”处复制素材",
                 "init":false,
                 onclick:function(item){
-                   	if(!game.xjzhHasExtension("十周年UI")||!game.getExtensionConfig('十周年UI','enable')){
+                   	if(!game.hasExtension("十周年UI")){
     					alert("技能特效需十周年UI支持，请安装十周年UI并打开“游戏动画特效”");
     					return;
     				}
-					
-                    game.saveConfig('extension_仙家之魂_xjzh_playSkillEffect',item);
-                    game.saveConfig('xjzh_playSkillEffect',item);
+                    game.saveExtensionConfig("仙家之魂","xjzh_playSkillEffect",item);
                 }
             },
 			/*"xjzh_lutoupifu":{
@@ -3980,21 +4088,20 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			},*/
 			"poelose":{
 				name:"poelose",
-				intro:"是否要求POE武将弃置技能",
+				intro:"是否要求POE武将移除技能",
 				init:true,
 			},
 			"xjzh_zengyiSetting":{
 				"name":"随机增益",
 				"intro":"开启此选项武将在开局时随机获得一个增益技能，该增益技能仅玩家可获得",
-				"init":lib.config.xjzh_zengyiSetting !== undefined ? lib.config.xjzh_zengyiSetting:"player",
+				"init":game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")!== undefined ? game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting"):"player",
 				"item":{
 					"player":"仅玩家可获得",
 					"own":"仅仙魂武将获得",
 					"close":"关闭增益",
 				},
 				onclick:function(item){
-					game.saveConfig('extension_仙家之魂_xjzh_zengyiSetting',item);
-					game.saveConfig('xjzh_zengyiSetting',item);
+					game.saveExtensionConfig("仙家之魂","xjzh_zengyiSetting",item);
 				}
 			},
 			"xjzh_changeGroup":{
@@ -4007,11 +4114,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				init:false,
 				intro:'将游戏内显示的手牌数改为显示手牌数与手牌上限。(例：2/3，代表拥有2张牌，手牌上限为3)',
 			},
-			/*"xjzh_modeguozhan":{
-				name:'国战补充',
-				init:false,
-				intro:'将本扩展部分武将加入国战将池',
-			},*/
 			"xjzh_jiexiantupo":{
 				name:'界限突破',
 				init:false,
@@ -4022,7 +4124,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				"intro":"若你希望显示势力图片或在国战显示本扩展武将图片以及优化过的本扩卡牌素材，亦或者需要本扩展的技能特效，建议您点击此处一键复制适配素材，安装完后请重启游戏生效。",
 				"clear":true,
 				onclick:function(){
-					if(!game.xjzhHasExtension("十周年UI")&&!game.xjzhHasExtension("OLUI")){
+					if(!game.hasExtension("十周年UI")&&!game.hasExtension("OLUI")){
 						alert("你未安装十周年UI或OLUI，请安装后点击此处");
 						return;
 					}
@@ -4096,124 +4198,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				"clear":true,
 				"init":true,
 			},
-			/*"xjzh_copySources3":{
-				"name":"切换卡牌风格",
-				"intro":"切换仙家之魂卡包风格",
-				"init":"1",
-				"item":{
-					"1":"十周年",
-					"2":"手杀",
-					"3":"小程序",
-				},
-				onclick:function(item){
-					if(!game.xjzhHasExtension("十周年UI")&&!game.xjzhHasExtension("OLUI")){
-						alert("你未安装十周年UI或OLUI，请安装后点击此处");
-						return;
-					}
-					game.saveConfig('extension_仙家之魂_xjzh_copySources3',item);
-					if(this.parentNode.querySelector(".xjzhdiy")) return;
-					var rules=ui.create.div(".xjzhdiy","<span style=\"color:#f9ed89\">当前进度为0/0</span>");
-					this.rd_rules=rules;
-					this.parentNode.insertBefore(rules,this.nextSibling);
-					var that=this;
-					var xjzhcopy_fileList=[];
-					var copy_fileList2=[];
-					switch(item){
-						case '1':
-						if(game.getExtensionConfig('十周年UI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/shili","extension/十周年UI/image/decoration"],
-							["extension/仙家之魂/image/cardimage/tenui","extension/十周年UI/image/card"],
-							];
-						}
-						else if(game.getExtensionConfig('OLUI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/cardimage/tenui","extension/OLUI/image/card/handcards"],
-							];
-						}
-						break;
-						case '2':
-						if(game.getExtensionConfig('十周年UI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/shili","extension/十周年UI/image/decoration"],
-							["extension/仙家之魂/image/cardimage/shousha","extension/十周年UI/image/card"],
-							];
-						}
-						else if(game.getExtensionConfig('OLUI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/cardimage/shousha","extension/OLUI/image/card/handcards"],
-							];
-						}
-						break;
-						case '3':
-						if(game.getExtensionConfig('十周年UI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/shili","extension/十周年UI/image/decoration"],
-							["extension/仙家之魂/image/cardimage/shuban","extension/十周年UI/image/card"],
-							];
-						}
-						else if(game.getExtensionConfig('OLUI','enable')){
-							var xjzhcopy_fileList=[
-							["extension/仙家之魂/image/character","image/character"],
-							["extension/仙家之魂/image/cardimage/shuban","extension/OLUI/image/card/handcards"],
-							];
-						}
-						break;
-					};
-					var copy_fileList2=[];
-					var func=function(){
-						var all_count=copy_fileList2.length;
-						var count=0;
-						while(copy_fileList2.length){
-							var list2=copy_fileList2.shift();
-							game.xjzh_filesCopy(list2[0],list2[1],list2[2],function(){
-								count++;
-								rules.firstChild.innerHTML="<span style=\"color:#f9ed89\"><i>当前进度为："+count+"/"+all_count+"</i></span>";
-								if(count==all_count){
-									var btn=ui.create.div(".center","<img style=width:130px src='"+lib.assetURL+"extension/仙家之魂/image/title/xjzh_title_restart.png'>");
-									btn.onclick=function(){
-										game.reload();
-									};
-									rules.appendChild(document.createElement("br"));
-									rules.appendChild(btn);
-								};
-							});
-						};
-					};
-					var func1=function(){
-						var listt=xjzhcopy_fileList[0];
-						game.getFileList(listt[0],function(fold,file){
-							var arr=Array.from(file);
-							for(var arr1 of arr){
-								copy_fileList2.push([
-								listt[0],
-								arr1,
-								listt[1],
-								]);
-							};
-							xjzhcopy_fileList.shift();
-							if(!xjzhcopy_fileList.length){
-								func();
-							}
-							else{
-								func1();
-							}
-						});
-					};
-					func1();
-				},
-				"visualMenu":function(node,link){
-					node.style.height = node.offsetWidth * 1.387 + "px";
-					node.style.backgroundSize = '100% 100%';
-					node.className='button character incardback';
-					node.setBackgroundImage('extension/仙家之魂/image/thumbnail/'+link+'.jpg');
-				},
-			},*/
 			
 		},
 		package:{
@@ -4221,7 +4205,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			card:{card:{},translate:{},list:[],},
 			skill:xjzhCHRskills,
 			intro:"",
-			author:`吃朵棉花糖<br>版本：${xjzhVersions}<br><b><font color=red>声明：本扩展完全免费且开源，到目前为止仅在QQ群697310426和545844827发布且从未进行过任何宣发，若你通过其他来源获得此扩展所产生的任何问题均与作者无关。`,
+			author:`吃朵棉花糖<br>版本：${xjzhUpdateLog.version}<br><b><font color=red>声明：本扩展完全免费且开源，到目前为止仅在QQ群697310426和545844827发布且从未进行过任何宣发，若你通过其他来源获得此扩展所产生的任何问题均与作者无关。`,
 			//author:"吃朵棉花糖<br>版本：2.10091<br><b><font color=red>声明：本扩展完全免费且开源，到目前为止仅在QQ群697310426和545844827发布且从未进行过任何宣发，若你通过其他来源获得此扩展所产生的任何问题均与作者无关。</font><b><br><br>仙家之魂交流群：545844827</b><br><img style=width:238px src="+lib.assetURL+"extension/仙家之魂/image/erweima/xjzh_pic_qqqunma1.jpg><b><br><br>金庸群侠传交流群：697310426</b><br><img style=width:238px src="+lib.assetURL+"extension/仙家之魂/image/erweima/xjzh_pic_qqqunma2.jpg>",
 			diskURL:"",
 			forumURL:"",
