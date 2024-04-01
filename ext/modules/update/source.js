@@ -33,6 +33,4 @@ window.xjzh_updateSource=[
 	"ext/modules/update/source.js",
 
 	"ext/modules/update/update.js",
-
-	"ext/modules/version/index.js"
 ];
