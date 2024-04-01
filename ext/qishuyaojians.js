@@ -1507,7 +1507,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		filter:function(event,player){
 			if(!player.name) return false;
 			if(!lib.xjzh_qishuMode||!lib.xjzh_qishuMode.includes(get.mode())) return false;
-			if(!lib.config.xjzh_qishuyaojianOption) return false;
+			if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return false;
 			return true;
 		},
 		content:function (){

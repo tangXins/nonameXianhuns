@@ -73,7 +73,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        func2("xjzh_boss_ttshilian");
 	    }
 	    
-	    /*if(lib.config.xjzh_qishuyaojianOption){
+	    /*if(game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")){
 	        if(!lib.config.xjzh_qishuyaojians.date){
 	            lib.config.xjzh_qishuyaojians.date=new Date().getTime();
 	            game.xjzh_changeTokens(1);
@@ -92,7 +92,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    
 	});
 	
-    if(!lib.config.xjzh_qishuyaojianOption) return;
+    if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
     
     //显示倒计时
     /*lib.arenaReady.push(function(){
@@ -152,7 +152,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     };
     
     lib.onover.push(function(ret){
-        if(!lib.config.xjzh_qishuyaojianOption) return;
+        if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
         if(ret){
             //统计本剧得分
             var player=game.me;

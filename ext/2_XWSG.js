@@ -12922,8 +12922,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 lib.decade_extCardImage[cardname] = url;
             }
         }
-		if(lib.config.xjzhAchiStorage&&lib.config.xjzhAchiStorage.character&&lib.config.xjzhAchiStorage.character.length){
-			for(let name of lib.config.xjzhAchiStorage.character){
+		if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.length){
+			for(let name of game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character){
 				if(!XWSG.character[name]) console.log('未在仙武三国武将包找到该武将');
 				else{
 					XWSG.character[name][4].remove('unseen');

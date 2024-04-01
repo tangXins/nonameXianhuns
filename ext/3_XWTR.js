@@ -5682,7 +5682,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		    fixed:true,
 	    		    unique:true,
 	    		    charlotte:true,
-	    		    priority:101,
+	    		    superCharlotte:true,
+	    		    priority:3,
 	    		    firstDo:true,
 	    		    mark:true,
 	    		    notemp:true,
@@ -5799,9 +5800,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        return false;
 	    		    },
 	    		    group:["xjzh_diablo_hunhuo_use"],
-	    		    content:function(){
-	    		        "step 0"
+	    		    async content(event,trigger,player){
 	    		        if(trigger.source&&trigger.source==player&&trigger.player!=player&trigger.player.isDead()){
+							
 	    		            var object2=[]
 	    		            var bool2=false;
 	    		            if(player.name) object2.push(player.name);
@@ -8572,8 +8573,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 lib.decade_extCardImage[cardname] = url;
             }
         }
-		if(lib.config.xjzhAchiStorage&&lib.config.xjzhAchiStorage.character&&lib.config.xjzhAchiStorage.character.length){
-			for(let name of lib.config.xjzhAchiStorage.character){
+		if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.length){
+			for(let name of game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character){
 				if(!XWTR.character[name]) console.log('未在仙武同人武将包找到该武将');
 				else{
 					XWTR.character[name][4].remove('unseen');

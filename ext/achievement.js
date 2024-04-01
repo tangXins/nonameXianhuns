@@ -1,4 +1,3 @@
-
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
     //部分代码借鉴自《玄武江湖》及《时空枢纽》
     //判断完成成就的角色是否是玩家且是否为成就需求角色
@@ -7,7 +6,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	};
 	//每次载入游戏自动备份成就存档
 	lib.arenaReady.push(function(){
-	    if(lib.config.xjzhAchiStorage) game.xjzhAchi.saveConfig();
+		if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")) game.xjzhAchi.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 	});
 	//成就列表
 	lib.xjzh_achievement={
@@ -270,14 +269,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         }
     });
 	//成就书
-	if(!lib.config.xjzhAchiStorage){
-		lib.config.xjzhAchiStorage={
+	if(!game.getExtensionConfig("仙家之魂","xjzhAchiStorage")){
+		let key={
 			got:[],
 			progress:{},
 			date:{},
 			character:[]
 		};
-		game.saveConfig('xjzhAchiStorage',lib.config.xjzhAchiStorage);
+		game.saveExtensionConfig('仙家之魂',"xjzhAchiStorage",key);
 	};
 	
 	_status.xjzhCheatCount=0;
@@ -350,21 +349,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//重置已获得
 		reset:function(){
-			lib.config.xjzhAchiStorage={
+			let key={
 				got:[],
 				progress:{},
 				date:{},
 				character:[]
 			};
-			this.saveConfig();
+			this.saveConfig(key);
 		},
 		//保存设置
-		saveConfig:function(){
-		    "step 0"
-			game.saveConfig('xjzhAchiStorage',lib.config.xjzhAchiStorage);
-			"step 1"
-			var list=JSON.stringify(lib.config.xjzhAchiStorage);
-			var data="成就存档备份："+list.slice(0);
+		saveConfig:async function(key){
+			await game.saveExtensionConfig("仙家之魂","xjzhAchiStorage",key);
+			let list=JSON.stringify(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
+			let data="成就存档备份："+list.slice(0);
 			game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','成就存档备份.json',function(err){});
 		},
 		//计算成就数
@@ -382,7 +379,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//计算成就点数
 		calculateScore:function(){
-			var gots=lib.config.xjzhAchiStorage.got;
+			var gots=game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got;
 			if(!gots.length) return 0;
 			var sum=0;
 			for(var i of gots){
@@ -395,7 +392,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//计算已完成成就数
 		amountOfGained:function(type){
-			var gots=lib.config.xjzhAchiStorage.got;
+			var gots=game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got;
 			if(type){
 				var type2={'character':'character','game':'game','special':'special'}[type];
 				if(type2){
@@ -469,16 +466,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			if(!game.xjzh_filterEligible()) return false;
 			}
 			let characters=Array.prototype.slice.call(arguments);
-			if(characters.filter(name=>!lib.config.xjzhAchiStorage.character.includes(name)).length){
+			if(characters.filter(name=>!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.includes(name)).length){
 				let str= '解锁新角色';
 				for(let i=0;i<characters.length;i++){
-					if (!lib.config.xjzhAchiStorage.character.includes(characters[i])){
-						lib.config.xjzhAchiStorage.character.push(characters[i]);
+					if (!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.includes(characters[i])){
+						game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.push(characters[i]);
 						str +=''+ get.translation(characters[i]);
 					}
 				}
 				window.xjzhOpenLoading(str);
-				this.saveConfig();
+				this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 			}
 		},
 		//达成新成就
@@ -486,14 +483,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			if(!_status.event.AchiCover){
     			if(!game.xjzh_filterEligible()) return false;
 			}
-			if(lib.config.xjzhAchiStorage.got.includes(name)) return;
-			lib.config.xjzhAchiStorage.got.push(name);
+			if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name)) return;
+			game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.push(name);
 			let date=new Date();
-			lib.config.xjzhAchiStorage.date[name]=(new Date()).getTime();
+			game.getExtensionConfig("仙家之魂","xjzhAchiStorage").date[name]=(new Date()).getTime();
 			this.addDone(name);
 			this.popupDialog(name);
 			this.unlock(name);
-			this.saveConfig()
+			this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"))
 		},
 		//增加成就进度
 		addProgress:function(name,type,num){
@@ -504,11 +501,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			var info=this.info(name,type);
 			if(!info) return;
 			var name2=this.nameOf(name,type);
-			if(!lib.config.xjzhAchiStorage.progress[name2]){
-				lib.config.xjzhAchiStorage.progress[name2]=0;
+			if(!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]){
+				game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]=0;
 			}
-			lib.config.xjzhAchiStorage.progress[name2]+=num;
-			if(!lib.config.xjzhAchiStorage.character) lib.config.xjzhAchiStorage.character=[];
+			game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]+=num;
+			if(!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character) game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character=[];
 			this.updataProgress(name,type);
 		},
 		//重置某一个成就
@@ -516,11 +513,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			var info=this.info(name,type);
 			if(!info) return;
 			var name2=this.nameOf(name,type);
-			if(!lib.config.xjzhAchiStorage.progress[name2]) return;
-			lib.config.xjzhAchiStorage.progress[name2]=0;
-			if(lib.config.xjzhAchiStorage.got.includes(name2)) lib.config.xjzhAchiStorage.got.remove(name2);
-			if(lib.config.xjzhAchiStorage.date[name2]) delete lib.config.xjzhAchiStorage.date[name2];
-			this.saveConfig();
+			if(!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]) return;
+			game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]=0;
+			if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name2)) game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.remove(name2);
+			if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").date[name2]) delete game.getExtensionConfig("仙家之魂","xjzhAchiStorage").date[name2];
+			this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 		},
 		//更新成就进度
 		updataProgress:function(name,type){
@@ -529,30 +526,30 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			var name2=this.nameOf(name,type);
 			if(info.progress){
 				if(typeof info.progress=='number'){
-					if(lib.config.xjzhAchiStorage.progress[name2]>=info.progress) this.got(name2);
+					if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]>=info.progress) this.got(name2);
 				}else if(typeof info.progress=='function'){
 					if(info.progress(true)) this.got(name2);
 				}
-			}else if(lib.config.xjzhAchiStorage.progress[name2]){
+			}else if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]){
 				this.got(name2);
 			}else return;
-			this.saveConfig();
+			this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 		},
 		//直接达成成就（不触发任何附属计算）
 		directGot:function(name){
 			if(!_status.event.AchiCover){
     			if(!game.xjzh_filterEligible()) return false;
 			}
-			lib.config.xjzhAchiStorage.got.add(name);
-			this.saveConfig();
+			game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.add(name);
+			this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
 		},
 		//判断成就是否已达成
 		hasAchi:function(name,type){
 			if(typeof type=='string'){
 				let name2=this.nameOf(name,type);
-				return lib.config.xjzhAchiStorage.got.includes(name2);
+				return game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name2);
 			}
-			return lib.config.xjzhAchiStorage.got.includes(name);
+			return game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name);
 		},
 		//成就名存储转化
 		nameOf:function(name,type){
@@ -651,7 +648,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			//主页书签
 			//var mainPage=ui.create.div('.xjzh-bookWindow-page-main',bk);
 			//奇术要件书签
-			if(lib.config.xjzh_qishuyaojianOption){
+			if(game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")){
 			    var partsPage=ui.create.div('.xjzh-bookWindow-page-parts',bk);
 			    var partsPage_box=ui.create.div('.xjzh-bookWindow-page-parts-box',partsPage);
     			partsPage_box.listen(function(){
@@ -664,7 +661,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//打开奇术要件视窗
 		openAchievementEquipPage:function(){
-		    if(!lib.config.xjzh_qishuyaojianOption) return;
+		    if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
 			//覆盖图层
 			var bookWindow=ui.create.div('.xjzh-bookWindow');
 			document.body.appendChild(bookWindow);
@@ -1022,7 +1019,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//打开奇术要件信息页面
 		openAchievementEquipIntro:function(item,state){
-		    if(!lib.config.xjzh_qishuyaojianOption) return;
+		    if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
 			//覆盖图层
 			var bookWindow=ui.create.div('.xjzh-bookWindow');
 			document.body.appendChild(bookWindow);
@@ -1277,7 +1274,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//选择装备奇术要件的角色
 		choosePlayer:function(item,state,bk){
-		    if(!lib.config.xjzh_qishuyaojianOption) return;
+		    if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
 			if(!state.xjzh_onOpen){
 				var list=[];
 				var characterD;
@@ -1674,7 +1671,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		//打开抽奖页面
 		openAchievementChoujiang:function(){
-		    if(!lib.config.xjzh_qishuyaojianOption) return;
+		    if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
 			game.pause2();
 			//覆盖图层
 			var bookWindow=ui.create.div('.xjzh-bookWindow',{
@@ -2445,11 +2442,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				refreshList:function(){
 					var list=Object.keys(lib.xjzh_achievement[game.xjzhAchi.thisType]);
 					var filter=function(name){
-						return !state.hideGained||!lib.config.xjzhAchiStorage.got.includes(name);
+						return !state.hideGained||!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name);
 					};
 					for(let i=0;i<list.length;i++){
 						if(this.checkFilter(list[i])) continue;
-						if(state.hideGained&&lib.config.xjzhAchiStorage.got.includes(name)) continue;
+						if(state.hideGained&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name)) continue;
 						list.splice(i--,1);
 					}
 					var text="";
@@ -2466,7 +2463,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						let name2=game.xjzhAchi.nameOf(name,game.xjzhAchi.thisType);
 						text+="<p style=\"min-height:100px;\">";
 						//显示已完成
-						if(lib.config.xjzhAchiStorage.got.includes(name2)){
+						if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name2)){
 							text+="<img src='"+lib.assetURL+"extension/仙家之魂/css/images/achievement/isGained.png' style='height:60px;'/>";
 						}
 						//<--
@@ -2486,9 +2483,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						text+="&nbsp;&nbsp;&nbsp;";
 						//<--
 						//显示达成时间
-						if(lib.config.xjzhAchiStorage.date[name2]){
+						if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage").date[name2]){
 							text+="达成于 <font color=\"#FF4500\" size=\"2\">";
-							let ts=lib.config.xjzhAchiStorage.date[name2];
+							let ts=game.getExtensionConfig("仙家之魂","xjzhAchiStorage").date[name2];
 							text+=(new Date(ts)).format("yyyy 年 MM 月 dd 日 hh:mm");
 							text+="</font>";
 						}
@@ -2503,7 +2500,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 						//<--
 						//显示进度（如果未达成的话）
-						if(!lib.config.xjzhAchiStorage.got.includes(name2)){
+						if(!game.getExtensionConfig("仙家之魂","xjzhAchiStorage").got.includes(name2)){
 							if(!info.progress){
 							    if(info.award) text+="";
 								else text+="（0/1）";
@@ -2511,7 +2508,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							    if(info.award){
 							        text+="";
 							    }else{
-								    let pog=lib.config.xjzhAchiStorage.progress[name2]||0;
+								    let pog=game.getExtensionConfig("仙家之魂","xjzhAchiStorage").progress[name2]||0;
 								    text+='（'+pog+'/'+info.progress+'）';
 								}
 							}

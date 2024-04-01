@@ -385,23 +385,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			},
     			"xjzh_boss_shenghui2":{
     			    trigger:{
-    			        player:["phaseDrawBegin","phaseJieshuBegin","recoverBegin"],
+    			        player:["phaseDrawBegin","phaseJieshuBegin"],
     			    },
     			    forced:true,
     			    locked:true,
     			    priority:5,
     			    content:function(){
-    			        if(trigger.name!="recover"){
-    			            player.draw(2);
-    			        }else{
-    			            player.chooseDrawRecover(2,1,true,"〖圣辉〗：请选择摸两张牌或回复一点体力");
-    			            trigger.cancel(null,null,'notrigger');
-    			        }
-    			        /*trigger.num+=2;
-    			        player.recover();
-    			        var targets=player.getFriends();
-    			        if(targets.length) targets.randomGet().recover();*/
-    			        
+    			        player.chooseDrawRecover(2,2,true,"〖圣辉〗：请选择摸两张牌或回复两点体力")._triggered=null;
     			    },
     			},
     			"xjzh_boss_chiyan":{
@@ -443,9 +433,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			    priority:5,
     			    content:function(){
     			        var num=trigger.num;
-    			        player.chooseDrawRecover(num,num,true,`〖圣辉〗：请选择摸${num}张牌或回复${num}点体力`);
+    			        player.chooseDrawRecover(num,num,true,`〖圣辉〗：请选择摸${num}张牌或回复${num}点体力`)._triggered=null;
     			        player.changeHujia(num);
-    			        trigger.cancel(null,null,'notrigger');
     			    },
     			},
     			"xjzh_boss_caijue":{
@@ -3169,9 +3158,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_shenghui":"圣辉",
 				"xjzh_boss_shenghui_info":"锁定技，你的摸牌阶段额外摸两张牌并回复一点体力。",
 				"xjzh_boss_shenghui2":"圣辉",
-				"xjzh_boss_shenghui2_info":"锁定技，你的摸牌阶段及结束阶段摸两张牌；当你回复体力时，你可以改为选择回复一点体力或摸两张牌。",
+				"xjzh_boss_shenghui2_info":"锁定技，你的摸牌阶段及结束阶段，你可以选择回复两点体力或摸两张牌。",
 				"xjzh_boss_chiyan":"炽焰",
-				"xjzh_boss_chiyan_info":"出牌阶段限一次，你可以选择一名其他角色，令其展示所有手牌，其中每有一张♦牌，视为你对其使用一张【火杀】；当你因此技能造成伤害后，你令所有友方角色回复一点体力。",
+				"xjzh_boss_chiyan_info":"出牌阶段限一次，你可以选择一名其他角色，令其展示所有手牌，其中每有一张♦牌，视为你对其使用一张【火杀】；当你因此技能造成伤害结算时，你令所有友方角色回复一点体力。",
 				"xjzh_boss_shenghui3":"圣辉",
 				"xjzh_boss_shenghui3_info":"锁定技，当你摸牌或回复体力时，你改为选择回复等量体力或摸等量牌，然后你获得等量护甲。",
 				"xjzh_boss_caijue":"裁决",
