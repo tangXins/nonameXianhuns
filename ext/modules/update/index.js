@@ -1,8 +1,8 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.04020',
-	'3.04020':{
+    version:'3.04021',
+	'3.04021':{
         changeLog:[
 			"调整了成就储存的方式，本次更新会重置成就，请保存成就存档后导入",
 		    "修复许多bug",

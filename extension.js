@@ -3728,6 +3728,64 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							};
 							download();
 						};
+						
+						game.xjzhCheckVersion = (ver1, ver2) => {
+							if (typeof ver1 != 'string') ver1 = '';
+							if (typeof ver2 != 'string') ver2 = '';
+							/**
+							 * @param {string} str
+							 */
+							function* walk(str) {
+								let part = '';
+								let terminals = ['.', '-'];
+								for (let i = 0; i < str.length; i++) {
+									if (terminals.includes(str[i])) {
+										yield Number(part);
+										part = '';
+									} else {
+										part += str[i];
+									}
+								}
+								if (part) yield Number(part);
+							}
+			
+							const iterator1 = walk(ver1), iterator2 = walk(ver2);
+							let item1 = iterator1.next(), item2 = iterator2.next();
+			
+							function iterNext() {
+								item1 = iterator1.next();
+								item2 = iterator2.next();
+							}
+			
+							function iterReturn() {
+								iterator1.return();
+								iterator2.return();
+							}
+			
+							while (!item1.done && !item2.done) {
+								if (item1.value === item2.value || isNaN(item1.value) || isNaN(item2.value)) {
+									iterNext();
+								} else if (item1.value > item2.value) {
+									iterReturn();
+									return 1;
+								} else if (item1.value < item2.value) {
+									iterReturn();
+									return -1;
+								}
+							}
+			
+							if (item1.done && !item2.done) {
+								iterReturn();
+								return -1;
+							} else if (!item1.done && item2.done) {
+								iterReturn();
+								return 1;
+							}
+							/* else if (item1.done && item2.done) {
+								return 0;
+							}*/
+							else return 0;
+						};
 
 						game.xjzhGetUpdateFiles().then(({ update, source_list: updates }) => {
 							if (!lib.extensionPack.仙家之魂.version) lib.extensionPack.仙家之魂.version = xjzhUpdateLog.version;
