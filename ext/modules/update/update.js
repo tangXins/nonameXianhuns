@@ -1,6 +1,11 @@
 window.xjzh_updateversion={
 	version:'3.03271',
 	update:'3.03271',
+	changeLog:[
+		"调整了成就储存的方式，本次更新会重置成就，请保存成就存档后导入",
+		"修复许多bug",
+		"优化许多细节",
+	],
 	files:[	
 			"LICENSE",
 			"info.json",

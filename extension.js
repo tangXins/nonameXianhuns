@@ -3920,10 +3920,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 
 							let str = '有新版本' + update.version + '可用，是否下载？';
 							if (navigator.notification && navigator.notification.confirm) {
-								let str2 = xjzhUpdateLog.changeLog[0];
-								for (let i = 1; i < xjzhUpdateLog.changeLog.length; i++) {
-									if (xjzhUpdateLog.changeLog[i].indexOf('://') == -1) {
-										str2 += '；' + xjzhUpdateLog.changeLog[i];
+								let str2 = update.changeLog[0];
+								for (let i = 1; i < update.changeLog.length; i++) {
+									if (update.changeLog[i].indexOf('://') == -1) {
+										str2 += '；' + update.changeLog[i];
 									}
 								}
 								navigator.notification.confirm(
