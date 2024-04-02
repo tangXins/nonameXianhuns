@@ -5,13 +5,20 @@ export const xjzhUpdateLog={
 	'3.04021':{
         changeLog:[
 			"调整了成就储存的方式，本次更新会重置成就，请保存成就存档后导入",
+			"此版本更新及后续更新会自动删除冗余文件",
 		    "修复许多bug",
 	    	"优化许多细节",
         ],
 	    players:[],
 		cards:[],
 		romoveFiles:async function(){
-			await game.xjzh_removeFiles("ext/modules/version");
+			let folderFiles=[
+				"ext/modules/version",
+				"css/images/limitedCards",
+			];
+			for await(let i of folderFiles){
+				game.xjzh_removeFiles(i);
+			}
 		},
     },
 	'3.03271':{
