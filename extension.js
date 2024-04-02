@@ -3730,9 +3730,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						};
 
 						game.xjzhGetUpdateFiles().then(({ update, source_list: updates }) => {
-							if (!lib.extensionPack.仙家之魂.version) lib.extensionPack.仙家之魂.version = xjzhVersions;
+							if (!lib.extensionPack.仙家之魂.version) lib.extensionPack.仙家之魂.version = xjzhUpdateLog.version;
 							//要更新的版本和现有的版本一致
-							if (update.version == xjzhVersions) {
+							if (update.version == xjzhUpdateLog.version) {
 								if (!confirm('当前版本已经是最新，是否覆盖更新？')) {
 									game.Updating = false;
 									button.innerHTML = '检查扩展更新';
@@ -3920,10 +3920,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 
 							let str = '有新版本' + update.version + '可用，是否下载？';
 							if (navigator.notification && navigator.notification.confirm) {
-								let str2 = update.changeLog[0];
-								for (let i = 1; i < update.changeLog.length; i++) {
-									if (update.changeLog[i].indexOf('://') == -1) {
-										str2 += '；' + update.changeLog[i];
+								let str2 = xjzhUpdateLog.changeLog[0];
+								for (let i = 1; i < xjzhUpdateLog.changeLog.length; i++) {
+									if (xjzhUpdateLog.changeLog[i].indexOf('://') == -1) {
+										str2 += '；' + xjzhUpdateLog.changeLog[i];
 									}
 								}
 								navigator.notification.confirm(
