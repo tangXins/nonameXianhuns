@@ -37,5 +37,8 @@ window.xjzh_updateversion={
 
 			"ext/modules/update/update.js",
 
+			"css/mainPage.css",
+			
+			"image/title/xjzh_updateVersion.png"
 	],
 };

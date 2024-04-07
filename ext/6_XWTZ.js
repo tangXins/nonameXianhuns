@@ -431,10 +431,17 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			    forced:true,
     			    locked:true,
     			    priority:5,
-    			    content:function(){
-    			        var num=trigger.num;
-    			        player.chooseDrawRecover(num,num,true,`〖圣辉〗：请选择摸${num}张牌或回复${num}点体力`)._triggered=null;
-    			        player.changeHujia(num);
+					filter(event,player){
+						if(event.name=="recover"){
+							return game.countPlayer(current=>current.isDamaged())>=1;
+						}
+						return true;
+					},
+    			    async content(event,trigger,player){
+    			        let num=trigger.num;
+						const targets=await player.chooseTarget(`〖圣辉〗：请选择一名其他角色${trigger.name=="draw"?`摸${num}张牌`:`回复${num}点体力`}`,lib.filter.notMe).set('ai',target=>get.attitude(player,target)).forResultTargets();
+						if(targets) targets[0][trigger.name](num);
+    			        player.changeHujia(1);
     			    },
     			},
     			"xjzh_boss_caijue":{
@@ -516,7 +523,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			    locked:true,
     			    priority:5,
     			    filter:function(event,player){
-    			        if(event.name=="phaseDiscard")return true;
+    			        if(event.name=="phaseDiscard") return true;
     			        if(event.name=="useCard") return player.isPhaseUsing();
     			        return false;
     			    },
@@ -3162,7 +3169,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_chiyan":"炽焰",
 				"xjzh_boss_chiyan_info":"出牌阶段限一次，你可以选择一名其他角色，令其展示所有手牌，其中每有一张♦牌，视为你对其使用一张【火杀】；当你因此技能造成伤害结算时，你令所有友方角色回复一点体力。",
 				"xjzh_boss_shenghui3":"圣辉",
-				"xjzh_boss_shenghui3_info":"锁定技，当你摸牌或回复体力时，你改为选择回复等量体力或摸等量牌，然后你获得等量护甲。",
+				"xjzh_boss_shenghui3_info":"锁定技，当你摸牌或回复体力时，你令一名其他角色摸等量牌或回复等量体力，然后你获得1点护甲。",
 				"xjzh_boss_caijue":"裁决",
 				"xjzh_boss_caijue_info":"出牌阶段限一次，你可以令场上所有敌方角色依次展示一张手牌，然后你可以弃置一张花色一致的牌，对其造成一点雷属性伤害，若如此做，你摸一张牌。",
 				"xjzh_boss_shenghui4":"圣辉",

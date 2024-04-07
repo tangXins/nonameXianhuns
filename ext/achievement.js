@@ -690,13 +690,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			lib.onresize.push(resize);
 			//显示用户名
 			var qishuName=ui.create.div(bk,{
-				left:'30%',top:'22.5%',
+				left:'34%',top:'24.8%',
 				transform:'translate(-50%, -50%)',
 				width:'400px',height:'270px',
 				textAlign:'left',
 			});
 			if(lib.config.xjzh_qishuyaojians.level===undefined||lib.config.xjzh_qishuyaojians.exp===undefined) game.xjzh_levelUp();
-			console.log(game.xjzh_levelUp())
 			var qishuNameNum=lib.config.xjzh_qishuyaojians.level*(100+(lib.config.xjzh_qishuyaojians.level*10));
 			var qishuNameStr=`用户名：${lib.config.xjzh_qishuyaojians.name}<br>等级：${lib.config.xjzh_qishuyaojians.level}<br>经验：${lib.config.xjzh_qishuyaojians.exp}/${qishuNameNum}`;
 			qishuName.innerHTML=qishuNameStr;

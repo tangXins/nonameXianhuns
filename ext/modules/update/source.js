@@ -33,4 +33,8 @@ window.xjzh_updateSource=[
 	"ext/modules/update/source.js",
 
 	"ext/modules/update/update.js",
+
+	"css/mainPage.css",
+
+	"image/title/xjzh_updateVersion.png"
 ];
