@@ -146,8 +146,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        }else{
 				            var num=target.hp-1
 				            if(num<=0){
-				                event.finish();
 				                game.log(target,'使用了','#y【'+get.translation(card)+'】','无事发生');
+				                event.finish();
 				            }
 				            target.damage(num,'thunder','nocard','nosource','notrigger');
 				        }

@@ -1881,7 +1881,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						const [bool,control]=await player.chooseControl(list).set('ai',function(){
 							return Math.random()<0.5?1:0;
 						}).set('dialog',dialog).forResult('bool','control');
-						player.draw(player.countCards("h",{suit:control}));
+						if(control&&bool) player.draw(player.countCards("h",{suit:control}));
 					},
 				},
 				"xjzh_sanguo_zhishu":{
@@ -2909,10 +2909,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					            }
 					        }else{
 					            trigger.cancel(null,null,'notrigger');
+								game.xjzh_playEffect("xjzh_skillEffect_whiteFlash",player);
 					        }
 					    }
 					    else if(trigger.name=="damage"||trigger.name=="loseHp"||trigger.name=="loseMaxHp"){
 					        trigger.cancel(null,null,'notrigger');
+							game.xjzh_playEffect("xjzh_skillEffect_whiteFlash",player);
 					    }
 					},
 					ai:{

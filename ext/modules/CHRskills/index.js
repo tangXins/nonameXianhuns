@@ -216,10 +216,9 @@ export const CHRskills={
 			intro:{
 				name:"重塑",
 				translations:"游戏开始时，你可以自定义你的回合",
-				content:function(storage,player){
+				content(storage,player){
 				    if(!player.storage.xjzh_zengyi_chongsu) return "游戏开始时，你可以自定义你的回合。";
-				    var storage=player.storage.xjzh_zengyi_chongsu;
-			        var phase={
+			        let phase={
 			            "phaseZhunbei":"准备",
 			            "phaseJudge":"判定",
 			            "phaseDraw":"摸牌",
@@ -227,7 +226,7 @@ export const CHRskills={
 			            "phaseDiscard":"弃牌",
 			            "phaseJieshu":"结束",
 			        },str="";
-				    var object={
+				    let object={
 			            "phaseZhunbei":[storage["phaseZhunbei"],phase[storage["phaseZhunbei"]]],
 			            "phaseJudge":[storage["phaseJudge"],phase[storage["phaseJudge"]]],
 			            "phaseDraw":[storage["phaseDraw"],phase[storage["phaseDraw"]]],
@@ -235,7 +234,7 @@ export const CHRskills={
 			            "phaseDiscard":[storage["phaseDiscard"],phase[storage["phaseDiscard"]]],
 			            "phaseJieshu":[storage["phaseJieshu"],phase[storage["phaseJieshu"]]],
 			        };
-			        for(var i in object){
+			        for(let i in object){
                         switch(i){
                             case "phaseZhunbei":
                                 str+=`&emsp;&emsp;准备阶段：${object[i][1]}阶段<br>`;
@@ -267,10 +266,9 @@ export const CHRskills={
 			    if(game.roundNumber>0) player.useSkill("xjzh_zengyi_chongsu",player);
 			},
 			group:"xjzh_zengyi_chongsu_mod",
-		    content:function(){
-		        "step 0"
-		        event.list=["准备","判定","摸牌","出牌","弃牌","结束"],event.num=0;
-		        var object={
+		    async content(event,trigger,player){
+		        let phaseList=["准备","判定","摸牌","出牌","弃牌","结束"],num=0;
+		        let objects={
 		            "phaseZhunbei":"phaseZhunbei",
 		            "phaseJudge":"phaseJudge",
 		            "phaseDraw":"phaseDraw",
@@ -278,52 +276,48 @@ export const CHRskills={
 		            "phaseDiscard":"phaseDiscard",
 		            "phaseJieshu":"phaseJieshu",
 		        };
-		        if(!player.storage.xjzh_zengyi_chongsu) player.storage.xjzh_zengyi_chongsu=object;
-		        "step 1"
-		        var count=event.list[event.num];
-		        var dialog=ui.create.dialog(`〖重塑〗：请选择将${count}阶段替换为你选择阶段`,'forcebutton');
-		        player.chooseControl(event.list,true).set('dialog',dialog).set('ai',function(){
-		            return event.list.randomGet()
-		        });
-		        "step 2"
-		        var control=result.control;
-		        var phases={
-		            "准备":"phaseZhunbei",
-		            "判定":"phaseJudge",
-		            "摸牌":"phaseDraw",
-		            "出牌":"phaseUse",
-		            "弃牌":"phaseDiscard",
-		            "结束":"phaseJieshu",
-		        };
-		        var object=player.storage.xjzh_zengyi_chongsu;
-		        object[Object.keys(object)[event.num]]=phases[control];
-		        player.storage.xjzh_zengyi_chongsu=object;
-		        event.num++
-		        if(event.num<6){
-		            event.goto(1);
-		            return;
-		        }
+		        if(!player.storage.xjzh_zengyi_chongsu) player.storage.xjzh_zengyi_chongsu=objects;
+				while(num<6){
+					let count=phaseList[num];
+					let dialog=ui.create.dialog(`〖重塑〗：请选择将${count}阶段替换为你选择阶段`,'forcebutton');
+					const control=await player.chooseControl(phaseList,true).set('dialog',dialog).set('ai',function(){
+						return phaseList.randomGet()
+					}).forResultControl();
+					if(control){
+						let phases={
+							"准备":"phaseZhunbei",
+							"判定":"phaseJudge",
+							"摸牌":"phaseDraw",
+							"出牌":"phaseUse",
+							"弃牌":"phaseDiscard",
+							"结束":"phaseJieshu",
+						};
+						let objects=player.storage.xjzh_zengyi_chongsu;
+						objects[Object.keys(objects)[num]]=phases[control];
+						player.storage.xjzh_zengyi_chongsu=objects;
+						num++
+					}
+				}
+				console.log(player.storage.xjzh_zengyi_chongsu);
 		    },
 		    subSkill:{
 		        "mod":{
 		            trigger:{
-		                player:["phaseZhunbeiBegin","phaseJudgeBegin","phaseDrawBegin","phaseUseBegin","phaseDiscardBegin","phaseJieshuBegin"],
+		                player:["phaseBegin"],
 		            },
 		            forced:true,
 		            priority:100,
 		            sub:true,
 		            filter:function(event,player){
-		                var object=player.storage.xjzh_zengyi_chongsu;
-		                var name=event.name;
-		                if(object[name]==event.name) return false;
+		                if(!player.storage.xjzh_zengyi_chongsu) return false;
 		                return true;
 		            },
-		            content:function(){
-		                var object=player.storage.xjzh_zengyi_chongsu;
-		                var name=trigger.name;
-		                var phases=object[name];
-		                trigger.cancel(null,null,'notrigger');
-		                player[phases]()._triggered=null;
+					async content(event,trigger,player){
+		                let objects=player.storage.xjzh_zengyi_chongsu,phaseList=[];
+						for(let i in objects){
+							phaseList.push(objects[i]);
+						}
+						trigger.phaseList=phaseList;
 		            },
 		        },
 		    },
