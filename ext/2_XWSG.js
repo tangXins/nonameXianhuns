@@ -526,7 +526,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			            if(trigger.name=="addMark"){
 			                let skills=new Array()  
 			                game.xjzh_wujiangpai().forEach(name=>{
-    			                if(lib.character[name][0]!="female"){
+    			                if(lib.character[name][0]=="female"){
     			                    skills.addArray(lib.character[name][3].filter(skill=>{
     			                        let info=get.info(skill);
     			                        return !info.sub&&!info.unique&&!info.juexingji&&!info.zhuSkill&&!info.dustSkill&&!trigger.player.skills.includes(skill);
@@ -676,7 +676,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						player.storage.xjzh_sanguo_lixiang=true;
 						player.clearSkills(true);
 						let targets=game.filterPlayer(current=>current!=player).sort(lib.sort.seat);
-						for await(let target of targets){
+						for(let target of targets){
 						    target.checkConflict();
 		                    target.checkMarks();
 						}

@@ -8382,7 +8382,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_huange":"欢歌",
 				"xjzh_wzry_huange_info":"回合开始时，你可以选择/重新选择一名其他角色成为你的契约队友，其手牌数量及手牌上限始终不小于你的手牌数量和手牌上限；若你已选择契约队友，你的手牌上限+2",
 				"xjzh_wzry_zhulang":"逐浪",
-				"xjzh_wzry_zhulang_info":"锁定技，你摸牌后，若你已选择契约队友，你额外摸等量牌，然后你将这些牌的任意张牌交给你的契约队友，若如此做，你与其各回复一点体力。",
+				"xjzh_wzry_zhulang_info":"锁定技，你摸牌后，若你已选择契约队友，你额外摸等量牌，然后你将这些牌的任意张牌交给你的契约队友（至少一张），若如此做，你与其各回复一点体力。",
 				"xjzh_wzry_tiannai":"天籁",
 				"xjzh_wzry_tiannai_info":"限定技，出牌阶段，你可以失去一点体力上限并失去所有技能，然后令你的契约队友重置武将牌和其除觉醒技之外的所有技能，然后其获得增益技能〖破晓〗。",
 				
