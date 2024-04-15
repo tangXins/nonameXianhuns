@@ -3,7 +3,6 @@ import { CHRskills as xjzhCHRskills } from './ext/modules/CHRskills/index.js';
 import { xjzhTitle } from './ext/modules/Title/index.js';
 import { xjzh_updateURLS } from './ext/modules/update/updateURLS.js';
 import { xjzhUpdateLog } from './ext/modules/update/index.js';
-//import './ext/modules/update/index.js';
 //还是有很多提示，消一下
 Array.prototype.contains=Array.prototype.includes;
 lib.xjzhTitle=xjzhTitle;

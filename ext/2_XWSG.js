@@ -7835,15 +7835,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        next.set('filterButton',function(button){
 				            var player=_status.event.player;
 				            var cardx=player.getExpansions("xjzh_sanguo_qixing");
-				            if(!cardx.length) return get.type(button.link)=="trick";
+				            if(!cardx.length) return true;
 				            var list=[];
 				            for(var i of cardx){
 				                list.push(get.name(i));
 				            }
-				            return !list.includes(get.name(button.link))&&get.type(button.link)=="trick";
+				            return !list.includes(get.name(button.link));
 				        });
 				        next.set('ai',function(button){
-				            return 1;
+				            return get.value(button.lin);
 				        });
 				        "step 1"
 				        if(result.links){
@@ -12728,7 +12728,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_xinghun":"星魂",
 				"xjzh_sanguo_xinghun_info":"锁定技，游戏开始时，你随机展示未上场角色的7个技能，并选择获得其中两个技能；你受到伤害后，你摸一张牌并展示此牌，你获得一个你未获得且描述中含有此牌牌名的技能",
 				"xjzh_sanguo_qixing":"七星",
-				"xjzh_sanguo_qixing_info":"锁定技，当你受到伤害或回复体力后，你可以观看牌堆顶3张牌，并将其中一张与“星”牌名均不一致的非延时锦囊牌置于武将牌上称为“星”，濒死阶段，若你的“星”不小于7，你将所有“星”收入手牌并回复体力至体力上限。",
+				"xjzh_sanguo_qixing_info":"锁定技，当你受到伤害或回复体力后，你可以观看牌堆顶3张牌，并将其中一张与“星”牌名均不一致的牌置于武将牌上称为“星”，濒死阶段，若你的“星”不小于7，你将所有“星”收入手牌并回复体力至体力上限。",
 				/*"xjzh_sanguo_xingyun":"星陨",
 				"xjzh_sanguo_xingyun_info":"锁定技，当场上一名角色阵亡后，你获得一点体力上限。限定技，出牌阶段，你可以选择一名已阵亡的角色令其复活，然后你选择武将牌上除〖观星〗、〖星魂〗、〖星殒〗之外的一个技能令其获得之，然后你移除该技能",
 				"xjzh_sanguo_xingyun2":"星殒",*/

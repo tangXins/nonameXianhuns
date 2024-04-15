@@ -4177,49 +4177,50 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    mark:true,
 					marktext:"歌",
 					intro:{
-						content:function(storage,player){
-						    if(!player.storage.xjzh_wzry_huange) return;
-						    var storage=player.storage.xjzh_wzry_huange;
+						content(storage,player){
+						    if(!storage) return;
 						    return `你的契约队友${get.translation(storage)}`;
 						},
 					},
 					audio:"ext:仙家之魂/audio/skill:6",
+					mod:{
+						maxHandcard(player,num){
+							if(player.storage.xjzh_wzry_huange) return num+2;
+							return num;
+						},
+					},
 				    global:"xjzh_wzry_huange_mod",
 				    group:"xjzh_wzry_huange_use",
-				    check:function(event,player){return 1;},
+				    check(event,player){return 1;},
 				    prompt:"〖欢歌〗：选择一名角色成为你的契约队友",
-				    content:function(){
-				        "step 0"
-				        player.chooseTarget("〖欢歌〗：请选择一名角色成为你的契约队友",function(card,player,target){
-				            return target!=player;
-				        }).set('ai',function(target){
+				    async content(event,trigger,player){
+				        const targets=await player.chooseTarget("〖欢歌〗：请选择一名角色成为你的契约队友",lib.filter.notMe).set('ai',(card,player,target)=>{
 				            return get.attitude(player,target);
-				        });
-				        "step 1"
-				        if(result.bool){
-				            player.storage.xjzh_wzry_huange=result.targets[0];
+				        }).forResultTargets();
+						if(targets){
+				            player.storage.xjzh_wzry_huange=targets[0];
 				        }
 				    },
 				    subSkill:{
 				        "use":{
 				            trigger:{
-				                global:"loseAfter",
+				                global:["loseAfter","gainAfter"],
 				            },
 				            forced:true,
 				            sub:true,
 				            priority:1,
 				            audio:"xjzh_wzry_huange",
-				            filter:function(event,player){
+				            filter(event,player){
 				                if(!player.storage.xjzh_wzry_huange) return false;
-				                var target=player.storage.xjzh_wzry_huange;
-				                var hs=player.countCards("h");
-				                var hs2=target.countCards("h");
+				                let target=player.storage.xjzh_wzry_huange;
+				                let hs=player.countCards("h");
+				                let hs2=target.countCards("h");
 				                if(hs2<hs) return true;
 				                return false;
 				            },
-				            content:function(){
-				                var target=player.storage.xjzh_wzry_huange;
-				                target.draw(player.countCards("h")-target.countCards("h"));
+							async content(event,trigger,player){
+				                let target=player.storage.xjzh_wzry_huange;
+				                target.drawTo(player.countCards("h"));
 				            },
 				        },
 				        "mod":{
@@ -4227,8 +4228,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				            charlotte:true,
 				            superCharlotte:true,
     						mod:{
-        						maxHandcard:function(player,num){
-        						    var target=game.findPlayer(function(current){
+        						maxHandcard(player,num){
+        						    let target=game.findPlayer(function(current){
         						        return get.playerName(current,"xjzh_wzry_duoliya")&&current.storage.xjzh_wzry_huange&&current.storage.xjzh_wzry_huange==player;
         						    });
         						    if(!target) return num;
@@ -4247,40 +4248,24 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    locked:true,
 				    priority:3,
 					audio:"ext:仙家之魂/audio/skill:5",
-					filter:function(event,player){
-						return player.countCards("h")>player.getHandcardLimit();
+					filter(event,player){
+						if(event.getParent("xjzh_wzry_zhulang").name=="xjzh_wzry_zhulang") return false;
+						return player.storage.xjzh_wzry_huange&&!event.numFixed&&!event.cancelled;
 					},
-					content:function(){
-					    "step 0"
-					    var num=player.countCards("h")-player.getHandcardLimit();
-					    var str='〖逐浪〗：请选择'+num+'张牌弃置';
-					    if(player.storage.xjzh_wzry_huange) str+='或将这些牌交给'+get.translation(player.storage.xjzh_wzry_huange);
-					    player.chooseCard('h',num,str,true).set('ai',function(card){
-					        if(player.storage.xjzh_wzry_huange) return 8-get.value(card);
-					        return 4-get.value(card);
-					    });
-					    "step 1"
-					    if(result.bool){
-					        event.cards=result.cards;
-					        if(!player.storage.xjzh_wzry_huange){
-					            player.discard(event.cards);
-					            player.recover(event.cards.length);
-					            event.finish();
-					            return;
-					        }else{
-					            player.chooseBool("〖逐浪〗：是否将这些牌交给"+get.translation(player.storage.xjzh_wzry_huange)).set(function(){
-					                return 1;
-					            });
-					        }
-					    }
-					    "step 2"
-					    if(result.bool){
-					        var target=player.storage.xjzh_wzry_huange;
-					        target.gain(event.cards,player,'draw');
-					    }else{
-					        player.discard(event.cards);
-					        player.recover(event.cards.length);
-					    }
+					async content(event,trigger,player){
+					    const evt=await player.draw(trigger.num);
+					    if(player.storage.xjzh_wzry_huange){
+							let str=`【逐浪】：选择至多${trigger.num}张牌交给${get.translation(player.storage.xjzh_wzry_huange)}`;
+							const cards=await player.chooseCardButton(evt.result,[Math.ceil(trigger.num/2),trigger.num],str,true).set('ai',button=>{
+								return 8-get.value(button.link);
+							}).forResultLinks();
+							if(cards){
+								let target=player.storage.xjzh_wzry_huange;
+					        	target.gain(cards,player,'draw');
+								player.recover();
+								target.recover();
+							}
+						}
 					},
 				},
 				"xjzh_wzry_tiannai":{
@@ -8395,9 +8380,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_daofeng":"刀锋",
 				"xjzh_wzry_daofeng_info":"转换技，你的回合开始时，你获得附近所有角色各一张牌。<li>阴：每个回合开始时，若场上有“巡”，你可以展示并从场上“巡”中弃置至多4张花色不一致的牌，然后对一名其他角色造成等量伤害。<li>阳：当你受到伤害或体力流失时，若场上没有“巡”且数值不小于2，你可以防止之，然后令一名角色将一张牌置于武将牌上称为“巡”，否则你摸两张牌",
 				"xjzh_wzry_huange":"欢歌",
-				"xjzh_wzry_huange_info":"回合开始时，你可以选择/重新选择一名其他角色成为你的契约队友，其手牌数量及手牌上限始终不小于你的手牌数量和手牌上限。",
+				"xjzh_wzry_huange_info":"回合开始时，你可以选择/重新选择一名其他角色成为你的契约队友，其手牌数量及手牌上限始终不小于你的手牌数量和手牌上限；若你已选择契约队友，你的手牌上限+2",
 				"xjzh_wzry_zhulang":"逐浪",
-				"xjzh_wzry_zhulang_info":"锁定技，当你摸牌后，若你的手牌数量大于你的手牌上限，你须选择并弃置超出你手牌上限的所有牌，然后回复等量体力或令你的契约队友获得这些牌。",
+				"xjzh_wzry_zhulang_info":"锁定技，你摸牌后，若你已选择契约队友，你额外摸等量牌，然后你将这些牌的任意张牌交给你的契约队友，若如此做，你与其各回复一点体力。",
 				"xjzh_wzry_tiannai":"天籁",
 				"xjzh_wzry_tiannai_info":"限定技，出牌阶段，你可以失去一点体力上限并失去所有技能，然后令你的契约队友重置武将牌和其除觉醒技之外的所有技能，然后其获得增益技能〖破晓〗。",
 				
