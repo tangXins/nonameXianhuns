@@ -1,4 +1,7 @@
 'use strict';
+
+const { BlockList } = require("net");
+
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -1958,33 +1961,32 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					trigger:{
 					    global:['loseAfter', 'cardsDiscardAfter'],
 					},
-					filter:function(event,player){
+					filter(event,player){
 					    return event.cards&&event.cards.filter(function(card){
 					        return get.position(card,true)=='d';
 					    }).length>0;
 					},
-					direct:true,
+					forced:true,
 					locked:true,
 					priority:6,
-					init:function(player){
-					    var num=get.rand(1,5);
+					init(player){
+					    let num=get.rand(1,5);
 					    if(!player.storage.xjzh_zxzh_shiqiao) player.storage.xjzh_zxzh_shiqiao=[]
 					    while(player.storage.xjzh_zxzh_shiqiao.length<num){
-					        var num2=get.rand(1,13);
+					        let num2=get.rand(1,13);
 					        if(!player.storage.xjzh_zxzh_shiqiao.includes(num2)) player.storage.xjzh_zxzh_shiqiao.push(num2);
 					    }
 					},
 					mark:true,
 					marktext:"樵",
 					intro: {
-                        markcount:function(storage,player){
-                            if(!player.storage.xjzh_zxzh_shiqiao||!player.storage.xjzh_zxzh_shiqiao.length) return;
-                            return player.storage.xjzh_zxzh_shiqiao.length;
+                        markcount(storage,player){
+                            if(!storage) return;
+                            return storage.length;
                         },
-                        content:function(storage,player){
-                            var storage=player.storage.xjzh_zxzh_shiqiao;
-                            var str="已记录点数：";
-                            for(var i=0;i<storage.length;i++){
+                        content(storage,player){
+                            let str="已记录点数：";
+                            for(let i=0;i<storage.length;i++){
                                 if(storage[i]!=storage[storage.length-1]){
                                     str+=""+get.translation(storage[i])+"、";
                                 }else{
@@ -1995,27 +1997,31 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         },
 					},
 					mod:{
-					    aiOrder:function(player,card,num){
+					    aiOrder(player,card,num){
                             if(!player.storage.xjzh_zxzh_shiqiao) return;
-                            var list=player.storage.xjzh_zxzh_shiqiao.slice(0);
+                            let list=player.storage.xjzh_zxzh_shiqiao.slice(0);
                             if(get.number(card)==list[0]) return num+3.5;
                         },
                     },
-					content:function(){
-					    var cards=trigger.cards
+					async content(event,trigger,player){
+					    let cards=trigger.cards
 					    while(cards.length){
-					        var card=cards.pop().fix();
+							let storage=player.storage.xjzh_zxzh_shiqiao;
+					        let card=cards.pop().fix();
                             ui.cardPile.insertBefore(card,ui.cardPile.childNodes[get.rand(ui.cardPile.childElementCount)]);
-                            var number=get.number(card);
-                            if(player.storage.xjzh_zxzh_shiqiao[0]==number){
-                                var card2=get.cardPile(function(cardx){
+                            let number=get.number(card);
+                            if(storage.includes(number)){
+                                let card2=get.cardPile(cardx=>{
 								    return get.number(cardx)!=number;
 							    });
 							    if(card2){
 							    	player.gain(card2,player,"draw");
 							    }
-							    player.storage.xjzh_zxzh_shiqiao.remove(player.storage.xjzh_zxzh_shiqiao[0]);
-							    if(player.storage.xjzh_zxzh_shiqiao.length==0){
+							    storage.removeArray(storage.filter(index=>{
+									return index==number;
+								}));
+								game.log(player,"移除了点数",number,"获得了",card2);
+							    if(storage.length==0){
 							        lib.skill.xjzh_zxzh_shiqiao.init(player);
 							    }
                             }
@@ -2026,90 +2032,80 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					trigger:{
 					    player:['phaseDrawBegin','phaseDiscardBegin'],
 					},
-					filter:function(event,player){
+					filter(event,player){
 					    if(!player.storage.xjzh_zxzh_shiqiao||!player.storage.xjzh_zxzh_shiqiao.length) return false;
-					    if(event.name=="phaseDraw"){
-					        return !event.cancelled&&!event.skiped;
-					    }
-					    return event.name=="phaseDiscard";
+						return true;
 					},
-					direct:true,
+					forced:true,
 					locked:true,
 					priority:6,
 					group:["xjzh_zxzh_baoxin_use"],
-					content:function(){
-					    var list=[];
-					    var list2=[];
+					async content(event,trigger,player){
+						trigger.cancel(null,null,'notrigger');
+					    let list=[],list2=[];
 					    while(list.length<13){
-					        var cardPilex=Array.from(ui.cardPile.childNodes);
-				    	    var cards=cardPilex.randomGet()
+					        let cardPilex=Array.from(ui.cardPile.childNodes);
+				    	    let cards=cardPilex.randomGet()
 				    	    list.push(cards);
 				    	    cardPilex.remove(cards);
 					    };
 					    player.showCards(list);
-					    var storage=player.storage.xjzh_zxzh_shiqiao.slice(0);
-					    for(var i of list){
+					    let storage=player.storage.xjzh_zxzh_shiqiao.slice(0);
+					    for(let i of list){
 					        if(storage.includes(get.number(i))){
 					            list.remove(i);
 					            list2.push(i);
 					        }
 					    }
-					    var str="";
-					    if(trigger.name=="phaseDraw"){
-					        str+="跳过了摸牌阶段";
-					    }
-					    if(list2.length){
+						if(list2.length){
 					        player.gain(list2,player,"draw")._triggered=null;
-					        str+="摸了"+list2.length+"张牌";
-					        game.log(player,str);
-					    }else{
-					        if(trigger.name=="phaseDraw") str+="但";
-					        str+="并没有摸到牌";
-					        game.log(player,str);
 					    }
+					    let str=`跳过了${get.translation(trigger.name)}${list2.length?"摸了":""}${list2.length}张牌`;
 					    game.cardsDiscard(list);
-					    if(trigger.name=="phaseDraw") trigger.cancel();
+					    game.log(player,str);
 					},
 					subSkill:{
 					    "use":{
 					        trigger:{
 					            player:"useCard",
 					        },
+							forced:true,
+							priority:6,
 					        sub:true,
-					        prompt:function(event,player){
-					            var str=`移除点数${get.number(event.cards[0])}摸两张牌或令${get.translation(event.cards[0])}额外结算一次`;
-					            return str;
-					        },
 					        check:function(event,player){return 1;},
-					        filter:function(event,player){
+					        filter(event,player){
 					            if(!player.storage.xjzh_zxzh_shiqiao||!player.storage.xjzh_zxzh_shiqiao.length) return false;
-					            var storage=player.storage.xjzh_zxzh_shiqiao.slice(0);
+					            let storage=player.storage.xjzh_zxzh_shiqiao.slice(0);
 					            if(!event.cards||!event.cards.length) return false;
 					            if(!storage.includes(get.number(event.cards[0]))) return false;
-					            //if(!event.isFirstTarget) return false;
 					            if(event.getParent().name=="xjzh_zxzh_baoxin_use") return false 
 					            if(get.type(event.cards[0])=="equip"||get.type(event.cards[0])=="delay") return false;
 					            return true;
 					        },
-					        content:function(){
-					            "step 0"
-				                var controlList=[
+							async content(event,trigger,player){
+				                let controlList=[
 				                    `移除点数${get.number(trigger.cards[0])}摸两张牌`,
 						            `移除点数${get.number(trigger.cards[0])}令${get.translation(trigger.cards[0])}额外结算一次`,
 				                ]
-				                player.chooseControlList(get.prompt(event.name,player),controlList).set('ai',function(){
+				                const index=await player.chooseControlList(get.prompt(event.name,player),controlList).set('ai',()=>{
 				                    var player=_status.event.player
 				                    if(player.countCards('h')<=1) return 0;
 				                    return 1;
-				                });
-				                "step 1"
-				                if(result.index==0){
-				                    player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
-				                    player.draw(2);
-				                }
-				                else if(result.index==1){
-				                    player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
-				                    trigger.targets.push(trigger.targets[0]);
+				                }).forResult("index");
+								if(index){
+									switch(index){
+										case 0:{
+											player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
+											player.draw(2);
+										};
+										break;
+										case 1:{
+											player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
+											trigger.effectCount++
+											game.log(trigger.cards[0],'额外结算1次');
+										};
+										break;
+									}
 				                }
 					        },
 					    },
@@ -8242,9 +8238,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_yujian_info":"你可以将“剑胎”当作任意基本牌或非延时锦囊牌使用或打出",
 				"xjzh_zxzh_yujian2":"御剑",
 				"xjzh_zxzh_shiqiao":"拾樵",
-				"xjzh_zxzh_shiqiao_info":"锁定技，场上所有进入弃牌堆的牌会被洗入牌堆随机位置。游戏开始时，你记录1-13中随机1-5个点数，当有牌被洗入牌堆时，若此牌点数与你记录的第一个点数一致，你获得一张不同点数的牌，然后你移除该点数，当所有点数均被移除后，你重新记录之。",
+				"xjzh_zxzh_shiqiao_info":"锁定技，场上所有进入弃牌堆的牌会被洗入牌堆随机位置。游戏开始时，你记录1-13中随机1-5个点数，当有牌被洗入牌堆时，若此牌点数已被你记录，你获得一张不同点数的牌，然后你移除该点数，当所有点数均被移除后，你重新记录之。",
 				"xjzh_zxzh_baoxin":"抱薪",
-				"xjzh_zxzh_baoxin_info":"锁定技，摸牌阶段、弃牌阶段，你随机展示牌堆13张牌，并获得其中所有与〖拾樵〗记录点数一致的牌，然后你跳过摸牌阶段、弃牌阶段；你使用〖拾樵〗包含点数的牌时，你可以移除〖拾樵〗中与之一致的点数并选择一项：1、摸2张牌;2、令此牌额外结算一次。",
+				"xjzh_zxzh_baoxin_info":"锁定技，摸牌阶段、弃牌阶段，你随机展示牌堆13张牌，并获得其中所有与〖拾樵〗记录点数一致的牌，然后你跳过摸牌阶段、弃牌阶段；你使用〖拾樵〗包含点数的牌时，你移除〖拾樵〗中与之一致的点数并选择一项：1、摸2张牌;2、令此牌额外结算一次。",
 				"xjzh_zxzh_baoxin_use":"抱薪",
 				"xjzh_zxzh_moyu":"默语",
 				"xjzh_zxzh_moyu_info":"你的准备阶段，你可以判定：♥你可以与一名角色交换体力值和体力上限；♠你可以令两名其他角色交换技能。",
