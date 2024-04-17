@@ -5129,7 +5129,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     forced:true,
                     priority:-2,
                     popup:false,
-                    //usable:1,
                     notemp:true,
                     unique:true,
                     filter:function(event,player){
@@ -5138,7 +5137,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         var info=get.info(event.card);
                         if(info.allowMultiple==false) return false;
                         if(info.multitarget) return false;
-                        if(player.hasSkill('xjzh_wzry_liuguang_off')) return false;
                         return true;
                     },
                     content:function(){
@@ -5180,6 +5178,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             return;
                         }
                     },
+					subSkill:{"off":{sub:true,},},
                     ai:{
                         unequip:true,
                         notemp:true,
@@ -5202,45 +5201,40 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						},
 					},
                     trigger:{
-                        player:"useCardToPlayer",
+                        player:"useCard",
                     },
                     forced:true,
                     priority:-2,
-                    //usable:1,
                     notemp:true,
                     unique:true,
-                    filter:function(event,player){
+                    filter(event,player){
                         if(!event.targets||!event.targets.length) return false;
                         if(get.name(event.card)!='sha') return false;
-                        var info=get.info(event.card);
+                        let info=get.info(event.cards[0]);
                         if(info.allowMultiple==false) return false;
                         if(info.multitarget) return false;
-                        if(player.hasSkill('xjzh_wzry_liuguang2_off')) return false;
                         return true;
                     },
-                    content:function(){
-                        "step 0"
+                    async content(event,trigger,player){
                         player.addTempSkill("xjzh_wzry_liuguang2_off","shaAfter");
-                        trigger.target.chooseCard('he',1).set('ai',function(card,player,target){
-                            var player=_status.event.player
-                            var target=trigger.targets[0]
-                            var att=get.attitude(player,target);
+                        const cards=await trigger.targets[0].chooseCard('he',1).set('ai',card=>{
+							let player=get.player();
+							let target=trigger.targets[0];
+                            let att=get.attitude(player,target);
                             if(target.countCards('h','tao')||target.countCards('h','shan')) return 0;
-                            if(att>0){
-                                return 8-get.value(card);
-                            }
+                            if(att>0) return 8-get.value(card);
                             return 4-get.value(card);
-                        });
-                        "step 1"
-                        if(result.bool){
-                            player.gain(result.cards[0],trigger.target,'gain2');
+                        }).forResultCards();
+                        if(cards){
+                            player.gain(cards[0],trigger.targets[0],'gain2');
                         }else{
-                            targetx.say("否");
+                            trigger.targets[0].say("否");
                             game.delayx(1.5);
-                            trigger.targets.push(trigger.target);
+                            trigger.effectCount++;
+						    game.log(trigger.card,'额外结算1次');
                         }
                     },
-                    subSkill:{off:{sub:true,},},
+					subSkill:{"off":{sub:true,},},
                     ai:{
                         unequip:true,
                         notemp:true,
