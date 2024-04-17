@@ -160,7 +160,7 @@ export const CHRskills={
 			    }).randomGets(30);
 			    const links=await player.chooseButton(true).set('createDialog',['〖转魄〗：请选择一张武将牌',[list,'character']]).forResultLinks();
 			    trigger.player.reinit(trigger.player.name1,links[0],[trigger.player.hp,trigger.player.maxHp]);
-			    trigger.player.recover(trigger.player.getDamagedHp(true))
+			    trigger.player.recoverTo(trigger.player.maxHp)
 			},
 		},
 		"xjzh_zengyi_daoge":{
@@ -183,7 +183,7 @@ export const CHRskills={
 			    trigger.cancel(null,null,'notrigger');
 			    let num=Math.floor(player.maxHp/2);
 			    await player.loseMaxHp(num);
-			    player.recover(player.getDamagedHp(true));
+			    player.recoverTo(player.maxHp);
 			    var id=player.identity,id2;
 			    switch(id){
 			        case "fan":
@@ -1278,7 +1278,6 @@ export const CHRskills={
 		"xjzh_zengyi_shenghua":"升华",
 		"xjzh_zengyi_chaoti":"超体",
 		"xjzh_zengyi_jinghong":"惊鸿",
-		"xjzh_zengyi_recover":"回血",
 		"xjzh_zengyi_shefan":"蛇幡",
 		"xjzh_zengyi_longfei":"龙飞",
 		"xjzh_zengyi_yunchui":"云垂",

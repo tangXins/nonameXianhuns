@@ -692,7 +692,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						    else names="xjzh_sanguo_daqiao";
 						}
 						player.reinit(player.name,names,[player.hp,player.maxHp]);
-						player.recover(player.getDamagedHp(true));
+						player.recoverTo(player.maxHp);
                     },
 			    },
 				"xjzh_sanguo_jueqing":{
@@ -2004,7 +2004,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						player.awakenSkill('xjzh_sanguo_guihan');
 						player.storage.xjzh_sanguo_guihan=true;
 						player.loseMaxHp();
-						player.recover(player.getDamagedHp());
+						player.recoverTo(player.maxHp);
 						let targetx=game.filterPlayer(function(current){return current!=player});
 						targetx.sort(lib.sort.seat);
 						for(let target of targetx){
@@ -2787,7 +2787,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 						game.cardsDiscard(cards2);
 						if(num){
-							trigger.player.recover(1-trigger.player.hp);
+							trigger.player.recoverTo(1);
 							if(!player.storage.xjzh_sanguo_liangyi){
 								player.addMark("xjzh_sanguo_jishi");
 							}
@@ -3213,8 +3213,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         }
                         player.gain(cards,player,'draw');
                         "step 3"
-                        player.addSkill("xjzh_sanguo_yingshi");
-                        player.addSkill("xjzh_sanguo_langgu");
+                        player.addSkills(["xjzh_sanguo_yingshi","xjzh_sanguo_langgu"]);
                         if(player.storage.xjzh_sanguo_bolue){
                             player.unmarkSkill('xjzh_sanguo_bolue');
                             delete player.storage.xjzh_sanguo_bolue
@@ -6386,7 +6385,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 						"step 1"
 						player.loseMaxHp();
-						player.recover(1-player.hp);
+						player.recoverTo(1);
 					},
 					ai:{
 						save:true,
@@ -7868,7 +7867,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				            content:function(){
 				                var cards=player.getExpansions("xjzh_sanguo_qixing");
 				                player.gain(cards,'gain2',player);
-				                player.recover(player.maxHp-player.hp);
+				                player.recoverTo(player.maxHp);
 				            },
 				        },
 				    },
@@ -8883,7 +8882,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 								player.changeGroup("YHan");
 								if(game.xjzhAchi.hasAchi('再兴炎汉','character')){
 								    player.gainMaxHp();
-								    player.recover(player.getDamagedHp());
+								    player.recoverTo(player.maxHp);
 								}
 								player.update();
 							}
@@ -12134,7 +12133,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                 }
                                 "step 1"
                                 trigger.cancel();
-                                trigger.player.recover(1-trigger.player.hp);
+                                trigger.player.recoverTo(1);
                                 "step 2"
                                 event.targets.revive(3);
                                 event.targets.insertPhase();

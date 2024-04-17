@@ -1,7 +1,4 @@
 'use strict';
-
-const { BlockList } = require("net");
-
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -817,12 +814,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						"step 1"
 						switch(get.suit(result.card)){
 							case 'heart':
-							player.recover(player.maxHp-player.hp);
+							player.recoverTo(player.maxHp);
 							player.draw();
 							event.finish();
 							break;
 							case 'diamond':
-							player.recover(1-player.hp);
+							player.recoverTo(1);
 							trigger.player.draw(3);
 							event.finish();
 							break;
@@ -4531,16 +4528,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         						return !player.hasSkill("xjzh_wzry_xingchen_off");
         					},
         					async content(event,trigger,player){
-        					    var obj=new Object();
-        					    obj.source=trigger.source||null;
-        					    obj.num=trigger.num;
-        					    obj.nature=trigger.nature||null;
+								event._args=[trigger.num,trigger.nature,trigger.cards,trigger.card];
+								if(trigger.source) event._args.push(trigger.source);
+								else event._args.push("nosource");
         						window.xjzh_wzry_xingchen=setTimeout(function(){
         							player.addTempSkill("xjzh_wzry_xingchen_off","damageAfter");
         							game.playXH('xjzh_wzry_xingchenDamage');
-        							player.damage(obj.num,obj.nature,obj.source);
+									player.damage.apply(player,event._args.slice(0));
         						},15000);
-        						game.log(player,"受到来自于",trigger.source,"的",trigger.num,"点伤害转为星削将于15s后结算");
+        						game.log(player,"受到",trigger.source?"来自于"+get.translation(trigger.source)+"的":"",trigger.num,"点伤害转为星削将于15s后结算");
         						trigger.changeToZero();
         					},
         					ai:{
@@ -4588,14 +4584,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         }).set('ai',card=>{
                             return 6-get.value(card);
                         }).forResult('bool','cards');
+						let num=0;
                         if(bool){
-                            var num=event.cards.length-cards.length;
+                            num=event.cards.length-cards.length;
                         }else{
-                            var num=event.cards.length
+                            num=event.cards.length
                         }
-                        while(num>0){
+                        while(num>0&&event.targets[0].isAlive()){
                             game.delay();
-                            if(event.targets[0].isDead()) break;
                             game.playXH(['xjzh_wzry_liekong1','xjzh_wzry_liekong2','xjzh_wzry_liekong3'].randomGet());
                             player.useCard({name:'sha'},event.targets[0],false).set('addCount',false);
                             num-=1
@@ -4719,7 +4715,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					ai:{
 						order:2,
 						result:{
-							player:function(card,player,target){
+							player(card,player,target){
 							    var player=_status.event.player
 							    if(!player.storage.xjzh_wzry_guichen||!player.storage.xjzh_wzry_guichen.length) return;
 							    var num=1
@@ -6654,7 +6650,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		            var num=player.storage.xjzh_diablo_randomhuixin;
 	    		            numx*=(1+num/100)
 	    		        }
-	    		        if(Math.random()<=numx) player.recover(player.getDamagedHp());
+	    		        if(Math.random()<=numx) player.recoverTo(player.maxHp);
 	    		        "step 1"
 	    		        var numx=0.25;
 	    		        if(game.xjzh_hasEquiped("xjzh_card_fengbaopaoxiao",player.name1)){

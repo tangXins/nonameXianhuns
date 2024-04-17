@@ -1093,7 +1093,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						player.storage.xjzh_boss_huanshen=true;
 						"step 1"
     					var num=Math.round(player.maxHp/3);
-    					player.recover(num-player.hp);
+    					player.recoverTo(num);
 						'step 2'
 					    if(game.me!=game.boss){
 						    game.boss.changeSeat(6);
@@ -1326,7 +1326,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			            //player.maxHp*=2;
 			            player.gainMaxHp(player.maxHp);
 			            "step 3",
-			            player.recover(player.maxHp-player.hp);
+			            player.recoverTo(player.maxHp);
 			            player.addSkill("xjzh_boss_xueyan");
 			            player.update();
 			            "step 4"

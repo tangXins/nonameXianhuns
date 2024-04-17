@@ -343,7 +343,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						trigger.player.draw(player.hp-trigger.player.hp);
 						player.draw(player.hp-trigger.player.hp);
 						player.loseMaxHp();
-						trigger.player.recover(1-trigger.player.hp);
+						trigger.player.recoverTo(1);
 						"step 4"
 						if(player.countMark("xjzh_huoying_zuidun")>=2){
 							player.removeSkill("xjzh_huoying_zuidun",true);
@@ -374,7 +374,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						"step 0"
 						player.maxHp=2
 						player.update();
-						player.recover(2-player.hp);
+						player.recoverTo(2);
 						player.discard(player.getCards('j'));
 						player.link(false);
 						player.turnOver(false);

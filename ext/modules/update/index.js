@@ -1,9 +1,10 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.04121',
-	'3.04121':{
+    version:'3.04171',
+	'3.04171':{
         changeLog:[
+			"部分函数使用最新版函数，请更新本体至1.10.11.1",
 			"修复小乔〖峨眉〗，获得的技能为男性角色的技能",
 			"修复小乔/大乔〖离乡〗，技能发动时卡死",
 			"修复余木人〖抱薪〗，技能时机错误",

@@ -158,7 +158,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						"step 1"
 						trigger.cancel();
 						player.loseMaxHp();
-						player.recover(1-player.hp);
+						player.recoverTo(1);
 				        player.addSkillLog("xjzh_meiren_lingdong");
 				    },
 				},
@@ -657,7 +657,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						player.$fullscreenpop('轮回之术','water');
 						'step 1'
 						player.loseMaxHp();
-						player.recover(1-player.hp);
+						player.recoverTo(1);
 						player.discard(player.getCards('j'));
 						player.draw(player.maxHp);
 					},
