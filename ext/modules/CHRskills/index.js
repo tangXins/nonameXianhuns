@@ -466,16 +466,16 @@ export const CHRskills={
 			check(){return 1},
 		    async content(event,trigger,player){
 		        let skills=new Array();
-		        const {result:{bool,targets}}=await player.chooseTarget('〖梦蝶〗：选择交换两名角色一个你指定的技能',2,(card,player,target)=>{
+		        const targets=await player.chooseTarget('〖梦蝶〗：选择交换两名角色一个你指定的技能',2,(card,player,target)=>{
 		            return target.getSkills(null,false,false).filter(function(skill){
 		                let info=lib.skill[skill];
     		            if(info&&(info.cardSkill||info.equipSkill||info.nogainsSkill)) return false;
     			        return lib.translate[skill]&&lib.translate[skill+"_info"];
     		        }).length;
-		        }).set('ai',function(target){
+		        }).set('ai',target=>{
 		            return Math.random();
-		        });
-		        if(bool){
+		        }).forResultTargets();
+		        if(targets){
 		            for await(let target of targets){
 		                let list=target.getSkills(null,false,false).filter(function(skill){
     		                let info=lib.skill[skill];
@@ -499,14 +499,14 @@ export const CHRskills={
     					        }
     				        }
     			        }
-    			        const {result:{control}}=await player.chooseControl(list).set('prompt','〖梦蝶〗：请选择一项技能').set('ai',()=>{
+    			        const control=await player.chooseControl(list).set('prompt','〖梦蝶〗：请选择一项技能').set('ai',()=>{
     				        return list.randomGet();
-    			        }).set('dialog',dialog);
+    			        }).set('dialog',dialog).forResultControl();
     			        if(control) skills.push(control);
 		            }
 		            if(skills.length){
-		                targets[0].changeSkills(skills[1],skills[0]);
-						targets[1].changeSkills(skills[0],skills[1]);
+		                targets[0].changeSkills(Array.of(skills[1]),Array.of(skills[0]));
+						targets[1].changeSkills(Array.of(skills[0]),Array.of(skills[1]));
 		                player.logSkill("xjzh_zengyi_mengdie",event.targets2);
 		            }
 		        }
