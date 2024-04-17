@@ -2024,14 +2024,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				"xjzh_zxzh_baoxin":{
 					trigger:{
-					    player:['phaseDrawBegin','phaseJieshuBegin'],
+					    player:['phaseDrawBegin','phaseDiscardBegin'],
 					},
 					filter:function(event,player){
 					    if(!player.storage.xjzh_zxzh_shiqiao||!player.storage.xjzh_zxzh_shiqiao.length) return false;
 					    if(event.name=="phaseDraw"){
 					        return !event.cancelled&&!event.skiped;
 					    }
-					    return event.name=="phaseJieshu";
+					    return event.name=="phaseDiscard";
 					},
 					direct:true,
 					locked:true,
@@ -8244,7 +8244,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_shiqiao":"拾樵",
 				"xjzh_zxzh_shiqiao_info":"锁定技，场上所有进入弃牌堆的牌会被洗入牌堆随机位置。游戏开始时，你记录1-13中随机1-5个点数，当有牌被洗入牌堆时，若此牌点数与你记录的第一个点数一致，你获得一张不同点数的牌，然后你移除该点数，当所有点数均被移除后，你重新记录之。",
 				"xjzh_zxzh_baoxin":"抱薪",
-				"xjzh_zxzh_baoxin_info":"锁定技，摸牌阶段、弃牌阶段，你随机展示牌堆13张牌，并获得其中所有与〖拾樵〗记录点数一致的牌，然后你跳过摸牌阶段、弃牌阶段；你使用〖拾樵〗包含点数的牌时，你可以选择一项：1、移除〖拾樵〗中与之一致的点数，然后摸2张牌;2、移除〖拾樵〗中与之一致的点数，然后令此牌额外结算一次。",
+				"xjzh_zxzh_baoxin_info":"锁定技，摸牌阶段、弃牌阶段，你随机展示牌堆13张牌，并获得其中所有与〖拾樵〗记录点数一致的牌，然后你跳过摸牌阶段、弃牌阶段；你使用〖拾樵〗包含点数的牌时，你可以移除〖拾樵〗中与之一致的点数并选择一项：1、摸2张牌;2、令此牌额外结算一次。",
 				"xjzh_zxzh_baoxin_use":"抱薪",
 				"xjzh_zxzh_moyu":"默语",
 				"xjzh_zxzh_moyu_info":"你的准备阶段，你可以判定：♥你可以与一名角色交换体力值和体力上限；♠你可以令两名其他角色交换技能。",
