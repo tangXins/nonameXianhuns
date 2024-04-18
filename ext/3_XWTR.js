@@ -4970,12 +4970,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    locked:true,
 				    notemp:true,
 				    unique:true,
+					audio:"ext:仙家之魂/audio/skill:2",
 			    	init:function(player){
 				        player.addMark("xjzh_wzry_bieyue",4,false);
 				        player.markSkill("xjzh_wzry_bieyue");
 				        player.update();
 				        setInterval(function(){
 					        if(player.countMark("xjzh_wzry_bieyue")<4){
+								game.playXH('xjzh_wzry_bieyue3');
 					            player.addMark('xjzh_wzry_bieyue',1,false);
 					            player.markSkill("xjzh_wzry_bieyue");
 					        }
@@ -5087,6 +5089,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		},
 			    "xjzh_wzry_shunhua":{
 				    enable:"phaseUse",
+					audio:"ext:仙家之魂/audio/skill:2",
 			    	filter:function(event,player){
 			    	    if(!game.hasPlayer(function(current){return !current.hasMark("xjzh_wzry_bieyue")&&current!=player})) return false;
 			    		return player.countMark("xjzh_wzry_bieyue")>0;
@@ -5131,6 +5134,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     popup:false,
                     notemp:true,
                     unique:true,
+					audio:"ext:仙家之魂/audio/skill:2",
                     filter:function(event,player){
                         if(!event.targets||!event.targets.length) return false;
                         if(get.name(event.card)!='sha') return false;
@@ -5207,6 +5211,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     priority:-2,
                     notemp:true,
                     unique:true,
+					audio:"xjzh_wzry_liuguang",
                     filter(event,player){
                         if(!event.targets||!event.targets.length) return false;
                         if(get.name(event.card)!='sha') return false;

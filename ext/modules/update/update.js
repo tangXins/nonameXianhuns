@@ -22,7 +22,6 @@ window.xjzh_updateversion={
 			"ext/mathList.js",
 			"ext/qishuyaojians.js",
 			"ext/qsyjOption.js",
-			"ext/updateLog.js",
 
 			"ext/html5/css3-mediaqueries.js",
 			"ext/html5/html5shiv.js",
@@ -39,6 +38,18 @@ window.xjzh_updateversion={
 
 			"css/mainPage.css",
 			
-			"image/title/xjzh_updateVersion.png"
+			"image/title/xjzh_updateVersion.png",
+
+			"audio/skill/xjzh_wzry_haiyue.mp3",
+			"audio/skill/xjzh_wzry_shunhua1.mp3",
+			"audio/skill/xjzh_wzry_shunhua2.mp3",
+			"audio/skill/xjzh_wzry_bieyue1.mp3",
+			"audio/skill/xjzh_wzry_bieyue2.mp3",
+			"audio/skill/xjzh_wzry_bieyue3.mp3",
+			"audio/skill/xjzh_wzry_liuguang1.mp3",
+			"audio/skill/xjzh_wzry_liuguang2.mp3",
+			"audio/skill/xjzh_wzry_huanhai1.mp3",
+			"audio/skill/xjzh_wzry_huanhai2.mp3",
+			"audio/skill/xjzh_wzry_huanhai3.mp3",
 	],
 };

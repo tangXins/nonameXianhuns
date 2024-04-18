@@ -4,6 +4,7 @@ export const xjzhUpdateLog={
     version:'3.04171',
 	'3.04171':{
         changeLog:[
+			"新增海月技能语音",
 			"修复海月〖幻海〗，技能发动后【流光】报错",
 		    "修复许多bug",
 	    	"优化许多细节",
