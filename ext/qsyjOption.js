@@ -17,6 +17,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		}
 	    };
 	    var func2=function(name){
+    		if(!characters[name]) return;
     		if(!characters[name][4]) return;
     	    if(!characters[name][4].includes("qishuBoss")) return;
     		characters[name][4].remove('boss');

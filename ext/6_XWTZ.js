@@ -30,7 +30,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_ttshilian":['double','',0,['xjzh_qishu_materialRemove','xjzh_boss_shilian','xjzh_boss_shilian_intro'],['boss','qishuBoss'],'zhu'],
 				
 				//奇术BOSS随从
-				"xjzh_boss_yinaruisi":['double','shen',12,['xjzh_boss_shenghui'],['unseen','forbidai',,"hiddenboss","bossallowed"]],
+				"xjzh_boss_yinaruisi":['double','shen',12,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_masayier":['double','shen',15,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_taernasha":['double','shen',12,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				

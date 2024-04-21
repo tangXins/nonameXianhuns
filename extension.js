@@ -1,4 +1,4 @@
-import { lib, get, _status, ui, game, ai } from '../../noname.js';
+import { lib,get,_status,ui,game,ai } from '../../noname.js';
 import { CHRskills as xjzhCHRskills } from './ext/modules/CHRskills/index.js';
 import { xjzhTitle } from './ext/modules/Title/index.js';
 import { xjzh_updateURLS } from './ext/modules/update/updateURLS.js';
@@ -2680,7 +2680,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				};
 				lib.init.css(lib.assetURL+"extension/仙家之魂/css",'extension');
 				//成就系统
-				//代码借鉴自《玄武江湖》
+				//部分代码借鉴自《玄武江湖》
 				lib.init.js(lib.assetURL+'extension/仙家之魂/ext','achievement',function(){
 					lib.init.css(lib.assetURL+'extension/仙家之魂/css','mainPage');
 					lib.init.css(lib.assetURL+'extension/仙家之魂/css','achievement');

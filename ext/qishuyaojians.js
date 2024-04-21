@@ -23,8 +23,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		player:{},
     		levelEquip:{},
     		equip:{},
-    		tokens:0,
-    		suipian:0,
+    		tokens:10,
+    		suipian:300,
     		cailiao:{
     		    //boss瓦尔申挑战材料
     		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],
@@ -99,8 +99,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		player:{},
     		levelEquip:{},
     		equip:{},
-    		tokens:0,
-    		suipian:0,
+    		tokens:10,
+    		suipian:300,
     		cailiao:{
     		    //boss瓦尔申挑战材料
     		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],

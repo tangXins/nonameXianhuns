@@ -1878,10 +1878,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							str+='</div><br><br>';
 							dialog.add(str);
 						}
-						const [bool,control]=await player.chooseControl(list).set('ai',function(){
+						const control=await player.chooseControl(list).set('ai',function(){
 							return Math.random()<0.5?1:0;
-						}).set('dialog',dialog).forResult('bool','control');
-						if(control&&bool) player.draw(player.countCards("h",{suit:control}));
+						}).set('dialog',dialog).forResultControl();
+						if(control) player.draw(player.countCards("h",{suit:control}));
 					},
 				},
 				"xjzh_sanguo_zhishu":{
@@ -11048,6 +11048,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         if(player.storage.xjzh_sanguo_wuzhan==true) return false;
                         return true;
                     },
+                    limited:true,
                     init:function(player){
                         if(!player.storage.xjzh_sanguo_wuzhan) player.storage.xjzh_sanguo_wuzhan=false;
                     },
@@ -11057,7 +11058,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     check:function(event,player){
                         return player.getEnemies().length;
                     },
-                    limited:true,
                     content:function(){
                         "step 0"
 						player.awakenSkill('xjzh_sanguo_wuzhan');

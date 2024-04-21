@@ -319,6 +319,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			let {...characters5}=lib.characterPack.XWDM;
 			let xianhuns=Object.assign(characters,characters2,characters3,characters4,characters5);
 			
+			console.log(xianhuns)
+
 			if(xianhuns){
 				var firstWinSet=function(name){
 					let level=1;
