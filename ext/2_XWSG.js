@@ -3034,16 +3034,17 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             priority:-1,
                             sub:true,
                             filter(event,player){
-                                if(event.card.name=='sha'||event.card.name=="jiu"){
-                                    if(event.cards[0].hasGaintag("xjzh_sanguo_qicaix")) return true;
-					            };
+								if(!event.cards||!event.cards.length) return false;
+								if(event.cards.some(card=>{
+									return ["sha","jiu"].includes(card.name)&&card.hasGaintag("xjzh_sanguo_qicaix");
+								})) return true;
 					            return false;
 					        },
 					        async content(event,trigger,player){
                                 if(trigger.addCount!==false){
                                     trigger.addCount=false;
                                     let stat=player.getStat();
-                                    if(stat&&stat.card&&stat.card[trigger.card.name]) stat.card[trigger.card.name]--;
+                                    if(stat&&stat.card&&stat.card[trigger.cards[0].name]) stat.card[trigger.cards[0].name]--;
                                 }; 
 					        },
 					    },
@@ -4605,95 +4606,73 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 				},
 				"xjzh_sanguo_shendao":{
-					trigger:{
-						global:'judge',
-					},
+					trigger:{global:"judgeBefore",},
 					locked:true,
 					priority:1,
 					unique:true,
 					prompt:function(event,player){
-						return ""+get.translation(event.player)+"进行"+get.translation(event.judgestr)+"的判定，亮出的判定牌为"+get.translation(event.player.judging[0])+"，是否发动〖神道〗替换判定牌？";
+						return "〖神道〗："+get.translation(event.player)+"进行"+get.translation(event.judgestr)+"的判定，亮出的判定牌为"+get.translation(event.player.judging[0])+"，是否发动〖神道〗替换判定牌？";
 					},
 					group:["xjzh_sanguo_shendao2"],
-					content:function(){
-						"step 0"
-						if(player.hp<=1){
-							event.cards=get.cards(2);
-						}
-						else{
-							event.cards=get.cards(Math.min(4,player.hp));
-						}
-						player.chooseCardButton(true,event.cards,'神道：选择一张牌作为你的'+trigger.judgestr+'判定结果').ai=function(button){
-							if(get.attitude(player,trigger.player)>0){
-								return 1+trigger.judge(button.link);
+					async cost(event, trigger, player) {
+						let cards=get.cards(Math.max(4,player.hp));
+						const next=player.chooseCardButton(cards,`〖神道〗：选择一张牌作为${get.translation(trigger.player)}的${trigger.judgestr}判定结果`);
+						next.set("ai",(button)=>{
+							if (get.attitude(player, trigger.player) > 0) {
+								return 1 + trigger.judge(button.link);
 							}
-							if(get.attitude(player,trigger.player)<0){
-								return 1-trigger.judge(button.link);
+							if (get.attitude(player, trigger.player) < 0) {
+								return 1 - trigger.judge(button.link);
 							}
 							return 0;
-						};
-						"step 1"
-						if(!result.bool){
-							event.finish();
-							return;
-						}
-						player.logSkill('xjzh_sanguo_shendao',trigger.player);
-						var card=result.links[0];
-						event.cards.remove(card);
-						while(event.cards.length){
-                            var card2=event.cards.pop();                        
-                            card2.fix();
-                            ui.cardPile.insertBefore(card2,ui.cardPile.firstChild);
-                        };	
-						var judgestr=get.translation(trigger.player)+'的'+trigger.judgestr+'判定';
-						event.videoId=lib.status.videoId++;
-						event.dialog=ui.create.dialog(judgestr);
-						event.dialog.classList.add('center');
-						event.dialog.videoId=event.videoId;
-						game.addVideo('judge1',player,[get.cardInfo(card),judgestr,event.videoId]);
-						for(var i=0;i<event.cards.length;i++) event.cards[i].discard();
-						var node;
+						});
+                        event.result=await next.forResult();
+					},
+					async content(event,trigger,player){
+						if(!event.bool) return;
+						let cards=event.links[0];
+						let judgestr=get.translation(trigger.player)+"的"+trigger.judgestr+"判定";
+						let videoId=lib.status.videoId++;
+						let dialog=ui.create.dialog(judgestr);
+						dialog.classList.add("center");
+						dialog.videoId=videoId;
+	
+						game.addVideo("judge1",player,[get.cardInfo(cards),judgestr,videoId]);
+						let node;
 						if(game.chess){
-							node=card.copy('thrown','center',ui.arena).animate('start');
+							node=cards.copy("thrown", "center", ui.arena).addTempClass("start");
+						}else{
+							node=player.$throwordered(cards.copy(),true);
 						}
-						else{
-							node=player.$throwordered(card.copy(),true);
-						}
-						node.classList.add('thrownhighlight');
-						ui.arena.classList.add('thrownhighlight');
-						if(card){
+						node.classList.add("thrownhighlight");
+						ui.arena.classList.add("thrownhighlight");
+						if(cards){
 							trigger.cancel();
 							trigger.result={
-								card:card,
-								judge:trigger.judge(card),
+								card:cards,
+								judge:trigger.judge(cards),
 								node:node,
-								number:get.number(card),
-								suit:get.suit(card),
-								color:get.color(card),
+								number:get.number(cards),
+								suit:get.suit(cards),
+								color:get.color(cards),
 							};
-							if(trigger.result.judge>0){
+							if(trigger.result.judge>0) {
 								trigger.result.bool=true;
-								trigger.player.popup('洗具');
 							}
-							if(trigger.result.judge<0){
-								trigger.result.bool=false;
-								trigger.player.popup('杯具');
+							if(trigger.result.judge<0) {
+								trigger.result.bool = false;
 							}
-							game.log(trigger.player,'的判定结果为',card);
+							game.log(trigger.player,"的判定结果为",cards);
 							trigger.direct=true;
-							trigger.position.appendChild(card);
+							trigger.position.appendChild(cards);
 							game.delay(2);
-						}
-						else{
-							event.finish();
-						}
-						"step 2"
-						ui.arena.classList.remove('thrownhighlight');
-						game.addVideo('judge2',null,event.videoId);
-						event.dialog.close();
+						}else return;
+						ui.arena.classList.remove("thrownhighlight");
+						dialog.close();
+						game.addVideo("judge2",null,videoId);
 						ui.clear();
-						var card=trigger.result.card;
-						trigger.position.appendChild(card);
+						cards=trigger.result.cards;
+						trigger.position.appendChild(cards);
 						trigger.result.node.delete();
 						game.delay();
 					},
@@ -4900,35 +4879,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						return false;
 					},
 					content:function (){
-						var skills=['releiji','xjzh_sanguo_yingbing'];
-						player.addAdditionalSkill('xjzh_sanguo_huangtian',skills);
-					},
-				},
-				"xjzh_sanguo_yingbing":{
-					audio:"ext:仙家之魂/audio/skill:2",
-					usable:1,
-					trigger:{
-						global:"judgeEnd",
-					},
-					sub:true,
-					filter:function (event,player){
-						if(!event.result) return false;
-						if(!event.result.card) return false;
-						if(event.nogain&&event.nogain(event.result.card)){
-							return false;
-						}
-						return event.player!=player;
-					},
-					check:function (event,player){
-						return get.attitude(player,event.player)<0;
-					},
-					content:function (){
-						if(get.color(trigger.result.card)=='black'){
-							player.useCard({name:'sha'},trigger.player,false);
-						}
-						else{
-							player.draw();
-						}
+						player.addAdditionalSkill('xjzh_sanguo_huangtian',['xinleiji']);
 					},
 				},
 				"xjzh_sanguo_shenji":{
@@ -11080,7 +11031,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                 for(var i=1;i<=2;i++){
                                     list.push(i);
                                 }
-                                player.chooseControl(list,'cancel2').set('ai',function(target){
+                                player.chooseControl(list,'cancel2').set('ai',function(){
                                     var att=get.attitude(_status.event.player,target);
                                     if(att>0) return 'cancel2';
                                     return list.randomGet();
@@ -12626,9 +12577,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_dianjie2":"电界",
 				"xjzh_sanguo_dianjie2":"电界",
 				"xjzh_sanguo_huangtian":"黄天",
-				"xjzh_sanguo_huangtian_info":"锁定技，主公技，你视为拥有技能〖界雷击〗、〖影兵〗",
-				"xjzh_sanguo_yingbing":"影兵",
-				"xjzh_sanguo_yingbing_info":"每回合限一次，当一名武将的判定牌生效后，若为黑色，你可以视为对其使用一张【杀】，若为红色，你摸一张牌",
+				"xjzh_sanguo_huangtian_info":"锁定技，主公技，你视为拥有技能〖新雷击〗",
 				"xjzh_sanguo_shenji":"神戟",
 				"xjzh_sanguo_shenji_info":"锁定技，若你未装备武器牌，你使用【杀】可以指定至多3个目标，若你装备了武器牌，你视为拥有技能〖无双〗，若你装备了武器方天画戟，你使用【杀】和【决斗】造成伤害+1",
 				"xjzh_sanguo_jingjia":"精甲",
@@ -12766,7 +12715,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_moubian":"谋变",
 				"xjzh_sanguo_moubian_info":"游戏开始时，你将势力随机切换为魏蜀吴群中的一个势力，与你势力一致的角色无法对你造成伤害。与你势力不一致的角色对你造成伤害时，你可以展示牌堆顶一张牌，其需弃置一张与此牌类型一致的手牌，否则你获得此牌且该伤害无效。",
 				"xjzh_sanguo_zhongxing":"中兴",
-				"xjzh_sanguo_zhongxing_info":"限定技，主公阵亡时，若你不为主公且场上与你势力一致的角色数量为最多之一，你将身份改为主公，所有与你势力一致的角色改为忠臣，此时与你同一阵营的所有角色将势力改为汉，然后其余势力将身份改为反贼，当你阵亡时，所处的阵营直接失败。",
+				"xjzh_sanguo_zhongxing_info":"限定技，主公阵亡时，若你不为主公且场上与你势力一致的角色数量为最多之一，你将身份改为主公，所有与你势力一致的角色改为忠臣，此时与你同一阵营的所有角色将势力改为汉，然后其余势力将身份改为反贼；当你阵亡时，你所处的阵营失败。",
 				"xjzh_sanguo_busuan":"卜算",
 				"xjzh_sanguo_busuan_info":function(){
 					if(lib.config.extension_仙家之魂_xjzh_jiexiantupo) return "锁定技，出牌阶段限一次、弃牌阶段弃置至少两张牌时、成为其他角色锦囊牌的目标时、受到【杀】的伤害时，你随机获得一张【春风化雨】、【翻云覆雨】、【纸醉金迷】、【昙花一现】、【神机妙算】，然后你选择从牌堆获得至多2张类型不一致的非装备牌，并将等量手牌洗入牌堆，你失去以上五张牌时，你摸一张牌(以上五张牌不计入手牌上限且无法被弃置、获得)";

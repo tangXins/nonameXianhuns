@@ -1,19 +1,33 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.04171',
-	'3.04171':{
+    version:'3.04241',
+	'3.04241':{
         changeLog:[
 			"新增海月技能语音",
 			"奇术要件第一次新建存档会赠送300碎片和10个精魄",
 			"修复海月〖幻海〗，技能发动后【流光】报错",
 			"修复蔡琰〖才情〗，技能失效",
+			"修复张角〖神道〗，判定的提示不消失",
+			"修复司马懿〖奇才〗报错",
 			"修复进入国战报错",
+			"调整张角〖神道〗，现在可以取消不选择判定牌",
+			"调整张角〖黄天〗，〖界雷击〗改为〖新雷击〗",
+			"调整张角〖黄天〗，移除〖影兵〗",
 		    "修复许多bug",
 	    	"优化许多细节",
         ],
 	    players:[],
 		cards:[],
+		romoveFiles:async function(){
+			let folderFiles=[
+				"audio/skill/xjzh_sanguo_yingbing1.mp3",
+				"audio/skill/xjzh_sanguo_yingbing2.mp3",
+			];
+			for await(let i of folderFiles){
+				game.removeFile(i);
+			}
+		},
     },
 	'3.04171':{
         changeLog:[

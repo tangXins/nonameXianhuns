@@ -36,6 +36,12 @@ window.xjzh_updateversion={
 
 			"ext/modules/update/update.js",
 
+			"ext/modules/config/index.js",
+
+			"ext/modules/package/index.js",
+			
+			"ext/modules/index.js",
+
 			"css/mainPage.css",
 			
 			"image/title/xjzh_updateVersion.png",
