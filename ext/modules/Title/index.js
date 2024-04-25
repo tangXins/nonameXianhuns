@@ -86,7 +86,7 @@ export const xjzhTitle={
     "xjzh_diablo_nataya":"潜影杀手",
     "xjzh_dnf_jianshen":"武器大师",
     "xjzh_dnf_shengqi":"神选之光",
-    "xjzh_dnf_luodeluosi":"剑术顶峰",
+    "xjzh_dnf_suodeluosi":"极诣剑圣",
     "xjzh_xyj_sunwukong":"破妄金瞳",
 
     //仙武创世

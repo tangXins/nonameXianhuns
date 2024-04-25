@@ -492,7 +492,20 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			this.addDone(name);
 			this.popupDialog(name);
 			this.unlock(name);
+			this.gainTokens(name);
 			this.saveConfig(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"))
+		},
+		//完成成就获取一定量的奖励
+		gainTokens:function(name){
+			if(!_status.event.AchiCover){
+    			if(!game.xjzh_filterEligible()) return false;
+			}
+			let list=this.ofName(name)
+			let info=this.info(list[1],list[0]);
+			let suipian=(info.level)*100;
+			let tokens=info.level;
+			game.xjzh_changeTokens(tokens);
+			game.xjzh_changeSuipian(suipian);
 		},
 		//增加成就进度
 		addProgress:function(name,type,num){
@@ -2028,7 +2041,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				'xjzh_qishu_wuyan',
 				'xjzh_qishu_waxilidedaogao',
 				'xjzh_qishu_fenglangkx',
-				'xjzh_qishu_fengbaopaoxiao'
+				'xjzh_qishu_fengbaopaoxiao',
+				"xjzh_qishu_jiandun",
+
 				];
 				for(var i=0;i<list.length;i++){
 					var btm=ui.create.div(duihuanWindow,{
@@ -2191,7 +2206,20 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					overflow:'auto'
 				});
 				//奖励列表
-				var list=["suipian","jingpo","xjzh_cailiao_shijieshi","xjzh_cailiao_toulu","xjzh_cailiao_gugu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin","xjzh_cailiao_gangtie","xjzh_cailiao_xianxue","xjzh_cailiao_kongju","xjzh_cailiao_nianyedan","xjzh_cailiao_kutong"];
+				var list=[
+					"suipian",
+					"jingpo",
+					"xjzh_cailiao_shijieshi",
+					"xjzh_cailiao_toulu",
+					"xjzh_cailiao_gugu",
+					"xjzh_cailiao_zhanshou",
+					"xjzh_cailiao_enianzhixin",
+					"xjzh_cailiao_gangtie",
+					"xjzh_cailiao_xianxue",
+					"xjzh_cailiao_kongju",
+					"xjzh_cailiao_nianyedan",
+					"xjzh_cailiao_kutong"
+				];
 				for(var i in lib.xjzh_qishuyaojians){
 					var level=get.xjzh_equipInfo(i).level||1;
 					if(level&&level<5) list.push(i);

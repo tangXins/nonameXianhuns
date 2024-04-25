@@ -164,7 +164,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				//地下城与勇士
 				"xjzh_dnf_jianshen":"武器大师",
 				"xjzh_dnf_shengqi":"神选之光",
-				"xjzh_dnf_luodeluosi":"剑术顶峰",
+				"xjzh_dnf_suodeluosi":"极诣剑圣",
 				
 				//西游释厄传
 				"xjzh_xyj_sunwukong":"破妄金瞳",
@@ -1443,7 +1443,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     						}
     					}else{
                             game.xjzh_playEffect("xjzh_skillEffect_leiji2",trigger.player);
-    						trigger.source.damage(2,"thunder",player);
+    						trigger.player.damage(2,"thunder",player);
     						player.storage.xjzh_zxzh_leifax_target=trigger.player;
     						player.addTempSkill('xjzh_zxzh_leifax_target');
     					}

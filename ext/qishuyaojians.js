@@ -139,6 +139,33 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	];
 	//奇术要件列表
 	lib.xjzh_qishuyaojians={
+	    "xjzh_qishu_jiandun":{
+	        translate:"坚毅之盾",
+		    translate_info:"当你受到伤害后，你获得等量护甲，此后每个你的回合开始时，若你有护甲，你将一点护甲转为体力上限。",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			noTranslate:false,
+			level:3,
+			skill:{
+				trigger:{
+	    	        player:["damageAfter","phaseBegin"],
+	    	    },
+    		    direct:true,
+    			priority:10,
+    		    lastDo:true,
+	   		    filter(event,player){
+					if(event.triggername=="phaseBegin") return player.hujia>0;
+	   		        return !event.numFixed||!event.cancelled;
+	    	    },
+	    	    async content(event,trigger,player){
+					if(event.triggername=="phaseBegin"){
+						player.changeHujia(-1);
+						player.gainMaxHp();
+					}else{
+						await player.changeHujia(trigger.num);
+					}
+	   		    },
+	   		},
+		},
 	    "xjzh_qishu_suoding":{
 	        translate:"锁定目标",
 		    translate_info:"你使用非装备牌和非延时锦囊牌指定目标不小于2时，你可以为此牌重新指定一个目标(需合法)，此牌根据未重新指定目标前的目标数量对其额外生效等量次数。",

@@ -408,7 +408,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
     	    ui.window.appendChild(pbg);
     	};
     	//成就系统
-    	//代码借鉴自《玄武江湖》
+    	//部分代码借鉴自《玄武江湖》
     	window.openxjzhAchievement=function(){
     		if(game.xjzhAchi){
     			game.xjzhAchi.openAchievementMainPage();
@@ -2693,6 +2693,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						try{
 							//成就初始化
 							game.xjzhAchi.init();
+							if(!game.getExtensionConfig("仙家之魂","xjzh_importCalculateScore")){
+								let num=game.xjzhAchi.calculateScore();
+								game.xjzh_changeTokens(num);
+								game.xjzh_changeSuipian(num*100);
+								game.saveExtensionConfig("仙家之魂","xjzh_importCalculateScore",true);
+							}
 							
 							//在武将资料上显示成就是否完成
 							let {...characters}=lib.characterPack.XWTR;

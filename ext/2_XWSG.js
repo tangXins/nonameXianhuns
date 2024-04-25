@@ -9149,7 +9149,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             ai2:function(target){
                                 if(target.hasSkillTag('nodamage')) return 0;
                                 return get.damageEffect(target,_status.event.source,_status.event.player,_status.event.nature);
-                                //return -get.attitude(_status.event.player,target);
                             },
                             prompt:function(){
                                 var str="〖翻云覆雨〗：请弃置一张【翻云覆雨】令一名角色受到";

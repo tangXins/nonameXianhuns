@@ -142,7 +142,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        //var player=_status.event.player
 				        if(Math.random()<=0.5){
 				            if(target.isHealthy()) game.log(target,'使用了','#y【'+get.translation(card)+'】','无事发生');
-				            target.recover(target.getDamagedHp());
+				            target.recoverTo(target.maxHp);
 				        }else{
 				            var num=target.hp-1
 				            if(num<=0){
@@ -154,18 +154,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    },
 				    ai:{
 				        basic:{
-						    useful:function(player,target){
+						    useful(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.isHealthy()) return 0;
-						            return target.maxHp-target.hp/target.maxHp;
+						            if(target.hp==maxHp) return 0;
+						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
 						    },
-						    value:function(player,target){
+						    value(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.isHealthy()) return 0;
+						            if(target.hp==maxHp) return 0;
 						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
@@ -173,18 +173,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    },
 					    order:0.2,
 					    result:{
-					        target:function(card,player,target){
+					        target(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.isHealthy()) return 0;
+						            if(target.hp==maxHp) return 0;
 						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
 					        },
 					    },
 						tag:{
-							recover:1,
-							damage:1,
+							recover(){
+								let player=get.player();
+								return player.maxHp-player.hp;
+							},
+							damage(){
+								let player=get.player();
+								return player.maxHp-player.hp;
+							},
+							natureDamage:1,
 						},
 				    },
 				},

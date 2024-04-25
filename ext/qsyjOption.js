@@ -152,7 +152,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         text.innerHTML=str2;
     };
     
-    lib.onover.push(function(ret){
+    lib.onover.push(async function(ret){
         if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
         if(ret){
             //统计本剧得分
@@ -310,7 +310,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     	    console.log(qishuReward);
 			
             //展示奖励结算面板数据
-            var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+num2+'<br><br>获得奖励：';
+            var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+num2+'<br><br>对局奖励：';
             
             str+='<br>&emsp;&emsp;经验（'+num3+'）';
                             
@@ -354,9 +354,27 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     break;
                 };
             }
+
+            var doneAchievemen=await lib.xjzh_hasDoneAchievement;
+
+			console.log(doneAchievemen)
+			game.log(doneAchievemen.length)
+
+            if(doneAchievemen&&doneAchievemen.length>0){
+                str+="<br>成就奖励："
+                for(var i of doneAchievemen){
+                    var name=i.split(",");
+                    game.log(name)
+                    var info=game.xjzhAchi.info(name[1],name[0]);
+                    game.log(info)
+                    str+=`<br>&emsp;&emsp;${name[1]}：<br>&emsp;&emsp;&emsp;&emsp;碎片：${info.level*100}<br>&emsp;&emsp;&emsp;&emsp;精魄：${info.level}`;
+                }
+            }
             
             game.xjzh_levelUp(num3);
             
+            console.log(lib.xjzh_hasDoneAchievement)
+
             game.xjzh_qishuWinner("奖励结算",str)
         }
     });

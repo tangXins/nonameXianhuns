@@ -5,10 +5,15 @@ export const xjzhUpdateLog={
 	'3.04241':{
         changeLog:[
 			"新增海月技能语音",
+			"新增奇术要件【坚毅之盾】",
+			"考虑到成就完成获取的成就点数没有用途，现完成成就会获得一定量的碎片和精魄",
+			"已完成的成就会在本次更新时自动获取奖励",
 			"奇术要件第一次新建存档会赠送300碎片和10个精魄",
+			"修复索德罗斯成就拼写错误",
 			"修复海月〖幻海〗，技能发动后【流光】报错",
 			"修复蔡琰〖才情〗，技能失效",
 			"修复张角〖神道〗，判定的提示不消失",
+			"修复林子言〖雷法〗报错",
 			"修复司马懿〖奇才〗报错",
 			"修复进入国战报错",
 			"调整张角〖神道〗，现在可以取消不选择判定牌",
@@ -23,6 +28,8 @@ export const xjzhUpdateLog={
 			let folderFiles=[
 				"audio/skill/xjzh_sanguo_yingbing1.mp3",
 				"audio/skill/xjzh_sanguo_yingbing2.mp3",
+				"css/images/qishuyaojian/reward_flag.png",
+				"css/images/qishuyaojian/jinkuang.png",
 			];
 			for await(let i of folderFiles){
 				game.removeFile(i);
