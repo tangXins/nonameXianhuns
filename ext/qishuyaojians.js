@@ -147,14 +147,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:3,
 			skill:{
 				trigger:{
-	    	        player:["damageAfter","phaseBegin"],
+	    	        player:["damageAfter","phaseBegin","changeHujiaAfter"],
 	    	    },
     		    direct:true,
     			priority:10,
     		    lastDo:true,
 	   		    filter(event,player){
 					if(event.triggername=="phaseBegin") return player.hujia>0;
-	   		        return !event.numFixed||!event.cancelled;
+					if(event.name=="changeHujia") return false;
+					if(event.name=="damage"&&!event.hujia) return !event.numFixed||!event.cancelled;
+	   		        return false;
 	    	    },
 	    	    async content(event,trigger,player){
 					if(event.triggername=="phaseBegin"){

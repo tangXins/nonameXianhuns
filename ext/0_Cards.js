@@ -157,7 +157,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						    useful(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.hp==maxHp) return 0;
+						            if(target.hp==target.maxHp) return 0;
 						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
@@ -165,7 +165,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						    value(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.hp==maxHp) return 0;
+						            if(target.hp==target.maxHp) return 0;
 						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
@@ -176,7 +176,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					        target(target){
 						        if(!target) return;
 						        if(target.hp>1){
-						            if(target.hp==maxHp) return 0;
+						            if(target.hp==target.maxHp) return 0;
 						            return (target.maxHp-target.hp)/target.maxHp;
 						        }
 						        return target.maxHp-target.hp;
