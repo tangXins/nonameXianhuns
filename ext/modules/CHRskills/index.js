@@ -1103,7 +1103,7 @@ export const CHRskills={
 			async content(event,trigger,player){
 				player.logSkill("xjzh_zengyi_raoliang",trigger.player);
 				if(!trigger.player.isTurnedOver()){
-					triggercancel(null,null,'notrigger');
+					trigger.cancel(null,null,'notrigger');
 				}else{
 					trigger.player.turnOver(false);
 				}
