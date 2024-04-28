@@ -357,9 +357,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 
             var doneAchievemen=await lib.xjzh_hasDoneAchievement;
 
-			console.log(doneAchievemen)
-			game.log(doneAchievemen.length)
-
             if(doneAchievemen&&doneAchievemen.length>0){
                 str+="<br>成就奖励："
                 for(var i of doneAchievemen){

@@ -3702,15 +3702,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					trigger:{
 					    player:"useCardBefore",
 					},
-					filter:function(event,player){
-					    return event.card.name=="sha"||get.color(event.card)=="black";
+					filter(event,player){
+					    if(event.card.name!="sha"&&get.color(event.card)!="black") return false;
+						return player.isPhaseUsing()&&player.hasUseTarget({name:"jiu",isCard:true},null,false);
 					},
-					forced:true,
-					priority:12,
 					locked:true,
+					direct:true,
+					priority:12,
 					audio:"ext:仙家之魂/audio/skill:1",
-					content:function(){
-					    player.useCard({name:'jiu'},player,false);
+					async content(event,trigger,player){
+					    player.chooseUseTarget({name:'jiu',isCard:true},true,false,'nopopup','noanimate').set('logSkill',event.name);
 					},
 				},
 				"xjzh_sanguo_shayi":{
@@ -3723,51 +3724,48 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						},
 					},
 					trigger:{
-					    target:"useCardToBefore",
+					    target:"useCardToTarget",
 					},
 					audio:"ext:仙家之魂/audio/skill:1",
-					filter:function(event,player){
+					filter(event,player){
 					    if(!event.cards||!event.cards.length) return false;
 					    if(get.name(event.card)!="sha") return false;
-					    if(!player.hasSha()) return false;
+					    if(!player.countCards("h","sha")) return false;
 					    if(!game.hasPlayer(function(current){return current.hasMark('xjzh_sanguo_zhenhun')})) return false;
 					    return true;
 					},
-					content:function(){
-					    "step 0"
-					    player.chooseToDiscard(1,"〖杀意〗：弃置一张【杀】将此牌目标改为任意武将牌上有“魂”的角色",function(card){
+					async cost(event,trigger,player) {
+						event.result=await player.chooseToDiscard(1,"〖杀意〗：弃置一张【杀】将此牌目标改为任意武将牌上有“魂”的角色",card=>{
 					        return get.name(card)=="sha";
-					    }).set('ai',function(){
-					        var num=game.countPlayer(function(current){return current.hasMark('xjzh_sanguo_zhenhun')});
+					    }).set('ai',()=>{
+					        let num=game.countPlayer(function(current){return current.hasMark('xjzh_sanguo_zhenhun')});
 					        return num;
-					    });
-					    "step 1"
-					    if(result.bool){
-					        var num=game.countPlayer(function(current){return current.hasMark('xjzh_sanguo_zhenhun')});
-					        player.chooseTarget([1,num],true,"〖杀意〗：选择任意名武将牌上有“魂”的角色",function(target){
-					            if(!target.hasMark('xjzh_sanguo_zhenhun')) return false;
-					            return target!=player;
-					        }).set('ai',function(target){
-					            return -get.attitude(player,target);
-					        });
-					    }else{
-					        event.finish();
-					        return;
-					    }
-					    "step 2"
-					    if(result.bool&&result.targets.length){
-					        trigger.targets.remove(player);
-					        for(var i of result.targets){
-					            trigger.targets.push(i);
-					            i.removeMark("xjzh_sanguo_zhenhun");
-					        }
-					    }
+					    }).forResult();
+					},
+					async content(event,trigger,player){
+						if(!event.cards||!event.cards.length) return;
+						let num=game.countPlayer(current=>{return current.hasMark('xjzh_sanguo_zhenhun')});
+						const targets=await player.chooseTarget([1,num],true,"〖杀意〗：选择任意名武将牌上有“魂”的角色",(card,player,target)=>{
+							if(!target.hasMark('xjzh_sanguo_zhenhun')) return false;
+							return target!=player;
+						}).set('ai',(target)=>{
+							return -get.attitude(player,target);
+						}).forResultTargets();
+						if(targets){
+							await trigger.targets.remove(player);
+							await trigger.targets.addArray(targets);
+							game.countPlayer(current=>{
+								if(targets.includes(current)) current.removeMark("xjzh_sanguo_zhenhun",1);
+							});
+							if(trigger.targets.length){
+								game.log(player,"将",trigger.cards[0],"的目标改为了",trigger.targets);
+							}
+						}
 					},
 				},
 				"xjzh_sanguo_zhenhun":{
 				    trigger:{
-				        player:"damageAfter",
-						source:"damageAfter",
+				        global:"damageAfter",
 					},
 					audio:"ext:仙家之魂/audio/skill:1",
 					priority:16,
@@ -3779,37 +3777,27 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						content:"mark",
 					},
 					group:["xjzh_sanguo_zhenhun_sha","xjzh_sanguo_zhenhun_die"],
-					filter:function(event,player){
-					    if(event.source.isDead()||event.player.isDead()) return false;
-					    if(event.player==player) return event.source!=player;
-					    return event.source==player;
+					filter(event,player){
+					    if(event.source&&event.source.isDead()) return false;
+						if(event.player&&event.player.isDead()) return false;
+					    if(event.source==player) return event.player!=player;
+					    return event.player==player;
 					},
-					content:function(){
-					    "step 0"
-					    if(trigger.source==player){
-					        trigger.player.addMark("xjzh_sanguo_zhenhun",1);
-					        event.num=trigger.player.countMark("xjzh_sanguo_zhenhun");
-					        if(num>=3){
-					            event.target=trigger.player
-					            event.goto(1);
-					        }
-					    }else{
-					        trigger.source.addMark("xjzh_sanguo_zhenhun",1);
-					        event.num=trigger.source.countMark("xjzh_sanguo_zhenhun");
-					        if(num>=3){
-					            event.target=trigger.source
-					            event.goto(1);
-					        }
-					    }
-					    event.finish();
-					    "step 1"
-					    player.chooseBool("〖震魂〗：是否令"+get.translation(event.target)+"失去"+event.num+"点体力？").set('ai',function(){
-					        return -get.attitude(player,target);
-					    }).set('target',event.target);
-					    "step 2"
-					    if(result.bool){
-					        event.target.loseHp(event.num);
-					    }
+					async content(event,trigger,player){
+						let target;
+					    if(trigger.source==player&&trigger.player!=player) target=trigger.player;
+						else if(!trigger.source) return;
+						else if(trigger.source!=player&&trigger.player==player) target=trigger.source;
+						await target.addMark("xjzh_sanguo_zhenhun",1);
+						if(target.countMark("xjzh_sanguo_zhenhun")>=3){
+							const bool=await player.chooseBool(`〖震魂〗：是否令${get.translation(target)}失去${target.countMark("xjzh_sanguo_zhenhun")}点体力？`).set('ai',()=>{
+								return -get.attitude(player,target);
+							}).set('target',target).forResultBool();
+							if(bool){
+								await target.loseHp(target.countMark("xjzh_sanguo_zhenhun"));
+								await target.clearMark("xjzh_sanguo_zhenhun");
+							}
+						}
 					},
 					subSkill:{
 					    "sha":{
@@ -7206,7 +7194,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						targets.sort(lib.sort.seat);
 						for(let target of targets){
 						    if(target.countCards('he')<=0) continue;
-						    const {result:{bool,cards}}=await target.chooseCard(1,'he',"〖归心〗：请选择交给曹操一张牌，否则弃置一张牌").set('ai',function(card){
+						    const {result:{bool,cards}}=await target.chooseCard(1,'he',`〖归心〗：请选择交给${get.translation(player)}一张牌，否则弃置一张牌`).set('ai',function(card){
 						        return 4-get.value(card);
 						    });
 						    if(bool&&cards.length){
@@ -10993,86 +10981,62 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         player:"drawBegin",
                     },
 					audio:"ext:仙家之魂/audio/skill:2",
-                    filter:function(event,player){
+                    filter(event,player){
                         if(event.num<3) return false;
                         if(player.storage.xjzh_sanguo_wuzhan==true) return false;
                         return true;
                     },
                     limited:true,
-                    init:function(player){
+                    init(player){
                         if(!player.storage.xjzh_sanguo_wuzhan) player.storage.xjzh_sanguo_wuzhan=false;
                     },
 					skillAnimation:true,
 					animationColor:'thunder',
 					animationStr:"大吴国战",
-                    check:function(event,player){
+                    check(event,player){
                         return player.getEnemies().length;
                     },
-                    content:function(){
-                        "step 0"
+					async content(event,trigger,player){
 						player.awakenSkill('xjzh_sanguo_wuzhan');
 						player.storage.xjzh_sanguo_wuzhan=true;
-                        event.num=trigger.num
-                        "step 1"
-                        player.chooseTarget("〖吴战〗：请选择令一名其他角色受到来自于你的至多2点伤害，剩余可分配"+event.num+"点伤害",function(card,player,target){
-                            if(target.storage.xjzh_sanguo_wuzhan2){
-                                if(target.storage.xjzh_sanguo_wuzhan2>=2) return false;
-                            }
-                            return target!=player;
-                        }).set('ai',function(target){
-                            return get.damageEffect(target,_status.event.player,_status.event.player);
-                        });
-                        "step 2"
-                        if(result.bool){
-                            event.target=result.targets[0]
-                            if(event.num>1){
-                                var list=[]
-                                for(var i=1;i<=2;i++){
-                                    list.push(i);
-                                }
-                                player.chooseControl(list,'cancel2').set('ai',function(){
-                                    var att=get.attitude(_status.event.player,target);
+						let number=trigger.num;
+						while(number>0){
+							const targets=await player.chooseTarget("〖吴战〗：请选择令一名其他角色受到来自你的至多2点伤害，剩余可分配"+number+"点伤害",(card,player,target)=>{
+								let history=target.getAllHistory("damage",evt=>{
+									return evt&&evt.getParent("xjzh_sanguo_wuzhan").name=="xjzh_sanguo_wuzhan";
+								});
+								let num=0;
+								if(history&&history.length){
+									for(let i of history){
+										num+=i.num;
+									}
+								}
+								if(num>=2) return false;
+								return target!=player;
+							}).set('ai',function(target){
+								return get.damageEffect(target,_status.event.player,_status.event.player);
+							}).forResultTargets();
+							if(targets){
+								let list=[];
+								if(number>1){
+									for(let i=1;i<=2;i++){
+										list.push(i);
+									}
+								}else list=[1];
+								const {result:{control}}=list.length==1?{result:{control:list[0]}}:await player.chooseControl(list,"cancel2").set('ai',()=>{
+                                    let att=get.attitude(get.player(),target);
                                     if(att>0) return 'cancel2';
                                     return list.randomGet();
-                                });
-                            }else{
-                                event.target.damage(1,player,'nocard');
-                                event.num-=1
-                                if(!event.target.storage.xjzh_sanguo_wuzhan2) event.target.storage.xjzh_sanguo_wuzhan2=0
-                                event.target.storage.xjzh_sanguo_wuzhan2+=1;
-                                event.goto(4);
-                            }
-                        }else{
-                            event.finish();
-                        }
-                        "step 3"
-                        if(result.control){
-                            if(result.control=='cancel2') event.goto(1);
-                            var num=result.control
-                            event.target.damage(num,player,'nocard');
-                            event.num-=num
-                            if(!event.target.storage.xjzh_sanguo_wuzhan2) event.target.storage.xjzh_sanguo_wuzhan2=0
-                            event.target.storage.xjzh_sanguo_wuzhan2+=num
-                        }else{
-                            event.goto(1);
-                        }
-                        "step 4"
-                        var evt=event.getParent("xjzh_sanguo_wuzhan");
-					    if(evt&&evt.getParent){
-				            var next=game.createEvent('xjzh_sanguo_wuzhan_delete',false,evt.getParent());
-				            next.player=event.target;
-				            next.setContent(function(){
-				                if(player.storage.xjzh_sanguo_wuzhan2.length){
-				                    delete player.storage.xjzh_sanguo_wuzhan2;
-				                }
-				            });
-				        }
-                        "step 5"
-                        if(event.num>0){
-                            event.goto(1);
-                        }else{
-                            trigger.changeToZero()
-                        }
+                                }).set("target",targets[0]);
+								if(control){
+									if(control!="cancel2"){
+										await targets[0].damage(control,player,'nocard');
+										number-=control;
+									}
+								}
+							}else break;
+						}
+						trigger.changeToZero();
                     },
                 },
                 "xjzh_sanguo_wumeng":{

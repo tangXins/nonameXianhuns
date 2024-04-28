@@ -26,8 +26,8 @@ lib.xjzhTitle=xjzhTitle;
 		return 0;
 	};
 	if(lib.version&&!lib.config.xjzhNotMetionNonameVersion){
-		if(getVersionUpdate2(lib.version,"1.10.11.1")<0){
-			alert("当前无名杀版本"+lib.version+"落后于【仙家之魂】最低支持版本1.10.11.1，已为你关闭本扩展");
+		if(getVersionUpdate2(lib.version,"1.10.11.3")<0||getVersionUpdate2(lib.version,"1.10.11.3")>0){
+			alert("【仙家之魂】目前仅支持无名杀版本1.10.11.3，当前无名杀版本"+lib.version+"可能会引起报错，已为你关闭本扩展");
 			game.saveExtensionConfig("仙家之魂","enable",false);
 			game.reload();
 		}

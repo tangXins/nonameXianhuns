@@ -154,21 +154,21 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    },
 				    ai:{
 				        basic:{
-						    useful(target){
-						        if(!target) return;
-						        if(target.hp>1){
-						            if(target.hp==target.maxHp) return 0;
-						            return (target.maxHp-target.hp)/target.maxHp;
+							useful(card,i){
+								if (get.player().hp>1){
+									if(i===0) return 0;
+									return 1;
+								}
+								if(i===0) return 7.3;
+								return 10;
+							},
+						    value(card,player){
+						        if(!player) return;
+						        if(player.hp>1){
+						            if(player.hp==player.maxHp) return 0;
+						            return (player.maxHp-player.hp)/player.maxHp;
 						        }
-						        return target.maxHp-target.hp;
-						    },
-						    value(target){
-						        if(!target) return;
-						        if(target.hp>1){
-						            if(target.hp==target.maxHp) return 0;
-						            return (target.maxHp-target.hp)/target.maxHp;
-						        }
-						        return target.maxHp-target.hp;
+						        return player.maxHp-player.hp;
 						    },
 					    },
 					    order:0.2,
@@ -183,14 +183,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					        },
 					    },
 						tag:{
-							recover(){
-								let player=get.player();
-								return player.maxHp-player.hp;
-							},
-							damage(){
-								let player=get.player();
-								return player.maxHp-player.hp;
-							},
+							recover:1,
+							damage:1,
 							natureDamage:1,
 						},
 				    },

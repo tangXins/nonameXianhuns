@@ -190,7 +190,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    	        player.chooseTarget(1,"〖锁定目标〗：为"+get.translation(trigger.card)+"重新指定一个目标",function(card,player,target){
 	    	            var player=_status.event.player;
 	    	            return player.canUse(_status.event.card,target,false);
-	    	        }).set('prompt2',prompt2).set('ai',function(target){
+	    	        }).set('ai',function(target){
 	    	            var trigger=_status.event.getTrigger();
 	    	            var player=_status.event.player;
 	    	            return get.effect(target,trigger.card,player,player);
