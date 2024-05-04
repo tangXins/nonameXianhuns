@@ -1,8 +1,8 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.04292',
-	'3.04292':{
+    version:'3.05041',
+	'3.05041':{
         changeLog:[
 			"重做张宁",
 			"新增增益技能〖翩跹〗",

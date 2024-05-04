@@ -41,17 +41,4 @@ window.xjzh_updateSource=[
 
 	"css/mainPage.css",
 	
-	"image/title/xjzh_updateVersion.png",
-
-	"audio/skill/xjzh_wzry_haiyue.mp3",
-	"audio/skill/xjzh_wzry_shunhua1.mp3",
-	"audio/skill/xjzh_wzry_shunhua2.mp3",
-	"audio/skill/xjzh_wzry_bieyue1.mp3",
-	"audio/skill/xjzh_wzry_bieyue2.mp3",
-	"audio/skill/xjzh_wzry_bieyue3.mp3",
-	"audio/skill/xjzh_wzry_liuguang1.mp3",
-	"audio/skill/xjzh_wzry_liuguang2.mp3",
-	"audio/skill/xjzh_wzry_huanhai1.mp3",
-	"audio/skill/xjzh_wzry_huanhai2.mp3",
-	"audio/skill/xjzh_wzry_huanhai3.mp3",
 ];
