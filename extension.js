@@ -890,7 +890,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				silent:true,
 				filter(event,player){
 					var list=[
-						"chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 					]
 					if(get.mode()=="boss"){
 						if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.playerName(game.boss))) return false;
@@ -906,7 +906,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				},
 				async content(event,trigger,player){
 					const list=[
-						"chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 					];
 					if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 					switch(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")){
@@ -1665,24 +1665,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			var name=that.name
 			that.classList.add('zhaohuan');
 			that.node.name.innerHTML='唤醒◈'+get.translation(name);
-		};
-		//修改获得临时技能
-		var xjzh_addAdditionalSkill=lib.element.player.addAdditionalSkill;
-		lib.element.player.addAdditionalSkill=function(skill,skills,keep){
-			var next=game.createEvent('addSkill');
-			next.player=this;
-			next.skill=skill;
-			next.setContent('emptyEvent');
-			return xjzh_addAdditionalSkill.apply(this,arguments);
-		};
-		//修改获得临时技能时机
-		var xjzh_addTempSkill=lib.element.player.addTempSkill;
-		lib.element.player.addTempSkill=function(skill,expire,checkConflict){
-			var next=game.createEvent('addSkill');
-			next.player=this;
-			next.skill=skill;
-			next.setContent('emptyEvent');
-			return xjzh_addTempSkill.apply(this,arguments);
 		};
 		//清除技能
 		lib.element.player.clearSkills2=function(all){

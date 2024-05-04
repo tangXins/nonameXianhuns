@@ -901,6 +901,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        priority:3,
 			        filter:function(event,player){
 			            if(event.getParent('xjzh_boss_dianmao').name=="xjzh_boss_dianmao") return false;
+						if(!get.tag(event.cards[0],"damage")) return false;
 			            if(event.target==player&&event.player!=player){
 			                return event.player.countCards('h')>0;
 			            }
@@ -919,7 +920,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			            }
 			            "step 1"
 			            player.chooseCardButton(event.targets.getCards('h')).set('ai',function(button){
-			                return 1;
+			                if(get.suit(button.link)=="spade") return 1;
+							return 0;
 			            });
 			            "step 2"
 			            if(result.bool){
@@ -934,9 +936,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    },
 			    "xjzh_boss_dianchong":{
 			        trigger:{
-			            global:"damageBegin",
+			            global:"damageAfter",
+						source:"damageSource",
 			        },
-			        forced:true,
+			        direct:true,
 			        locked:true,
 			        priority:3,
 			        mark:true,
@@ -944,36 +947,33 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			            name:"电冲",
 			            content:"#",
 			        },
-			        content:function(){
-			            "step 0"
-			            if(trigger.source==player&&player.hasMark('xjzh_boss_dianchong')){
-			                var num=2*player.countMark('xjzh_boss_dianchong')/100;
-			                if(Math.random()<=num){
-			                    game.xjzh_Criticalstrike(player,trigger.num,2,game.hasNature(trigger,'thunder')?1:null,true);
-			                }
-			            }
-			            "step 1"
-			            if(game.hasNature(trigger,'thunder')){
-    					    var evt=event.getParent("damage"),target;
-			                if(trigger.source==player&&trigger.player!=player){
+					filter(event,player,name){
+						if(name=="damageSource"){
+							return player.hasMark('xjzh_boss_dianchong');
+						}
+						if(name=="damageAfter"){
+							if(!game.hasNature(event,'thunder')) return false;
+							if(event.source&&event.source==player) return true;
+							if(event.source!=player&&event.player==player) return true;
+							return false;
+						}
+						return false;
+					},
+			        async content(event,trigger,player){
+						if(event.triggername=="damageSource"){
+							let num=2*(player.countMark('xjzh_boss_dianchong')/100);
+			                if(Math.random()<=num) game.xjzh_Criticalstrike(player,trigger.num,2,game.hasNature(trigger,'thunder')?1:null,true);
+						}else{
+							let target;
+							if(trigger.source==player&&trigger.player!=player){
     			                target=trigger.player;
     			            }
     			            else if(trigger.source!=player&&trigger.player==player){
     			                target=trigger.source;
     			            }
-    					    if(evt&&evt.getParent){
-    					        var next=game.createEvent('xjzh_boss_dianchong_mark',false,evt.getParent());
-    					        next.player=player;
-    					        next.target=target;
-    					        next.num=trigger.num;
-    					        next.setContent(function(){
-    					            "step 0"
-    					            player.addMark('xjzh_boss_dianchong',num);
-    					            "step 1"
-    					            target.changexjzhBUFF("gandian",1);
-    					        });
-    					    }
-    					}
+							player.addMark('xjzh_boss_dianchong',trigger.num);
+							if(target) target.changexjzhBUFF("gandian",1);
+						}
 			        },
 			    },
 			    "xjzh_boss_dianhua":{
@@ -1670,7 +1670,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                        if(game.boss!=player) return false;
 			                    }
 			                    if(game.hasPlayer(function(current){
-					                return get.playerName(current).some(name=>name.includes("xjzh_boss_hj"));
+					                return get.playerName(current).some(name=>name.indexOf("xjzh_boss_hj")==0);
 					            })&&!player.hasSkill('xjzh_boss_qingling_temp')) return true;
 			                    return false;
 			                },
@@ -1933,7 +1933,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                sub:true,
 			                priority:10,
 			                filter:function(event,player){
-			                    return event.source&&event.source==game.boss&&game.hasNature(trigger,'thunder');
+			                    return event.source&&event.source==game.boss&&game.hasNature(event,'thunder');
 			                },
 			                content:function(){
 			                    var list=player.getEnemies().sortBySeat();
@@ -3121,11 +3121,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_fubing":"符兵",
 				"xjzh_boss_fubing_info":"锁定技，你跳过摸牌阶段改为获得敌方角色各一张牌，若如此做，你本回合手牌上限视为0；当你存活时，神张角受到的伤害改为由你承担且其无法被横置。",
 				"xjzh_boss_guishu":"诡术",
-				"xjzh_boss_guishu_info":"锁定技，你跳过所有回合阶段，改为每个阶段获得1-2张黑色牌；你视为拥有技能鬼道；当你存活时，神张角造成的雷电伤害生效前，横置场上除你与友方之外的所有角色的武将牌。",
+				"xjzh_boss_guishu_info":"锁定技，你跳过所有回合阶段，改为每个阶段获得1-2张黑色牌；你视为拥有技能〖鬼道〗；当你存活时，神张角造成的雷电伤害生效前，横置场上除你与友方之外的所有角色的武将牌。",
 				"xjzh_boss_qingling":"清领",
 				"xjzh_boss_qingling_info":"锁定技，游戏开始时、你受到伤害后，你（有x几率）令黄巾术士、黄巾力士、黄巾兵勇、黄巾方士随机两名角色登场（至多两名）；当场上有黄巾力士/黄巾术士/黄巾兵勇/黄巾方士存活时，你于每个回合结束后执行一个新的回合且你计算与其他角色距离减场上黄巾兵数量；你的[伤害]卡牌无法指定黄巾兵为目标；场上的黄巾兵阵亡时移出游戏（x为当前回合数的百分比，黄巾兵的体力上限和体力值为2，初始手牌为4）。",
 				"xjzh_boss_dianxing":"电刑",
-				"xjzh_boss_dianxing_info":"出牌阶段限一次，你可以弃置一张牌令一名敌方角色判定，若判定牌颜色与你弃置的牌颜色一致，你令其受到一点雷电伤害，然后你可以重复此流程;首个回合开始时、10的倍数个回合开始时、你的回合被跳过时、你的武将牌翻至背面时，你进行一次判定，若结果为♠2-9，你令场上所有敌方角色受到3点雷电伤害，若此时场上有阵亡的黄巾兵，你随机召集一名黄巾兵进入游戏；第50个回合开始前，你可以选择改变此技能形态",
+				"xjzh_boss_dianxing_info":"出牌阶段限一次，你可以弃置一张牌令一名敌方角色判定，若判定牌颜色与你弃置的牌颜色一致，你令其受到一点雷电伤害，然后你可以重复此流程;首个回合开始时、10的倍数个回合开始时、你的回合被跳过时、你的武将牌翻至背面时，你进行一次判定，若结果为♠2-9，你令场上所有敌方角色受到3点雷电伤害，若此时场上有阵亡的黄巾兵，你随机召集一名黄巾兵进入游戏；第50个回合开始前，你可以选择改变此技能形态。",
 				"xjzh_boss_fennu":"愤怒",
 				"xjzh_boss_fennu_info":"锁定技，你的回合开始前，你选择获得1个奇术要件的效果，然后移除你已获得的奇术要件效果，若你的体力值小于你体力上限的一半，则将“获得1个”改为“获得至多3个”，若你的体力值不大于你的体力上限的1/3，则视为场上其他角色依次对自己使用一张【杀】。",
 				"xjzh_boss_edu":"恶毒",

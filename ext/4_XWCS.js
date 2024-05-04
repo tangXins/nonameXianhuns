@@ -81,7 +81,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    priority:-2,
 				    group:["xjzh_meiren_qingquan_use"],
 				    content:function(){
-				        var num=player.storage.xjzh_sanguo_hanshuang==false?1:2;
+				        var num=player.hasSkill("xjzh_meiren_lingdong")?2:1;
 				        player.changeHujia(num);
 				    },
 				    subSkill:{

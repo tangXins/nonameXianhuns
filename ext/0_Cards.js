@@ -489,66 +489,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 				},
 				//防具
-				//玄铁重甲
-				"xjzh_card_xuantiezhongjia":{
-					fullskin:true,
-					type:'equip',
-					subtype:'equip2',
-					audio:"ext:仙家之魂/skillaudio/equip/",
-					image:"ext:仙家之魂/image/cardpicture/xjzh_card_xuantiezhongjia.png",
-					skills:["xjzh_card_xuantiezhongjia1","xjzh_card_xuantiezhongjia2","xjzh_card_xuantiezhongjia3"],
-					//cardnature:'thunder',
-					ai:{
-						value:function(card,player,index,method){
-							if(player.isDisabled(2)) return 0.01;
-							if(card==player.getEquip(2)){
-								if(player.hasSkillTag('noDirectDamage')) return 10;
-								if(game.hasPlayer(function(current){
-									return current!=player&&get.attitude(current,player)<0&&current.hasSkillTag('thunderAttack',null,null,true);
-								})
-								) return 0;
-								return 6;
-							}
-							var value=0;
-							var info=get.info(card);
-							var current=player.getEquip(info.subtype);
-							if(current&&card!=current){
-								value=get.value(current,player);
-							}
-							var equipValue=info.ai.equipValue;
-							if(equipValue==undefined){
-								equipValue=info.ai.basic.equipValue;
-							}
-							if(typeof equipValue=='function'){
-								if(method=='raw') return equipValue(card,player);
-								if(method=='raw2') return equipValue(card,player)-value;
-								return Math.max(0.1,equipValue(card,player)-value);
-							}
-							if(typeof equipValue!='number') equipValue=0;
-							if(method=='raw') return equipValue;
-							if(method=='raw2') return equipValue-value;
-							return Math.max(0.1,equipValue-value);
-						},
-						equipValue:function(card,player){
-							if(player.hasSkillTag('maixie')&&player.hp>1) return 0;
-							if(player.hasSkillTag('noDirectDamage')) return 10;
-							if(get.damageEffect(player,player,player,'thunder')>=0) return 10;
-							var num=4-game.countPlayer(function(current){
-								if(get.attitude(current,player)<0){
-									if(current.hasSkillTag('thunderAttack',null,null,true)) return 3;
-									return 1;
-								}
-								return false;
-							});
-							if(player.hp==1) num+=5;
-							if(player.hp==2) num+=3;
-							return num;
-						},
-						basic:{
-							equipValue:9.5
-						},
-					},
-				},
 				//无限
 				"xjzh_card_wuxian":{
 					fullskin:true,
@@ -626,26 +566,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					subtype:'equip2',
 					audio:"ext:仙家之魂/skillaudio/equip/",
 					image:"ext:仙家之魂/image/cardpicture/xjzh_card_rongyankaijia.png",
-					onLose:function(){
-					    if(player.storage.xjzh_card_rongyankaijia_skill){
-					        var storage=player.storage.xjzh_card_rongyankaijia_skill
-				            
-				            while(storage.num.length){
-				                var source=storage.source.shift();
-				                var num=storage.num.shift();
-				                var nature=storage.nature.shift();
-				                player.damage(num,source,nature);
-				            }
+					async onLose(){
+						let player=get.player();
+					    if(player.storage.xjzh_card_rongyankaijia_skill&&player.storage.xjzh_card_rongyankaijia_skill.length){
+					        let storage=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
+							for await(let damageList of storage){
+								player.damage.apply(player,damageList.slice(0));
+							}
+							delete player.storage.xjzh_card_rongyankaijia_skill;
 				            
 				            player.unmarkSkill("xjzh_card_rongyankaijia_skill2");
-			    	        player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
-				        
-					        delete player.storage.xjzh_card_rongyankaijia_skill
+							player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
 					    }
 					},
 					skills:["xjzh_card_rongyankaijia_skill"],
 					ai:{
-						value:function(card,player,index,method){
+						value(card,player,index,method){
 							if(player.isDisabled(2)) return 0.01;
 							if(card==player.getEquip(2)){
 								if(player.hasSkillTag('nodamage')) return 0;
@@ -958,96 +894,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         }
 					},
 				},
-				//玄铁重甲
-				"xjzh_card_xuantiezhongjia1":{
-					equipSkill:true,
-					trigger:{
-						player:'damageBegin4',
-					},
-					forced:true,
-					filter:function(event,player){
-						return !event.nature;
-					},
-					content:function(){
-						trigger.cancel();
-					},
-					ai:{
-						effect:{
-							target:function (card,player,target,current){
-								if(get.tag(card,'damage')) return [0,0];
-							},
-						},
-					},
-				},
-				"xjzh_card_xuantiezhongjia2":{
-					equipSkill:true,
-					trigger:{
-						player:'damageBegin4',
-					},
-					forced:true,
-					filter:function(event,player){
-						if(player.hasSkillTag('unequip2')) return false;
-						if(event.source&&event.source.hasSkillTag('unequip',false,{
-							name:event.card?event.card.name:null,
-							target:player,
-							card:event.card
-						})
-						) return false;
-						if(event.nature=="fire"&&event.num>1) return true;
-						return false;
-					},
-					content:function(){
-						trigger.num++
-					},
-					ai:{
-						effect:{
-							target:function(card,player,target){
-								if(get.tag(card,'firedamage')){
-									if(trigger.num<=1) return 0;
-									if(player.hasSkill('jiu')||player.hasSkill('reluoyi')||player.hasSkill('luoyi')) return [1,-3];
-								}
-							},
-						}
-					},
-				},
-				"xjzh_card_xuantiezhongjia3":{
-					equipSkill:true,
-					trigger:{
-						player:'damageBegin3',
-					},
-					filter:function(event,player){
-						if(player.hasSkillTag('unequip2')) return false;
-						if(event.source&&event.source.hasSkillTag('unequip',false,{
-							name:event.card?event.card.name:null,
-							target:player,
-							card:event.card
-						})
-						) return false;
-						if(event.nature=="thunder") return true;
-						return false;
-					},
-					audio:true,
-					forced:true,
-					content:function(){
-						player.addTempSkill("xjzh_card_xuantiezhongjia4");
-					},
-					ai:{
-						thunderAttack:true,
-						effect:{
-							target:function(card,player,target,current){
-								if(get.tag(card,'thunderDamage')) return [1,-2];
-							}
-						}
-					},
-				},
-				"xjzh_card_xuantiezhongjia4":{
-					equipSkill:true,
-					mod:{
-						cardEnabled:function(card){
-							return false;
-						}
-					},
-				},
 				"xjzh_card_yizhihuhuan_skill":{
 					/*init:function(player){
 					    var num=get.rand(12,16);
@@ -1286,10 +1132,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    priority:20,
 				    firstDo:true,
 				    equipSkill:true,
-				    filter:function(event,player){
+				    filter(event,player){
 				        if(event.getParent().name=="xjzh_card_rongyankaijia_skill2") return false;
 				        if(player.hasSkillTag('unequip2')) return false;
-				        var evt=event.getParent();
+				        let evt=event.getParent();
 				        if(event.source&&event.source.hasSkillTag('unequip',false,{
 						    name:evt.card?evt.card.name:null,
 						    target:player,
@@ -1297,31 +1143,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    })) return false;
 				        return true;
 				    },
-				    content:function(){
-				        var num=Math.ceil(trigger.num/2);
-				        if(trigger.nature=="fire"){
+					async content(event,trigger,player){
+				        let num=Math.ceil(trigger.num/2);
+				        if(game.hasNature(trigger,'fire')){
 				            trigger.changeToZero();
 				            game.log(player,"受到熔岩铠甲影响，免疫火焰伤害");
-				            event.finish();
 				            return;
 				        }else{
-				            trigger.num-=num
-				            if(!player.storage.xjzh_card_rongyankaijia_skill){
-				                player.storage.xjzh_card_rongyankaijia_skill={
-				                    source:["nosource"],
-				                    num:[num],
-				                    nature:[trigger.nature]
-				                }
-				            }else{
-				                var storage=player.storage.xjzh_card_rongyankaijia_skill
-				                storage.source.push('nosource');
-				                storage.num.push(num);
-				                if(trigger.nature){
-				                    storage.nature.push(trigger.nature);
-				                }else{
-				                    storage.nature.push(null);
-				                }
-				            }
+				            trigger.num-=num;
+				            if(!player.storage.xjzh_card_rongyankaijia_skill) player.storage.xjzh_card_rongyankaijia_skill=[];
+							let list=[trigger.num,trigger.nature,trigger.cards,trigger.card];
+							if(trigger.source) list.push(trigger.source);
+							else list.push("nosource");
+							player.storage.xjzh_card_rongyankaijia_skill.push(list);
 				            player.addSkill("xjzh_card_rongyankaijia_skill2");
 				        }
 				    },
@@ -1355,37 +1189,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					marktext:"<img style=width:33px height:33px src="+lib.assetURL+"extension/仙家之魂/image/icon/xjzh_card_rongyankaijia.png>",
 					intro:{
 					    name:"熔岩铠甲",
-						content:function(storage,player){
-						    var storage=player.storage.xjzh_card_rongyankaijia_skill
-						    //var source=storage.source;
-						    var num=storage.num;
-						    var num2=0;
-						    /*var nature=storage.nature;
-						    var str="受到"
-						    if(source) str+=""+get.translation(source)+"造成的";
-						    if(num) str+=""+get.translation(num)+"点";
-						    if(nature) str+=""+get.translation(nature)+"属性"
-						    str+="伤害于你的回合结束后结算";*/
-						    for(var i of num){
-						        num2+=i
+						content(storage,player){
+						    let damageList=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
+							let num=0;
+						    for(let list of damageList){
+								num+=list.filter(evt=>{
+									return typeof evt==="number";
+								})[0];
 						    }
-						    var str=""+get.translation(num2)+"点伤害将于你的回合后转为无来源伤害结算";
-						    return str;
+						    return `${get.translation(num)}点伤害将于你的回合结束时结算`;
 						},
 					},
-				    filter:function(event,player){
-				        return player.storage.xjzh_card_rongyankaijia_skill;
+				    filter(event,player){
+				        return player.storage.xjzh_card_rongyankaijia_skill&&player.storage.xjzh_card_rongyankaijia_skill.length;
 				    },
-				    content:function(){
-				        "step 0"
-				        event.storage=player.storage.xjzh_card_rongyankaijia_skill
-				        "step 1"
-				        var source=event.storage.source.shift();
-				        var num=event.storage.num.shift();
-				        var nature=event.storage.nature.shift();
-				        player.damage(num,source,nature);
-				        if(event.storage.num.length) event.redo();
-				        "step 2"
+					async content(event,trigger,player){
+				        let storage=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
+						for await(let damageList of storage){
+							player.damage.apply(player,damageList.slice(0));
+						}
 				        delete player.storage.xjzh_card_rongyankaijia_skill
 				        player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
 				    },
@@ -1431,8 +1253,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_card_cuimaidan_info":"出牌阶段对距离为1的其他角色使用，令其选择移除一项技能或流失一点体力",
 				"xjzh_card_numa":"驽马",
 				"xjzh_card_numa_info":"你可以装备此坐骑牌或将此坐骑牌置入其他角色坐骑栏，其他角色计算与装备此牌的角色距离-1。",
-				"xjzh_card_xuantiezhongjia":"玄铁重甲",
-				"xjzh_card_xuantiezhongjia_info":"你免疫普通伤害，你受到雷电伤害麻痹一回合，你受到不小于2的火焰伤害+1。",
 				"xjzh_card_yizhihuhuan":"意志呼唤",
 				"xjzh_card_yizhihuhuan_info":"你造成伤害视为雷属性伤害，若该伤害点数不小于2，则改为重复执行x+1次点数为1的冰属性伤害。",
 				"xjzh_card_yizhihuhuan_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>坚毅自己的内心，掌控冰雷之元素，出现吧！雷之精灵、冰之精灵！</font></span>",
@@ -1447,14 +1267,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_card_rongyankaijia_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>火焰之神闲暇时随手制作的一件残次品，它不会为你增加任何防御力量，但当你穿戴它时，你会感觉到无比的强大。</font></span>",
 				
 				//技能
-				"xjzh_card_xuantiezhongjia1":"玄铁重甲",
-				"xjzh_card_xuantiezhongjia2":"玄铁重甲",
-				"xjzh_card_xuantiezhongjia3":"玄铁重甲",
-				"xjzh_card_xuantiezhongjia4":"玄铁重甲",
-				"xjzh_card_xuantiezhongjia1_info":"锁定技，你免疫普通伤害",
-				"xjzh_card_xuantiezhongjia2_info":"锁定技，你免疫不大于1点的火焰伤害，你受到不小于2点的火焰伤害+1",
-				"xjzh_card_xuantiezhongjia3_info":"锁定技，你受到雷电伤害后无法使用或打出牌，持续一回合",
-				"xjzh_card_xuantiezhongjia4_info":"锁定技，你无法使用或打出牌",
 				"xjzh_card_shuangran_skill":"霜燃",
 				"xjzh_card_shuangran_skill_info":"",
 				"xjzh_card_yizhihuhuan_skill":"意志呼唤",
@@ -1502,7 +1314,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    ["heart",4,"xjzh_card_shuangran"],//霜燃
 			    //防具
 			    ["heart",1,"xjzh_card_xiejiaozhiguan"],//谐角之冠
-			    ["spade",5,"xjzh_card_xuantiezhongjia"],//玄铁重甲
 			    ["spade",3,"xjzh_card_wuxian"],//无限
 			    ["club",6,"xjzh_card_wuxian"],//无限
 			    ["diamond",10,"xjzh_card_rongyankaijia"],//熔岩铠甲

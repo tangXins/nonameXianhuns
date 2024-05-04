@@ -1,4 +1,7 @@
 'use strict';
+
+const { group } = require("console");
+
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWSG')) lib.config.characters.remove('XWSG');
@@ -735,10 +738,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    	const {result:{bool,targets}}=await player.chooseTarget("〖伤逝〗：请选择并弃置一名角色的牌",(card,player,target)=>{
 								if(!target.countCards("hej")) return false;
 								return target!=player;
-							}).set('ai',target=>lib.card.guohe.ai.result.target);
+							}).set('ai',(player,target)=>lib.card.guohe.ai.result.target(player,target));
         					if(!bool) return;
         					const target=targets[0];
-        					player.discardPlayerCard("hej",target,true).set('target',target).set('ai',button=>lib.card.guohe.ai.button);				
+        					player.discardPlayerCard("hej",target,true).set('target',target).set('ai',button=>lib.card.guohe.ai.button(button));				
 					    }
 					},
 					ai:{
@@ -2687,10 +2690,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 					group:"xjzh_sanguo_shengxin1",
 					mod:{
-						maxHandcard:function (player,num){
-							var num=player.countCards("h",{color:"red"});
-							return player.hp+num;
-						},
+                        ignoredHandcard(card,player){
+                            if(get.suit(card)=='heart') return true;
+                        },
 					},
 					trigger:{
 						global:"useCardAfter",
@@ -4325,269 +4327,88 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					}
 				},
 				"xjzh_sanguo_shanxi":{
-					trigger:{
-						global:"judgeEnd",
-					},
-					global:["xjzh_sanguo_shanxi_jinshandian"],
-					group:["xjzh_sanguo_shanxi1","xjzh_sanguo_shanxi2","xjzh_sanguo_shanxi3","xjzh_sanguo_shanxi4","xjzh_sanguo_shanxi5"],
-					audio:"ext:仙家之魂/audio/skill:2",
 					mod:{
-						ignoredHandcard:function(card,player){
-						    if(card.hasGaintag('xjzh_sanguo_shanxi')) return true;
-						},
-						aiValue:function(player,card,num){
-							if(card.hasGaintag('xjzh_sanguo_shanxi')) return 10;
-						},
 						targetEnabled:function (card){
 							if(card.name=='shandian') return false;
 						},
+                        ignoredHandcard(card,player){
+                            if(get.name(card)=='shan') return true;
+                        },
 					},
-					forced:true,
-					locked:true,
-					filter:function (event, player) {
-						return get.position(event.result.card,true)=='o'&&
-						event.card&&event.card.name=='shandian'&&event.player!=player;
-					},
-					content:function () {
-						player.gain(trigger.result.card,'gain2','log');
-					},
-					subSkill:{
-					    "jinshandian":{
-					        sub:true,
-					        locked:true,
-					        mod:{
-					            cardEnabled:function(card,player){
-					                if(game.countPlayer(function(current){
-					                    return current.hasJudge("shandian");
-					                })>=3&&player.name!="xjzh_sanguo_zhangning"
-					                &&card.name=='shandian') return false;
-					            },
-					            cardEnabled2:function(card,player){
-					                if(game.countPlayer(function(current){
-					                    return current.hasJudge("shandian");
-					                })>=3&&player.name!="xjzh_sanguo_zhangning"
-					                &&card.name=='shandian') return false;
-					            },
-					        },
-					    },
-					},
-				},
-				"xjzh_sanguo_shanxi1":{
-					audio:"xjzh_sanguo_shanxi",
 					trigger:{
 						global:["useCard","respond"],
 					},
-					filter:function (event,player){
-						if(game.countPlayer(function(current){
-							return current.hasJudge("shandian");
-						})<3&&event.card.name=='shan'
-						&&event.player!=player) return true;
+					frequent:true,
+					locked:true,
+					audio:"ext:仙家之魂/audio/skill:2",
+					check(event,player){
+						return get.damageEffect(event.player,player,player,'thunder');
+					},
+					filter(event,player){
+						if(event.card.name=='shan'&&event.player!=player) return true;
 						return false;
 					},
-					forced:true,
-					popup:false,
-					sub:true,
-					check:function(event,player){return 1;},
-					content:function () {
-						'step 0'
-						var card=game.createCard('shandian');
-						if(card){
-							event.card=card;
-							player.chooseTarget("选择一个目标将一张闪电置入其判定区",function(card,player,target){
-								return lib.filter.targetEnabled({name:'shandian'},target,target);
-							}).ai=function(target){
-								var now=_status.currentPhase.next;
-								for(var i=0;i<10;i++){
-									if(get.attitude(player,now)<0) return target==now;
-									else{
-										now=now.next;
-									}
-								}
-								return false;
-							}
-						}
-						else {
-							event.finish();
-						}
-						'step 1'
-						if(result.bool){
-							player.logSkill('xjzh_sanguo_shanxi1',result.targets[0]);
-							result.targets[0].$gain2(event.card);
-							player.line(result.targets[0],'thunder');
-							result.targets[0].addJudge(event.card);
-						}
+					prompt(event,player){
+						return "〖雷祭〗：令"+get.translation(event.player)+"进行一次【闪电】判定。";
 					},
-				},
-				"xjzh_sanguo_shanxi2":{
-					audio:"xjzh_sanguo_shanxi",
-					trigger:{
-						global:"phaseJudgeBegin",
-					},
-					popup:false,
-					sub:true,
-					filter:function (event,player){
-						if(game.countPlayer(function(current){
-							return current.hasJudge("shandian");
-						})>=1&&event.player!=player) return true;
-						return false;
-					},
-					check:function(event,player){
-					    return get.attitude(player,event.player)<0;
-					},
-					prompt:function(event,player){
-						return "是否发动〖闪戏〗移除场上一张【闪电】牌令"+get.translation(event.player)+"进行一次【闪电】判定？";
-					},
-					content:function (){
-					    "step 0"
-					    player.chooseTarget("选择一名角色移除其判定区的【闪电】牌令"+get.translation(trigger.player)+"进行一次【闪电】判定",function(card,player,target){
-					        return target.hasJudge("shandian");
-					    }).set('ai',function(target){
-					        return get.attitude(player,target)>=0;
-					    });
-					    "step 1"
-					    if(result.bool){
-					        player.logSkill("xjzh_sanguo_shanxi2",trigger.player);
-					        event.target=result.targets[0]
-					        event.judgestr='闪电';
-					        trigger.player.judge(function(card){
-					            if(get.suit(card)=='spade'&&get.number(card)>1&&get.number(card)<10) return -6;
-					            return 0;
-					        },event.judgestr).judge2=(result=>result.bool===false);
-					    }else{
-					        event.finish();
-					    }
-					    "step 2"
-					    if(result.bool===false){
-					        trigger.player.damage(3,'thunder','nosource');
-					    }
-					    "step 3"
-					    if(!event.target) return;
-					    player.gain(result.card,'gain2','log');
-					    var cards=event.target.getCards("j",{name:"shandian"});
-					    if(cards) event.target.discard(cards);
+					async content(event,trigger,player){
+						trigger.player.executeDelayCardEffect('shandian').set("judge",card=>{
+							if(get.color(card)=="black"&&get.number(card)>1&&get.number(card)<10) return -5;
+							return 1;
+						}).set("judge2",result=>{
+							if (result.bool==false) return true;
+							return false;
+						});
 					},
 					ai:{
-						expose:0.5,
-					},
-				},
-				"xjzh_sanguo_shanxi3":{
-					forced:true,
-					locked:true,
-					popup:false,
-					trigger:{
-						global:"dyingBegin",
-					},
-					sub:true,
-					audio:"xjzh_sanguo_shanxi",
-					content:function (){
-						player.addTempSkill("xjzh_sanguo_shanxi3_tao","dyingAfter");
-					},
-					subSkill:{
-						"tao":{
-							mod:{
-								cardname:function (card,player,name){
-									if(card.name=='shandian') return 'tao';
-								},
+						threaten:0.8,
+						effect:{
+							target(card,player,target){
+								if(card.name=="shandian") return [0,0];
 							},
-							sub:true,
 						},
-					},
-				},
-				"xjzh_sanguo_shanxi4":{
-					mod:{
-						cardUsable:function(card,player,num){
-							if(card.name=='sha'){
-							    if(card.nature=='thunder') return Infinity;
-							    if(get.suit(card)=="spade"&&card.number>=2&&card.number<=9) return Infinity;
-							}
-						},
-					},
-					trigger:{
-						player:'useCard',
-					},
-					sub:true,
-					audio:"xjzh_sanguo_shanxi",
-					filter:function(event,player){
-					    if(event.card.name=='sha'){
-					        if(game.hasNature(event,'thunder')) return true;
-					        if(get.suit(event.card)=="spade"&&event.card.number>=2&&event.card.number<=9) return true;
-					    }
-						return false;
-					},
-					forced:true,
-					content:function(){
-						if(player.stat[player.stat.length-1].card.sha>0){
-							player.stat[player.stat.length-1].card.sha--;
-						}
-					},
-				},
-				"xjzh_sanguo_shanxi5":{
-					trigger:{
-						player:['drawAfter','gainAfter'],
-						global:['gameDrawAfter'],
-					},
-					sub:true,
-					direct:true,
-					firstDo:true,
-					content:function(){
-					    var cards=player.getCards('h');
-					    for(var i of cards){
-					        if(i.name=="shan"||i.name=="shandian"||(i.name=="sha"&&i.nature=="thunder")){
-					            if(!i.hasGaintag('xjzh_sanguo_shanxi')) player.addGaintag(i,'xjzh_sanguo_shanxi');
-					        }
-					    }
 					},
 				},
 				"xjzh_sanguo_leijix":{
-					audio:"ext:仙家之魂/audio/skill:1",
 					trigger:{
-						global:["useCard","respond"],
-						player:'damageAfter',
+						player:["damageAfter","useCard","respond"],
 					},
 					forced:true,
-					filter:function (event,player,name){
+					locked:true,
+					audio:"ext:仙家之魂/audio/skill:1",
+					filter(event,player,name){
 					    if(name=="damageAfter") return true;
-					    if(event.player!=player) return event.card.name=="shandian";
 					    return event.card.name=="shan";
 					},
-					content:function(){
-						"step 0"
-						player.judge(function(card){
-							return get.color(card)=='black'?1:-1;
-						});
-						"step 1"
-						player.gain(result.card,'gain2','log');
-						if(result.judge>0){
-							player.chooseTarget(get.prompt("〖雷祭〗：选择一个目标令其受到至多2点雷电伤害"),function(card,player,target){
-								return player!=target;
-							}).ai=function(target){
-								return get.damageEffect(target,player,player,'thunder');
-							};
-						}
-						else{
-							player.chooseTarget(get.prompt("雷祭：令其横置/取消横置武将牌"),[1,2]).set('ai',function(target){
-								if(get.attitude(player,target)<0&&!target.isLinked()) return 2;
-								if(get.attitude(player,target)>0&&target.isLinked()) return 2;
-								return 0.5
-							});
-							event.goto(3);
-						}
-						"step 2"
-						if(result.bool){
-							player.line(result.targets,"thunder");
-							result.targets[0].damage("thunder",result.targets[0].hasJudge("shandian")?2:1);
-						}
-						event.finish();
-						"step 3"
-						if(result.bool){
-							player.line(result.targets,"xjzh_sanguo_leijix");
-							for(var i=0;i<result.targets.length;i++){
-							    result.targets[i].link();
-							    if(result.targets[i].hasJudge("shandian")){
-							        player.draw();
-							    }
+					async content(event,trigger,player){
+						const [card,color]=await player.judge().forResult("card","color");
+						const targets=await player.chooseTarget(`〖雷祭〗：选择一个目标令其${color=="red"?"横置/取消横置":"受到一点雷属性伤害"}`).set("ai",(target)=>{
+							let player=get.player();
+                            let att=get.attitude(player,target);
+                            let num=lib.card.tiesuo.ai.result.target(player,target);
+							if(color=="red"){
+								if(att<0){
+									return -num;
+								}else{
+									if(target.isLinked()) return num;
+									return 0.2;
+								}
+							}
+							return get.damageEffect(target,player,player,"thunder");
+						}).forResultTargets();
+						if(targets){
+							switch(color){
+								case "red":{
+									targets[0].link();
+								};
+								break;
+								case "black":{
+									targets[0].damage(player,1,"nocard","thunder");
+								};
+								break;
 							}
 						}
+						player.gain(card,player,"gain2","log");
 					},
 					ai:{
 						expose:0.3,
@@ -4598,7 +4419,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					locked:true,
 					priority:1,
 					unique:true,
-					prompt:function(event,player){
+					prompt(event,player){
 						return "〖神道〗："+get.translation(event.player)+"进行"+get.translation(event.judgestr)+"的判定，亮出的判定牌为"+get.translation(event.player.judging[0])+"，是否发动〖神道〗替换判定牌？";
 					},
 					group:["xjzh_sanguo_shendao2"],
@@ -11443,7 +11264,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     check:function(event,player){return 1;},
                     filter:function(event,player){
                         var list=[
-						    "chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						    "pianxian","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 						];
 						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 						var num=0
@@ -11456,7 +11277,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     content:function(){
                         "step 0"
                         var list=[
-						    "chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						    "pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 						];
 						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 						var num=0
@@ -11474,7 +11295,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         var cards=[]
                         var skillsx=[]
                         var list=[
-						    "chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						    "pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 						];
 						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 						for(var i of list){
@@ -12525,9 +12346,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_fangshu":"方术",
 				"xjzh_sanguo_fangshu_info":"出牌阶段开始前，你展示牌堆顶x张牌，若黑色牌不小于红色牌，你获得所有黑色牌，然后对y名角色造成一点雷电伤害或对一名角色造成y点雷电伤害(至多为2)，否则你选择其中z张牌将其置于武将牌上(x为场上与你势力一致的角色数量且至低为2，y为黑色牌的数量，z为颜色少的牌数且至低为1)",
 				"xjzh_sanguo_shanxi":"闪戏",
-				"xjzh_sanguo_shanxi_info":"锁定技，你获得闪电的判定牌，你不能成为闪电的目标，且你的【雷杀】、【闪】、【闪电】不计入手牌上限<li>你使用点数为2-9的♠牌或使用【雷杀】不计入出牌次数<li>其他角色使用/打出闪时，你可以将一张闪电置入一名角色的判定区，场上至多3张闪电<li>其他角色的判定阶段开始时，若场上有闪电，你可以弃置场上一张闪电令其进行一次闪电判定<li>当有角色濒死时，你的闪电均视为桃",
+				"xjzh_sanguo_shanxi_info":"锁定技，你的【闪】不计入手牌上限，你无法成为闪电的目标；其他角色使用/打出【闪】时，你可以令其执行一次【闪电】判定，且以此法执行的判定结果以黑色2-9生效。",
 				"xjzh_sanguo_leijix":"雷祭",
-				"xjzh_sanguo_leijix_info":"锁定技，当你使用/打出闪、其他角色使用闪电或你受到伤害后，你进行一次判定并获得判定牌:<li>黑色，你选择一个目标令其受到一点雷电伤害，若其判定区有闪电，该伤害加1<li>红色，你选择至多两个目标令其横置武将牌，若其判定区有闪电，你摸一张牌",
+				"xjzh_sanguo_leijix_info":"锁定技，当你使用/打出闪、受到伤害后，你进行一次判定并获得判定牌:<li>黑色，你对一名角色造成一点雷电伤害<li>红色，你令一名角色横置/取消横置。",
 				"xjzh_sanguo_leihun":"雷魂",
 				"xjzh_sanguo_leihun_info":"锁定技，你造成所有伤害视为雷属性伤害且你是所有雷电伤害的来源，当你受到雷电伤害时，你回复等量体力",
 				"xjzh_sanguo_shendao":"神道",

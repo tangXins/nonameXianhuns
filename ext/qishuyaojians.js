@@ -147,23 +147,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:3,
 			skill:{
 				trigger:{
-	    	        player:["damageAfter","phaseBegin","changeHujiaAfter"],
+	    	        player:["damageAfter","phaseBegin"],
 	    	    },
     		    direct:true,
     			priority:10,
     		    lastDo:true,
-	   		    filter(event,player){
-					if(event.triggername=="phaseBegin") return player.hujia>0;
-					if(event.name=="changeHujia") return false;
-					if(event.name=="damage"&&!event.hujia) return !event.numFixed||!event.cancelled;
+	   		    filter(event,player,name){
+					if(name=="phaseBegin") return player.hujia>0;
+					if(name=="damageAfter"&&!event.hujia) return !event.numFixed||!event.cancelled;
 	   		        return false;
 	    	    },
 	    	    async content(event,trigger,player){
-					if(event.triggername=="phaseBegin"){
+					if(trigger.name=="damage"){
+						await player.changeHujia(trigger.num);
+					}else{
 						player.changeHujia(-1);
 						player.gainMaxHp();
-					}else{
-						await player.changeHujia(trigger.num);
 					}
 	   		    },
 	   		},

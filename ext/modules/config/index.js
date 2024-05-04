@@ -1099,8 +1099,8 @@ export const xjzhConfig={
         init:true,
     },
     "xjzh_zengyiSetting":{
-        "name":"随机增益",
-        "intro":"开启此选项武将在开局时随机获得一个增益技能，该增益技能仅玩家可获得",
+        "name":"增益技能",
+        "intro":"开启此选项武将在开局时随机获得一个增益技能，该增益技能AI无法获得",
         "init":game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")!== undefined ? game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting"):"player",
         "item":{
             "player":"仅玩家可获得",

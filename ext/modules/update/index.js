@@ -1,13 +1,54 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.04281',
+    version:'3.04292',
+	'3.04292':{
+        changeLog:[
+			"重做张宁",
+			"新增增益技能〖翩跹〗",
+			"移除卡牌【玄铁重甲】",
+			"修复boss神张角〖电刑〗，技能报错",
+			"修复boss格里高利〖电冲〗，技能效果错误",
+			"修复boss格里高利〖电矛〗，技能效果错误",
+			"修复林霜〖清泉〗，回复体力获得护甲计算错误",
+			"修复奇术要件【坚毅之盾】，回合开始不转化体力上限",
+			"调整【熔岩铠甲】，受到伤害不再转为无来源伤害",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:[
+			"xjzh_sanguo_zhangning"
+		],
+		cards:[],
+		romoveFiles:async function(){
+			let folderFiles=[
+				"image/effect/12345.png",
+				"image/effect/skill_baozha.png",
+				"image/effect/skill_jinzhongzhao.png",
+				"image/effect/skill_leiji.png",
+				"image/effect/skill_leiji2.png",
+				"image/effect/skill_leixuan.png",
+				"image/effect/skill_tianlei.png",
+				"image/cardimage/tenui/xjzh_card_xuantiezhongjia.webp",
+				"image/cardpicture/xjzh_card_xuantiezhongjia.png",
+				"audio/skill/xjzh_sanguo_yingbing1.mp3",
+				"audio/skill/xjzh_sanguo_yingbing2.mp3",
+				"css/images/qishuyaojian/reward_flag.png",
+				"css/images/qishuyaojian/jinkuang.png",
+			];
+			for await(let i of folderFiles){
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
+			}
+			await game.xjzh_removeFiles("image/effect/gif");
+		},
+    },
 	'3.04281':{
         changeLog:[
 			"新增海月技能语音",
 			"新增奇术要件【坚毅之盾】",
 			"兑换码：labourday0,截止日期2024/05/05",
 			"已完成的成就会在本次更新时自动获取奖励",
+			"现在完成成就会获得一定量的碎片或精魄奖励",
 			"奇术要件第一次新建存档会赠送300碎片和10个精魄",
 			"修复索德罗斯成就拼写错误",
 			"修复海月〖幻海〗，技能发动后【流光】报错",
@@ -36,7 +77,7 @@ export const xjzhUpdateLog={
 				"css/images/qishuyaojian/jinkuang.png",
 			];
 			for await(let i of folderFiles){
-				game.removeFile(i);
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
 			}
 		},
     },

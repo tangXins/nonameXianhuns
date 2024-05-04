@@ -127,6 +127,41 @@ export const CHRskills={
 				player.addSkill("xjzh_zengyi_off");
 			},
 		},
+		"xjzh_zengyi_pianxian":{
+		    trigger:{
+		        global:"gameStart",
+		        player:["changeSkillsAfter","enterGame"],
+		    },
+			forced:true,
+			locked:true,
+			unique:true,
+			mark:true,
+			marktext:"翩",
+			intro:{
+			    name:"翩跹",
+			    content:"你“每回合限x次”和“出牌阶段限x次”的技能无次数限制",
+			},
+			async getSKillReslut(player){
+				let skills=player.getSkills(null,false,false).filter(skill=>{
+					let info=get.info(skill);
+					if(lib.skill.global.includes(skill)) return false;
+					if(skill.indexOf('jycw')!=-1) return false;
+					return info&&info.usable&&typeof info.usable=='number';
+				});
+				if(skills.length){
+					for await(let skill of skills){
+						let info=get.info(skill);
+						delete info.usable;
+					}
+				}
+			},
+			init(player,skill){
+				lib.skill[skill].getSKillReslut(player);
+			},
+			async content(event,trigger,player){
+				lib.skill["xjzh_zengyi_pianxian"].getSKillReslut(player);
+			},
+		},
 		"xjzh_zengyi_zhuanpo":{
 		    trigger:{
 		        global:"dying",
@@ -1264,6 +1299,7 @@ export const CHRskills={
 		
 	},
 	translate:{
+		"xjzh_zengyi_pianxian":"翩跹",
 	    "xjzh_zengyi_zhuanpo":"转魄",
 		"xjzh_zengyi_daoge":"倒戈",
 		"xjzh_zengyi_chongsu":"重塑",
