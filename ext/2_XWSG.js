@@ -529,7 +529,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			                if(lib.character[name][0]=="female"){
     			                    skills.addArray(lib.character[name][3].filter(skill=>{
     			                        let info=get.info(skill);
-    			                        return !info.sub&&!info.unique&&!info.juexingji&&!info.zhuSkill&&!info.dustSkill&&!trigger.player.skills.includes(skill);
+    			                        return info&&!info.sub&&!info.unique&&!info.juexingji&&!info.zhuSkill&&!info.dustSkill&&!trigger.player.skills.includes(skill);
     			                    }));
 			                    }
 			                });
