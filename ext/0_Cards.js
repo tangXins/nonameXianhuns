@@ -590,7 +590,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							}
 						},
 						equipValue:function(card,player){
-						    var num=0
+						    let num=0
 							if(player.hasSkillTag('maixie')&&player.hp>1) return 0;
 							if(player.hasSkillTag('maixie_hp')&&player.hp>1) return 0;
 							if(player.hp==1) num+=5;
@@ -1152,7 +1152,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        }else{
 				            trigger.num-=num;
 				            if(!player.storage.xjzh_card_rongyankaijia_skill) player.storage.xjzh_card_rongyankaijia_skill=[];
-							let list=[trigger.num,trigger.nature,trigger.cards,trigger.card];
+							let list=[num,trigger.nature,trigger.cards,trigger.card];
 							if(trigger.source) list.push(trigger.source);
 							else list.push("nosource");
 							player.storage.xjzh_card_rongyankaijia_skill.push(list);
@@ -1172,7 +1172,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 								    name:card?card.name:null,
 								    target:target,
 								    card:card
-							    })) return;
+								})) return;
+								if(game.hasNature(card,"fire")) return 0;
+								if(player.hasSkill("zhuque_skill")) return 0;
+								if(get.tag(card,"fireDamage")&&current<0) return 0;
+								return 0.5;
 							},
 						},
 				    },

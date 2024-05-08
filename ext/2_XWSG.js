@@ -1,7 +1,4 @@
 'use strict';
-
-const { group } = require("console");
-
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWSG')) lib.config.characters.remove('XWSG');
@@ -3455,6 +3452,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 				},
 				"xjzh_sanguo_liansuo":{
+					trigger:{
+					    player:['phaseUseBegin'],
+					},
 					forced:true,
 					locked:true,
 					firstDo:true,
@@ -3471,107 +3471,103 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                 }else{
                                     if(info.notarget) return;
                                     if(info.multitarget) return;
-                                    if(get.type(card)=='equip') return;
+                                    if(get.type(card)=='equip'||get.type(card)=='delay') return;
                                     range[0]=1;
                                     range[1]+=1;
                                 }
                             }
                         },
 					},
-					trigger:{
-					    player:['phaseUseBegin'],
-					},
-					group:['xjzh_sanguo_liansuo_add'],
 					audio:"ext:仙家之魂/audio/skill:2",
-					filter:function(event,player){
-					    var previous=player.getPrevious();
-						var next=player.getNext();
+					filter(event,player){
+					    let previous=player.getPrevious();
+						let next=player.getNext();
 						if(previous&&next){
 						    return !next.hasSkill("fengyin")||!previous.hasSkill("fengyin");
 						}
 						return false;
 					},
-					content:function(){
-					    var previous=player.getPrevious();
-						var next=player.getNext();
+                    async content(event,trigger,player){
+					    let previous=player.getPrevious();
+						let next=player.getNext();
 						next.addTempSkill("fengyin");
 						previous.addTempSkill("fengyin");
-					},
-					subSkill:{
-					    'add':{
-					        trigger:{
-					            player:"useCardToPlayer",
-					        },
-					        forced:true,
-					        popup:false,
-					        priority:100,
-					        sub:true,
-					        filter:function(event,player){
-					            if(event.getParent().triggeredTargets1.length>1) return false;
-					            if(event.getParent().targets.length<=1) return false;
-					            return get.type(event.card)=='delay';
-					        },
-					        multitarget:true,
-					        content:function(){
-					            var cards=trigger.getParent().cards
-					            var targets=trigger.getParent().targets
-					            event.card=game.createCard({
-					                name:cards[0].name,
-					                suit:get.suit(cards[0]),
-					                number:get.number(cards[0])
-					            });
-					            targets[1].addJudge(event.card)
-					            targets[1].$gain2(event.card)
-					        },
-					    },
 					},
 				},
 				"xjzh_sanguo_hengzhou":{
                     trigger:{
-                        global:["linkAfter","gameStart","$logSkill"],
-                        player:"enterGame",
+                        global:["gameStart","changeSkillsAfter","showCharacterBegin"],
+                        player:["enterGame","dieBefore","linkAfter"],
                     },
-                    direct:true,
+                    forced:true,
+					forceDie:true,
+					firstDo:true,
                     locked:true,
-                    priority:96,
+                    priority:66,
                     audio:"ext:仙家之魂/audio/skill:1",
                     global:['xjzh_zxzh_hengzhou_damage','xjzh_zxzh_hengzhou_ai'],
-                    content:function(){
-                        "step 0"
-                        if(trigger.name=="gameStart"||trigger.name=="$logSkill") event.goto(1);
-                        if(trigger.player==player){
-                            if(player.isLinked()){
-                                var targets=game.filterPlayer(function(current){return current!=player&&!current.isLinked()});
-                                for(var i=0;i<targets.length;i++){
-                                    if(!targets[i].isLinked()) targets[i].link(true);
-                                }
-                            }
-                        }else{
-                            if(player.isLinked()){
-                                if(!trigger.player.isLinked()) trigger.player.link(true);
-                            }
-                        }
-                        event.finish();
-                        return;
-                        "step 1"
-                        var players=game.filterPlayer(function(current){
-                            return current!=player;
-                        });
-                        for(var i=0;i<players.length;i++){
-                            var skills=players[i].skills.slice(0)
-                            for(var j=0;j<skills.length;j++){
-                                /*var str=get.info(skills[j])
-                                var info=JSON.stringify(str)*/
-                                var info=get.info(skills[j])
-                                var info2=lib.translate[skills[j]+'_info']
-                                if(info&&info2&&!info.sub&&!players[i].awakenedSkills.includes(skills[j])){
-                                    if(info2.indexOf("横置")!=-1){
-                                        players[i].disableSkill(skills[j],skills[j],true);
-                                        game.log(players[i],"的技能"+get.translation(skills[j])+"失效了");
-                                    }
-                                }
-                            }
-                        }
+					filter(event,player,name){
+						if(name=="linkAfter") return player.isLinked();
+						if(name=="gameStart") return game.roundNumber==0;
+						if(["dieBefore","showCharacterBegin"].includes(name)) return true;
+						if(name=="changeSkillsAfter"){
+							if(!event.addSkill.length) return false;
+							if(event.addSkill.filter(skill=>{
+								let info=get.info(skill),str=get.translation(skill+"_info");
+								if(!str||str.length==0) return false;
+								if(event.player.awakenedSkills&&event.player.awakenedSkills.includes(skill)) return false;
+								if(lib.skill.global.includes(skill)) return false;
+								if(event.player.disabledSkills&&event.player.disabledSkills[skill]&&event.player.disabledSkills[skill].includes("xjzh_sanguo_hengzhou")) return false;
+								if(skill.indexOf('jycw')!=-1) return false;
+								return str.includes("横置");
+							}).length) return true;
+						}
+						return false;
+					},
+                    async content(event,trigger,player){
+						if(trigger.name=="link"){
+							game.countPlayer(current=>{current.link(true);});
+						}else{
+							if(trigger.name=="die"){
+								let targets=game.filterPlayer(current=>{
+									if(!current.disabledSkills) return false;
+									let skills=current.getSkills(null,false,false).filter(skill=>{
+										return current.disabledSkills&&current.disabledSkills[skill]&&current.disabledSkills[skill].includes("xjzh_sanguo_hengzhou")
+									});
+									if(skills.length) return true;
+									return current!=player;
+								});
+								targets.forEach(target=>{
+									let skills=target.getSkills(null,false,false).filter(skill=>{
+										return target.disabledSkills&&target.disabledSkills[skill]&&target.disabledSkills[skill].includes("xjzh_sanguo_hengzhou")
+									});
+									target.enableSkill("xjzh_sanguo_hengzhou");
+									game.log(target,`的技能${skills.map(item=>{
+										return `〖${get.translation(item)}〗`;
+									})}因庞统的〖横舟〗恢复了`);
+								});
+							}else{
+								let targets=game.filterPlayer(current=>current!=player);
+								for await(let target of targets){
+									let skills=target.getSkills(null,false,false).filter(skill=>{
+										let info=get.info(skill),str=get.translation(skill+"_info");
+										if(!str||str.length==0) return false;
+										if(target.awakenedSkills&&target.awakenedSkills.includes(skill)) return false;
+										if(lib.skill.global.includes(skill)) return false;
+										if(target.disabledSkills&&target.disabledSkills[skill]&&target.disabledSkills[skill].includes("xjzh_sanguo_hengzhou")) return false;
+										if(skill.indexOf('jycw')!=-1) return false;
+										return str.includes("横置");
+									});
+									if(skills.length){
+										target.disableSkill("xjzh_sanguo_hengzhou",skills);
+										game.log(target,`的技能${skills.map(item=>{
+											return `〖${get.translation(item)}〗`;
+										})}因庞统的〖横舟〗失效了`);
+										if(target.isLinked()) target.link(false);
+									}
+								}
+							}
+						}
                     },
                     subSkill:{
                         'damage':{
@@ -3581,18 +3577,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             direct:true,
                             priority:10,
                             sub:true,
-                            filter:function(event,player){
+                            filter(event,player){
                                 if(!player.isLinked()) return false;
-                                if(game.hasNature(event,'fire')) return false;
+                                if(!game.hasNature(event,'fire')) return false;
                                 return true;
                             },
-                            content:function(){
+                            content(){
                                 trigger.num++
                             },
                             ai:{
                                 fireAttack:true,
                                 effect:{
-                                    target:function(card,player,target,current){
+                                    target(card,player,target,current){
 								        if(card.nature=='fire') return 2;
 								        if(get.tag(card,'fireDamage')&&current<0) return 2;
 								    },
@@ -3602,19 +3598,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         'ai':{
                             ai:{
                                 effect:{
-                                    target:function(card,player,target){
-                                        var targets=game.filterPlayer(function(current){return current.hasSkill('xjzh_sanguo_liansuo');});
+                                    target(card,player,target){
+                                        let targets=game.filterPlayer(current=>{return current.hasSkill('xjzh_sanguo_liansuo');});
                                         if(card.name=='tiesuo'){
                                             if(targets!=target&&targets.isLinked()) return 0;
                                         }
 								    },
 								},
 								result:{
-								    player:function(card,player,target){
-								        var targets=game.filterPlayer(function(current){return current.hasSkill('xjzh_sanguo_liansuo');});
+								    player(card,player,target){
+								        let targets=game.filterPlayer(current=>{return current.hasSkill('xjzh_sanguo_liansuo');});
 								        if(targets.isDead()) return;
-								        var suit=get.suit(card);
-								        var number=get.number(card);
+								        let suit=get.suit(card);
+								        let number=get.number(card);
 								        if(suit=='club') return max?max=number:null;
 								    },
 								},
@@ -3624,21 +3620,21 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 },
 				"xjzh_sanguo_moulue":{
 					trigger:{
-						global:"useCardToTargeted",
+						global:"useCardAfter",
 					},
 					usable:1,
                     audio:"ext:仙家之魂/audio/skill:2",
-					filter:function(event,player){
+					filter(event,player){
 					    if(player.countCards('h')==0) return false;
 						if(get.suit(event.card)!='club') return false;
                         if(!event.targets||!event.targets.length) return false;
-                        if(!event.isFirstTarget) return false;
+                        //if(!event.isFirstTarget) return false;
 					    if(player.getStorage('xjzh_sanguo_moulue').includes(get.number(event.card))) return false;
 					    return get.itemtype(event.cards)=='cards'&&get.position(event.cards[0],true)=='o';
 					},
                     mod:{
-                        aiOrder:function(player,card,num){
-                            var history=player.getHistory('useCard',function(evt){
+                        aiOrder(player,card,num){
+                            let history=player.getHistory('useCard',function(evt){
                                 return evt.card&&get.suit(evt.card)=='club';
                             });
                             if(!history.length)return;
@@ -3650,7 +3646,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             }
                         },
                     },
-					prompt:function(event,player){
+					prompt(event,player){
 						return '〖谋略〗：是否弃置一张手牌获得【'+get.translation(event.card)+'】';
 					},
 					frequent:true,
@@ -3659,39 +3655,33 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					intro:{
 					    content:'已记录点数：$',
 					},
-					check:function(event,player){
+					check(event,player){
 					    var cards=Array.from(ui.discardPile.childNodes).filter(card=>get.suit(card)!='club');
 					    if(!cards.length) return 0;
 					    return 1;
 					},
-					content:function(){
-						"step 0"
-						player.chooseCard(1,'h','〖谋略〗：是否弃置一张手牌获得【'+get.translation(trigger.card)+'〗').set('ai',function(card){
-						    var num=get.number(trigger.card)
+					async content(event,trigger,player){
+						const cards=await player.chooseCard(1,'h','〖谋略〗：是否弃置一张手牌获得【'+get.translation(trigger.card)+'〗').set('ai',card=>{
+						    let num=get.number(trigger.card)
 						    return get.number(card)>num;
-						});
-						"step 1"
-						if(result.bool){
-						    player.lose(result.cards[0],ui.ordering);
+						}).forResultCards();
+						if(cards){
+						    player.loseToDiscardpile(cards[0]);
 						    player.gain(trigger.cards,'gain2','log');
-						    var num1=get.number(trigger.card);
-						    var num2=get.number(result.cards[0]);
-						    if(num2<=num1) return;
-						    var number=Math.min(player.maxHp,Math.abs(num2-num1));
-						    var cards=Array.from(ui.discardPile.childNodes).filter(card=>get.suit(card)!='club');
-						    if(!cards.length) return;
-						    var num3=Math.min(number,cards.length);
-						    player.chooseCardButton([1,num3],cards,'〖谋略〗：选择获得至多'+get.translation(num3)+'张牌').set('filterButton',function(button){
+						    if(get.number(cards[0])<=get.number(trigger.card)) return;
+						    let number=Math.min(player.maxHp,Math.abs(get.number(cards[0])-get.number(trigger.card)));
+						    let dsiCards=Array.from(ui.discardPile.childNodes).filter(card=>get.suit(card)!='club');
+						    if(!dsiCards.length) return;
+						    let num=Math.min(number,dsiCards.length);
+						    const links=await player.chooseCardButton([1,num],dsiCards,'〖谋略〗：选择获得至多'+get.translation(num)+'张牌').set('filterButton',function(button){
 						         return get.suit(button.link)!='club';
-				    		}).set('ai',function(button){
+				    		}).set('ai',button=>{
 						        return get.value(button.link);
-						    });
-						}
-						"step 2"
-						if(result.links){
-						    player.gain(result.links,'gain2','log');
-						    var number=get.number(trigger.card)
-						    if(!player.getStorage('xjzh_sanguo_moulue').includes(number)) player.markAuto('xjzh_sanguo_moulue',[number]);
+						    }).forResultLinks();
+							if(links){
+								player.gain(links,'gain2','log');
+								if(!player.getStorage('xjzh_sanguo_moulue').includes(number)) player.markAuto('xjzh_sanguo_moulue',[get.number(trigger.card)]);
+							}
 						}
 					},
 				},
@@ -12326,7 +12316,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_chaohuang":"朝凰",
 				"xjzh_sanguo_chaohuang_info":"锁定技，你使用【杀】被响应后，若你不能再使用【杀】或【酒】，你使用【杀】和酒【酒】的次数加1<li>你使用决斗或成为决斗目标后，在决斗结算之前，你每失去一张牌，摸一张牌",
 				"xjzh_sanguo_liansuo":"连锁",
-				"xjzh_sanguo_liansuo_info":"锁定技，你的回合内，你的上家和下家非锁定技失效；你使用〖铁索连环〗或♣非装备牌可以额外选择一个目标。",
+				"xjzh_sanguo_liansuo_info":"锁定技，你的回合内，你的上家和下家非锁定技失效；你使用〖铁索连环〗或♣非装备牌/非延时锦囊牌可以额外选择一个目标。",
 				'xjzh_sanguo_hengzhou':'横舟',
 				'xjzh_sanguo_hengzhou_info':'锁定技，场上其他角色与横置相关的技能失效；当你处于横置状态时，场上所有角色横置状态与你一致；被横置的角色受到火焰伤害+1。',
 				"xjzh_sanguo_moulue":"谋略",

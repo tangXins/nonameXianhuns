@@ -3723,16 +3723,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				//女巫
 				"xjzh_poe_huoqiu":{
 				    mod:{
-				        cardname:function(card,player){
+				        cardname(card,player){
 							if(get.color(card)=='red') return 'sha';
 						},
-						cardnature:function(card,player){
+						cardnature(card,player){
 							if(get.color(card)=='red') return 'fire';
 						},
-						targetInRange:function(card){
+						targetInRange(card){
 						    if(card.name=="sha"&&card.nature=="fire") return true;
 						},
-						cardUsable:function (card,player,num){
+						cardUsable(card,player,num){
 							if(card.name=='sha'&&card.nature=="fire") return Infinity;
 						},
 				    },
@@ -3747,58 +3747,36 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					xjzh_xinghunSkill:true,
 					priority:Infinity,
 					audio:"ext:仙家之魂/audio/skill:3",
-				    filter:function(event,player){
+				    filter(event,player){
 				        if(!event.cards||!event.cards.length) return false;
-                        var history=player.getHistory('sourceDamage',function(card){
+                        let history=player.getHistory('sourceDamage',card=>{
                             return card.card&&card.card.name=="sha"&&card.card.nature=="fire";
                         });
                         if(!history.length||history.length==0) return false;
+						if(event.getParent(3).name=="xjzh_poe_huoqiu") return false;
 				        return event.card.name=="sha"&&event.card.nature=="fire";
 				    },
-				    group:["xjzh_poe_huoqiu_die"],
-				    content:function(){
-				        "step 0"
-				        event.num=player.getHistory('sourceDamage',function(card){
+                    async content(event,trigger,player){
+						let num=player.getHistory('sourceDamage',function(card){
                             return card.card&&card.card.name=="sha"&&card.nature=="fire";
                         }).length;
-                        event.target=trigger.player.getNext();
-                        if(event.target==player) event.target=event.target.getNext();
-                        "step 1"
-                        game.xjzh_playEffect('xjzh_skillEffect_baozha',event.target);
-                        event.target.damage(trigger.nature,trigger.num,player,'nocard');
-                        event.num--
-                        if(event.num>0){
-                            event.target=event.target.getNext();
-                            if(event.target==player) event.target=event.target.getNext();
-                            event.redo();
-                        }
-                        "step 2"
-                        if(game.xjzhAchi.hasAchi('火焰大师','special')){
-				            var history=player.getHistory('sourceDamage',function(card){
-                                return card.card&&card.card.name=="sha"&&card.card.nature=="fire";
-                            });
-                            if(history.length>1) player.draw(2);
-                        }
-				    },
-				    subSkill:{
-				        "die":{
-				            trigger:{
-				                source:"dieAfter",
-				            },
-				            forceDie:true,
-				            direct:true,
-				            sub:true,
-				            filter:function(event,player){
-				                if(event.player.isAlive()) return false;
-				                if(event.getParent('xjzh_poe_huoqiu').name!='xjzh_poe_huoqiu') return false;
-				                return !game.xjzhAchi.hasAchi('火焰大师','special');
-				            },
-				            content:function(){
-				                if(!game.xjzhAchi.hasAchi('火焰大师','special')){
-					                if(player.isUnderControl(true)&&game.me==player) game.xjzhAchi.addProgress('火焰大师','special',1);
-					            }
-				            },
-				        },
+						let target=trigger.player;
+						do{
+							target=target.getNext();
+							if(target==player) target=target.getNext();
+							game.xjzh_playEffect('xjzh_skillEffect_baozha',target);
+                        	await target.damage(trigger.nature,trigger.num,trigger.source,'nocard');
+							if(!game.xjzhAchi.hasAchi('火焰大师','special')){
+								if(player.isUnderControl(true)&&target.isDead()) game.xjzhAchi.addProgress('火焰大师','special',1);
+							}
+							num--;
+						}while(num>0)
+						if(game.xjzhAchi.hasAchi('火焰大师','special')){
+							let history=player.getHistory('sourceDamage',card=>{
+								return card.card&&card.card.name=="sha"&&card.card.nature=="fire";
+							});
+							if(history.length>1) player.draw(2);
+						}
 				    },
 				},
 				"xjzh_poe_xuruo":{

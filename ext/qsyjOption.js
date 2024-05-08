@@ -1,29 +1,31 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	lib.arenaReady.push(function(){
+        let characters;
 	    if(lib.characterPack['XWTZ']){
-	        var characters=lib.characterPack['XWTZ']
+	        characters=lib.characterPack['XWTZ']
 	    }else{
 	        return;
 	    }
-	    var func=function(){
-    	    for(var i in characters){
-    		    if(!characters[i][4]) continue;
-    		    if(!characters[i][4].includes("qishuBoss")) continue;
-    		    characters[i][4].remove('boss');
-    		    characters[i][4].remove('bossallowed');
-    	        characters[i][4].push('unseen');
-    	        characters[i][4].push('forbidai');
+	    let func=function(){
+    	    for(let i in characters){
+    		    if(!lib.character[i][4]) continue;
+    		    if(!lib.character[i][4].includes("qishuBoss")) continue;
+                if(lib.character[i].isAiForbidden==true) continue;
+                lib.character[i].isBoss=false;
+                lib.character[i].isBossAllowed=false;
+                lib.character[i].isAiForbidden=true;
+                lib.character[i].isUnseen=true;
     		}
 	    };
-	    var func2=function(name){
-    		if(!characters[name]) return;
-    		if(!characters[name][4]) return;
-    	    if(!characters[name][4].includes("qishuBoss")) return;
-    		characters[name][4].remove('boss');
-    	    characters[name][4].remove('bossallowed');
-            characters[name][4].push('unseen');
-   	        characters[name][4].push('forbidai');
+	    let func2=function(name){
+    		if(!lib.character[name]) return;
+    		if(!lib.character[name][4]) return;
+    	    if(!lib.character[name][4].includes("qishuBoss")) return;
+            lib.character[name].isBoss=false;
+            lib.character[name].isBossAllowed=false;
+            lib.character[name].isAiForbidden=true;
+            lib.character[name].isUnseen=true;
 	    };
 	    if(!lib.config.xjzh_qishuyaojians.cailiao||!characters||characters==undefined){
 	        func();
@@ -49,7 +51,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    if(get.xjzh_cailiao("xjzh_cailiao_gangtie")<5){
 	        func2("xjzh_boss_geligaoli");
 	    }
-	    
 	    //判断材料数量是否能够开启都瑞尔挑战
 	    if(Object.keys(cailiaoList).filter(function(item){
 	        return ["xjzh_cailiao_nianyedan","xjzh_cailiao_kutong"].includes(item);
@@ -361,9 +362,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 str+="<br>成就奖励："
                 for(var i of doneAchievemen){
                     var name=i.split(",");
-                    game.log(name)
                     var info=game.xjzhAchi.info(name[1],name[0]);
-                    game.log(info)
                     str+=`<br>&emsp;&emsp;${name[1]}：<br>&emsp;&emsp;&emsp;&emsp;碎片：${info.level*100}<br>&emsp;&emsp;&emsp;&emsp;精魄：${info.level}`;
                 }
             }
