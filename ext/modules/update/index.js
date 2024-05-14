@@ -4,6 +4,15 @@ export const xjzhUpdateLog={
     version:'3.05081',
 	'3.05081':{
         changeLog:[
+			"重做武将姜凝脂",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:["xjzh_zxzh_jiangningzhi"],
+		cards:[],
+    },
+	'3.05081':{
+        changeLog:[
 			"此版本已适配本体1.10.12且不支持以下版本",
 			"修复小乔〖娥眉〗报错",
 			"修复庞统〖横舟〗，部分开局横置的角色会在横置后失效",

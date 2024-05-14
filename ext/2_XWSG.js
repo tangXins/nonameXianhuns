@@ -11254,7 +11254,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     check:function(event,player){return 1;},
                     filter:function(event,player){
                         var list=[
-						    "pianxian","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+						    "pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 						];
 						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 						var num=0

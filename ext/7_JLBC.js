@@ -9,10 +9,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			connectBanned:[],
 			characterSort:{
 				JLBC:{
-				    //其他
-				    "JLBC_other":["xjzh_jlsg_zhaoyan"],
 					//神武将
 					"JLBC_shen":['xjzh_jlsg_diaochan'],
+				    //其他
+				    "JLBC_other":["xjzh_jlsg_zhaoyan"],
 				},
 			},
 			character:{
@@ -362,6 +362,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_jlsg_jueshi_info":"锁定技，你的体力上限锁定为1，当你濒死时，你随机使用场上所有角色手牌及牌堆中的【桃】/【酒】直到你脱离濒死状态。",
 				
 				"JLBC_shen":"神武将",
+                "JLBC_other":"其他",
 			},
 		};
 		if(true){

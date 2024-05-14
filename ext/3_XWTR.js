@@ -1,4 +1,7 @@
 'use strict';
+
+const { group } = require("console");
+
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -21,7 +24,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 			character:{
 				//众星之魂
-				"xjzh_zxzh_jiangningzhi":["female","qun",4,["xjzh_zxzh_dianling","xjzh_zxzh_tusu"],[]],
+				"xjzh_zxzh_jiangningzhi":["female","qun",3,["xjzh_zxzh_dianling","xjzh_zxzh_tusu"],[]],
 				"xjzh_zxzh_linmo":["male","qun",3,["xjzh_zxzh_moyu","xjzh_zxzh_zhenwen","xjzh_zxzh_jinyan"],[]],
 				"xjzh_zxzh_yumuren":["male","qun",4,["xjzh_zxzh_shiqiao","xjzh_zxzh_baoxin"],[]],
 				"xjzh_zxzh_linlingshiyu":["double","qun",3,["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_jiezhen"],['zhuanshu:xjzh_zhuanshu_jianzong']],
@@ -312,75 +315,86 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			skill:{
 				//众星之魂
 				"xjzh_zxzh_dianling":{
-				    enable:"phaseUse",
-				    filterTarget:function(card,player,target){
-				        var history=target.getAllHistory('sourceDamage');
-				        if(!history.length) return;
-				        var history=history[0]['counting'];
-				        return history>0;
-				    },
-				    selectTarget:function(){
-				        return [1,_status.event.player.hp]
-				    },
-				    filter:function(event,player){
-				        var count=game.countPlayer(function(current){
-    				        var history=current.getAllHistory('sourceDamage');
-    				        if(!history.length) return;
-    				        var history=history[0]['counting'];
-    				        return history>0;
-				        });
-				        return count>0;
-				    },
-				    content:function(){
-				        "step 0"
-    				    var list=[];
-    				    for(var i=0;i<lib.inpile.length;i++){
-                            var info=get.info({name:lib.inpile[i]});                
-                            if(!info.enable) continue;
-                            if(info.notarget) continue;
-                            if(info.type!="basic"&&info.type!="trick") continue;
-                            if(!player.canUse({name:lib.inpile[i]},target)) continue;
-                            list.push([info.type,'',lib.inpile[i]]);
-                            if(lib.inpile[i]=='sha'){
-                                for(var j of lib.inpile_nature){
-                                    list.push([info.type,'',lib.inpile[i],j]);
-                                };
-                            };
-    				    }
-    				    dialog=ui.create.dialog('〖点灵〗：请选择一张牌','hidden',[list,'vcard']);
-    				    player.chooseButton(dialog);
-                        "step 1"
-                        if(result.links){
-                            var links=result.links;
-                            var card={name:links[0][2],nature:links[0][3],isCard:true};
-                            player.useCard(card,target,false);
-                            target.getHistory('sourceDamage').removeArray(target.getAllHistory('sourceDamage',evt=>{
-                                return evt&&evt.counting;
-                            })) 
-                            /*var history=target.getAllHistory('sourceDamage');
-                            for(var i of history){
-                                for(var j in i){
-                                    if(j=="counting") delete i[j];
-                                }
-                            }*/
-                        }
-				    },
+					trigger:{
+						global:"phaseBegin",
+					},
+					frequent:true,
+					prompt(event,player){
+						return `〖点灵〗：是否令${get.translation(event.player)}本回合阶段顺序逆转？`;
+					},
+					filter(event,player){
+						return event.player!=player&&event.player.isIn();
+					},
+					check(event,player){return 1;},
+					group:["xjzh_zxzh_dianling_end"],
+    				async content(event,trigger,player){
+						trigger.phaseList=trigger.phaseList.reverse();
+						trigger.player.addTempSkill("xjzh_zxzh_dianling_on");
+						player.removeMark("xjzh_zxzh_tusu",1);
+						game.log(`${get.translation(player)}令${get.translation(trigger.player)}本回合阶段顺序逆转`);
+					},
+					subSkill:{
+						"on":{sub:true,},
+						"end":{
+							trigger:{
+								global:["recoverAfter","loseHp","damageAfter"],
+							},
+							forced:true,
+							priority:3,
+							sub:true,
+							filter(event,player){
+								if(!player.hasMark("xjzh_zxzh_tusu")) return false;
+								if(event.name=="damage") return event.source&&event.source.hasSkill("xjzh_zxzh_dianling_on");
+								return event.player.hasSkill("xjzh_zxzh_dianling_on");
+							},
+							async content(event,trigger,player){
+								const targets=await player.chooseTarget(`〖点灵〗：选择一名角色令其${trigger.name=="damage"?`受到${trigger.num}点伤害`:trigger.name=="recover"?`回复${trigger.num}点体力？`:`失去${trigger.num}点体力？`}`,(card,player,target)=>{
+									let trigger=_status.event.getTrigger();
+									if(target.hasSkill("xjzh_zxzh_dianling_on")||target==player) return false;
+									if(trigger.name=="recover") return target.isDamaged();
+									return true;
+								}).set("ai",(card,player,target)=>{
+									let trigger=_status.event.getTrigger();
+									if(trigger.name=="damage") return get.damageEffect(target,player,player);
+									if(trigger.name=="recover") return get.recoverEffect(target,player,player);
+									if(trigger.name=="loseHp"&&!target.hasSkillTag("maixie_hp")) return 0;
+									return 1;
+								}).forResultTargets();
+								if(targets){
+									if(trigger.name=="damage") targets[0].damage.apply(targets[0],[trigger.num,trigger.nature,trigger.cards,trigger.card,player]);
+									else targets[0][trigger.name](trigger.num);
+								}
+							}
+						},
+					},
 				},
 				"xjzh_zxzh_tusu":{
 				    trigger:{
-				        global:"damageBefore",
+				        player:["phaseDrawBegin","phaseDiscardBegin"],
 				    },
 				    forced:true,
 				    locked:true,
 				    priority:Infinity,
 				    firstDo:true,
-				    filter:function(event,player){
-				        if(event.numFixed||event.cancelled) return false;
-				        return event.num>1;
-				    },
-				    content:function(){
-				        if(trigger.source&&trigger.source==player) trigger.set("counting",trigger.num+1);
-				        else if(!trigger.source||trigger.source!=player) trigger.set("counting",true);
+					mark:true,
+					marktext:"屠苏",
+					intro:{
+						content:"#",
+					},
+    				async content(event,trigger,player){
+						if(trigger.name=="phaseDraw"){
+							let cards=[];
+							for(let i=0;i<ui.cardPile.childElementCount;i++){
+								let card=ui.cardPile.childNodes[i];
+							  	if(cards.includes(get.name(card))) continue;
+							  	cards.push(card);
+							  	if(cards.length>=player.maxHp) break;
+							}
+							player.gain(cards,'draw');
+						}else{
+							player.addMark("xjzh_zxzh_tusu",player.maxHp);
+						}
+						trigger.cancel(null,null,'notrigger');
 				    },
 				},
 				"xjzh_zxzh_leifa":{
@@ -4010,7 +4024,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    },
 				    content:function(){
 				        var num=trigger.num==0?1:trigger.num
-				        trigger.player.damage(num,trigger.source,'nocard','untriggering');
+				        trigger.player.damage(num,trigger.source,'nocard')._triggered=null;
 				    },
 				    ai:{
 				        jueqing:true,
@@ -7753,7 +7767,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        return event.num>0;
 	    		    },
 	    		    content:function(){
-	    		        trigger.player.damage(trigger.num,'notrigger','untriggering','nocard');
+	    		        trigger.player.damage(trigger.num,'notrigger','nocard')._triggered=null;
 	    		        trigger.changeToZero();
 	    		    },
 	    		    subSkill:{
@@ -8222,9 +8236,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_jinyan":"禁言",
 				"xjzh_zxzh_jinyan_info":"当其他角色发动技能后，你可以禁用该技能直到你的下个回合开始。",
 				"xjzh_zxzh_dianling":"点灵",
-				"xjzh_zxzh_dianling_info":"出牌阶段，你可以选择至多x名因〖屠苏〗造成过伤害的其他角色，视为依次对其使用一张基本牌或非延时锦囊牌，然后其视为未因〖屠苏〗造成过伤害。",
+				"xjzh_zxzh_dianling_info":"其他角色回合开始时，若你有“屠苏”，你可以令其当前回合阶段顺序逆转,然后该角色在回合内回复体力/失去体力/造成伤害时，你令一名其他角色执行相同的选项。",
 				"xjzh_zxzh_tusu":"屠苏",
-				"xjzh_zxzh_tusu_info":"锁定技，当其他角色/你造成伤害点数大于1时，该伤害点数改为1然后重复计算x/x+1次（x为其造成伤害的点数）。",
+				"xjzh_zxzh_tusu_info":"锁定技，你始终跳过摸牌阶段/弃牌阶段，然后从牌堆获得X张牌名不一致的牌/X个“屠苏”标记，你使用这些牌无距离限制（X为你的体力上限）。",
 				
 				//流放之路
 				"xjzh_poe_nvwu":"女巫",
@@ -8340,7 +8354,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_liuguang2":"流光",
 				"xjzh_wzry_liuguang2_info":"锁定技，其他角色计算与你距离+1，你使用牌无距离限制且你使用牌次数*2，你使用【杀】无视防具且令其选择：交给你一张牌或此【杀】额外结算一次。",
 				"xjzh_wzry_huanhai":"幻海",
-				"xjzh_wzry_huanhai_info":"限定技，出牌阶段，你选择一名角色并移除场上其他角色的所有“月”，然后你将“月”补至4个，禁用〖瞬华〗并修改〖流光〗直到〖幻海〗结束，然后令除你与其之外的其他角色暂时离开游戏直到你与其任意一名角色阵亡或你失去所有“月”，然后你获得等同于你体力值的护甲，且此后你每造成一点伤害获得一点护甲，〖幻海〗持续持续时间结束后，你获得等同于你护甲数量个“月”并移除所有护甲(不受〖别月〗标记上限限制)。",
+				"xjzh_wzry_huanhai_info":"限定技，出牌阶段，若你有“月”且当前轮数不为1且你的体力值不小于2，你选择一名角色并移除场上其他角色的所有“月”，然后你将“月”补至4个，禁用〖瞬华〗并修改〖流光〗直到〖幻海〗结束，然后令除你与其之外的其他角色暂时离开游戏直到你与其任意一名角色阵亡或你失去所有“月”，然后你获得等同于你体力值的护甲，且此后你每造成一点伤害获得一点护甲，〖幻海〗持续持续时间结束后，你获得等同于你护甲数量个“月”并移除所有护甲(不受〖别月〗标记上限限制)。",
 				"xjzh_wzry_huanhai_append":"注：若当前游戏为第一轮且你的体力大于1，你无法发动〖幻海〗",
 				"xjzh_wzry_xunshou":"巡守",
 				"xjzh_wzry_xunshou_info":"锁定技，你对其他角色造成伤害后，其可以将一张花色不一致的牌置于武将牌上称为“巡”，否则你摸两张牌，当其武将牌上有4张“巡”时，你对其造成一点伤害并禁用其所有技能直到其再次受到伤害后，然后你弃置其所有“巡”。",

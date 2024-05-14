@@ -895,36 +895,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 				},
 				"xjzh_card_yizhihuhuan_skill":{
-					/*init:function(player){
-					    var num=get.rand(12,16);
-					    if(!player.storage.xjzh_card_yizhihuhuan_skill) player.storage.xjzh_card_yizhihuhuan_skill=num
-					    
-					    var ecard=player.getEquip(5);
-					    var origin_name=ecard.name;
-					    
-					    var name=ecard.name+'_yizhihuhuan';
-                        lib.card[name]=get.copy(get.info(ecard));
-                        lib.translate[name+'_info']="<li>当前免伤概率<span style=\"color: red\">"+get.translation(num)+"%</span><br>"+lib.translate[ecard.name+'_info'];
-                                    
-                        lib.translate[name]=lib.translate[ecard.name];
-                                    
-                        ecard.name=name;
-                        ecard.origin_name=origin_name;
-					},*/
 					trigger:{
 					    source:"damageBefore",
 					},
-					priority:32,
+					priority:6,
 					forced:true,
 					firstDo:true,
 					equipSkill:true,
 					popup:false,
-					content:function(){
+					async content(event,trigger,player){
 					    if(trigger.num<2){
 					        game.setNature(trigger,'thunder',false);
 					    }else{
-					        trigger.set("counting",trigger.num+1);
-					        game.setNature(trigger,'ice',false);
+							let list=[1,"ice",trigger.cards,trigger.card];
+							if(trigger.source) list.push(trigger.source);
+							else list.push("nosource");
+							for(let i=0;i<trigger.num+1;i++){
+								trigger.player.damage.apply(trigger.player,list.slice(0));
+							}
+							trigger.changeToZero();
 					    }
 					},
 					ai:{
