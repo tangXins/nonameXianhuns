@@ -40,5 +40,8 @@ window.xjzh_updateSource=[
 	"ext/modules/index.js",
 
 	"css/mainPage.css",
+
+	"audio/skill/xjzh_sanguo_linnue1.mp3",
+	"audio/skill/xjzh_sanguo_linnue2.mp3",
 	
 ];

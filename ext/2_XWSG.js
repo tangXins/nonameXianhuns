@@ -57,7 +57,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_simahui":["male","qun",3,["xjzh_sanguo_jianjie","xjzh_sanguo_yinshi"],[]],
 				"xjzh_sanguo_sphuatuo":["male","qun",3,["xjzh_sanguo_xingyi","xjzh_sanguo_qingnang"],[]],
 				"xjzh_sanguo_huatuo":["male","qun","2/3",["xjzh_sanguo_shengxin","xjzh_sanguo_jishi","xjzh_sanguo_liangyi"],[]],
-				"xjzh_sanguo_dongzhuo":["male","qun",6,["xjzh_sanguo_lanzheng","xjzh_sanguo_hengzheng","xjzh_sanguo_baolian","xjzh_sanguo_linnue","xjzh_sanguo_zongjiu"],["zhu"]],
+				"xjzh_sanguo_dongzhuo":["male","qun",6,["xjzh_sanguo_lanzheng","xjzh_sanguo_hengzheng","xjzh_sanguo_baolian","xjzh_sanguo_linnue"],["zhu"]],
 				"xjzh_sanguo_zuoci":["male","qun",3,["xjzh_sanguo_daoshu","xjzh_sanguo_huanhua"],[]],
 				"xjzh_sanguo_tongyuan":["male","qun",3,["xjzh_sanguo_keluan","xjzh_sanguo_cuifeng","xjzh_sanguo_chaohuang"],[]],
 				"xjzh_sanguo_spzhangjiao":["male","qun",3,["xjzh_sanguo_bujiao","xjzh_sanguo_taiping","xjzh_sanguo_fangshu"],["zhu"]],
@@ -629,6 +629,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             trigger.player.executeDelayCardEffect('lebu');
                         }
                     },
+					ai:{
+						skip:true,
+					},
 			    },
 			    "xjzh_sanguo_wanrong":{
 			        trigger:{
@@ -742,11 +745,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    }
 					},
 					ai:{
-						maixie:function(player){
+						maixie(player){
 							if(player.isDamaged()) return false;
 							return true;
 						},
-						maixie_hp:function(player){
+						maixie_hp(player){
 							if(player.isDamaged()) return false;
 							return true;
 						},
@@ -2287,196 +2290,94 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					forced:true,
 					locked:true,
 					audio:"ext:仙家之魂/audio/skill:2",
-					filter:function(event,player){
-					    if(event.name=="phaseDiscard"){
-					        if(player.countCards('he')==0) return false;
-					    }
+					filter(event,player){
+						if(event.numFixed||event.cancelled) return false;
+					    if(event.name=="phaseDiscard") return player.needsToDiscard()>=player.maxHp;
 					    return true;
 					},
-					content:function(){
-					    "step 0"
-					    trigger.cancel(null,null,'notrigger');
-					    "step 1"
-					    if(trigger.name=="phaseDraw"){
-					        player.draw(player.hp+3);
-					        event.finish();
-					    }else{
-							var num=player.hp+game.countGroup();
-							player.chooseToDiscard(num,'he',true);
-					    }
-					    "step 2"
-					    if(!player.getStat('damage')){
-							player.loseHp();
-						}
+					async content(event,trigger,player){
+						if(trigger.name=="phaseDraw") trigger.num+=player.hp;
+						else player.loseHp();
 					},
 				},
 				"xjzh_sanguo_hengzheng":{
 					audio:"ext:仙家之魂/audio/skill:2",
 					trigger:{
-						global:"phaseUseBegin",
-					},
-					forced:true,
-					locked:true,
-					unique:true,
-					filter:function (event,player){
-						return event.player!=player&&event.player.countCards('he');
-					},
-					content:function (){
-						"step 0"
-						player.gainPlayerCard(trigger.player,"he",true);
-						"step 1"
-						if(player.isMaxHandcard(true)) player.damage(1,'nocard','nosource');
-					},
-				},
-				"xjzh_sanguo_baolian":{
-					trigger:{
 						global:"phaseUseEnd",
 					},
 					forced:true,
 					locked:true,
-					unique:true,
-					filter:function (event,player){
-						return event.player!=player&&event.player.num('h')>=2&&player.maxHp>3;
+					filter(event,player){
+						return event.player!=player;
 					},
-					audio:"ext:仙家之魂/audio/skill:2",
-					content:function (){
-						"step 0"
-						if(!trigger.player.getStat('damage')){
-							trigger.player.chooseToDiscard("弃置两张牌令董卓流失两点体力或减少一点体力上限",get.prompt('xjzh_sanguo_baolian'),2,'he',true).set('ai',function(card){
-								if(get.damageEffect(target,_status.event.player,_status.event.player)) return 2;
-								return 4-get.value(card);
-							});
-						}
-						else{
-							event.finish();
-						}
-						'step 1'
-						if(result.bool){
-						    var dialog=ui.create.dialog('forcebutton','hidden','是否对星董卓发动〖暴敛〗');
-                            var str='<div class="popup text" style="width:calc(100%-10px);display:inline-block">';
-						    str+="选项一:令董卓失去两点体力<br><br>";
-						    str+="选项二:令董卓失去一点体力并摸一张牌</div><br><br>";
-							dialog.add(str);
-							trigger.player.chooseControl('选项一','选项二',function(){
-								if(player.maxHp-player.hp>=2||trigger.player.hp<=1){
-									return '选项一';
-								}
-								else{
-									return '选项二';
-								}
-							}).set('dialog',dialog);
-						}
-						else{
-							event.finish();
-						}
-						"step 2"
-						if(result.control=='选项一'){
-							player.loseHp(2);
-						}
-						else{
-							player.loseMaxHp();
-							player.draw();
-							trigger.player.loseHp();
+					async content(event,trigger,player){
+						const cards=await trigger.player.chooseCard('he').set("ai",(card)=>{
+							let player=get.player();
+							let trigger=_status.event.getTrigger();
+							if(get.damageEffect(trigger.player,player,player)>0){
+								if(get.value(card,trigger.player)<=0) return 10;
+								return 7;
+							}
+							return 0;
+						}).forResultCards();
+						if(cards){
+							player.gain(cards,trigger.player,"gain2");
+						}else{
+							trigger.player.damage(1,player,'nocard');
 						}
 					},
 				},
-				"xjzh_sanguo_linnue":{
-					mod:{
-						cardUsable:function (card,player,num){
-							if(card.name=='sha'&&get.color(card)=='red') return Infinity;
-						},
+				"xjzh_sanguo_baolian":{
+					trigger:{
+						global:"phaseBegin",
 					},
 					forced:true,
 					locked:true,
-					popup:false,
-					unique:true,
-					// alter:true,
-					trigger:{
-						player:'useCard',
+					filter(event,player){
+						return event.player!=player;
 					},
-					filter:function(event,player){
-						if(get.is.altered('xjzh_sanguo_linnue')) return false;
-						return event.card.name=='sha'&&get.color(event.card)=='red';
-					},
-					content:function(){
-						if(player.stat[player.stat.length-1].card.sha>0){
-							player.stat[player.stat.length-1].card.sha--;
+					audio:"ext:仙家之魂/audio/skill:2",
+					async content(event,trigger,player){
+						let list=trigger.phaseList.slice(0);
+						const control=await trigger.player.chooseControl(list).set("prompt",`选择跳过一个阶段令${get.translation(player)}执行一个额外的相同阶段`).set("ai",(event,player)=>{
+							let att=get.attitude(event.player,player);
+							if(att>0) return [list[2],list[3]].randomGet();
+							return list.randomGet(list[2],list[3]);
+						}).forResultControl();
+						if(control){
+							game.log(`${get.translation(trigger.player)}选择跳过${get.translation(control)}`)
+							trigger.player.skip(control);
+							player[control]();
 						}
 					},
-					group:["xjzh_sanguo_linnue_1","xjzh_sanguo_linnue_2"],
-					subSkill:{
-						"1":{
-							audio:"ext:仙家之魂/audio/skill:2",
-							trigger:{
-								player:"damageBegin",
-								source:"damageBegin",
-							},
-							forced:true,
-							sub:true,
-							filter:function (event,player){
-							    if(!event.source||event.source=='nosource') return false;
-							    if(event.source==player){
-							        return event.player.hasSex('female');
-							    }
-								return event.source.hasSex('female');
-							},
-							content:function (){
-								trigger.num++;
-							},
-						},
-						"2":{
-							audio:"ext:仙家之魂/audio/skill:2",
-							forced:true,
-							sub:true,
-							trigger:{
-								player:"useCard",
-							},
-							filter:function (event){
-								return event.card.name=='sha'&&get.color(event.card)=='black';
-							},
-							content:function (){
-								player.addTempSkill('unequip','useCardAfter');
-							},
-						},
-					},
 					ai:{
-						unequip:true,
-						skillTagFilter:function (player,tag,arg){
-							if(!get.zhu(player,'shouyue')) return false;
-							if(arg&&arg.name=='sha') return true;
-							return false;
-						},
+						skip:true,
 					},
 				},
-				"xjzh_sanguo_zongjiu":{
-					audio:"ext:仙家之魂/audio/skill:4",
+				"xjzh_sanguo_linnue":{
+					trigger:{
+						global:'damageBegin1',
+					},
+					forced:true,
 					locked:true,
 					zhuSkill:true,
-					unique:true,
-					enable:'chooseToUse',
-					filter:function (event,player){
-						if(player.hasZhuSkill('xjzh_sanguo_zongjiu')) return true;
+					audio:"ext:仙家之魂/audio/skill:2",
+					filter(event,player){
+						if(!player.hasZhuSkill('xjzh_sanguo_linnue')) return false;
+						if(event.numFixed||event.cancelled||event.num==0) return false;
+						if(!event.source||event.source==undefined) return false;
+						if(event.source==player&&event.player!=player&&player.grouu!=event.player.group) return true;
+						if(event.source!=player&&event.player==player&&player.grouu!=event.source.group) return true;
 						return false;
 					},
-					filterCard:function(card){
-						return get.suit(card)=='spade';
-					},
-					viewAs:{name:'jiu'},
-					viewAsFilter:function(player){
-						if(player.countCards('h',{suit:'spade'})<=0) return false;
-					},
-					prompt:'将一张黑桃手牌当酒使用',
-					check:function(card){
-						if(_status.event.type=='dying') return 1;
-						return 4-get.value(card);
+					async content(event,trigger,player){
+						let group=player.group;
+						if(trigger.source==player) trigger.num+=1;
+						else trigger.num-=1;
 					},
 					ai:{
-						skillTagFilter:function(player){
-							return player.countCards('h',{suit:'spade'})>0&&player.hp<=0;
-						},
-						threaten:1.5,
-						save:true,
-					}
+						damageBonus:true,
+					},
 				},
 				"xjzh_sanguo_xiongbin":{
 					unique:true,
@@ -4798,8 +4699,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				"xjzh_sanguo_shenwei":{
 					unique:true,
-					trigger:{
-					player:'phaseDiscardBegin'},
+					trigger:{player:'phaseDiscardBegin'},
 					forced:true,
 					locked:true,
 					priority:66,
@@ -12265,16 +12165,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_chuzhen":"出阵",
 				"xjzh_sanguo_chuzhen_info":"锁定技，你使用点数递增的【杀】无次数限制",
 				"xjzh_sanguo_lanzheng":"揽政",
-				"xjzh_sanguo_lanzheng_info":"锁定技，你跳过摸牌阶段，改为摸x张牌(x为你的体力值+3)，；你跳过弃牌阶段，改为弃置x张牌(x为你的体力值+场上存在的势力)，若你于该回合内没有造成伤害，你失去一点体力。",
-				"xjzh_sanguo_baolian":"暴敛",
-				"xjzh_sanguo_baolian_info":"锁定技，其他角色出牌阶段结束时，若其于本回合内没有造成伤害且你的体力上限大于3，需弃置两张牌，然后选择一项:<li>令你失去两点体力<li>令你失去一点体力上限并摸一张牌，然后其失去一点体力。",
+				"xjzh_sanguo_lanzheng_info":"锁定技，你的摸牌阶段，你额外摸X张牌（X为你的体力值），你的弃牌阶段，若你需弃置的牌的数量不小于你的体力上限，你失去一点体力。",
 				"xjzh_sanguo_hengzheng":"横征",
-				"xjzh_sanguo_hengzheng_info":"锁定技，其他角色出牌阶段开始时，你获得其一张牌，然后若你的手牌数为场上唯一最多，你受到一点无来源伤害",
+				"xjzh_sanguo_hengzheng_info":"锁定技，其他角色出牌阶段结束时，若其回合内没有造成伤害，其需要交给你一张牌或你对其造成一点伤害。",
+				"xjzh_sanguo_baolian":"暴敛",
+				"xjzh_sanguo_baolian_info":"锁定技，其他角色的回合开始时，其须选择并跳过一个阶段令你执行一个与选项相同的额外阶段。",
 				"xjzh_sanguo_linnue":"凌虐",
-				"xjzh_sanguo_linnue_info":"锁定技，你对女性角色造成伤害或受到女性角色伤害+1，你使用黑色【杀】无视防具，你使用红色【杀】无次数限制。",
-				"xjzh_sanguo_linnue_info_alter":"锁定技，你使用红色【杀】无次数限制",
-				"xjzh_sanguo_zongjiu":"纵酒",
-				"xjzh_sanguo_zongjiu_info":"主公技，你可以将一张♠当做酒使用。",
+				"xjzh_sanguo_linnue_info":"主公技，场上与你势力不一致的角色对你造成伤害-1，你对场上势力与你不一致的角色造成伤害+1。",
 				"xjzh_sanguo_xiongbin":"雄兵",
 				"xjzh_sanguo_xiongbin_info":"出牌阶段限一次，你可以扣置一张手牌，然后令其他角色依次展示一张手牌(无牌则跳过)，你视为对其中花色、点数任意一项一致的目标使用一张无次数限制且无视防具的【杀】，此阶段内若其闪避了此【杀】，你摸一张牌，技能结算后，你获得其他角色展示的花色、点数均与你不同的牌，若你于此阶段内造成了伤害，你受到一点无来源伤害。",
 				"xjzh_sanguo_tieji":"铁骑",

@@ -1,15 +1,27 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.05081',
-	'3.05081':{
+    version:'3.05221',
+	'3.05221':{
         changeLog:[
 			"重做武将姜凝脂",
+			"重做武将董卓",
 		    "修复许多bug",
 	    	"优化许多细节",
         ],
-	    players:["xjzh_zxzh_jiangningzhi"],
+	    players:["xjzh_zxzh_jiangningzhi","xjzh_sanguo_dongzhuo"],
 		cards:[],
+		romoveFiles:async function(){
+			let folderFiles=[
+				"audio/skill/xjzh_sanguo_zongjiu1.mp3",
+				"audio/skill/xjzh_sanguo_zongjiu2.mp3",
+				"audio/skill/xjzh_sanguo_zongjiu3.mp3",
+				"audio/skill/xjzh_sanguo_zongjiu4.mp3",
+			];
+			for await(let i of folderFiles){
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
+			}
+		},
     },
 	'3.05081':{
         changeLog:[

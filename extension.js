@@ -202,7 +202,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 		        }
 		        lib.config.banned=list.slice(0);
 	        });
-			
+
 	        lib.arenaReady.push(function(){
 				if(!game.hasExtension("十周年UI")&&game.getExtensionConfig("仙家之魂","xjzh_playSkillEffect")){
 					alert("检测到你没有安装十周年UI且开启了技能特效选项，将为你关闭！");
@@ -212,134 +212,135 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					},1500);
 				};
 			});
-	        lib.arenaReady.push(function(){
-		        for(var i in lib.character) {
-					if(!lib.character[i][3]) continue;
-					if(i.indexOf('xjzh_')!=0) continue;
-					var list=lib.character[i][3];
-					for(var skillx of list){
-						if(lib.translate[skillx+"_info"]){
-							var str=lib.translate[skillx+"_info"]
-							if(str.includes("负面状态")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fumian');\">负面状态</a>";
-								str=str.replace(/负面状态/g,str2);
-							};
-							if(str.includes("目盲")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_mumang');\">目盲</a>";
-								str=str.replace(/目盲/g,str2);
-							};
-							if(str.includes("中毒")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_zhongdu');\">中毒</a>";
-								str=str.replace(/中毒/g,str2);
-							};
-							if(str.includes("眩晕")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_xuanyun');\">眩晕</a>";
-								str=str.replace(/眩晕/g,str2);
-							};
-							if(str.includes("灵柩")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_lingjiu');\">灵柩</a>";
-								str=str.replace(/灵柩/g,str2);
-							};
-							if(str.includes("唤醒")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huanxing');\">唤醒</a>";
-								str=str.replace(/唤醒/g,str2);
-							};
-							if(str.includes("解放")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jiefang');\">解放</a>";
-								str=str.replace(/解放/g,str2);
-							};
-							if(str.includes("冰冻")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_bingdong');\">冰冻</a>";
-								str=str.replace(/冰冻/g,str2);
-							};
-							if(str.includes("灌注")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_guanzhu');\">灌注</a>";
-								str=str.replace(/灌注/g,str2);
-							};
-							if(str.includes("强固")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_qianggu');\">强固</a>";
-								str=str.replace(/强固/g,str2);
-							};
-							if(str.includes("燃烧")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_ranshao');\">燃烧</a>";
-								str=str.replace(/燃烧/g,str2);
-							};
-							if(str.includes("冰缓")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_binghuan');\">冰缓</a>";
-								str=str.replace(/冰缓/g,str2);
-							};
-							if(str.includes("感电")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gandian');\">感电</a>";
-								str=str.replace(/感电/g,str2);
-							};
-							if(str.includes("周围")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_zhouwei');\">周围</a>";
-								str=str.replace(/周围/g,str2);
-							};
-							if(str.includes("暴击")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baoji');\">暴击</a>";
-								str=str.replace(/暴击/g,str2);
-							};
-							if(str.includes("暴率")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baojiRan');\">暴击几率</a>";
-								str=str.replace(/暴率/g,str2);
-							};
-							if(str.includes("易伤")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_yishang');\">易伤</a>";
-								str=str.replace(/易伤/g,str2);
-							};
-							if(str.includes("暴伤")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baojiDamage');\">暴击伤害</a>";
-								str=str.replace(/暴伤/g,str2);
-							};
-							if(str.includes("暴球")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_criticalstrike');\">暴击球</a>";
-								str=str.replace(/暴球/g,str2);
-							};
-							if(str.includes("反击")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fanji');\">反击</a>";
-								str=str.replace(/反击/g,str2);
-							};
-							if(str.includes("格挡")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gedang');\">格挡</a>";
-								str=str.replace(/格挡/g,str2);
-							};
-							if(str.includes("格上限")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_maxGedang');\">格挡上限</a>";
-								str=str.replace(/格上限/g,str2);
-							};
-							if(str.includes("物理攻击")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gongji');\">物理攻击</a>";
-								str=str.replace(/物理攻击/g,str2);
-							};
-							if(str.includes("法术攻击")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fashu');\">法术攻击</a>";
-								str=str.replace(/法术攻击/g,str2);
-							};
-							if(str.includes("附近")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fujin');\">附近</a>";
-								str=str.replace(/附近/g,str2);
-							};
-							if(str.includes("友军")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_youjun');\">友军</a>";
-								str=str.replace(/友军/g,str2);
-							};
-							if(str.includes("飓风")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jufeng');\">飓风</a>";
-								str=str.replace(/飓风/g,str2);
-							};
-							if(str.includes("减速")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jiansu');\">减速</a>";
-								str=str.replace(/减速/g,str2);
-							};
-							if(str.includes("定身")){
-								var str2="<a style='color:#800080' href=\"javascript:game.xjzh_openDialog('xjzh_intro_dingshen');\">定身</a>";
-								str=str.replace(/定身/g,str2);
-							};
-							lib.translate[skillx+"_info"]=str;
+            lib.arenaReady.push(async()=>{
+                let obj=Object.keys(Object.assign({...lib.skill},{...lib.card})).filter(name=>{
+                    if(name.includes("xjzh_")) return true;
+                    return false;
+                });
+                let colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
+                for await(let name of obj){
+                    if(lib.translate[name+"_info"]&&lib.translate[name+"_info"].length>0){
+                        let str = lib.translate[name+ "_info"]
+
+						if(str.includes("负面状态")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fumian');\">负面状态</a>`;
+							str=str.replace(/负面状态/g,str2);
 						};
-					};
-				};
+						if(str.includes("目盲")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_mumang');\">目盲</a>`;
+							str=str.replace(/目盲/g,str2);
+						};
+						if(str.includes("中毒")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_zhongdu');\">中毒</a>`;
+							str=str.replace(/中毒/g,str2);
+						};
+						if(str.includes("眩晕")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_xuanyun');\">眩晕</a>`;
+							str=str.replace(/眩晕/g,str2);
+						};
+						if(str.includes("灵柩")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_lingjiu');\">灵柩</a>`;
+							str=str.replace(/灵柩/g,str2);
+						};
+						if(str.includes("唤醒")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huanxing');\">唤醒</a>`;
+							str=str.replace(/唤醒/g,str2);
+						};
+						if(str.includes("解放")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jiefang');\">解放</a>`;
+							str=str.replace(/解放/g,str2);
+						};
+						if(str.includes("冰冻")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_bingdong');\">冰冻</a>`;
+							str=str.replace(/冰冻/g,str2);
+						};
+						if(str.includes("灌注")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_guanzhu');\">灌注</a>`;
+							str=str.replace(/灌注/g,str2);
+						};
+						if(str.includes("强固")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_qianggu');\">强固</a>`;
+							str=str.replace(/强固/g,str2);
+						};
+						if(str.includes("燃烧")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_ranshao');\">燃烧</a>`;
+							str=str.replace(/燃烧/g,str2);
+						};
+						if(str.includes("冰缓")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_binghuan');\">冰缓</a>`;
+							str=str.replace(/冰缓/g,str2);
+						};
+						if(str.includes("感电")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gandian');\">感电</a>`;
+							str=str.replace(/感电/g,str2);
+						};
+						if(str.includes("周围")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_zhouwei');\">周围</a>`;
+							str=str.replace(/周围/g,str2);
+						};
+						if(str.includes("暴击")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baoji');\">暴击</a>`;
+							str=str.replace(/暴击/g,str2);
+						};
+						if(str.includes("暴率")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baojiRan');\">暴击几率</a>`;
+							str=str.replace(/暴率/g,str2);
+						};
+						if(str.includes("易伤")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_yishang');\">易伤</a>`;
+							str=str.replace(/易伤/g,str2);
+						};
+						if(str.includes("暴伤")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baojiDamage');\">暴击伤害</a>`;
+							str=str.replace(/暴伤/g,str2);
+						};
+						if(str.includes("暴球")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_criticalstrike');\">暴击球</a>`;
+							str=str.replace(/暴球/g,str2);
+						};
+						if(str.includes("反击")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fanji');\">反击</a>`;
+							str=str.replace(/反击/g,str2);
+						};
+						if(str.includes("格挡")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gedang');\">格挡</a>`;
+							str=str.replace(/格挡/g,str2);
+						};
+						if(str.includes("格上限")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_maxGedang');\">格挡上限</a>`;
+							str=str.replace(/格上限/g,str2);
+						};
+						if(str.includes("物理攻击")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_gongji');\">物理攻击</a>`;
+							str=str.replace(/物理攻击/g,str2);
+						};
+						if(str.includes("法术攻击")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fashu');\">法术攻击</a>`;
+							str=str.replace(/法术攻击/g,str2);
+						};
+						if(str.includes("附近")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fujin');\">附近</a>`;
+							str=str.replace(/附近/g,str2);
+						};
+						if(str.includes("友军")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_youjun');\">友军</a>`;
+							str=str.replace(/友军/g,str2);
+						};
+						if(str.includes("飓风")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jufeng');\">飓风</a>`;
+							str=str.replace(/飓风/g,str2);
+						};
+						if(str.includes("减速")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jiansu');\">减速</a>`;
+							str=str.replace(/减速/g,str2);
+						};
+						if(str.includes("定身")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_dingshen');\">定身</a>`;
+							str=str.replace(/定身/g,str2);
+						};
+                        lib.translate[name+"_info"] = str;
+                    };
+                };
 			});
 			if(!lib.config.xjzh_importTips2){
 				alert('声明：本扩展（《仙家之魂》）完全免费且开源，到目前为止仅在QQ群697310426和545844827发布且从未进行过任何宣发，若你通过其他来源获得此扩展所产生的任何问题均与作者无关。');
@@ -1175,12 +1176,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				var nowDate=new Date();
 				var beginDate=new Date(nowDate);
 				var endDate=new Date(nowDate);
-				
+
 				var beginIndex=beginTime.lastIndexOf("\:");
 				var beginHour=beginTime.substring(0,beginIndex);
 				var beginMinue=beginTime.substring(beginIndex+1,beginTime.length);
 				beginDate.setHours(beginHour, beginMinue,0,0);
-					
+
 				var endIndex=endTime.lastIndexOf("\:");
 				var endHour=endTime.substring(0,endIndex);
 				var endMinue=endTime.substring(endIndex+1,endTime.length);
@@ -1197,7 +1198,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if (lib.skill[skill].sub) return false;
 				if (lib.skill[skill].charlotte) return false;
 				if (lib.skill[skill].nopop) return false;
-				//if(player&&player.hasSkill(skill,false,false,false)) return false;  
+				//if(player&&player.hasSkill(skill,false,false,false)) return false;
 				return !func || func(skill, player, target);
 			};
 			lib.element.player.xjzh_chooseSkill = function (list) {
@@ -1295,7 +1296,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if (result.bool && result.links && result.links.length) {
 					event.result = { bool: true, skills: result.links };
 					if (event.callback) {
-						event.callback(result, player, target);//这里可以自定义获得的是否临时技能//             
+						event.callback(result, player, target);//这里可以自定义获得的是否临时技能//
 					}
 					else {
 						for (var i = 0; i < result.links.length; i++) {
@@ -1321,7 +1322,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			get.xjzh_device=function(){
 				var userAgent=navigator.userAgent,platform=navigator.platform,arg=null;
 				var Agents=new Array("Android","iPhone","SymbianOS","Windows Phone","iPad","iPod");
-				for(var i=0;i<Agents.length;i++){  
+				for(var i=0;i<Agents.length;i++){
 					if(userAgent.indexOf(Agents[i])>0){
 						arg=Agents[i];
 						break;
@@ -1352,9 +1353,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					ios:!!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
 					android:u.indexOf('Android')>-1||u.indexOf('Linux') > -1, //android终端或者uc浏览器
 					iPhone:u.indexOf('iPhone')>-1 , //是否为iPhone或者QQHD浏览器
-					iPad:u.indexOf('iPad')>-1, //是否iPad  
+					iPad:u.indexOf('iPad')>-1, //是否iPad
 					webApp:u.indexOf('Safari')==-1, //是否web应该程序，没有头部与底部
-					weixin:u.indexOf('MicroMessenger')>-1, //是否微信 
+					weixin:u.indexOf('MicroMessenger')>-1, //是否微信
 					qq:u.match(/\sQQ/i)==" qq" //是否QQ
 				};
 				for(var i in object){
@@ -2193,25 +2194,25 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			//代码借鉴自《金庸群侠传》
 			lib.element.player.xjzh_replaceFujiang=function(name2){
 				var player=this;
-				player.reinit(player.name2,name2,[player.hp,player.maxHp]);				
+				player.reinit(player.name2,name2,[player.hp,player.maxHp]);
 			};
 			lib.element.player.xjzh_addFujiang=function(name2){
 				var player=this;
 				player.name2=name2
 				player.classList.add('fullskin2');
 				player.reinit(player.name2,name2,[player.hp,player.maxHp]);
-				player.node.avatar2.show();		
-				player.node.count.classList.add('p2');	
-				player.node.name2.show();	                        	 
+				player.node.avatar2.show();
+				player.node.count.classList.add('p2');
+				player.node.name2.show();
 			};
 			lib.element.player.xjzh_removeFujiang=function(name2){
 				var player=this;
 				player.reinit(player.name2,player.name2,[player.hp,player.maxHp]);
 				delete player.name2;
 				player.classList.remove('fullskin2');
-				player.node.avatar2.hide();		
-				player.node.count.classList.remove('p2');	
-				player.node.name2.hide()		                        										
+				player.node.avatar2.hide();
+				player.node.count.classList.remove('p2');
+				player.node.name2.hide()
 			};
 			//检测获得/移除标记
 			lib.element.content.removeMark=function(){
@@ -2357,7 +2358,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					}
 					var prompt=`令${get.translation(player)}与${get.translation(target)}交换体力值或体力上限`;
 					var choice;
-					
+
 					var p1=player.maxHp;
 					var t1=target.maxHp;
 					var p2=player.hp;
@@ -2368,7 +2369,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					else{
 						choice='交换体力上限';
 					}
-					
+
 					var next=player.chooseControl(controls)
 					next.set('prompt',prompt);
 					next.set('ai',function(){
@@ -2385,19 +2386,19 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					}
 					game.log(player,"与",target,"交换了",result.control=="交换体力值"?"体力值":"体力上限");
 				}
-				
+
 				/*player.maxHp^=target.maxHp;
 				target.maxHp^=player.maxHp
 				player.maxHp^=target.maxHp;
 				player.hp^=target.hp;
 				target.hp^=player.hp;
 				player.hp^=target.hp;*/
-				
+
 				"step 2"
 				player.update();
 				target.update();
 			};
-		
+
 		},
 		precontent:function (xjzh){
 			// ---------------------------------------素材复制------------------------------------------//
@@ -2462,7 +2463,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 								game.xjzh_changeSuipian(num*100);
 								game.saveExtensionConfig("仙家之魂","xjzh_importCalculateScore",true);
 							}
-							
+
 							//在武将资料上显示成就是否完成
 							let {...characters}=lib.characterPack.XWTR;
 							let {...characters2}=lib.characterPack.XWSG;
@@ -2552,7 +2553,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							if(!window.decadeUI) return;
 							var fileInfoList=[
 								///仙家之魂骨骼特效清单
-								
+
 								//爆炸特效
 								{ name: 'xjzh_skillEffect_baozha', fileType:"json" },
 								//雷击特效
@@ -2564,7 +2565,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 								//闪光
 								{ name: 'xjzh_skillEffect_whiteFlash', fileType:"json" },
 								{ name: 'xjzh_skillEffect_redFlash', fileType:"json" },
-								
+
 							];
 							var fileList=fileInfoList.concat();
 							var read=function(){
@@ -2588,9 +2589,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							read();
 							read();
 						});
-						
+
 						//卡牌及技能特效
-						
+
 						//林嘉笙〖甘霖〗
 						lib.animate.skill["xjzh_meiren_ganling"]=function(name){
 							game.xjzh_playEffect("xjzh_skillEffect_whiteFlash",this);
@@ -2605,7 +2606,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						};*/
 					};
                 });
-                
+
 			};
 			// ---------------------------------------拉马斯相关选项------------------------------------------//
 			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro={
@@ -2654,7 +2655,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					});
 				},
 			};
-			
+
 			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro3={
 				"name":'<b><li>导入存档',
 				"clear":true,
@@ -2715,7 +2716,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                     					}
                     					else if(data.indexOf("奇术要件存档备份")==0){
                     						var data=JSON.parse(data.slice(9));
-                    						
+
                                         	var Name=ui.create.div(ui.window,{
                                             	zIndex:'1000',
                                        			left:'0',width:'100%',

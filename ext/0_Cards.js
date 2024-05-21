@@ -1141,7 +1141,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        }else{
 				            trigger.num-=num;
 				            if(!player.storage.xjzh_card_rongyankaijia_skill) player.storage.xjzh_card_rongyankaijia_skill=[];
-							let list=[num,trigger.nature,trigger.cards,trigger.card];
+							let list=[num,trigger.nature,trigger.cards,trigger.card,"notrigger"];
 							if(trigger.source) list.push(trigger.source);
 							else list.push("nosource");
 							player.storage.xjzh_card_rongyankaijia_skill.push(list);
@@ -1199,10 +1199,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					async content(event,trigger,player){
 				        let storage=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
 						for await(let damageList of storage){
+							if(player.isDead()) break;
 							player.damage.apply(player,damageList.slice(0));
 						}
-				        delete player.storage.xjzh_card_rongyankaijia_skill
-				        player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
+						if(player.isAlive()){
+				        	delete player.storage.xjzh_card_rongyankaijia_skill
+				        	player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
+						}
 				    },
 				},
 				"xjzh_card_xiejiaozhiguan_skill":{

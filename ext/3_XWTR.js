@@ -1,7 +1,4 @@
 'use strict';
-
-const { group } = require("console");
-
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -323,9 +320,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						return `〖点灵〗：是否令${get.translation(event.player)}本回合阶段顺序逆转？`;
 					},
 					filter(event,player){
+						if(!player.hasMark("xjzh_zxzh_tusu")) return false;
 						return event.player!=player&&event.player.isIn();
 					},
-					check(event,player){return 1;},
+					check(event,player){
+						let att=get.attitude(player,event.player);
+						let num=event.player.needsToDiscard(null,null.true);
+						if(att<=0&&num>0) return num;
+						if(att>0&&num<=0) return num;
+						return 1;
+					},
 					group:["xjzh_zxzh_dianling_end"],
     				async content(event,trigger,player){
 						trigger.phaseList=trigger.phaseList.reverse();
@@ -343,7 +347,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							priority:3,
 							sub:true,
 							filter(event,player){
-								if(!player.hasMark("xjzh_zxzh_tusu")) return false;
 								if(event.name=="damage") return event.source&&event.source.hasSkill("xjzh_zxzh_dianling_on");
 								return event.player.hasSkill("xjzh_zxzh_dianling_on");
 							},
@@ -381,6 +384,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					intro:{
 						content:"#",
 					},
+					mod:{
+						targetInRange(card,player,target,now){
+						    if(!card.cards) return;
+						    for(let i of card.cards){
+						        if(i.hasGaintag("xjzh_zxzh_tusu")) return true;
+						    }
+						},
+					},
     				async content(event,trigger,player){
 						if(trigger.name=="phaseDraw"){
 							let cards=[];
@@ -390,7 +401,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							  	cards.push(card);
 							  	if(cards.length>=player.maxHp) break;
 							}
-							player.gain(cards,'draw');
+							player.directgain(cards,null,'xjzh_zxzh_tusu');
 						}else{
 							player.addMark("xjzh_zxzh_tusu",player.maxHp);
 						}
