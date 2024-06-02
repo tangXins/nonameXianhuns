@@ -1,8 +1,8 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.05221',
-	'3.05221':{
+    version:'3.06021',
+	'3.06021':{
         changeLog:[
 			"重做武将孙悟空",
 			"调整sp华佗〖行医〗，不再可以移除负面状态且不再令sp华佗摸牌",
@@ -15,7 +15,6 @@ export const xjzhUpdateLog={
 	    players:["xjzh_xyj_sunwukong","xjzh_sanguo_sphuatuo"],
 		cards:["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"],
     },
-    version:'3.05221',
 	'3.05221':{
         changeLog:[
 			"重做武将姜凝脂",
