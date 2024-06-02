@@ -14,11 +14,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					fullskin:true,
 					type:"basic",
 					toself:true,
-					enable:function(event,player){
+					enable(event,player){
 					    return true;
 				    },
 				    selectTarget:-1,
-				    filterTarget:function(card,player,target){
+				    filterTarget(card,player,target){
 					    return target==player;
 				    },
                     async content(event,trigger,player){
@@ -217,7 +217,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						    game.log(card,"不为实体牌，本次使用不生效");
 						    event.finish();
 						    return;
-						} 
+						}
 						"step 1"
 						draw=false;
 						lose=false;
@@ -438,15 +438,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					        }
 					        num++;
 					    }
-					    
+
 					    var ecard=player.getEquip(1);
 					    var origin_name=ecard.name;
-					    
+
 					    var name=ecard.name+'_shuangran';
                         lib.card[name]=get.copy(get.info(ecard));
-                        
+
                         lib.translate[name+'_info']="";
-                        
+
                         for(var i in object){
                             switch(i){
                                 case "baojilv":
@@ -463,11 +463,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					            break;
                             }
                         }
-                        
+
                         player.storage.xjzh_card_shuangran_skill=object;
-                                    
+
                         lib.translate[name]=lib.translate[ecard.name];
-                                    
+
                         ecard.name=name;
                         ecard.origin_name=origin_name;
 					},
@@ -505,34 +505,34 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    var num=0
 					    var list=["xjzh_card_wuxian_skill_fanshe","xjzh_card_wuxian_skill_zhufu","xjzh_card_wuxian_skill_jianren","xjzh_card_wuxian_skill_jujiao","xjzh_card_wuxian_skill_pomo","xjzh_card_wuxian_skill_liuguang"].randomGets(3);
 					    if(Array.isArray(lib.card[card.name].skills)===true) lib.card[card.name].skills=list;
-					    
+
 					    while(num<=list.length-1){
 					        lib.skill[list[num]].init(player);
 					        num++
 					    }
-					    
+
 					    var ecard=card
 					    var origin_name=ecard.name;
-					    
+
 					    var name=ecard.name+'_wuxian';
                         lib.card[name]=get.copy(get.info(ecard));
-                        
+
                         var str=""
                         var player=_status.event.player
-                        
+
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_fanshe")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_fanshe")+"</span>：你受到伤害时有"+get.translation(player.storage.xjzh_card_wuxian_skill_fanshe)+"%几率反射该伤害<br><br>";
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_zhufu")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_zhufu")+"</span>：你受到伤害时有"+get.translation(player.storage.xjzh_card_wuxian_skill_zhufu)+"%几率摸一张牌<br><br>";
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_jianren")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_jianren")+"</span>：你受到伤害后有"+get.translation(player.storage.xjzh_card_wuxian_skill_jianren)+"%几率回复一点体力<br><br>";
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_jujiao")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_jujiao")+"</span>：你成为【杀】的目标时有"+get.translation(player.storage.xjzh_card_wuxian_skill_jujiao)+"%几率令其额外结算一次<br><br>";
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_pomo")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_pomo")+"</span>：你受到属性伤害有"+get.translation(player.storage.xjzh_card_wuxian_skill_pomo)+"%几率+1<br><br>";
                         if(lib.card[card.name].skills.includes("xjzh_card_wuxian_skill_liuguang")) str+="<li><span style=\"color: red\">"+get.translation("xjzh_card_wuxian_skill_liuguang")+"</span>：你成为非伤害性卡牌时有"+get.translation(player.storage.xjzh_card_wuxian_skill_liuguang)+"%几率随机弃置一张牌<br><br>";
-                        
+
                         str+=""+get.translation("xjzh_card_wuxian_info")+"";
-                        
+
                         lib.translate[name+'_info']=str
-                                    
+
                         lib.translate[name]=lib.translate[ecard.name];
-                                    
+
                         ecard.name=name;
                         ecard.origin_name=origin_name;
                         game.log(player,"的无限效果为：","#y"+get.translation(list));
@@ -574,7 +574,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 								player.damage.apply(player,damageList.slice(0));
 							}
 							delete player.storage.xjzh_card_rongyankaijia_skill;
-				            
+
 				            player.unmarkSkill("xjzh_card_rongyankaijia_skill2");
 							player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
 					    }
@@ -688,19 +688,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    	        if(Array.isArray(lib.card[i].skills)===true) list.push(i);
 			    	    }
 			    	    var cards2=list.randomGet();
-			    	    
+
 			    	    lib.card[card.name].skills=lib.card[cards2].skills.slice(0);
-						
+
 					    var ecard=card
 					    var origin_name=ecard.name;
-					    
+
 					    var name=ecard.name+'_kadelanzhichu';
                         lib.card[name]=get.copy(get.info(ecard));
-                        
+
                         lib.translate[name+'_info']="<li>当前反射装备<span style=\"color: red\">"+get.translation(cards2)+"</span>："+lib.translate[cards2+"_info"]+"<br><br>"+lib.translate[ecard.name+'_info'];
-                                    
+
                         lib.translate[name]=lib.translate[ecard.name];
-                                    
+
                         ecard.name=name;
                         ecard.origin_name=origin_name;
                         player.popup(cards2);
@@ -733,11 +733,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    	    var ecard=player.getEquip(5);
 			    	    var origin_name=ecard.name;
 			    	    player.storage.xjzh_card_xiejiaozhiguan_skill=[];
-					    
+
 					    var name=ecard.name+'xiejiaozhiguan';
                         lib.card[name]=get.copy(get.info(ecard));
                         lib.translate[name+'_info']="你所有限制回合发动次数的主动技能+2次发动次数。<br><br>受【谐角之冠】影响的技能：";
-						
+
 						var list=player.getSkills(null,false,false).filter(function(skill){
 							var info=lib.skill[skill];
 							return info&&!info.equipSkill&&!info.cardSkill&&!lib.skill.global.includes(skill)&&info.usable&&typeof info.usable=='number';
@@ -752,14 +752,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							list2.push(list[i]);
 							lib.translate[name+'_info']+="<br><span style=\"color: yellow\">【"+get.translation(list[i])+"】+：2</span>";
 						}
-						
+
 						/*player.addSkill("xjzh_tongyong_baiban");
 						player.storage['xjzh_tongyong_baiban'].push(list2);*/
-						
+
 						player.storage.xjzh_card_xiejiaozhiguan_skill=list2.slice(0);
-						
+
                         lib.translate[name]=lib.translate[ecard.name];
-                                    
+
                         ecard.name=name;
                         ecard.origin_name=origin_name;
 			    	},
@@ -769,9 +769,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							var info=lib.skill[skill];
 							return info&&info.usable&&typeof info.usable=='number';
 						});
-						
+
 						if(!list.length) return;
-						
+
 						for(var i=0;i<list.length;i++){
 							var info=lib.skill[list[i]];
 							if(!info.enable||info.enable!="phaseUse") continue;
@@ -779,7 +779,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							var num=info.usable
 							info.usable=num-=2;
 						}
-						
+
 						if(player.storage.xjzh_card_xiejiaozhiguan_skill) delete player.storage.xjzh_card_xiejiaozhiguan_skill;
 			    	},
 		    		ai:{
@@ -1261,7 +1261,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_card_rongyankaijia":"熔岩铠甲",
 				"xjzh_card_rongyankaijia_info":"你受到伤害的50%（向上取整）会在你的回合结束后结算，若该伤害为火焰伤害，则免疫该伤害。",
 				"xjzh_card_rongyankaijia_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>火焰之神闲暇时随手制作的一件残次品，它不会为你增加任何防御力量，但当你穿戴它时，你会感觉到无比的强大。</font></span>",
-				
+
 				//技能
 				"xjzh_card_shuangran_skill":"霜燃",
 				"xjzh_card_shuangran_skill_info":"",
@@ -1284,7 +1284,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_card_rongyankaijia_skill":"熔岩铠甲",
 				"xjzh_card_rongyankaijia_skill2":"熔岩铠甲",
 				"xjzh_card_xiejiaozhiguan_skill":"谐角之冠",
-				
+
 			},
 			list:[
 			    //基本牌
@@ -1296,14 +1296,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		["spade",2,"xjzh_card_mingyunyingbi"],//命运硬币
 	    		["diamond",8,"xjzh_card_zhishijingsai"],//知识竞赛
 	    		["club",5,"xjzh_card_zhishijingsai"],//知识竞赛
-			    
+
 		    	//非延时锦囊牌
 	    		["heart",13,"xjzh_card_lianqidan"],//练气丹
 	    		["club",10,"xjzh_card_cuimaidan"],//摧脉丹
 	    		["spade",10,"xjzh_card_cuimaidan"],//摧脉丹
 	    		["club",8,"xjzh_card_cuimaidan"],//摧脉丹
 	    		["spade",8,"xjzh_card_cuimaidan"],//摧脉丹
-			   
+
 			    //装备牌
 			    //武器
 			    ["heart",6,"xjzh_card_shuangran"],//霜燃
@@ -1314,10 +1314,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    ["club",6,"xjzh_card_wuxian"],//无限
 			    ["diamond",10,"xjzh_card_rongyankaijia"],//熔岩铠甲
 			    ["diamond",8,"xjzh_card_rongyankaijia"],//熔岩铠甲
-		    	
+
 		    	//防御马
 	    		["club",2,"xjzh_card_numa"],//驽马
-	    		
+
 	    		//宝物
 	    		["spade",8,"xjzh_card_yizhihuhuan"],//意志呼唤
 	    		["club",7,"xjzh_card_yizhihuhuan"],//意志呼唤

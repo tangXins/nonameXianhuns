@@ -19,7 +19,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_dou":["male","qun",3,["xjzh_huoying_xianzhang","xjzh_huoying_sihun","xjzh_huoying_chuanyi"],[]],
 				"xjzh_huoying_kakaxi":["male","qun",3,["xjzh_huoying_kaobei","xjzh_huoying_shenwei","xjzh_huoying_leiqie"],[]],
 				"xjzh_huoying_zhishui":["male","qun",3,["xjzh_huoying_bietian","xjzh_huoying_shunshen","xjzh_huoying_xuzuo"],[]],
-				
+
 			},
 			characterIntro:{
 				"xjzh_huoying_mingren":"",
@@ -27,7 +27,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_dou":"",
 				"xjzh_huoying_kakaxi":"",
 				"xjzh_huoying_zhishui":"",
-				
+
 			},
 			characterTitle:{
 				"xjzh_huoying_mingren":"命运之子",
@@ -35,7 +35,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_dou":"蛇岛异仙",
 				"xjzh_huoying_kakaxi":"拷贝忍者",
 				"xjzh_huoying_zhishui":"瞬身止水",
-				
+
 			},
 			perfectPair:{
 			},
@@ -326,17 +326,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							event.finish();
 						}
 						else{
-							if(get.mode()!='guozhan'){
-								var id=player.identity;
-								trigger.player.setIdentity(id);
-								trigger.player.identity=id;
-								trigger.player.node.identity.dataset.color='xjzh_huoying_zuidun';
-								trigger.player.identityShown=true;
-							}
-							else{
-								var id=player.group
-								trigger.player.player.changeGroup(id);
-							}
+							let id=player.identity;
+							trigger.player.identity=id;
+							trigger.player.setIdentity(id);
+							//trigger.player.node.identity.dataset.color='xjzh_huoying_zuidun';
+							trigger.player.identityShown=true;
 						}
 						"step 3"
 						trigger.player.clearSkills();
@@ -1790,7 +1784,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        },
 				    },
 				},
-            
+
 			},
 			dynamicTranslate:{
 			    "xjzh_huoying_xianzhang":function(player){
@@ -1816,7 +1810,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_dou":"药师兜",
 				"xjzh_huoying_kakaxi":"旗木卡卡西",
 				"xjzh_huoying_zhishui":"宇智波止水",
-				
+
 				"xjzh_huoying_fenshen":"分身",
 				"xjzh_huoying_fenshen_info":"<b><font color=orange>〖影分身之术〗</font><b>出牌阶段，你可以与一名角色拼点，若你赢，你可以再次发动该技能且本回合选择目标+1（最多为3），然后你摸一张牌",
 				"xjzh_huoying_luoxuan":"螺旋",
@@ -1863,7 +1857,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_shunshen_info":"<b><font color=orange>〖瞬身术〗</font>当你受到伤害时，你可以弃置一张牌与其交换位置，若此时其手牌区有牌，你获得其一张手牌，然后你可以使用这张牌，若此牌为【闪】，你可以弃置此牌防止该伤害。",
 				"xjzh_huoying_xuzuo":"须佐",
 				"xjzh_huoying_xuzuo_info":"<b><font color=orange>〖须佐能乎〗</font>锁定技，当你至少发动一次〖别天〗后，你每发动一次〖瞬身〗获得一点护甲；当你使用【杀】造成伤害时，你可以移除所有护甲令此牌伤害+x（x为你移除的护甲数量）。",
-				
+
 				"XWDM_huoying":"火影忍者",
 			},
 		};

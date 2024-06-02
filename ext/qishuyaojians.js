@@ -122,7 +122,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     	};
 	};
 	game.xjzhQishu_saveConfig();
-	
+
 	//提示创建存档
 	lib.arenaReady.push(function(){
 	    if(!lib.config.xjzh_qishufilesOnload){
@@ -248,7 +248,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    	        }
 	    	        player.chooseTarget(list,"〖分裂箭矢〗：为"+get.translation(trigger.card)+"额外指定一个目标",function(card,player,target){
 	    	            var player=_status.event.player;
-	    	            if(_status.event.targets.includes(target)) return false;								
+	    	            if(_status.event.targets.includes(target)) return false;
 	    	            return player.canUse(_status.event.card,target,false);
 	    	        }).set('ai',function(target){
 	    	            var trigger=_status.event.getTrigger();
@@ -276,7 +276,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     event.finish();
                     return;
                 }
-				"step 1"	
+				"step 1"
 				var list=player.getSkills(null,false,false).filter(function(skill){
 					var info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
@@ -792,10 +792,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		"xjzh_qishu_wushitongku":{
 			translate:"无视痛苦",
-			translate_info:"你受到伤害有5-15%防止之，改为回复等量体力。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+			translate_info:"你受到伤害有5-25%防止之，改为回复等量体力。",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
 			noTranslate:true,
-			level:1,
+			level:2,
 			skill:{
     		    trigger:{
     		        player:"damageBegin",
@@ -803,8 +803,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    forced:true,
     		    priority:3,
     		    filter:function(event,player){
-    		        var num=get.rand(5,15);
-    		        if(Math.random()>num/100) return false;
+    		        var num=get.rand(5,25);
+    		        if(Math.random()<=num/100) return false;
     		        return !event.numFixed&&!event.cancelled;
     		    },
     		    content:function(){
@@ -1068,7 +1068,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 },
             },
         },
-        
+
 	},
 	/* 模板
 	奇术要件id:{
@@ -1091,7 +1091,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		replaceSkillInfo:{
 			'被替换的技能id':'替换后技能的名字，不变可以不填',
 			'被替换的技能id_info':'替换后技能的描述',
-		},  
+		},
 		skill:{
 			装备的角色在游戏开始时获得的技能内容
 			奇术要件技能会有默认优先度5
@@ -1109,14 +1109,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    "step 1"
 	    const le=lib.config.xjzh_qishuyaojians.level;
 	    const ex=lib.config.xjzh_qishuyaojians.exp;
-	    
+
 	    if(le==100) return [100,0];
-	    
+
 	    if(ex>=le*(100+(10*le))){
 	        lib.config.xjzh_qishuyaojians.level+=1;
 	        lib.config.xjzh_qishuyaojians.exp-=le*(100+(10*le));
 	    }
-	    
+
 	    if(ex>=le*(100+(10*le))) game.xjzh_levelUp();
 	    "step 2"
 	    game.xjzhQishu_saveConfig();
@@ -1367,27 +1367,27 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			loading.subViews.text.innerHTML="碎片不足";
 			return;
 	    }
-		
+
 	    if(num2>=info[level][1]-exp){
 	        num=info[level][1]-exp;
 	    }
 	    else if(num2<info[level][1]-exp){
 	        num=num2;
 	    }
-	    
+
 	    lib.config.xjzh_qishuyaojians.levelEquip.item.exp+=num;
-	    
+
 	    if(lib.config.xjzh_qishuyaojians.levelEquip.item.exp>=info[level][1]){
 	        lib.config.xjzh_qishuyaojians.levelEquip.item.exp-=info[level][1];
 	        lib.config.xjzh_qishuyaojians.levelEquip.item.level+=1;
-	        
+
     	    var loading=window.xjzhOpenLoading();
     		loading.subViews.text.innerHTML=get.xjzh_qishuTranslate(item)+"已升级，当前等级："+lib.config.xjzh_qishuyaojians.levelEquip.item.level;
 	    }else{
 	        var loading=window.xjzhOpenLoading();
     		loading.subViews.text.innerHTML="消耗"+num+"碎片，获得等量经验";
 	    }
-	    
+
 	    game.xjzhQishu_saveConfig();
 	};
 	//获得奇术要件
@@ -1714,5 +1714,5 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 		}
 	};
-	
+
 });

@@ -1,4 +1,7 @@
 'use strict';
+
+const { skip } = require("node:test");
+
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -16,7 +19,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					"XWTR_dnfplayer":["xjzh_dnf_jianshen","xjzh_dnf_shengqi"],
 					"XWTR_dnfnpc":["xjzh_dnf_suodeluosi"],
 					"XWTR_xyj":["xjzh_xyj_sunwukong"],
-					
+
 				},
 			},
 			character:{
@@ -30,24 +33,24 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_moqinwu":["female","qun",3,["xjzh_zxzh_shoutao","xjzh_zxzh_taoyuan","xjzh_zxzh_qiwu"],[]],
 				"xjzh_zxzh_moqinyan":["male","qun",3,["xjzh_zxzh_cangjian","xjzh_zxzh_yangjian","xjzh_zxzh_yujian"],['zhuanshu:xjzh_zhuanshu_jianzong']],
 				"xjzh_zxzh_linziyan":["male","qun",4,["xjzh_zxzh_leifax","xjzh_zxzh_leiyu","xjzh_zxzh_tianxin"],['zhuanshu:xjzh_zhuanshu_jianzong']],
-				
+
 				//流放之路
 				//女巫
 				"xjzh_poe_nvwu":["female","qun",3,["xjzh_poe_choice2","xjzh_poe_huoqiu","xjzh_poe_xuruo"],[]],
 				"xjzh_poe_yuansushi":["female","qun",3,["xjzh_poe_choice","xjzh_poe_huiliu","xjzh_poe_guangta","xjzh_poe_sangzhong","xjzh_poe_suxing","xjzh_poe_bilei","xjzh_poe_qinhe"],["unseen","forbidai"]],
-				
+
 				//决斗者
 				"xjzh_poe_juedouzhe":["male","qun",3,["xjzh_poe_choice2","xjzh_poe_jianfeng","xjzh_poe_sidou","xjzh_poe_tiaozhan"],[]],
 				"xjzh_poe_chuxing":["male","qun",3,["xjzh_poe_choice","xjzh_poe_zhenya","xjzh_poe_zaixing","xjzh_poe_lengxue","xjzh_poe_shixue","xjzh_poe_canbao","xjzh_poe_yingxiang","xjzh_poe_yingxing"],["unseen","forbidai"]],
 				"xjzh_poe_weishi":["male","qun",3,["xjzh_poe_choice","xjzh_poe_jingji","xjzh_poe_zhuzao","xjzh_poe_fuchou","xjzh_poe_doushi","xjzh_poe_xueyan","xjzh_poe_baipiao"],["unseen","forbidai"]],
-				
+
 				//游侠
 				"xjzh_poe_youxia":["female","qun",3,["xjzh_poe_choice2","xjzh_poe_bingjian","xjzh_poe_dianjian"],[]],
 				"xjzh_poe_ruiyan":["female","qun",3,["xjzh_poe_choice","xjzh_poe_fenlie","xjzh_poe_tanshe","xjzh_poe_juji","xjzh_poe_jufeng","xjzh_poe_danmu"],["unseen","forbidai"]],
-				
+
 				//贵族
 				"xjzh_poe_guizu":["female","qun",3,["xjzh_poe_shenghua"],[]],
-				
+
 				//王者荣耀
 				"xjzh_wzry_libai":["male","qun",3,["xjzh_wzry_xiaxing","xjzh_wzry_jinjiu","xjzh_wzry_jiange"],[]],
 				"xjzh_wzry_yao":["male","qun",2,["xjzh_wzry_xingchen","xjzh_wzry_liekong","xjzh_wzry_guichen"],[]],
@@ -55,7 +58,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_haiyue":["female","qun",3,["xjzh_wzry_bieyue","xjzh_wzry_shunhua","xjzh_wzry_liuguang","xjzh_wzry_huanhai"],[]],
 				"xjzh_wzry_huamulan":["female","qun",4,["xjzh_wzry_xunshou","xjzh_wzry_konglie","xjzh_wzry_daofeng"],[]],
 				"xjzh_wzry_duoliya":["female","qun",4,["xjzh_wzry_huange","xjzh_wzry_zhulang","xjzh_wzry_tiannai"],[]],
-				
+
 				//暗黑破坏神
 				"xjzh_diablo_lamasi":["male","qun",3,["xjzh_diablo_hunhuo"],[]],
 				"xjzh_diablo_nataya":["female","qun",4,["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],[],["xjzhMp:100"]],
@@ -66,15 +69,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_diablo_xiong":["male","qun",4,["xjzh_diablo_zhongou","xjzh_diablo_fensui"],["unseen","forbidai"]],
 				"xjzh_diablo_lang":["male","qun",4,["xjzh_diablo_leibao","xjzh_diablo_kuanghou"],["unseen","forbidai"]],
 				"xjzh_diablo_lilisi":["female","qun",3,["xjzh_boss_lianji","xjzh_boss_qiangji"],["unseen","forbidai"]],
-				
+
 				//地下城与勇士
 				"xjzh_dnf_jianshen":["male","qun",4,["xjzh_dnf_levelUp"],[],["xjzhMp:80"]],
 				"xjzh_dnf_shengqi":["male","qun",4,["xjzh_dnf_levelUp"],[],["xjzhMp:/80100"]],
 				"xjzh_dnf_suodeluosi":["male","qun",3,["xjzh_dnf_jianshenx","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],[],[]],
-				
+
 				//西游释厄传
 				"xjzh_xyj_sunwukong":["male","qun",4,["xjzh_xyj_tianhuo","xjzh_xyj_dongcha","xjzh_xyj_ruyi"],[],[]],
-				
+
 			},
 			characterIntro:{
 				//众星之魂
@@ -87,7 +90,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_yumuren":"",
 				"xjzh_zxzh_linmo":"",
 				"xjzh_zxzh_jiangningzhi":"",
-				
+
 				//流放之路
 				"xjzh_poe_nvwu":"",
 				"xjzh_poe_yuansushi":"",
@@ -97,7 +100,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_poe_youxia":"",
 				"xjzh_poe_ruiyan":"",
 				"xjzh_poe_guizu":"",
-				
+
 				//王者荣耀
 				"xjzh_wzry_libai":"注：本故事纯属虚构，与真实历史无关。<br><br>&ensp;&ensp;&ensp;&ensp;巍峨的长安城，数百年间屹立不倒。但长安的门户，守卫严密的朱雀门却镌刻着一道剑痕，那是一个青年醉后以长剑所书的诗句“欲上青天揽明月”，轰动整个长安城。当治安官狄仁杰欲以破坏长安的罪名逮捕他时，爱才的女帝拒绝了。女帝甚至下令保留朱雀门上饱含剑意的诗痕。数日之间，这名一人一剑，直入长安的青年“剑仙”之名传遍长安。他就是李白。<br>&ensp;&ensp;&ensp;&ensp;彼时的李白，年少轻狂，拒绝了女帝入朝为官的邀请后，开始试剑天下的旅途。当他初次见到滔滔黄河时，心中的剑意迸发而出，奔流到海不复回。从那时起，没有机关的师承，没有魔道的秘法，没有魔种的血脉的李白，仅仅依靠自己和手中的剑，成为帝国强者中的第一人，乃真正的天纵之才。他会给每个败于己的对手赋诗，因此，诗名和剑名也一同流传开来。后来，甚至有人视之为荣耀，为得诗篇而求一败，令人哭笑不得。<br>&ensp;&ensp;&ensp;&ensp;就在李白的剑意到达巅峰之后不久，旅途也来到了云中漠地。很少有人知道，生活在长安的李白，出生于云中漠地的海市蜃楼之下。他怀着剑仙荣耀归来，却发现幼年记忆里充满异域风情的繁华城池已经不复存在。被贩为奴隶的公主，向他倾诉自己的遭遇：帝国的铁骑越过长城，踏平了整个云中漠地。荒废的城池很快被黄沙掩埋。李白想要救出她，少女却选择了从屈辱中自我了断。<br>&ensp;&ensp;&ensp;&ensp;鲜血激起了李白的侠义之心。他第二次单剑闯入长安，质问女帝讨要征平云中漠地的说法。一夜长安风云变色，大明宫也在剑仙之剑下黯然无光。有史以来从未曾被外力攻破的长安城，第一次因为一个普通人而动摇。<br>&ensp;&ensp;&ensp;&ensp;没有人知道最后发生了什么事。李白自长安城中全身而退。他和女帝的密谈，被视为禁忌，不见于史官的笔下。<br>&ensp;&ensp;&ensp;&ensp;只有李白自己清楚，他的骄傲被挫败了，在最强的巅峰。从那之后，他开始自我放逐，从寂寞的旅途中寻求新的意义，陪伴他的，除了剑，还多了酒。<br>&ensp;&ensp;&ensp;&ensp;人人都以为剑仙就此一蹶不振。但长安的府衙中，狄仁杰查看着关于李白的行踪报告，露出难以捉摸的冷笑。<br>&ensp;&ensp;&ensp;&ensp;“元芳，你怎么看？”<br>&ensp;&ensp;&ensp;&ensp;不等密探回答，他立刻自言自语：“再次出鞘的时候，会更加惊天动地吧。这家伙，太过骄傲，又太过寂寞了。”<br>&ensp;&ensp;&ensp;&ensp;而狄仁杰所预言的这一天，在数年之后到来。<br>&ensp;&ensp;&ensp;&ensp;这是长安城平常的一天。晨钟回响在上空，自云中漠地的旅人远途而来，正抬首打量朱雀门上的剑痕；热闹的长乐坊中，五陵少年们因前所未有的美妙琴声而骚动；感业寺的银杏树依旧枝繁叶茂。唯有狄仁杰手下的密探隐入黑暗，紧张注视着那个白衣潇洒，酒剑相伴的男子身影。<br>&ensp;&ensp;&ensp;&ensp;剑仙李白，三入长安了。<br>&ensp;&ensp;&ensp;&ensp;这次长安城又将怎样被动摇呢？<br>&ensp;&ensp;&ensp;&ensp;“大河之剑天上来！”",
 				"xjzh_wzry_yao":"注：本故事纯属虚构，与真实历史无关。<br><br>&ensp;&ensp;&ensp;&ensp;曜是一个从小怀抱英雄梦想的热血少年，与冷静强大的姐姐镜激烈的争夺着所有比赛的第一。尽管天性不同，但他们都到了稷下学习，渴望在这座象征着王者大陆最高智慧的学府中获得成长。<br>&ensp;&ensp;&ensp;&ensp;曜在老师庄周举办的归虚梦演报名中结识到朋友并成为这支“星之队”的队长，他们的心灵突破了种种桎梏、在竞赛角逐中相继绽放异彩，曜通过环中梦竞赛一节寻找到自我意识的根基，掌握到星辰之力，用剑划下了有力的一笔，就像淹没于漫天星辰中的星星，终于闪烁出独属他的光芒。<br>&ensp;&ensp;&ensp;&ensp;少年曜在环中梦里打败了姐姐，然而作为英雄，一切才刚刚开始。",
@@ -105,7 +108,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_haiyue":"注：本故事纯属虚构，与真实历史无关。<br><br>&ensp;&ensp;&ensp;&ensp;<br><br>&ensp;&ensp;&ensp;&ensp;海月是最古老的月裔之一，也是神秘莫测的云中蝶的饲养人。<br><br>&ensp;&ensp;&ensp;&ensp;她在孩童时期曾因孱弱多病而被视为无用之人，被村子遗弃在野外苟延残喘十余年。最终在一场饥荒之年的冬夜，她平静地接受了自己将被野兽当作食物的命运。但是，帝俊的降临让云中度过了灾厄，也将她从死亡边缘拉了回来。<br><br>&ensp;&ensp;&ensp;&ensp;从那以后，她立誓将自己的生命献给神。为此，她经历了残酷的人体改造，成为了由帝俊亲手制造的神职者“月裔”中的一员。她忠心耿耿地追随并协助帝俊在云中的所有计划，她亲眼见证帝俊的光辉结束了人间的永夜，和众人一起拥戴祂为“神明”。然而，一场天地倒卷的诸神之战将这些都毁灭了。在圣剑弑神的瞬间，海月透支自己的生命，借用帝俊赐予她的“云中蝶”爆发出了惊人的力量，让众神的军队陷入了一瞬的幻境。正是这短暂的片刻让帝俊的神魂得以逃逸。<br><br>&ensp;&ensp;&ensp;&ensp;一千多年过去了，众神的传说早已湮灭于虚空，但在遥远的漠北天阙山巅，一缕执念却始终萦绕在海月那具早已死亡的琉璃躯体上。“不能让祂这样死去”，成为了铭刻在海月灵魂深处的印记，留在了人间。直到有一天，漠南来的少年不小心打破了天阙山的宁静，也惊醒了沉睡中的幽魂。经历了千年的死别，醒来的海月发誓定要夺回神明的遗产，迎接祂的归来。<br><br>&ensp;&ensp;&ensp;&ensp;为此，她将不惜一切代价。",
 				"xjzh_wzry_huamulan":"注：本故事纯属虚构，与真实历史无关。<br><br>&ensp;&ensp;&ensp;&ensp;静如影，疾如风。<br><br>&ensp;&ensp;&ensp;&ensp;金属的撞击声中，身影掠过。<br><br>&ensp;&ensp;&ensp;&ensp;不动如山，迅烈如火。<br><br>&ensp;&ensp;&ensp;&ensp;偷袭者重重跌倒在地。<br><br>&ensp;&ensp;&ensp;&ensp;战士的头盔裂开，被她扔到地上。发丝飘散出来。<br><br>&ensp;&ensp;&ensp;&ensp;女人！<br><br>&ensp;&ensp;&ensp;&ensp;“想活命吗？紧跟着我！”<br><br>&ensp;&ensp;&ensp;&ensp;前方是无际的长城，以及无际的敌人。<br><br>&ensp;&ensp;&ensp;&ensp;“姐可是传说！”",
 				"xjzh_wzry_duoliya":"注：本故事纯属虚构，与真实历史无关。<br><br>&ensp;&ensp;&ensp;&ensp;朵莉亚是来自大海深处的人鱼少女，会伪装成人类在海都“寻宝”，她同时也是人鱼族最有潜力的歌者。<br><br>&ensp;&ensp;&ensp;&ensp;朵莉亚出生于深海中的人鱼族，孩童时代的她便已被族人寄予厚望。小时候，在寻宝”的途中救下了海都命运家族少主海诺，两人从此成为两小无猜的“秘密伙伴”。后来的朵莉亚为平息海底深渊巨兽的危机，选择让狂躁的巨兽吞噬掉俩人最美好的情感以平息动乱。两人在之后皆失去有关对方的记忆，为找到失去的记忆，朵莉亚加入火鹰号，并打算前往珊瑚岛寻找传说中能帮忙唤回失落记忆的“宝物”。",
-				
+
 				//暗黑破坏神
 				"xjzh_diablo_kelike":"《暗黑破坏神》的科里克是守护亚瑞特巅峰的三名古代守护者之一，同时他也是野蛮人“野禽”部族的前任领导者。在担任部族领袖期间，科里克的主要职责就是保护他的族民免受野兽和敌对部族的侵袭与骚扰。",
 				"xjzh_diablo_lamasi":"《暗黑破坏神》中的游戏角色，初代死灵法师",
@@ -114,15 +117,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_diablo_yafeikela":"《暗黑破坏神》中的德鲁伊首领，据说德鲁伊和野蛮人同宗同源",
 				"xjzh_diablo_lilisi":"莉莉丝是游戏《暗黑破坏神IV》中的角色。莉莉丝为憎恨之王墨菲斯托的女儿、庇护所的创造者。",
 				"xjzh_diablo_nataya":"游戏《DIABLO II》（暗黑破坏神II）ACT3库拉斯特海港中的一个NPC。一个被雇佣的女杀手，同时也是刺客宗族费斯贾塔（Viz-jaq'tarr）的一员。",
-				
+
 				//地下城与勇士
 				"xjzh_dnf_jianshen":"只有运用剑术到极致的强大剑士才能获此殊荣，至此方可攀上神剑之巅。",
 				"xjzh_dnf_shengqi":"圣骑士是在贝尔玛尔大圣堂里受到神的保佑的法师。他们的职责是保护队员的安全。",
 				"xjzh_dnf_suodeluosi":"真正的剑魂索德罗斯，精通数万种武器，具有可以与周围的武器产生共鸣的特殊天赋，在战斗中可以发挥强大的威力。",
-				
+
 				//西游释厄传
 				"xjzh_xyj_sunwukong":"孙悟空（又称齐天大圣、孙行者、斗战胜佛），是中国古典神魔小说《西游记》中的主要角色之一（传为吴承恩所著）。由开天辟地产生的仙石孕育而生，出生地位于东胜神洲的花果山上，因带领猴群进入水帘洞而被尊为“美猴王”。为了学艺而漂洋过海拜师于须菩提祖师，得名孙悟空，学会大品天仙诀、地煞数七十二变、筋斗云等高超的法术。",
-				
+
 			},
 			characterTitle:{
 				//众星之魂
@@ -135,7 +138,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_moqinyan":"铸剑冶魂",
 				"xjzh_zxzh_yumuren":"拾樵抱薪",
 				"xjzh_zxzh_linmo":"万法同源",
-				
+
 				//流放之路
 				"xjzh_poe_nvwu":"控火专家",
 				"xjzh_poe_yuansushi":"元素大师",
@@ -145,7 +148,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_poe_youxia":"诡道专家",
 				"xjzh_poe_ruiyan":"神箭精灵",
 				"xjzh_poe_guizu":"天生贵族",
-				
+
 				//王者荣耀
 				"xjzh_wzry_libai":"青莲剑仙",
 				"xjzh_wzry_yao":"星辰之子",
@@ -153,22 +156,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_haiyue":"永夜之心",
 				"xjzh_wzry_huamulan":"传说之刃",
 				"xjzh_wzry_duoliya":"人鱼公主",
-				
+
 				//暗黑破坏神
 				"xjzh_diablo_yafeikela":"德鲁伊领袖",
 				"xjzh_diablo_lamasi":"初代死灵法师",
 				"xjzh_diablo_moruina":"始祖游侠",
 				"xjzh_diablo_kaxia":"罗格领袖",
 				"xjzh_diablo_nataya":"潜影杀手",
-				
+
 				//地下城与勇士
 				"xjzh_dnf_jianshen":"武器大师",
 				"xjzh_dnf_shengqi":"神选之光",
 				"xjzh_dnf_suodeluosi":"极诣剑圣",
-				
+
 				//西游释厄传
 				"xjzh_xyj_sunwukong":"破妄金瞳",
-				
+
 			},
 			perfectPair:{
 			},
@@ -194,9 +197,174 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 'xjzh_dnf_shengqi':function(mode){
                     return false;
                 },
-                
+
 			},
 			card:{
+			    "xjzh_card_tianganghuo":{
+					audio:"ext:仙家之魂/audio/card/",
+					image:"ext:仙家之魂/image/cardpicture/xjzh_card_tianganghuo.png",
+                    derivation:"xjzh_xyj_sunwukong",
+                    fullskin:true,
+                    type:"basic",
+					toself:true,
+					enable(event,player){
+						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
+						return get.playerName(player,"xjzh_xyj_sunwukong");
+				    },
+				    selectTarget:-1,
+				    filterTarget(card,player,target){
+					    return target==player;
+				    },
+                    async content(event,trigger,player){
+						player.addMark("xjzh_xyj_tianhuo",1,false);
+					},
+				    ai:{
+					    basic:{
+						    order:7.2,
+			    			useful:4.5,
+				    		value:9.2
+					    },
+				    	result:{
+					    	target:1,
+				    	},
+					    tag:{
+				    		draw:1,
+					    }
+			    	},
+                },
+			    "xjzh_card_hunyuandan":{
+					audio:"ext:仙家之魂/audio/card/",
+					image:"ext:仙家之魂/image/cardpicture/xjzh_card_hunyuandan.png",
+                    derivation:"xjzh_xyj_sunwukong",
+                    fullskin:true,
+                    type:"basic",
+					toself:true,
+					enable(event,player){
+						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
+						return get.playerName(player,"xjzh_xyj_sunwukong");
+				    },
+				    selectTarget:-1,
+					modTarget:true,
+				    filterTarget(card,player,target){
+					    return target==player;
+				    },
+                    async content(event,trigger,player){
+						let num=player.countCards("h",card=>{
+							return ["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_zhaoyaojing","xjzh_card_huoyundao","xjzh_card_dingshenzhou"].includes(get.name(card));
+						});
+						player.drawTo(player.maxHp+num);
+					},
+				    ai:{
+					    basic:{
+						    order:7.2,
+			    			useful:4.5,
+				    		value:9.2
+					    },
+				    	result:{
+					    	target(card,player,target){
+								let num=player.countCards("h",card=>{
+									return ["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_zhaoyaojing","xjzh_card_huoyundao","xjzh_card_dingshenzhou"].includes(get.name(card));
+								});
+								let num2=player.countCards("h")-num;
+								return player.maxHp-num;
+							},
+				    	},
+					    tag:{
+				    		draw:1,
+					    }
+			    	},
+                },
+			    "xjzh_card_zhaoyaojing":{
+					audio:"ext:仙家之魂/audio/card/",
+					image:"ext:仙家之魂/image/cardpicture/xjzh_card_zhaoyaojing.png",
+                    derivation:"xjzh_xyj_sunwukong",
+                    fullskin:true,
+                    type:"basic",
+					toself:true,
+					enable(event,player){
+						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
+						return get.playerName(player,"xjzh_xyj_sunwukong");
+				    },
+				    selectTarget:1,
+				    filterTarget(card,player,target){
+						if(!target.countCards("h",{suit:"diamond"})) return false;
+					    return target!=player;
+				    },
+                    async content(event,trigger,player){
+						const cards=await event.targets[0].chooseToDiscard("h",{suit:"diamond"})
+						.set("selectCard",()=>event.targets[0].countCards("h",{suit:"diamond"}))
+						.set("ai",card=>{
+							return 6-get.value(card);
+						})
+						.forResultCards();
+						if(!cards) event.targets[0].loseMaxHp();
+
+					},
+				    ai:{
+					    basic:{
+						    order:7.2,
+			    			useful:4.5,
+				    		value:9.2
+					    },
+				    	result:{
+					    	target:-1,
+				    	},
+					    tag:{
+				    		loseCard:1,
+					    }
+			    	},
+                },
+			    "xjzh_card_huoyundao":{
+					audio:"ext:仙家之魂/audio/card/",
+					image:"ext:仙家之魂/image/cardpicture/xjzh_card_huoyundao.png",
+                    derivation:"xjzh_xyj_sunwukong",
+                    fullskin:true,
+                    type:"equip",
+                    subtype:"equip1",
+					skills:["zhuque_skill"],
+                    distance:{attackFrom:-3},
+					ai:{
+						basic:{
+							equipValue:2,
+						},
+					},
+                },
+			    "xjzh_card_dingshenzhou":{
+					audio:"ext:仙家之魂/audio/card/",
+					image:"ext:仙家之魂/image/cardpicture/xjzh_card_dingshenzhou.png",
+					derivation:"xjzh_xyj_sunwukong",
+					fullskin:true,
+					type:"basic",
+					toself:true,
+					enable(event,player){
+						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
+						return get.playerName(player,"xjzh_xyj_sunwukong");
+					},
+					selectTarget:1,
+					filterTarget(card,player,target){
+						let history=player.getHistory("useCard",evt=>evt.targets.includes(target));
+						if(history.length) return false;
+						return target!=player;
+					},
+					async content(event,trigger,player){
+						let target=event.targets[0];
+						target.skip("phaseUse");
+						target.skip("phaseDiscard");
+					},
+				    ai:{
+					    basic:{
+						    order:7.2,
+			    			useful:4.5,
+				    		value:9.2
+					    },
+				    	result:{
+					    	target:-1,
+				    	},
+					    tag:{
+				    		skip:1,
+					    }
+			    	},
+                },
 			    "xjzh_card_lietiangong":{
 					audio:"ext:仙家之魂/audio/card/",
 					image:"ext:仙家之魂/image/cardpicture/xjzh_card_lietiangong.png",
@@ -307,7 +475,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    }
 			    	},
                 },
-                
+
 			},
 			skill:{
 				//众星之魂
@@ -2100,7 +2268,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					            let storage=player.storage.xjzh_zxzh_shiqiao.slice(0);
 					            if(!event.cards||!event.cards.length) return false;
 					            if(!storage.includes(get.number(event.cards[0]))) return false;
-					            if(event.getParent().name=="xjzh_zxzh_baoxin_use") return false 
+					            if(event.getParent().name=="xjzh_zxzh_baoxin_use") return false
 					            if(get.type(event.cards[0])=="equip"||get.type(event.cards[0])=="delay") return false;
 					            return true;
 					        },
@@ -2287,7 +2455,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        },
 				    },
 				},
-				
+
 				//流放之路
 				//升华职业选择技能
 				"xjzh_poe_choice":{
@@ -3570,7 +3738,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 						"step 3"
 						trigger.cancel();
-						
+
 					},
 					ai:{
 						effect:{
@@ -4163,7 +4331,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    },
 					},
 				},
-				
+
 				//王者荣耀
 				"xjzh_wzry_huange":{
 				    trigger:{
@@ -4343,7 +4511,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 						"step 2"
 						player.clearMark("xjzh_wzry_xiaxing",false);
-						"step 3"  
+						"step 3"
 						while(_status.event.name!='phase'){
 						    _status.event=_status.event.parent;
 					    }
@@ -5422,7 +5590,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		            return !suits.includes(get.suit(card));
 	    		        }).set('ai',function(card){
 	    		            var att=get.attitude(player,_status.event.getTrigger().player);
-	    		            if(att>0) return 8-get.value(card)  
+	    		            if(att>0) return 8-get.value(card)
 	    		            return 4-get.value(card);
 	    		        }).set('suits',suits);
 	    		        "step 1"
@@ -5636,7 +5804,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		                        return !suits.includes(get.suit(card));
 	    		                    }).set('ai',function(card){
 	    		                        var att=get.attitude(player,_status.event.getTrigger().player);
-	    		                        if(att>0) return 8-get.value(card)  
+	    		                        if(att>0) return 8-get.value(card)
 	    		                        return 4-get.value(card);
 	    		                    }).set('suits',suits);
 				                }
@@ -5650,7 +5818,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						},
 					},
 	    		},
-	    		
+
 	    		//暗黑破坏神
 	    		"xjzh_diablo_hunhuo":{
 	    		    trigger:{
@@ -5781,7 +5949,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		    group:["xjzh_diablo_hunhuo_use"],
 	    		    async content(event,trigger,player){
 	    		        if(trigger.source&&trigger.source==player&&trigger.player!=player&trigger.player.isDead()){
-							
+
 	    		            var object2=[]
 	    		            var bool2=false;
 	    		            if(player.name) object2.push(player.name);
@@ -6067,7 +6235,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 	        break;
                 	    };
                 	    return obj;
-                	    
+
 	    		    },
 	    		    contentBefore:function(){
 	    		        "step 0"
@@ -6090,7 +6258,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        var num=get.rand(1,Math.min(3,targets.length));
 	    		        var targets=targets.slice(0).randomGets(num);
 	    		        event.targets=targets.slice(0);
-	    		        
+
 	    		        for(var target of event.targets){
 	    		            var obj=lib.skill.xjzh_diablo_luanshe.seatNum(player,target);
 	    		            game.xjzh_playEffect('xjzh_skillEffect_gongjian',player,obj);
@@ -6287,7 +6455,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                     trigger.addCount=false;
                                     var stat=player.getStat();
                                     if(stat&&stat.card&&stat.card[trigger.card.name]) stat.card[trigger.card.name]--;
-                                }; 
+                                };
 					        },
 					    },
 	    		    },
@@ -6844,7 +7012,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		            if(!player.storage.xjzh_diablo_xianjing) return;
 	    		            var storage=player.storage.xjzh_diablo_xianjing;
 	    		            if(player.isUnderControl(true)) dialog.addAuto([storage,'vcard']);
-	    		            
+
 	    		        },
 	    		    },
 	    		    init:function(player){
@@ -6941,7 +7109,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 	    		    },
 	    		},
-	    		
+
 	    		//地下城与勇士
 	    		"xjzh_dnf_levelUp":{
 	    		    getSkillList:{
@@ -7898,11 +8066,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        }
 	    		    },
 	    		},
-	    		
+
 	    		//西游释厄传
 	    		"xjzh_xyj_tianhuo":{
 	    		    enable:"phaseUse",
-	    		    init:function(player,skill){
+	    		    init(player,skill){
 	    		        player.addMark(skill,3,false);
 	    		        player.update();
 	    		        game.playXH('xjzh_xyj_tianhuochuchang');
@@ -7914,81 +8082,71 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        content:"本局游戏可发动#次",
 	    		    },
 					audio:"ext:仙家之魂/audio/skill:2",
-	    		    filterTarget:function(card,player,target){
-	    		        return target==player.getNext()||target==player.getPrevious();
+	    		    filterTarget(card,player,target){
+						return [player,player.getNext(),player.getPrevious()].includes(target);
 	    		    },
-	    		    filterCard:function(card,player,target){
+	    		    filterCard(card,player,target){
 	    		        return get.suit(card)=="diamond";
 	    		    },
-	    		    selectCard:function(){
-	    		        var player=_status.event.player
-	    		        var cards=player.getCards('he',{suit:"diamond"});
+	    		    selectCard(){
+	    		        let player=get.player(),cards=player.getCards('he',{suit:"diamond"});
 	    		        return [1,Math.max(1,cards.length)];
 	    		    },
 	    		    position:'he',
 	    		    lose:false,
-	    		    filter:function(event,player){
+	    		    filter(event,player){
 	    		        if(!player.countCards('he',{suit:"diamond"})) return false;
 	    		        if(!player.hasMark("xjzh_xyj_tianhuo")) return false;
 	    		        return true;
 	    		    },
-	    		    content:function(){
-	    		        "step 0"
-	    		        player.removeMark("xjzh_xyj_tianhuo",1,false);
-	    		        target.gain(cards,player,"draw");
-	    		        "step 1"
-	    		        event.targets=game.filterPlayer();
-	    		        event.targets.sortBySeat(target);
-	    		        if(target==player.getPrevious()){
-	    		            event.targets.reverse();
-	    		            var targets2=event.targets[event.targets.length-1];
-	    		            event.targets.splice(-1,1);
-	    		            event.targets.unshift(targets2);
-	    		        }
-	    		        event.cards=cards.slice(0);
-	    		        "step 2"
-	    		        if(event.targets.length>1){
-	    		            event.card=event.cards.slice(0);
-	    		            event.target=event.targets.shift();
+					mod:{
+						cardUsable(card,player,num){
+							let history=player.getHistory('useCard',evt=>evt.card&&get.name(evt.card)=="xjzh_card_hunyuandan");
+							if(history.length) return Infinity;
+							return num;
+						},
+	    		    },
+					async content(event,trigger,player){
+						await player.removeMark("xjzh_xyj_tianhuo",1,false);
+						await event.targets[0].gain(event.cards,player,"draw");
+						let targets=game.filterPlayer(current=>current!=player),thcards=event.cards.slice(0);
+						targets.sortBySeat(player);
+						event.targets.unshift(player);
+						if(event.targets[0]==player.getPrevious()) targets.reverse();
+						game.log(targets)
+						for(let i=0;i<targets.length;i++){
 	    		            game.delay();
-	    		            var res=get.damageEffect(event.target,player,event.target,'fire');
-	    		            event.target.chooseCard("〖天火〗：选择"+get.translation(event.card.length+1)+"张♦牌交给"+get.translation(event.targets[0])+"，否则受到"+get.translation(event.card.length)+"点无来源火焰伤害",event.card.length+1,{suit:"diamond"}).set('ai',function(card){
+							if(targets[i]==player) break;
+	    		            let res=get.damageEffect(event.target,player,event.target,'fire');
+	    		            const cards=await targets[i].chooseCard(`〖天火〗：选择${get.translation(thcards.length+1)}张♦牌交给${get.translation(targets[i+1])}，否则受到${get.translation(thcards.length)}点火焰伤害`,thcards.length+1,{suit:"diamond"}).set('ai',card=>{
 	    		                if(_status.event.player.hasSkillTag('nofire')) return -1;
 	    		                if(_status.event.res>=0) return 6-get.value(card);
 	    		                if(get.type(card)!='basic'){
 	    		                    return 10-get.value(card);
 	    		                }
 	    		                return 8-get.value(card);
-	    		            }).set('res',res);
-	    		        }else{
-	    		            event.finish();
-	    		            return;
-	    		        }
-	    		        "step 3"
-	    		        if(!result.bool){
-	    		            event.target.damage(event.card.length,player,'nocard','fire');
-	    		            event.finish();
-	    		            return;
-	    		        }else{
-	    		            event.target.line(event.targets[0],'fire');
-	    		            event.targets[0].gain(result.cards,event.target,"draw");
-	    		            event.cards=result.cards.slice(0);
-	    		            event.goto(2);
-	    		        }
+	    		            }).set('res',res).forResultCards();
+							if(cards){
+								targets[i].line(targets[i+1],'fire');
+								targets[i+1].gain(cards,targets[i],"draw");
+								thcards=cards.slice(0);
+							}else{
+								targets[i].damage(player,thcards.length,"nocard","fire");
+								break;
+							}
+						}
 	    		    },
 	    		    ai:{
 	    		        order:1,
 	    		        result:{
-	    		            player:function(player,target){
+	    		            player(player,target){
 	    		                if(player.hasUnknown(2)) return 0;
-	    	                    var num=0,eff=0,players=game.filterPlayer(function(current){
-	    		                    return current!=player;
-	    		                }).sortBySeat(target);
-	    		                for(var target of players){
+	    	                    let num=0,eff=0,players=game.filterPlayer(current=>current!=player).sortBySeat(player).unshift(player);
+	    		                for(let target of players){
 	    		                    if(get.damageEffect(target,player,target,'fire')>=0){num=0;continue};
-	    		                    var shao=false;
+	    		                    let shao=false;
 	    		                    num++;
-	    		                    if(target.countCards('h',function(card){
+	    		                    if(target.countCards('h',card=>{
 	    		                        if(get.suit(card)!='diamond'){
 	    		                            return get.value(card)<10;
 	    		                        }
@@ -8008,152 +8166,64 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		},
 	    		"xjzh_xyj_dongcha":{
 	    		    trigger:{
-	    		        player:"phaseZhunbeiBegin",
+	    		        player:"phaseDrawBegin",
 	    		    },
 					audio:"ext:仙家之魂/audio/skill:2",
-	    		    frequent:true,
+					forced:true,
+					locked:true,
 	    		    priority:1,
-					mod:{
-						maxHandcard:function (player,num){
-							return num+=player.storage.xjzh_xyj_dongcha?player.storage.xjzh_xyj_dongcha:2;
-						},
+					init(player){
+						player.addSkill("xjzh_tongyong_viewHandCards");
 					},
-					check:function(event,player){
-					    var num=0
-					    var players=game.filterPlayer(function(current){return current!=player});
-					    for(var i=0;i<players.length;i++){
-				    	    if(get.damageEffect(players[i],player,player,'fire')<=0) num++
-					    }
-					    if(num>0) return -num;
-					    return player.hp-player.countCards('h');
+					filter(event,player){
+	    		        return !event.numFixed&&!event.cancelled
+	    		    },
+					async content(event,trigger,player){
+						trigger.num+=2;
+	    		    },
+					ai:{
+						viewHandcard:true,
 					},
-	    		    content:function(){
-	    		        "step 0"
-	    		        var list=["摸两张牌","弃两张牌","cancel"]
-	    		        if(player.countCards('he')<=1) list.remove("弃两张牌");
-	    		        player.chooseControl(list).set('ai',function(card,player,target){
-	    		            if(player.countCards('h')>=player.hp) return "弃两张牌";
-	    		            return "摸两张牌";
-	    		        });
-	    		        "step 1"
-	    		        if(result.control=="摸两张牌"){
-	    		            player.draw(2);
-	    		            if(!player.storage.xjzh_xyj_dongcha) player.storage.xjzh_xyj_dongcha=0;
-	    		            player.storage.xjzh_xyj_dongcha=-2;
-	    		        }
-	    		        else if(result.control=="弃两张牌"){
-	    		            player.chooseToDiscard(2,'he',true);
-	    		            if(!player.storage.xjzh_xyj_dongcha) player.storage.xjzh_xyj_dongcha=0;
-	    		            player.storage.xjzh_xyj_dongcha=2;
-	    		        }
-	    		        event.control=result.control
-	    		        "step 2"
-	    		        if(event.control!="cancel"){
-	    		            player.addTempSkill("xjzh_tongyong_viewHandCards");
-	    		            player.addTempSkill("xjzh_xyj_dongcha_damage");
-	    		        }
-	    		    },
-	    		    subSkill:{
-	    		        "damage":{
-	    		            trigger:{
-	    		                source:"damageBegin",
-	    		            },
-	    		            direct:true,
-	    		            priority:20,
-	    		            sub:true,
-	    		            filter:function(event,player){
-	    		                return !game.hasNature(event)&&event.num>0;
-	    		            },
-	    		            content:function(){
-	    		                game.setNature(trigger,'fire',false);
-	    		            },
-	    		        },
-	    		    },
 	    		},
 				"xjzh_xyj_ruyi":{
 					trigger:{
-						source:"damageAfter",
+						source:"damageSource",
 					},
 					forced:true,
 					locked:true,
 					priority:2,
 					audio:"ext:仙家之魂/audio/skill:2",
 					filter:function(event,player){
-						if(game.hasNature(event,"fire")) return false;
+						if(!game.hasNature(event,"fire")) return false;
 						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
-						return event.getParent('xjzh_xyj_tianhuo').name!='xjzh_xyj_tianhuo';
+						return true;
 					},
-					content:function(){
-						"step 0"
-						var list=[1,2,3].randomGet();
-						if(list==1){
-							player.addMark('xjzh_xyj_tianhuo',1,false);
-							game.log(player,'获得了一次','#y〖天火〗','使用次数');
-						}
-						else if(list==2){
-							if(!player.hasSkill("xjzh_xyj_ruyi_huomian")){
-								player.addTempSkill('xjzh_xyj_ruyi_huomian',{player:'phaseBegin'});
-								game.log(player,'免疫火焰伤害直到下个回合结束');
-							}else{
-							    event.redo();
-							}
-						}
-						else if(list==3){
-							event.card=get.cardPile(function(card){
-								return get.suit(card)=='diamond';
-							});
-							if(event.card){
-								player.$throw(event.card,1000,'nobroadcast')
-								var next=player.chooseTarget("〖如意〗：是否将"+get.translation(event.card)+"交给一名角色",true).set('ai',function(card,player,target){
-									var att=get.attitude(player,target);
-									if(att>0) return 10-get.value(card);
-									return 4-get.value(card);
-								})
-							}
-						}
-						"step 1"
-						if(result.bool&&result.targets){
-							result.targets[0].gain(event.card,player,"draw");
-						}
-					},
-					subSkill:{
-						"huomian":{
-							trigger:{
-								player:"damageBegin1",
-							},
-							forced:true,
-							priority:13,
-							locked:true,
-							sub:true,
-							mark:true,
-							marktext:"火",
-							intro:{
-								name:"火焰免疫",
-								content:"防止火焰伤害直到下个回合开始",
-							},
-							filter:function(event,player){
-								return game.hasNature(event,"fire");
-							},
-							content:function(){
-								trigger.changeToZero();
-								game.log(player,"免疫火焰伤害");
-							},
-							ai:{
-								nothunder:true,
-								nodamage:true,
-								effect:{
-									target:function(card,player,target,current){
-										if(get.tag(card,'fireDamage')) return [0,0];
-									},
-								},
-							},
+				    mod:{
+						ignoredHandcard:function(card,player){
+						    if(!player.hasSkill("xjzh_xyj_ruyi")) return;
+						    if(!get.playerName(player,'xjzh_xyj_sunwukong')) return;
+						    let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
+				            if(cards.includes(card.name)) return true;
 						},
+						aiValue:function(player,card,num){
+						    if(!player.hasSkill("xjzh_xyj_ruyi")) return;
+						    if(!get.playerName(player,'xjzh_xyj_sunwukong')) return;
+						    let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
+				            if(cards.includes(card.name)) return num+10;
+						},
+					},
+					getIndex(event){
+						return event.num||1;
+					},
+					async content(event,trigger,player){
+						let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"].randomGet();
+				        player.gain(game.createCard(cards,null,null),"gain2","log",player)._triggered=null;
 					},
 					ai:{
 					    combo:'xjzh_xyj_tianhuo',
 					},
 				},
-	    		
+
 			},
 			dynamicTranslate:{
 			    "xjzh_dnf_levelUp":function(player){
@@ -8174,7 +8244,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					}
 					return str+"<li>"+str2+"<li>"+str3;
 			    },
-			    
+
 			},
 			translate:{
 				//众星之魂
@@ -8187,7 +8257,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_yumuren":"余木人",
 				"xjzh_zxzh_linmo":"林默",
 				"xjzh_zxzh_jiangningzhi":"姜凝脂",
-				
+
 				"xjzh_zxzh_leifa":"雷法",
 				"xjzh_zxzh_leifa_info":"锁定技，每个准备阶段开始时，你摸x张牌并弃x张牌，然后你可以与其拼点，若你赢，其受到一点雷电伤害且非锁定技失效直到回合结束，否则你摸一张牌，该技能失效直到你的回合开始(x为你的手牌数量)",
 				"xjzh_zxzh_jianxin":"剑心",
@@ -8247,10 +8317,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_zxzh_jinyan":"禁言",
 				"xjzh_zxzh_jinyan_info":"当其他角色发动技能后，你可以禁用该技能直到你的下个回合开始。",
 				"xjzh_zxzh_dianling":"点灵",
-				"xjzh_zxzh_dianling_info":"其他角色回合开始时，若你有“屠苏”，你可以令其当前回合阶段顺序逆转,然后该角色在回合内回复体力/失去体力/造成伤害时，你令一名其他角色执行相同的选项。",
+				"xjzh_zxzh_dianling_info":"其他角色回合开始时，若你有“屠苏”，你可以移除一个“屠苏”并令其当前回合阶段顺序逆转,然后该角色在回合内回复体力/失去体力/造成伤害时，你令一名其他角色执行相同的选项。",
 				"xjzh_zxzh_tusu":"屠苏",
 				"xjzh_zxzh_tusu_info":"锁定技，你始终跳过摸牌阶段/弃牌阶段，然后从牌堆获得X张牌名不一致的牌/X个“屠苏”标记，你使用这些牌无距离限制（X为你的体力上限）。",
-				
+
 				//流放之路
 				"xjzh_poe_nvwu":"女巫",
 				"xjzh_poe_yuansushi":"元素使",
@@ -8260,7 +8330,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_poe_youxia":"游侠",
 				"xjzh_poe_ruiyan":"锐眼",
 				"xjzh_poe_guizu":"升华使徒",
-				
+
 				"xjzh_poe_choice":"升华",
 				"xjzh_poe_choice2":"升华",
 				"xjzh_poe_jianfeng":"剑风",
@@ -8328,7 +8398,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_poe_bilei_info":"<b><font color=orange>〖元素壁垒〗</font>锁定技，你获得此技能时，你获得20点护甲，当你的所有护甲被移除后，你受到3倍于你体力上限的无来源伤害，若你未因此阵亡，你获得20点护甲，然后你可以将你本局游戏中受到的所有伤害视为随机一种属性伤害任意分配给其他角色。",
 				"xjzh_poe_qinhe":"亲和",
 				"xjzh_poe_qinhe_info":"<b><font color=orange>〖元素亲和〗</font>出牌阶段，你可以选择一名角色并展示其手牌，并弃置其手牌中所有♥牌和♠牌，每一张♥牌令其视为使用一张【桃】，每一张♠令其视为使用一张【酒】；你使用[桃]回复的体力+1。",
-				
+
 				//王者荣耀
 				"xjzh_wzry_libai":"李白",
 				"xjzh_wzry_yao":"东方曜",
@@ -8336,7 +8406,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_haiyue":"海月",
 				"xjzh_wzry_huamulan":"花木兰",
 				"xjzh_wzry_duoliya":"朵莉亚",
-				
+
 				"xjzh_wzry_xiaxing":"侠行",
 				"xjzh_wzry_xiaxing_info":"锁定技，你造成伤害获得一道剑气，每道剑气令你使用牌可以额外指定一名其他角色为目标，你获得四道剑气时解锁〖剑歌〗并失去所有剑气。",
 				"xjzh_wzry_jinjiu":"进酒",
@@ -8379,7 +8449,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_wzry_zhulang_info":"锁定技，你摸牌后，若你已选择契约队友，你额外摸等量牌，然后你将这些牌的任意张牌交给你的契约队友（至少一张），若如此做，你与其各回复一点体力。",
 				"xjzh_wzry_tiannai":"天籁",
 				"xjzh_wzry_tiannai_info":"限定技，出牌阶段，你可以失去一点体力上限并失去所有技能，然后令你的契约队友重置武将牌和其除觉醒技之外的所有技能，然后其获得增益技能〖破晓〗。",
-				
+
 				//暗黑破坏神
 				"xjzh_diablo_lamasi":"拉斯玛",
 				"xjzh_diablo_moruina":"莫瑞娜",
@@ -8390,7 +8460,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_diablo_lilisi":"莉莉丝",
 				"xjzh_diablo_nataya":"娜塔亚",
 				"xjzh_diablo_kelike":"科里克",
-				
+
 				"xjzh_diablo_hunhuo":"魂火",
 				"xjzh_diablo_hunhuo_info":"锁定技，当你击败一名角色后，你将其灵魂收入死亡之书中；出牌阶段限一次，你可以消耗一个灵柩将死亡之书中收集的灵魂唤醒至场上为你作战，唤醒的角色拥有〖尸爆〗；阵亡阶段，你可以解放死亡之书中的一个灵魂与你交换身体。",
 				"xjzh_diablo_hunhuo_use":"魂火",
@@ -8432,12 +8502,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_diablo_xianjing_info":"出牌阶段限一次，你可以观看牌堆随机一张牌，并将其标记为“剧毒陷阱”，然后将这张牌洗入牌堆随机位置，当其他角色失去此牌时，其获得最大层数中毒。<li>会心：其他角色失去此牌时，你有20%几率获得被标记为“剧毒陷阱”的牌；你有30%几率回复25点能量。",
 				"xjzh_diablo_baolu":"暴露",
 				"xjzh_diablo_baolu_info":"锁定技，当你对一名区域内有“剧毒陷阱”的角色造成伤害时，你有25%几率发动技能〖陷阱〗，或令本次伤害视为毒属性伤害且+1。",
-				
+
 				//地下城与勇士
 				"xjzh_dnf_jianshen":"剑神",
 				"xjzh_dnf_shengqi":"神思者",
 				"xjzh_dnf_suodeluosi":"索德罗斯",
-				
+
 				"xjzh_jujian":"巨剑",
 				"xjzh_guangjian":"光剑",
 				"xjzh_dunqi":"钝器",
@@ -8495,17 +8565,29 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_card_tiancongyunjian_skill_info":"你使用【杀】造成伤害后，可以选择一名其他角色令其受到一点无来源伤害。",
 				"xjzh_dnf_jianyi":"剑意",
 				"xjzh_dnf_jianyi_info":"当你受到伤害时，若你未装备武器牌，你可以发动〖剑神〗切换武器牌，否则根据你装备的武器类型获得不同效果：<li>光剑，有几率反弹该伤害<li>巨剑，有几率防止此伤害<li>短剑，摸两张牌<li>太刀，回复一点体力<li>钝器，令其跳过当前出牌阶段",
-				
+
 				//西游释厄传
 				"xjzh_xyj_sunwukong":"孙悟空",
-				
+
 				"xjzh_xyj_tianhuo":"天火",
-				"xjzh_xyj_tianhuo_info":"本局游戏限三次，出牌阶段，你可以将任意张♦牌交给你的下家/上家，其可以：1、选择并交给其下家/上家x+1张牌，2、受到等量来源为你的火焰伤害然后终止技能流程；若其为你时，结束技能流程（x为其上家选择的牌的数量）。",
+				"xjzh_xyj_tianhuo_info":"本局游戏限三次，出牌阶段，你可以将任意张♦牌交给你的下家/上家，其需选择并交给其下家/上家x+1张牌直到其为你时，否则你对其造成x点火焰伤害然后终止技能流程。（x为其上家选择的牌的数量）。",
 				"xjzh_xyj_dongcha":"洞察",
-				"xjzh_xyj_dongcha_info":"准备阶段，你可以摸两张牌或弃置两张牌，若如此做，你手牌上限-2/+2，且你回合结束前其他角色手牌对你可见；若你本回合发动了该技能，你造成普通伤害视为火焰伤害。",
+				"xjzh_xyj_dongcha_info":"锁定技，场上其他角色手牌对你可见，你摸牌阶段摸牌数+2。",
 				"xjzh_xyj_ruyi":"如意",
-				"xjzh_xyj_ruyi_info":"锁定技，当你不因〖天火〗造成火焰伤害后，你随机执行以下一项：<li>获得一次〖天火〗使用次数<li>将牌堆一张♦牌交给一名角色<li>你于你的下个回合开始前防止火焰伤害。",
-				
+				"xjzh_xyj_ruyi_info":"锁定技，每当你造成火焰伤害后，你随机获得【天罡火】、【混元丹】、【照妖镜】、【火云刀】、【定身咒】之一，以上五张牌不计入手牌上限。",
+				"xjzh_card_tianganghuo":"天罡火",
+				"xjzh_card_tianganghuo_info":"出牌阶段对自己使用，获得一次〖天火〗使用次数。",
+				"xjzh_card_hunyuandan":"混元丹",
+				"xjzh_card_hunyuandan_info":"出牌阶段对自己使用，将手牌补至体力上限（手牌中的【天罡火】、【混元丹】、【照妖镜】、【火云刀】、【定身咒】不记入手牌数量），然后你于本回合内使用牌无次数限制。",
+				"xjzh_card_zhaoyaojing":"照妖镜",
+				"xjzh_card_zhaoyaojing_info":"出牌阶段对其他角色使用，其需弃置所有♦手牌，否则其失去一点体力上限。",
+				"xjzh_card_huoyundao":"火云刀",
+				"xjzh_card_huoyundao_info":"你使用无属性【杀】时可将其改为【火杀】。",
+				"xjzh_card_dingshenzhou":"定身咒",
+				"xjzh_card_dingshenzhou_info":"出牌阶段对其他角色使用，令其跳过下个出牌阶段和弃牌阶段。",
+
+				//DNF冒险家
+
 				"XWTR_zxzh":"众星之魂",
 				"XWTR_poe":"流放之路",
 				"XWTR_wzry":"王者荣耀",
@@ -8513,7 +8595,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"XWTR_dnfplayer":"DNF·冒险家",
 				"XWTR_dnfnpc":"DNF·NPC",
 				"XWTR_xyj":"西游释厄传",
-				
+
 			},
 		};
 		if(true){
@@ -8547,7 +8629,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             if(typeof lib.decade_extCardImage!='object'){
                 lib.decade_extCardImage = {};
             }
-            for(var cardname in XWTR.card){
+			var cardList=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_zhaoyaojing","xjzh_card_huoyundao","xjzh_card_dingshenzhou"];
+            for(var cardname in XWSG.card){
+                if(cardList.includes(cardname)) continue;
                 var url = lib.assetURL+"extension/仙家之魂/image/cardimage/tenui/"+cardname+".webp";
                 lib.decade_extCardImage[cardname] = url;
             }

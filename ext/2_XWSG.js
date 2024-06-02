@@ -15,7 +15,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					"XWSG_qun":["xjzh_sanguo_huaxiong","xjzh_sanguo_nanhua","xjzh_sanguo_zuoyou","xjzh_sanguo_simahui","xjzh_sanguo_yuji","xjzh_sanguo_sphuatuo","xjzh_sanguo_yuanshao","xjzh_sanguo_zhangbao","xjzh_sanguo_diaochan","xjzh_sanguo_bogui","xjzh_sanguo_zhangrang","xjzh_sanguo_huatuo","xjzh_sanguo_dongzhuo","xjzh_sanguo_zuoci","xjzh_sanguo_tongyuan","xjzh_sanguo_zhangjiao","xjzh_sanguo_zhangning","xjzh_sanguo_spzhangjiao","xjzh_sanguo_splvbu","xjzh_sanguo_lvbu"],
 					"XWSG_jin":["xjzh_sanguo_zhongda","xjzh_sanguo_chunhua"],
 					"XWSG_shen":["xjzh_sanguo_espzhangjiao","xjzh_sanguo_espzuoci","xjzh_sanguo_espliuxie"],
-				    
+
 				},
 			},
 			character:{
@@ -79,7 +79,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_espzhangjiao":["male","shen",4,["xjzh_boss_dianxing"],["unseen","forbidai"]],
 				"xjzh_sanguo_espliuxie":["male","shen",4,["xjzh_sanguo_tiance","xjzh_sanguo_tianming","xjzh_sanguo_moubian","xjzh_sanguo_zhongxing"],[]],
 				"xjzh_sanguo_espzuoci":["male","shen",3,["xjzh_sanguo_quling"],["forbidai","unseen"]],
-				
+
 			},
 			characterIntro:{
 			    "xjzh_sanguo_chunhua":"曹魏粟邑令张汪之女，晋宣帝司马懿之妻，晋景帝司马师和晋文帝司马昭的母亲。",
@@ -135,7 +135,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_yuanshao":"字本初，汝南汝阳（今河南省商水县）人。东汉末年军阀，汉末群雄之一。",
 				"xjzh_sanguo_zhangliao":"字文远，雁门马邑（今山西省朔州市）人。汉末三国时期曹魏名将，聂壹的后人。",
 				"xjzh_sanguo_huaxiong":"华[huà]雄（?－191），东汉末年董卓部下的武将，为董卓帐下都督。",
-				
+
 			},
 			characterTitle:{
 				"xjzh_sanguo_wenyang":"万将披靡",
@@ -190,7 +190,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_sphuatuo":"圣手仁心",
 				"xjzh_sanguo_yuji":"太平道人",
 				"xjzh_sanguo_simahui":"水镜先生",
-				
+
 			},
     		characterInitFilter:{
     			"xjzh_sanguo_zhaoyun":function(tag){
@@ -524,7 +524,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        audio:"ext:仙家之魂/audio/skill:2",
 			        async content(event,trigger,player){
 			            if(trigger.name=="addMark"){
-			                let skills=new Array()  
+			                let skills=new Array()
 			                game.xjzh_wujiangpai().forEach(name=>{
     			                if(lib.character[name][0]=="female"){
     			                    skills.addArray(lib.character[name][3].filter(skill=>{
@@ -741,7 +741,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							}).set('ai',(player,target)=>lib.card.guohe.ai.result.target(player,target));
         					if(!bool) return;
         					const target=targets[0];
-        					player.discardPlayerCard("hej",target,true).set('target',target).set('ai',button=>lib.card.guohe.ai.button(button));				
+        					player.discardPlayerCard("hej",target,true).set('target',target).set('ai',button=>lib.card.guohe.ai.button(button));
 					    }
 					},
 					ai:{
@@ -826,7 +826,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                const target=await list.shift();
 			                for(let skill of lib.character[target][3]){
 			                    let info=get.info(skill);
-			                    if(info&&info.shaRelated&&!player.skills.includes(skill))  await skills.push(skill); 
+			                    if(info&&info.shaRelated&&!player.skills.includes(skill))  await skills.push(skill);
 			                }
 			            }while(list.length);
 			            if(!skills.length) return;
@@ -2945,7 +2945,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                     trigger.addCount=false;
                                     let stat=player.getStat();
                                     if(stat&&stat.card&&stat.card[trigger.cards[0].name]) stat.card[trigger.cards[0].name]--;
-                                }; 
+                                };
 					        },
 					    },
 					},
@@ -4336,7 +4336,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						let dialog=ui.create.dialog(judgestr);
 						dialog.classList.add("center");
 						dialog.videoId=videoId;
-	
+
 						game.addVideo("judge1",player,[get.cardInfo(cards),judgestr,videoId]);
 						let node;
 						if(game.chess){
@@ -5174,7 +5174,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					audio:"xjzh_sanguo_baozheng",
 					filter:function(event,player){
 					    return event.player.hasMark('xjzh_sanguo_baozheng');
-					    return 
+					    return
 					},
 					content:function(){
 					    "step 0"
@@ -6104,7 +6104,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         mark:function(dialog,storage,player){
                             var cardPile=Array.from(ui.cardPile.childNodes);
                             if(!cardPile.length) return '';
-                            cardPile=cardPile.slice(0,Math.min(3,cardPile.length));                          
+                            cardPile=cardPile.slice(0,Math.min(3,cardPile.length));
                             if(player.isUnderControl(true)){
                                 dialog.addAuto(cardPile);
                             }else{
@@ -6115,12 +6115,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     ai:{
                         respondShan:true,
                         respondSha:true,
-                        save:true,                   
+                        save:true,
                         skillTagFilter:function(player,tag,arg){
                             var event=_status.event;
                             var cardPile=Array.from(ui.cardPile.childNodes);
                             if(!cardPile.length) return false;
-                            cardPile=cardPile.slice(0,Math.min(3,cardPile.length));                
+                            cardPile=cardPile.slice(0,Math.min(3,cardPile.length));
                             for(var i=0; i<cardPile.length;i++){
                                 if(tag=='respondSha'){
                                     if(cardPile[i].name=='sha') return true;
@@ -6131,22 +6131,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                 };
                             };
                             return false;
-                        },                             
+                        },
                     },
 					group:["xjzh_sanguo_guimou_discard"],
 					audio:"ext:仙家之魂/audio/skill:2",
                     hiddenCard:function(player,name){
                         var cardPile=Array.from(ui.cardPile.childNodes);
                         if(!cardPile.length) return false;
-                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));                ;                        
+                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));                ;
                         return cardPile.some(i=>i.name==name);
                     },
                     filter:function(event,player){
                         if(event.responded||event.skill) return false;
                         var cardPile=Array.from(ui.cardPile.childNodes);
                         if(!cardPile.length) return false;
-                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));                                     
-                        return cardPile.some(i=>event.filterCard&&event.filterCard(i,player,event));                 
+                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));
+                        return cardPile.some(i=>event.filterCard&&event.filterCard(i,player,event));
                     },
                     mod:{
                         cardEnabled2:function(card,player){
@@ -6159,7 +6159,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     copy:function(cards){
                         var result=[];
                         for(var i of cards){
-                            var card=ui.create.card(ui.special);                            
+                            var card=ui.create.card(ui.special);
                             card.init([
                                 i.suit,
                                 i.number,
@@ -6181,21 +6181,21 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             if(trigger.onresult){
                                 trigger.onresult(trigger.result);
                                 delete trigger.onresult;
-                            }; 
+                            };
                         };
                         "step 1"
-                        player.lose(event.cards,ui.special)._triggered=null;    
+                        player.lose(event.cards,ui.special)._triggered=null;
                         "step 2"
-                        for(var i of event.cards){                            
+                        for(var i of event.cards){
                             i.fix();
                             i.remove();
                             i.destroyed=true;
-                        };                                   
+                        };
                     },
                     content:function(){
                         "step 0"
                         var cardPile=Array.from(ui.cardPile.childNodes);
-                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));   
+                        cardPile=cardPile.slice(0,Math.min(3,cardPile.length));
                         event.cards=lib.skill.xjzh_sanguo_guimou.copy(cardPile);
                         player.directgains(event.cards,null,'xjzh_sanguo_guimou');
                         "step 1"
@@ -6210,16 +6210,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         next2._trigger=evt;
                         next2.setContent(lib.skill.xjzh_sanguo_guimou.contentx);
                         event.next.remove(next2);
-                        evt.after.push(next2);                       
+                        evt.after.push(next2);
                         evt.onresult=function(result){
                             if(evt.after.includes(next2)){
                                 evt.after.remove(next2);
                                 evt.next.push(next2);
-                            };      
-                            if(result.cards&&result.cards.length&&(result.cards[0].hasGaintag('xjzh_sanguo_guimou')||event.cards.includes(result.cards[0]))){                                                            
-                                var card2=result.cards[0];                    
+                            };
+                            if(result.cards&&result.cards.length&&(result.cards[0].hasGaintag('xjzh_sanguo_guimou')||event.cards.includes(result.cards[0]))){
+                                var card2=result.cards[0];
                                 result.cards[0]=result.cards[0].relatedCard;
-                                var cardx=result.cards[0];                                
+                                var cardx=result.cards[0];
                                 result.card={
                                     name:get.name(card2),
                                     suit:get.suit(card2),
@@ -6230,11 +6230,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                     wunature:cardx.wunature,
                                     storage:cardx.storage,
                                     cards:[cardx],
-                                };                              
-                            };                       
+                                };
+                            };
                             if(onresult) onresult.apply(evt,arguments);
                             delete evt.onresult;
-                        };                        
+                        };
                     },
                     subSkill:{
                         "discard":{
@@ -7418,7 +7418,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							    var info=lib.skill[j]
 							    if((lib.translate[j]&&lib.translate[j+'_info'])&&!info.sub&&!lib.skill.xjzh_sanguo_xingyun2.bannedList.includes(j)){
 							        list1.push(j);
-							    }	    
+							    }
 							}
 							if(list1.length>0){
 								player.chooseControl(list1);
@@ -7453,7 +7453,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					               if(player.getFriends(true).includes(i)) num++
 					           }
 					           if(num>=2) return 2;
-					           return 0.1; 
+					           return 0.1;
 					       },
 					   },
 					},
@@ -8668,7 +8668,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             return [1,Math.min(numx,2)];
                         })
                         next.set('filterButton',function(button){
-                            if(!ui.selected.buttons.length) return true;     
+                            if(!ui.selected.buttons.length) return true;
                             var numbers=0;
                             var selected=ui.selected.buttons;
                             for(var i of selected){
@@ -8677,7 +8677,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                 }else{
                                     if(typeof button.link!='number'){
                                         if(get.type(button.link[2])==get.type(i.link[2])) return false;
-                                    };                   
+                                    };
                                 };
                             };
                             if(typeof button.link=='number'){
@@ -8719,7 +8719,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    	    var cards2=result.cards.randomSort();
 				    	    while(cards2.length){
                                 var num=get.rand(ui.cardPile.childElementCount);
-                                var card2=cards2.pop();                        
+                                var card2=cards2.pop();
                                 card2.fix();
                                 ui.cardPile.insertBefore(card2,ui.cardPile.childNodes[num]);
                             };
@@ -9158,7 +9158,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				            player.recover();
 				        }
 				        while(cards.length){
-				            var card=cards.pop();                        
+				            var card=cards.pop();
 				            card.fix();
 				            ui.cardPile.insertBefore(card,ui.cardPile.firstChild);
 				        };
@@ -9495,7 +9495,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    	    	if(cards2.length){
 							        event.use=cards2;
 					        	}
-					        	"step 2"	
+					        	"step 2"
 				        		if(event.use.length){
 						        	var str='是否发动〖影兵〗<br>选择一张牌使用之?';
 						        	player.chooseCardButton(event.use,1,str).set('filterButton',function(button){
@@ -9974,116 +9974,60 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			    "xjzh_sanguo_xingyi":{
 			        enable:"phaseUse",
 			        usable:1,
-			        filterTarget:function(card,player,target){
+			        filterTarget(card,player,target){
 			            return target.countCards('h');
 			        },
 			        audio:"ext:仙家之魂/audio/skill:2",
-			        content:function(){
-			            "step 0"
-			            var cards=target.getCards('h');
-			            target.discard(cards);
-			            target.draw(cards.length+target.hp);
-			            "step 1"
-			            var cards=result.slice(0);
-			            var list=[]
-			            for(var i=0;i<cards.length;i++){
-			                if(get.suit(cards[i])=="heart") list.push(cards[i]);
-			            }
-			            var num=list.length;
-			            var num2=target.getDamagedHp();
+			        async content(event,trigger,player){
+						let target=event.targets[0],cards=target.getCards('h');
+						await target.discard(cards);
+						let evt=await target.draw(cards.length*2),list=[],num=0;
+			            for await(let card of evt.result){
+			                if(get.suit(card)=="heart") num++;
+			            };
+						let drawNum=num-target.getDamagedHp(true);
+						if(drawNum>0) await target.draw(drawNum);
 			            target.recover(num);
-			            if(num-num2>0){
-			                player.draw(num-num2);
-			            }else{
-			                event.finish();
-			                return;
-			            }
-			            "step 2"
-			            if(get.xjzh_deEffect(target)){
-			                var list=[]
-			                if(target.isTurnedOver()) list.push("翻面");
-			                if(target.countCards('j',function(card){return card.name!="jydiy_yungongliaoshang"})>0) list.push("判定区");
-			                if(target.isLinked()) list.push("横置");
-			                if(target.countDisabled()>=1) list.push("装备栏");
-			                if(!list.length) return;
-			                target.chooseControl(list,"cancel2").set('ai',function(){
-			                    return list.randomGet();
-			                }).set('prompt',"〖行医〗：选择一项移除负面状态");
-			            }
-			            "step 3"
-			            if(result.control){
-			                if(result.control=="翻面"){
-			                    target.turnOver(false);
-			                }
-			                else if(result.control=="判定区"){
-			                    target.discard(target.getCards("j",function(card){return card.name!="jydiy_yungongliaoshang"}));
-			                }
-			                else if(result.control=="横置"){
-			                    target.link(false);
-			                }
-			                else if(result.control=="装备栏"){
-			                    target.chooseEnable();
-			                }
-			            }
 			        },
 			        ai:{
 			            order:12,
 			            result:{
-			                target:function(target){
-			                    var cards=target.countCards('h');
-			                    var hp=target.hp
-			                    return cards+hp;
-			                },
-			                player:function(player){
-			                    var num=get.xjzh_deEffect2(player);
-			                    if(num=0) return player.countCards('h');
-			                    return player.countCards('h')+num;
-			                },
+			                target:1,
 			            },
 			        },
 			    },
 			    "xjzh_sanguo_qingnang":{
 			        trigger:{
-			            global:"changeHp",
+			            global:"changeHpAfter",
 			        },
 			        usable:1,
 			        audio:"ext:仙家之魂/audio/skill:2",
-			        prompt:function(event,player){
-			            var str="";
-			            if(event.player.isDamaged()){
-			                str+="〖青囊〗：是否令"+get.translation(event.player)+"交换体力与已损体力？";
-			            }else{
-			                if(event.getParent('xjzh_sanguo_xingyi').name=='xjzh_sanguo_xingyi') str+="〖青囊〗：是否令"+get.translation(player)+"获得一点体力上限？";
-			            }
-			            return str;
+			        prompt(event,player){
+			            return "〖青囊〗：是否令"+get.translation(event.player)+"交换体力与已损体力？";;
 			        },
-			        check:function(event,player){
-			            var att=get.attitude(player,event.player);
+			        check(event,player){
+			            let att=get.attitude(player,event.player);
 			            if(event.player==player){
-			                if(player.hp<=player.getDamagedHp()) return 10;
+			                if(player.getHp(true)<player.getDamagedHp(true)) return 10;
 			            }
 			            if(event.player!=player){
-			                if(event.player.hp>event.player.getDamagedHp()) return -att;
+			                if(event.player.getHp(true)>event.player.getDamagedHp(true)) return -att;
 			                return att;
 			            }
 			            return 0;
 			        },
-			        filter:function(event,player){
+			        filter(event,player){
 			            if(event.player.isHealthy()) return false;
 			            if(event.player.isDying()) return false;
-			            if(event.type=="dying") return false;
+						if(event.player.getHp(true)<=0) return false;
+						if(event.player.getDamagedHp(true)==event.player.getHp(true)) return false;
 			            if(event.getParent("xjzh_sanguo_qingnang").name=="xjzh_sanguo_qingnang") return false;
 			            return true;
 			        },
-			        content:function(){
-			            "step 0"
-			            var num=trigger.player.getDamagedHp()-trigger.player.hp;
-			            trigger.player.changeHp(num);
-			            "step 1"
-			            if(trigger.player.hp>=trigger.player.getDamagedHp()){
-			                trigger.player.gainMaxHp();
-			                if(player.maxHp<game.players.concat(game.dead).length) player.gainMaxHp();
-			            }
+					async content(event,trigger,player){
+			            let num=trigger.player.getDamagedHp(true)-trigger.player.getHp(true);
+			            await trigger.player.changeHp(num);
+			            if(trigger.player.getHp(true)>=trigger.player.getDamagedHp()) trigger.player.gainMaxHp();
 			        },
 			    },
 			    "xjzh_sanguo_elai":{
@@ -10199,10 +10143,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                    "step 0"
 			                    if(trigger.player.hasMark("xjzh_sanguo_chanyuan")){
 			                        event.caice=true;
-			                        event.goto(3);  
+			                        event.goto(3);
 			                    }
 			                    trigger.player.chooseBool("〖蛊惑〗："+get.translation(player)+"的身份是否为"+get.translation(player.storage.xjzh_sanguo_guhuo)+"？").set('ai',function(){
-			                        return Math.random() 
+			                        return Math.random()
 			                    });
 			                    "step 1"
 			                    game.delayx(1.5);
@@ -10914,7 +10858,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		    init:function(player){
 	    		        if(!lib.config.xjzh_sanguo_quling){
 	    		            window.localStorage.removeItem("xjzh_sanguo_quling");
-	    		            
+
 	    		            var list=[]
 	    		            for(var i in lib.character){
 	    		                if(lib.character[i]) list.push(i);
@@ -11585,7 +11529,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         player.loseMaxHp();
                         "step 2"
                         trigger.source.draw(2);
-                        if(get.color(trigger.card)=="red"&&trigger.source.isDamaged()) trigger.source.recover(); 
+                        if(get.color(trigger.card)=="red"&&trigger.source.isDamaged()) trigger.source.recover();
                     },
 				    ai:{
 					    effect:{
@@ -11937,7 +11881,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         }
                     },
                 },
-                
+
 			},
 			dynamicTranslate:{
 			    /*"xjzh_sanguo_yinren":function(player){
@@ -12102,7 +12046,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_nanhua":"南华老仙",
 				"xjzh_sanguo_huaxiong":"华雄",
 				"xjzh_sanguo_espzhangjiao":"神张角",
-				
+
 				"xjzh_sanguo_jueqing":"绝情",
 				"xjzh_sanguo_jueqing_info":"锁定技，场上所有角色体力流失和造成伤害不触发技能结算。",
 				"xjzh_sanguo_shangshi":"伤逝",
@@ -12435,9 +12379,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_cuifengx":"摧锋",
 				"xjzh_sanguo_cuifengx_info":"锁定技，其他角色获得/移除“止”标记时，其选择废除/恢复一个装备栏；当有“止”标记的角色使用牌指定目标时，若此时其“止”数量为场上最多之一，你对其造成等同于“止”标记数量点伤害并禁用其所有技能直到其下个回合开始，否则你可以选择等量角色成为此牌的额外目标，然后移除其所有“止”标记。",
 				"xjzh_sanguo_xingyi":"行医",
-				"xjzh_sanguo_xingyi_info":"出牌阶段限一次，你可以指定一名角色令其弃置所有手牌然后摸x+y张牌，其中每有一张红桃牌，其回复一点体力，若有多余回复改为你摸牌且其若有其负面状态，其可以选择一项移除之（x为其弃置的手牌数，y为其体力值）。",
+				"xjzh_sanguo_xingyi_info":"出牌阶段限一次，你可以令一名角色弃置所有手牌然后摸等量牌，然后其手牌中每有一张♥牌，其回复一点体力，多余的回复改为摸牌。",
 				"xjzh_sanguo_qingnang":"青囊",
-				"xjzh_sanguo_qingnang_info":"每回合限一次，一名角色不因此技能体力变化后，若其不处于濒死状态，你可以令其交换体力值与已损体力值，然后若其体力值不小于已损体力值，其获得一点体力上限，然后若你的体力上限小于场上角色总数，你获得一点体力上限。",
+				"xjzh_sanguo_qingnang_info":"每回合限一次，一名角色不因此技能体力变化后，若其不处于濒死状态，你可以令其交换体力值与已损体力值，然后若其体力值不小于已损体力值，其获得一点体力上限。",
 				"xjzh_sanguo_elai":"恶来",
 				"xjzh_sanguo_elai_info":"出牌阶段，你可以失去一点体力，然后摸x+1张牌，若这些牌包含装备牌，你可以弃置这些牌中的任意张装备牌对一名其他角色造成等量伤害，然后你弃置其等量牌。（x为你已损体力值）",
 				"xjzh_sanguo_tiequ":"铁躯",
@@ -12503,15 +12447,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_sanguo_lixiang":"离乡",
 				"xjzh_sanguo_lixiang_info":"限定技，当你濒死时，你将武将牌替换为“小乔”或“大乔”，并回复体力至体力上限。",
 
-				
+
 				"XWSG_wei":"曹魏",
 				"XWSG_shu":"蜀汉",
 				"XWSG_wu":"东吴",
 				"XWSG_qun":"群雄",
 				"XWSG_jin":"西晋",
 				"XWSG_shen":"特殊",
-				
-				
+
+
 			},
 		};
         if(true){

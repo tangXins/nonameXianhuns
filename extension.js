@@ -771,15 +771,14 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					forced:true,
 					popup:false,
 					silent:true,
-					content: function (){
+					content:function (){
 						var interval=setInterval(()=>{
 							if(!ui.window.contains(player)) return clearInterval(interval);
 							var numh=player.countCards('h');
 							var nummh=player.getHandcardLimit();
 							if(nummh==Infinity) nummh='∞';
 							player.node.count.innerHTML=numh+'/'+nummh;
-						},
-						100);
+						},100);
 					},
 				};
 			};

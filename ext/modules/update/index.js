@@ -4,6 +4,20 @@ export const xjzhUpdateLog={
     version:'3.05221',
 	'3.05221':{
         changeLog:[
+			"重做武将孙悟空",
+			"调整sp华佗〖行医〗，不再可以移除负面状态且不再令sp华佗摸牌",
+			"调整sp华佗〖青囊〗，对其他目标发动技能不再令sp华佗获得体力上限",
+			"调整sp华佗〖青囊〗，体力值与已损体力值相等时不再提示发动该技能",
+			"修复sp华佗〖青囊〗，濒死阶段可以发动该技能",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:["xjzh_xyj_sunwukong","xjzh_sanguo_sphuatuo"],
+		cards:["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"],
+    },
+    version:'3.05221',
+	'3.05221':{
+        changeLog:[
 			"重做武将姜凝脂",
 			"重做武将董卓",
 		    "修复许多bug",
@@ -30,7 +44,7 @@ export const xjzhUpdateLog={
 			"修复庞统〖横舟〗，部分开局横置的角色会在横置后失效",
 			"修复卡牌【熔岩铠甲】，伤害计算错误",
 			"调整卡牌【熔岩铠甲】AI，现在ai不会再火杀装备了此牌的目标（可能）",
-			"调整庞统〖横舟〗，现在庞统阵亡时会回复被〖横舟〗禁用的技能",
+			"调整庞统〖横舟〗，现在庞统阵亡时会恢复被〖横舟〗禁用的技能",
 			"调整庞统〖谋略〗，修正技能效果与描述一致",
 		    "修复许多bug",
 	    	"优化许多细节",
