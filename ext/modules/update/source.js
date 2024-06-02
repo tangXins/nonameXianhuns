@@ -43,5 +43,12 @@ window.xjzh_updateSource=[
 
 	"audio/skill/xjzh_sanguo_linnue1.mp3",
 	"audio/skill/xjzh_sanguo_linnue2.mp3",
-	
+
+
+	"image/cardpicture/xjzh_card_zhaoyaojing.png",
+	"image/cardpicture/xjzh_card_dingshenzhou.png",
+	"image/cardpicture/xjzh_card_hunyuandan.png",
+	"image/cardpicture/xjzh_card_huoyundao.png",
+	"image/cardpicture/xjzh_card_tianganghuo.png"
+
 ];

@@ -1,7 +1,7 @@
 window.xjzh_updateversion={
 	version:'3.05081',
 	update:'3.05041',
-	files:[	
+	files:[
 			"LICENSE",
 			"info.json",
 			"extension.js",
@@ -39,12 +39,18 @@ window.xjzh_updateversion={
 			"ext/modules/config/index.js",
 
 			"ext/modules/package/index.js",
-			
+
 			"ext/modules/index.js",
 
 			"css/mainPage.css",
 
 			"audio/skill/xjzh_sanguo_linnue1.mp3",
 			"audio/skill/xjzh_sanguo_linnue2.mp3",
+
+			"image/cardpicture/xjzh_card_zhaoyaojing.png",
+			"image/cardpicture/xjzh_card_dingshenzhou.png",
+			"image/cardpicture/xjzh_card_hunyuandan.png",
+			"image/cardpicture/xjzh_card_huoyundao.png",
+			"image/cardpicture/xjzh_card_tianganghuo.png"
 	],
 };
