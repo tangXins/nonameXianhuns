@@ -1,7 +1,4 @@
 'use strict';
-
-const { skip } = require("node:test");
-
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
@@ -294,7 +291,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						const cards=await event.targets[0].chooseToDiscard("h",{suit:"diamond"})
 						.set("selectCard",()=>event.targets[0].countCards("h",{suit:"diamond"}))
 						.set("ai",card=>{
-							return 6-get.value(card);
+							return 4-get.value(card);
 						})
 						.forResultCards();
 						if(!cards) event.targets[0].loseMaxHp();
@@ -342,7 +339,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 					selectTarget:1,
 					filterTarget(card,player,target){
-						let history=player.getHistory("useCard",evt=>evt.targets.includes(target));
+						let history=player.getHistory("useCard",evt=>evt.card&&get.name(evt.card)=="xjzh_card_dingshenzhou"&&evt.targets.includes(target));
 						if(history.length) return false;
 						return target!=player;
 					},
@@ -8111,13 +8108,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						await event.targets[0].gain(event.cards,player,"draw");
 						let targets=game.filterPlayer(current=>current!=player),thcards=event.cards.slice(0);
 						targets.sortBySeat(player);
-						event.targets.unshift(player);
 						if(event.targets[0]==player.getPrevious()) targets.reverse();
-						game.log(targets)
+						targets.push(player);
 						for(let i=0;i<targets.length;i++){
 	    		            game.delay();
 							if(targets[i]==player) break;
-	    		            let res=get.damageEffect(event.target,player,event.target,'fire');
+	    		            let res=get.damageEffect(targets[i],player,targets[i],'fire');
 	    		            const cards=await targets[i].chooseCard(`〖天火〗：选择${get.translation(thcards.length+1)}张♦牌交给${get.translation(targets[i+1])}，否则受到${get.translation(thcards.length)}点火焰伤害`,thcards.length+1,{suit:"diamond"}).set('ai',card=>{
 	    		                if(_status.event.player.hasSkillTag('nofire')) return -1;
 	    		                if(_status.event.res>=0) return 6-get.value(card);
@@ -8141,7 +8137,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		        result:{
 	    		            player(player,target){
 	    		                if(player.hasUnknown(2)) return 0;
-	    	                    let num=0,eff=0,players=game.filterPlayer(current=>current!=player).sortBySeat(player).unshift(player);
+	    	                    let num=0,eff=0,players=game.filterPlayer();
 	    		                for(let target of players){
 	    		                    if(get.damageEffect(target,player,target,'fire')>=0){num=0;continue};
 	    		                    let shao=false;
@@ -8570,7 +8566,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_xyj_sunwukong":"孙悟空",
 
 				"xjzh_xyj_tianhuo":"天火",
-				"xjzh_xyj_tianhuo_info":"本局游戏限三次，出牌阶段，你可以将任意张♦牌交给你的下家/上家，其需选择并交给其下家/上家x+1张牌直到其为你时，否则你对其造成x点火焰伤害然后终止技能流程。（x为其上家选择的牌的数量）。",
+				"xjzh_xyj_tianhuo_info":"本局游戏限三次，出牌阶段，你可以将任意张♦牌交给你的下家/上家，其需选择并交给其下家/上家x+1张牌直到其为你时，否则你对其造成x点火焰伤害然后终止技能流程。（x为其上家/下家选择的牌的数量）。",
 				"xjzh_xyj_dongcha":"洞察",
 				"xjzh_xyj_dongcha_info":"锁定技，场上其他角色手牌对你可见，你摸牌阶段摸牌数+2。",
 				"xjzh_xyj_ruyi":"如意",

@@ -214,7 +214,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			});
             lib.arenaReady.push(async()=>{
                 let obj=Object.keys(Object.assign({...lib.skill},{...lib.card})).filter(name=>{
-                    if(name.includes("xjzh_")) return true;
+                    if(name.startsWith("xjzh_")) return true;
                     return false;
                 });
                 let colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
@@ -335,8 +335,11 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							str=str.replace(/减速/g,str2);
 						};
 						if(str.includes("定身")){
-							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_dingshen');\">定身</a>`;
-							str=str.replace(/定身/g,str2);
+							let num=str.indexOf("定身");
+							if(str[num+2]!="咒"){
+								let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_dingshen');\">定身</a>`;
+								str=str.replace(/定身/g,str2);
+							}
 						};
                         lib.translate[name+"_info"] = str;
                     };

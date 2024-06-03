@@ -180,26 +180,24 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    direct:true,
     			priority:10,
     		    lastDo:true,
-	   		    filter:function(event,player){
+	   		    filter(event,player){
 	   		        if(event.targets.length<2) return false;
 	   		        return get.type(event.card)!="delay"&&get.type(event.card)!="equip";
 	    	    },
-	    	    content:function(){
-	    	        "step 0"
-	    	        player.chooseTarget(1,"〖锁定目标〗：为"+get.translation(trigger.card)+"重新指定一个目标",function(card,player,target){
-	    	            var player=_status.event.player;
+	    	    async content(event,trigger,player){
+	    	        const targets=await player.chooseTarget(1,`〖锁定目标〗：为${get.translation(trigger.card)}重新指定一个目标并令其额外结算${trigger.targets.length}次`,(card,player,target)=>{
 	    	            return player.canUse(_status.event.card,target,false);
-	    	        }).set('ai',function(target){
-	    	            var trigger=_status.event.getTrigger();
-	    	            var player=_status.event.player;
+	    	        }).set('ai',target=>{
+	    	            let trigger=_status.event.getTrigger();
+	    	            let player=get.player();
 	    	            return get.effect(target,trigger.card,player,player);
-	    	        }).set('card',trigger.card);
-	    	        "step 1"
-	    	        event.num=trigger.targets.length;
-	    	        trigger.targets=result.targets;
-	    	        "step 2"
-	    	        trigger.effectCount+=event.num;
-	    	        game.log(trigger.card,"额外结算",event.num,"次");
+	    	        }).set('card',trigger.card).forResultTargets();
+					if(targets){
+						let num=trigger.targets.length;
+						trigger.targets=targets;
+						trigger.effectCount+=num;
+						game.log(trigger.card,"额外结算",num,"次");
+					}
 	   		    },
 	   		},
 		},
@@ -224,11 +222,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    direct:true,
     			priority:9,
     		    lastDo:true,
-	   		    filter:function(event,player){
+	   		    filter(event,player){
 	   		        var info=get.info(event.card);
 	   		        if(info.allowMultiple==false) return false;
 	   		        if(event.targets&&!info.multitarget){
-	   		            if(game.hasPlayer(function(current){
+	   		            if(game.hasPlayer(current=>{
 	   		                return !event.targets.includes(current)&&player.canUse(event.card,current,false);
 	   		            })){
 	   		                return true;
@@ -236,28 +234,21 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	   		        }
 	   		        return false;
 	    	    },
-	    	    content:function(){
-	    	        "step 0"
-	    	        var num=lib.config.xjzh_qishuyaojians.levelEquip.item.level;
-	    	        var num2=lib.xjzh_qishuyaojians["xjzh_qishu_fenlie"].status[num][0];
-	    	        var list=[];
-	    	        if(num2==1){
-	    	            list=1;
-	    	        }else{
-	    	            list=[1,num2];
-	    	        }
-	    	        player.chooseTarget(list,"〖分裂箭矢〗：为"+get.translation(trigger.card)+"额外指定一个目标",function(card,player,target){
-	    	            var player=_status.event.player;
+	    	    async content(event,trigger,player){
+					let num=lib.xjzh_qishuyaojians["xjzh_qishu_fenlie"].status[lib.config.xjzh_qishuyaojians.levelEquip.item.level][0];
+					let list=num==1?1:[1,Math.min(num,game.players.length-trigger.targets.length)];
+	    	        const targets=await player.chooseTarget(list,`〖分裂箭矢〗：为${get.translation(trigger.card)}额外指定一个目标`,(card,player,target)=>{
 	    	            if(_status.event.targets.includes(target)) return false;
 	    	            return player.canUse(_status.event.card,target,false);
-	    	        }).set('ai',function(target){
-	    	            var trigger=_status.event.getTrigger();
-	    	            var player=_status.event.player;
+	    	        }).set('ai',target=>{
+	    	            let trigger=_status.event.getTrigger();
+	    	            let player=_status.event.player;
 	    	            return get.effect(target,trigger.card,player,player);
-	    	        }).set('targets',trigger.targets).set('card',trigger.card);
-	    	        "step 1"
-	    	        trigger.targets.addArray(result.targets);
-	    	        game.log(trigger.player,"成为",trigger.card,"的额外目标");
+	    	        }).set('targets',trigger.targets).set('card',trigger.card).forResultTargets();
+					if(targets){
+						trigger.targets.addArray(result.targets);
+						game.log(trigger.player,"成为",trigger.card,"的额外目标");
+					}
 	   		    },
 	   		},
 		},

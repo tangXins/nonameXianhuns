@@ -10679,10 +10679,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 									}
 								}else list=[1];
 								const {result:{control}}=list.length==1?{result:{control:list[0]}}:await player.chooseControl(list,"cancel2").set('ai',()=>{
-                                    let att=get.attitude(get.player(),target);
+                                    let att=get.attitude(get.player(),targets[0]);
                                     if(att>0) return 'cancel2';
                                     return list.randomGet();
-                                }).set("target",targets[0]);
+                                });
 								if(control){
 									if(control!="cancel2"){
 										await targets[0].damage(control,player,'nocard');
