@@ -1,7 +1,7 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
 export const xjzhUpdateLog={
-    version:'3.06031',
+    version:'3.06032',
 	'3.06032':{
         changeLog:[
 			"修复孙权〖吴战〗报错",
