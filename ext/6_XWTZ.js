@@ -12,14 +12,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_zuoyou":["female","shen","3/4",["xjzh_boss_huanxian","xjzh_boss_pangmen","xjzh_boss_zuodao"],["unseen","forbidai"]],
 				"xjzh_boss_lvbu":["male","shen",6,["xjzh_boss_jiwu","xjzh_boss_feijiang","xjzh_boss_benxi","xjzh_boss_xiuluo"],["boss","bossallowed"]],
 				"xjzh_boss_zhangjiao":["male","shen",4,["xjzh_boss_qingling","xjzh_boss_dianxing"],["boss","bossallowed"]],
-				
+
 				//普通BOSS随从
 				"xjzh_boss_hjbingyong":["male","qun",3,["xjzh_boss_fubing"],["unseen","forbidai","hiddenboss","bossallowed"]],
 				"xjzh_boss_hjlishi":["male","qun",3,["xjzh_boss_fuli"],["unseen","forbidai","hiddenboss","bossallowed"]],
 				"xjzh_boss_hjshushi":["male","qun",3,["xjzh_boss_fushui"],["unseen","forbidai","hiddenboss","bossallowed"]],
 				"xjzh_boss_hjfangshi":["male","qun",3,["xjzh_boss_fuhuo"],["unseen","forbidai","hiddenboss","bossallowed"]],
 				"xjzh_boss_hjguishi":["male","qun",3,["xjzh_boss_guishu"],["unseen","forbidai","hiddenboss","bossallowed"]],
-				
+
 				//奇术BOSS
 				"xjzh_boss_geligaoli":["male","shen",15,["xjzh_qishu_materialRemove","xjzh_boss_dianmao","xjzh_boss_dianchong","xjzh_boss_dianhua"],["boss","bossallowed","qishuBoss"]],
 				"xjzh_boss_duruier":["male","shen",18,["xjzh_qishu_materialRemove","xjzh_boss_mengdu","xjzh_boss_huanshen"],["boss","bossallowed","qishuBoss"]],
@@ -28,12 +28,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_lilisi":["female","shen",6,["xjzh_qishu_materialRemove","xjzh_boss_lianji","xjzh_boss_qiangji","xjzh_boss_zenghen"],["boss","bossallowed","qishuBoss"]],
 				"xjzh_boss_waershen":["male","shen",12,["xjzh_qishu_materialRemove","xjzh_boss_fennu","xjzh_boss_edu","xjzh_boss_canren"],["boss","bossallowed","qishuBoss"]],
 				"xjzh_boss_ttshilian":['double','',0,['xjzh_qishu_materialRemove','xjzh_boss_shilian','xjzh_boss_shilian_intro'],['boss','qishuBoss'],'zhu'],
-				
+
 				//奇术BOSS随从
 				"xjzh_boss_yinaruisi":['double','shen',12,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_masayier":['double','shen',15,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_taernasha":['double','shen',12,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
-				
+
 				"xjzh_boss_xiaotianshi":['double','shen',4,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_datianshi":['double','shen',6,['xjzh_boss_shenghui2','xjzh_boss_chiyan','xjzh_boss_shilian2'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_gaotianshi":['double','shen',8,['xjzh_boss_shenghui3','xjzh_boss_caijue','xjzh_boss_shilian2'],['unseen','forbidai',"hiddenboss","bossallowed"]],
@@ -41,7 +41,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_duohunzhe":['double','shen',4,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_duotianshi":['double','shen',4,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
 				"xjzh_boss_shachong":['double','shen',4,['xjzh_boss_shenghui'],['unseen','forbidai',"hiddenboss","bossallowed"]],
-				
+
 			},
 			characterIntro:{
 			    "xjzh_boss_lilisi":"莉莉丝是游戏《暗黑破坏神Ⅱ》及《暗黑破坏神IV》中的角色，是憎恨之王墨菲斯托的女儿、庇护所的创造者。<br><br>消耗所有材料各2个可以挑战该boss，胜利时奖励至少1个精魄，额外获得2倍于本局碎片数量个碎片，有几率获得1-4级奇术要件1个，必定获得随机5级奇术要件1个。",
@@ -54,7 +54,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_qier":"消耗9个提纯的鲜血可以挑战该boss，胜利时奖励3个提纯的恐惧，额外获得10个碎片。",
 				"xjzh_boss_bingchuanjushou":"消耗9个提纯的恐惧可以挑战该boss，胜利时奖励3个提纯的鲜血，额外获得10个碎片。",
 				"xjzh_boss_ttshilian":"消耗一个“世界之石碎片”参加一场高阶天堂试炼挑战，该挑战分为以下几个阶段<br><br><li>第一阶段：挑战1个大天使和2小天使<br><br><li>第二阶段：挑战1个高阶天使和2个大天使<br><br><li>第三阶段：挑战1个天使长和2个高阶天使<br><br><li>第四阶段：<br><br>早上8点-12点，晚上20点-24点挑战boss“伊纳瑞斯”和2个天使长<br><br>下午12点-16点，晚上0点-4点挑战boss“马萨伊尔”和1个夺魂者、1个堕落天使<br><br>除以上时间外挑战boss“塔尔拉沙”和2个剧毒沙虫",
-				
+
 			},
 			characterTitle:{
 				"xjzh_boss_zuoyou":"玄妙无双",
@@ -64,7 +64,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_waershen":"恶念之源",
 				"xjzh_boss_duruier":"痛苦之王",
 				"xjzh_boss_geligaoli":"流电圣徒",
-				
+
 			},
 			perfectPair:{
 			},
@@ -113,7 +113,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 'xjzh_boss_hjguishi':function(mode){
                     return false;
 				},
-				
+
 			},
 			skill:{
 			    "xjzh_boss_shilian_intro":{sub:true,nobracket:true,unique:true},
@@ -146,7 +146,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    if(cards.length){
                             trigger.player.executeDelayCardEffect(cards.randomGet());
                         }
-                    }, 
+                    },
 			    },
 			    "xjzh_qishu_shendong":{
 					trigger:{
@@ -508,7 +508,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     					            if(hs==ts) return 0.8;
     					            if(hs>ts) return 1;
     					            if(hs>ts+2) return 1.5;
-    					        
+
     					        }
     					        return 0;
     					    },
@@ -818,7 +818,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                                trigger.cancel();
 			                                game.log(player,"被齐尔领主感染，跳过了出牌阶段");
 			                            }
-			                        break; 
+			                        break;
 			                    };
 			                },
 			            },
@@ -1021,7 +1021,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                },
 			                content:function(){
 			                    "step 0"
-			                    trigger.cancel(null,null,'notrigger')   
+			                    trigger.cancel(null,null,'notrigger')
 			                    "step 1"
 			                    player[trigger.name]();
 			                },
@@ -1157,65 +1157,60 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        priority:10,
 			        firstDo:true,
 			        locked:true,
-			        init:function(player){
-			            player.storage.xjzh_boss_lianji={
-			                num1:3,
-			                num2:1,
-			            };
+					charlotte:true,
+					fixed:true,
+					superCharlotte:true,
+			        init(player){
+			            player.storage.xjzh_boss_lianji=new Map(
+							[
+								["use",3],
+			                    ["count",1],
+								["type",[0,0]]
+			                ]
+						);
 			        },
 			        mark:true,
 			        marktext:"连",
 			        intro:{
 			            name:"连击",
-			            content:function(storage,player){
-			                var trickNum=player.countMark("xjzh_boss_lianji_trick");
-			                var basicNum=player.countMark("xjzh_boss_lianji_basic")
-				            return "基本牌："+basicNum+"张<br>锦囊牌："+trickNum+"张";
+			            content(storage,player){
+							let list=storage.get("type");
+				            return `基本牌：${storage.get("type")[0]}张<br>锦囊牌：${storage.get("type")[1]}张`;
 			            },
 			        },
 			        mod:{
-			            aiOrder:function(player,card,num){
-                            var trickNum=player.countMark("xjzh_boss_lianji_trick");
-			                var basicNum=player.countMark("xjzh_boss_lianji_basic");
-			                if(trickNum>0&&get.type(card)=="basic") return num+3;
-			                if(basicNum>0&&get.type(card)=="trick") return num+3;
+			            aiOrder(player,card,num){
+							let storage=player.storage.xjzh_boss_lianji;
+							let typeNum=storage.get("type"),use=storage.get("use");
+							if(typeNum[0]>=use&&get.type(card)=="trick") return num+3;
+							if(typeNum[1]>=use&&get.type(card)=="basic") return num+3;
 			                return num;
                         },
 			        },
-			        filter:function(event,player){
+			        filter(event,player){
 			            return ["trick","basic"].includes(get.type(event.cards[0]));
 			        },
-			        content:function(){
-			            "step 0"
-			            var num=player.storage.xjzh_boss_lianji.num1
-			            var type=get.type(trigger.cards[0]);
+			        async content(event,trigger,player){
+			            let storage=player.storage.xjzh_boss_lianji,type=get.type(trigger.cards[0]),bool=false;
 			            if(type=="basic"){
-			                player.addMark("xjzh_boss_lianji_basic",1,false);
-			                if(player.countMark("xjzh_boss_lianji_trick")>=num){
-			                    player.removeMark("xjzh_boss_lianji_trick",num,false);
-			                }else{
-			                    event.finish();
-			                    return;
-			                }
+							await storage.set("type",[storage.get("type")[0]+1,storage.get("type")[1]]);
+							if(storage.get("type")[1]>=storage.get("use")){
+								await storage.set("type",[storage.get("type")[0],0]);
+								bool=true;
+							}
+			            }else{
+							await storage.set("type",[storage.get("type")[0],storage.get("type")[1]+1]);
+							if(storage.get("type")[0]>=storage.get("use")){
+								await storage.set("type",[0,storage.get("type")[1]]);
+								bool=true;
+							}
 			            }
-			            else if(type=="trick"){
-			                player.addMark("xjzh_boss_lianji_trick",1,false);
-			                if(player.countMark("xjzh_boss_lianji_basic")>=num){
-			                    player.removeMark("xjzh_boss_lianji_basic",num,false);
-			                }else{
-			                    event.finish();
-			                    return;
-			                }
-			            }
-			            "step 1"
-			            var num=player.storage.xjzh_boss_lianji.num2
-			            trigger.effectCount+=num;
-			            player.logSkill("xjzh_boss_lianji",trigger.target);
-						game.log(trigger.card,'额外结算'+num+'次');
-			        },
-			        subSkill:{
-			            "basic":{sub:true,},
-			            "trick":{sub:true,},
+						if(bool==true){
+							let num=storage.get("count");
+							trigger.effectCount+=num;
+							player.logSkill("xjzh_boss_lianji",trigger.target);
+							game.log(trigger.card,'额外结算'+num+'次');
+						}
 			        },
 			    },
 			    "xjzh_boss_qiangji":{
@@ -1226,74 +1221,58 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        priority:10,
 			        firstDo:true,
 			        locked:true,
-			        init:function(player,skill){
-			            player.storage[skill]={
-			                num1:15,
-			                num2:[1000,12000],
-			            };
+					charlotte:true,
+					fixed:true,
+					superCharlotte:true,
+			        init(player,skill){
+			            player.storage[skill]=new Map(
+							[
+			                    ["out",15],
+			                    ["time",12000],
+			                ]
+						);
 			        },
-			        filter:function(event,player){
-			            return Math.random()<=player.storage.xjzh_boss_qiangji.num1/100;
+			        filter(event,player){
+						let storage=player.storage.xjzh_boss_qiangji;
+						if(storage.get("out")/100>=Math.random()) return true;
+			            return false;
 			        },
-			        content:function(){
-			            var storage=player.storage.xjzh_boss_qiangji;
-			            var num;
-			            if(Array.isArray(storage.num2)){
-			                num=get.rand(storage.num2[0],storage.num2[1]);
-			            }
-	    		        else{
-	    		            num=storage.num2;
-	    		        }
-	    		        var numx=get.rand(10,30);
-	    		        if(storage.num1<75){
-	    		            storage.num1*=numx/100;
-	    		            if(storage.num1>=75) storage.num1=75;
-	    		        }
-	    		        if(storage.num2[1]>1000){
-	    		            storage.num2[1]*=numx/100;
-	    		            if(storage.num2[1]<=1000) storage.num2=1000;
-	    		        }
-	    		        game.log(player,"离开游戏，将于"+num/1000+"s后回到游戏");
+			        async content(event,trigger,player){
+			            let storage=player.storage.xjzh_boss_qiangji;
+			            let time=storage.get("time"),out=storage.get("out"),time2=get.rand(1000,time);
+
+
+	    		        game.log(player,`离开游戏，将于${Math.round(time2/1000)}s后回到游戏`);
 	    		        player.classList.add('out');
-	    		        setTimeout(function(){
+	    		        setTimeout(()=>{
 	    		            player.classList.remove('out');
 	    		            game.log(player,"回到游戏");
-	    		            var next=game.createEvent('xjzh_intrigger',false);
-					        next.player=player;
-					        next.setContent(lib.skill.xjzh_boss_qiangji.skillList);
-	    		        },num);
+							if(trigger.card){
+								let card=trigger.card;
+								player.chooseUseTarget(card,false);
+								let list=[];
+								while(true){
+									let cards=get.cards()[0];
+									player.showCards(cards);
+									if(get.number(cards)==get.number(card)||get.suit(cards)==get.suit(card)) list.push(cards);
+									else{
+										if(list.length) player.gain(list,'gain2','log',player);
+										break;
+									};
+								}
+							}
+							while(_status.event.name!='phase'){
+								_status.event=_status.event.parent;
+							}
+							_status.event.finish();
+							_status.event.untrigger(true);
+							player.insertPhase();
+	    		        },time2);
+
+	    		        let num=get.rand(10,30)/100;
+	    		        if(out<75) storage.set("out",out*(1+num)>75?75:out*=(1+num));
+	    		        if(time>1000) storage.set("time",time*(1-num)<1000?1000:time*(1-num));
 			        },
-			        skillList:function(){
-			            "step 0"
-			            var history=player.getAllHistory('damage',function(evt){
-			                return evt&&evt.card&&lib.suit.includes(get.suit(evt.card));
-			            });
-					    if(!history.length){
-					        event.goto(2);
-					        return;
-					    };
-					    var card=history[history.length-1].card;
-					    if(card) player.chooseUseTarget({name:card.name},false);
-					    event.cards=card;
-					    event.list=[];
-					    "step 1"
-	    		        var cards=get.cards()[0];
-	    		        player.showCards(cards);
-	    		        if(get.number(cards)==get.number(event.cards)||get.suit(cards)==get.suit(event.cards)){
-	    		            event.list.push(cards);
-	    		            game.delay();
-	    		            event.redo();
-	    		        }else{
-	    		            player.gain(event.list,'gain2','log',player);
-	    		        }
-	    		        "step 2"
-						while(_status.event.name!='phase'){
-							_status.event=_status.event.parent;
-						}
-						_status.event.finish();
-						_status.event.untrigger(true);
-						player.insertPhase();
-			        }
 			    },
 			    "xjzh_boss_zenghen":{
 			        trigger:{
@@ -1302,62 +1281,55 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        forced:true,
                     limited:true,
                     locked:true,
+					charlotte:true,
+					fixed:true,
+					superCharlotte:true,
                     derivation:"xjzh_boss_xueyan",
 					skillAnimation:true,
 					animationColor:'fire',
 					animationStr:"憎恨王座",
-					init:function(player){
-					    if(!player.storage.xjzh_boss_zenghen) player.storage.xjzh_boss_zenghen=0;
-					    player.storage.xjzh_boss_zenghen+=3;
+					init(player,skill){
+						player.addMark(skill,3);
 					},
-			        filter:function(event,player){
-			            return player.storage.xjzh_boss_zenghen&&player.storage.xjzh_boss_zenghen>0;
+			        filter(event,player){
+			            return player.hasMark("xjzh_boss_zenghen");
 			        },
-			        content:function(){
-			            "step 0"
-			            player.storage.xjzh_boss_zenghen--
-			            "step 1"
-			            var list=player.getEnemies().sortBySeat();
-			            for(var target of list){
-			                target.damage(1,player,'fire','nocard')
-			                target.changexjzhBUFF("ranshao",1);
-			            }
-			            "step 2"
-			            //player.maxHp*=2;
+			        async content(event,trigger,player){
+			            player.removeMark("xjzh_boss_zenghen",1,false);
 			            player.gainMaxHp(player.maxHp);
-			            "step 3",
 			            player.recoverTo(player.maxHp);
 			            player.addSkill("xjzh_boss_xueyan");
 			            player.update();
-			            "step 4"
-			            if(!player.hasSkill("xjzh_boss_lianji")) return;
-			            var controlList=["红色数字减一","蓝色数字加一"];
-			            player.chooseControl(controlList);
-			            "step 5"
-			            if(result.control){
-			                var links=result.control;
-			                if(links=="红色数字减一"){
-			                    player.storage.xjzh_boss_lianji.num1--;
-			                    if(player.storage.xjzh_boss_lianji.num1<=0) player.storage.xjzh_boss_lianji.num1=0;
-			                }else{
-			                    player.storage.xjzh_boss_lianji.num2++;
-			                }
+			            let list=player.getEnemies().sortBySeat(player);
+						while(list.length){
+							let target=list.shift();
+			                target.damage(1,player,'fire','nocard')
+			                target.changexjzhBUFF("ranshao",1);
 			            }
+			            if(player.hasSkill("xjzh_boss_lianji")){
+							let controlList=["红色数字减一","蓝色数字加一"],storage=player.storage.xjzh_boss_lianji;
+							const control=await player.chooseControl(controlList).forResultControl();
+							if(control=="红色数字减一"){
+								storage.set("use",storage.get("use")==1?1:storage.get("use")-1);
+							}else{
+								storage.set("count",storage.get("count")+1);
+							}
+						}
 			        },
 			    },
 			    "xjzh_boss_xueyan":{
 			        trigger:{
 			            source:"damageEnd",
 			        },
-			        filter:function(event,player){
+			        filter(event,player){
 			            if(event.player.isDead()) return false;
 			            return event.source!=event.player;
 			        },
-			        check:function(event,player){
+			        check(event,player){
 			            return -get.attitude(player,event.player);
 			        },
-			        content:function(){
-			            var cards=get.cards()[0];
+			        async content(event,trigger,player){
+			            let cards=get.cards()[0];
 			            player.showCards(cards);
 			            if(get.color(cards)=="red"){
 			                trigger.player.damage(1,player,'fire','nocard');
@@ -1403,7 +1375,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			                var cardname=i;
                             lib.card[cardname]={
                                 fullimage:false,
-                                image:'ext:仙家之魂/image/qishuyaojian/cards/'+i+'.jpg',  
+                                image:'ext:仙家之魂/image/qishuyaojian/cards/'+i+'.jpg',
                             };
                             lib.translate[cardname]=cards[i].translate;
                             lib.translate[cardname+'_info']=cards[i].translate_info;
@@ -1454,7 +1426,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				            var player=_status.event.player
 				            return num;
                         })
-                        next.set('num',num) 
+                        next.set('num',num)
 				        'step 1'
 				        if(result.bool){
 				            if(player.storage.xjzh_boss_fennu.length>0){
@@ -1900,7 +1872,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			            var cards=get.randomCards(num,function(card){
                             return get.color(card)=="black";
                         });
-			            player.gain(cards,'giveAuto')   
+			            player.gain(cards,'giveAuto')
 			            var str="";
 			            if(trigger.name=="phaseZhunbei"){
 			                str+="准备阶段";
@@ -2984,23 +2956,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					    },
 					},
 				},
-				
+
 			},
 			dynamicTranslate:{
 			    "xjzh_boss_qiangji":function(player){
-			        var storage=player.storage.xjzh_boss_qiangji;
-			        var str="锁定技，你受到伤害有"+storage.num1+"%几率离开游戏，并于";
-			        if(Array.isArray(storage.num2)){
-			            str+="随机"+storage.num2[0]/1000+"-"+storage.num2[1]/1000+"s后"
-			        }else{
-			            str+=storage.num2+"s后"
-			        }
+			        let storage=player.storage.xjzh_boss_qiangji;
+			        let str=`锁定技，你受到伤害有${Math.round(storage.get("out"))}%几率离开游戏，并于随机1-${Math.round(storage.get("time")/1000)}s后回到游戏；`
 			        str+="；当你回到游戏时，你可以视为使用一张你上一次因其受到伤害时的牌，然后你展示牌堆顶一张牌直到其花色、点数均与这张牌不同，并获得之前展示的所有牌，技能结算后，你立即结束当前回合并执行一个额外的回合。";
 			        return str;
 			    },
 			    "xjzh_boss_lianji":function(player){
-			        var storage=player.storage.xjzh_boss_lianji;
-			        var str="锁定技，你每使用<span style=\"color:#FF0000\">"+storage.num1+"</span>张基本牌/非延时锦囊牌，你的下一张非延时锦囊牌/基本牌额外结算<span style=\"color:#0000FF\">"+storage.num2+"</span>次";
+			        let storage=player.storage.xjzh_boss_lianji;
+			        let str=`锁定技，你每使用<span style=\"color:#FF0000\">${storage.get("use")}</span>张基本牌/非延时锦囊牌，你的下一张非延时锦囊牌/基本牌额外结算<span style=\"color:#0000FF\">${storage.get("count")}</span>次`;
 			        return str;
 			    },
 			    "xjzh_boss_dianxing":function(player){
@@ -3061,7 +3028,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			    }
 				    return `锁定技，你始终跳过弃牌阶段；你的回合内，若你已受伤，你使用基本牌额外结算${num}次，否则你使用非延时锦囊牌额外结算${num2}次`;
 			    },
-			    
+
 			},
 			translate:{
 				"xjzh_boss_zuoyou":"神左幽",
@@ -3089,7 +3056,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_duotianshi":"堕落天使",
 				"xjzh_boss_taernasha":"塔尔拉沙",
 				"xjzh_boss_shachong":"剧毒沙虫",
-				
+
 				"xjzh_boss_huanxian":"幻仙",
 				"xjzh_boss_huanxian_info":"锁定技，你无法失去体力上限；当你击败一名角色后，你可以选择并获得其所有技能及全扩随机x个技能共计5个技能中的一个及从以下效果中选择获得其中一个永久保存：<li>【杀】造成伤害+1<li>【杀】的目标+1<li>【杀】使用次数+1<li>开局获得诸葛连弩<li>开局获得一张进攻马<li>开局获得一张防御马",
 				"xjzh_boss_huanxian_append":"注：开局获得牌选项在局中选择会立即获得一张对应的牌，此3个选项只能选择一次",
@@ -3137,7 +3104,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_boss_qiangji":"强击",
 				"xjzh_boss_qiangji_info":"锁定技，你受到伤害有几率离开游戏且该几率随机提高10%-30%(该几率至多为75%)，并于随机1-12s后回到游戏，然后令你回到游戏的时间降低10%-30%(该时间至少为1s)；当你回到游戏时，你可以视为使用一张你上一次因其受到伤害时的牌，然后你展示牌堆顶一张牌直到其花色、点数均与这张牌不同，并获得之前展示的所有牌，技能结算后，你立即结束当前回合并执行一个额外的回合。",
 				"xjzh_boss_zenghen":"憎恨",
-				"xjzh_boss_zenghen_info":"锁定技，本局游戏限3次，当你濒死时，你对场上所有角色造成一点火焰伤害，并令其获得燃烧，然后你的体力上限翻倍并回复体力至体力上限，然后选择将〖连击〗中的红色数字-1或蓝色数字+1，若你不拥有技能〖血炎〗，你获得该技能。",
+				"xjzh_boss_zenghen_info":"锁定技，本局游戏限3次，当你濒死时，你的体力上限翻倍并回复体力至体力上限，然后你对场上所有角色造成一点火焰伤害，并令其获得燃烧，然后选择将〖连击〗中的红色数字-1或蓝色数字+1，若你不拥有技能〖血炎〗，你获得该技能。",
 				"xjzh_boss_xueyan":"血炎",
 				"xjzh_boss_xueyan_info":"当你造成伤害后，你可以展示牌堆顶一张牌，所为红色，你对其造成一点火焰伤害并令获得燃烧，否则令其获得一层易伤。",
 				"xjzh_boss_mengdu":"猛毒",
@@ -3184,7 +3151,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_qishu_shendong_info":"锁定技，你造成伤害视为冰属性伤害；出牌阶段限一次，你可以选择一名对你造成过伤害的角色，令其弃置x张牌，每少弃置一张牌失去一点体力上限，然后视为其未对你造成过伤害（x为其对你造成伤害的次数）。",
 				"xjzh_qishu_feimou":"非谋",
 				"xjzh_qishu_feimou_info":"锁定技，当你受到伤害后，你获得其所有手牌，然后将这些牌随机分配给伤害来源。",
-				
+
 			},
 		};
 		if(true){

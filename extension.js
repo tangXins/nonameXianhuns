@@ -1822,6 +1822,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if(typeof player.storage.xjzhmaxMp=='number') return player.storage.xjzhmaxMp;
 				return false;
 			};
+			get.isMaxMp=(player)=>{
+				return get.xjzhmaxMp(player)==get.xjzhMp(player);
+			};
 			//修改魔力
 			lib.element.player.changexjzhMp=function(num){
 				var next=game.createEvent('changexjzhMp',false);

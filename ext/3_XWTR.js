@@ -176,12 +176,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 'xjzh_diablo_lamasi':function(mode){
                     if(mode=="identity") return true;
                 },
-                'xjzh_diablo_yafeikela':function(mode){
+                /*'xjzh_diablo_yafeikela':function(mode){
                     if(get.xjzh_device()=="android"){
                         if(get.xjzh_kernel()=="webkit") return true;
                     };
                     return false;
-                },
+                },*/
                 'xjzh_diablo_xiong':function(mode){
                     return false;
                 },
@@ -6679,38 +6679,87 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		},
 	    		"xjzh_diablo_shilue":{
 	    		    enable:"phaseUse",
-	    		    init:function(player){
+	    		    init(player){
 	    		        if(!player.storage.xjzh_diablo_linglijianmian) player.storage.xjzh_diablo_linglijianmian=0;
 	    		        player.storage.xjzh_diablo_linglijianmian+=30;
 	    		        player.storage.xjzh_diablo_shilue=false;
+						player.addMark("xjzh_diablo_lingshou",150)
 	    		    },
-	    		    filter:function(event,player){
+	    		    filter(event,player){
+						if(get.isMaxMp(player)) return false;
 	    		        return player.countMark("xjzh_diablo_lingshou")>0;
 	    		    },
+					getshilue(player,num){
+						player.removeMark("xjzh_diablo_lingshou",num);
+						player.changexjzhMp(num);
+						let storage=player.storage.xjzh_diablo_linglijianmian;
+						storage>30?storage-=30:storage=0;
+						player.storage.xjzh_diablo_shilue=true;
+	    		    },
 	    		    group:"xjzh_diablo_shilue_round",
-	    		    content:function(){
-	    		        "step 0"
-	    		        if(event.isMine()){
-	    		            var name=prompt("请输入任意数字转换德鲁伊灵体贡品为灵力","00");
-	    		        }else{
-	    		            name=get.rand(1,player.countMark("xjzh_diablo_lingshou"));
+	    		    async content(event,trigger,player){
+						let num,num2=player.countMark("xjzh_diablo_lingshou");
+						if(event.isMine()){
+							//创建输入框
+							let node=ui.create.div();
+							node.style.width='400px';
+							node.style.height='30px';
+							node.style.lineHeight='30px';
+							node.style.fontFamily='xinwei';
+							node.style.fontSize='30px';
+							node.style.padding='10px';
+							node.style.left='calc(50% - 200px)';
+							node.style.top='calc(50% - 20px)';
+							node.style.whiteSpace='nowrap';
+							node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;
+							node.contentEditable=true;
+							node.style.webkitUserSelect='text';
+							node.style.textAlign='center';
+							//创建确定按钮
+							let button=ui.create.div('.menubutton.highlight.large','确定');
+							button.style.width='70px';
+							button.style.left='calc(50% - 35px)';
+							button.style.top='calc(50% + 60px)';
+							//将输入框和确定按钮添加到界面上
+							ui.window.appendChild(node);
+							ui.window.appendChild(button);
+							//选中输入框清空文字
+							node.onfocus=()=>{
+								node.innerHTML='';
+							};
+							button.onclick=(e)=>{
+								let name=node.innerText;
+								if(/^\d+$/.test(name)&&Number(name)<=num2){
+									ui.window.removeChild(node);
+									ui.window.removeChild(button);
+									game.resume();
+									num=Number(name);
+									lib.skill[event.name].getshilue(player,num);
+								}else{
+									if(name.length==0){
+										alert(`请先输入一个有效的数字`);
+									}else if(/^\d+$/.test(name)==false){
+										alert(`${name}不是一个有效的数字`);
+									}
+									else if(Number(name)>num2){
+										alert(`${Number(name)}超过${num2}，请重新输入`);
+									}
+									node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;;
+								}
+								setTimeout(()=>{
+									node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;;
+								},10);
+							};
+							node.onkeydown=(e)=>{
+								e.stopPropagation();
+								if (e.keyCode==13) button.onclick();
+							};
+							_status.imchoosing=true;
+							game.pause();
+						}else{
+	    		            num=get.rand(1,player.countMark("xjzh_diablo_lingshou"));
+							lib.skill[event.name].getshilue(player,num);
 	    		        }
-	    		        event.num=name?name:0;
-	    		        "step 1"
-	    		        if(event.num==0) return;
-	    		        var marknum=player.countMark("xjzh_diablo_lingshou");
-	    		        var numx=marknum>=event.num?event.num:marknum;
-	    		        game.log(numx)
-	    		        player.removeMark("xjzh_diablo_lingshou",numx);
-	    		        player.changexjzhMp(numx);
-	    		        if(player.storage.xjzh_diablo_linglijianmian){
-	    		            if(player.storage.xjzh_diablo_linglijianmian>30){
-	    		                player.storage.xjzh_diablo_linglijianmian-=30;
-	    		            }else{
-	    		                delete player.storage.xjzh_diablo_linglijianmian
-	    		            }
-	    		        }
-	    		        player.storage.xjzh_diablo_shilue=true;
 	    		    },
 	    		    subSkill:{
 	    		        "round":{
@@ -6725,7 +6774,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    		                if(!player.storage.xjzh_diablo_shilue) return false;
 	    		                return true;
 	    		            },
-	    		            content:function(){
+							async content(event,trigger,player){
 	    		                player.storage.xjzh_diablo_shilue=false;
 	    		                player.storage.xjzh_diablo_linglijianmian+=30;
 	    		            },
@@ -8192,6 +8241,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					filter:function(event,player){
 						if(!game.hasNature(event,"fire")) return false;
 						if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
+						if(event.getParent().name=="xjzh_xyj_tianhuo") return false;
 						return true;
 					},
 				    mod:{

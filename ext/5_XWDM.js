@@ -67,7 +67,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         player.chooseToCompare(event.targets).callback=()=>{
                             if(event.num1>event.num2){
                                 if(player.storage.xjzh_huoying_fenshen<3) player.storage.xjzh_huoying_fenshen+=1
-                                player.chooseDrawRecover(2,1,true,"〖分身〗：请选择摸两张牌或回复一点体力");
+                                player.chooseDrawRecover(1,1,true,"〖分身〗：请选择摸两张牌或回复一点体力");
                                 let evt=event.getParent("phase");
                                 if(evt&&evt.getParent&&!evt.xjzh_huoying_fenshen) evt.xjzh_huoying_fenshen=true;
                             }else{

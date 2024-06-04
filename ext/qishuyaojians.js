@@ -142,7 +142,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    "xjzh_qishu_jiandun":{
 	        translate:"坚毅之盾",
 		    translate_info:"当你受到伤害后，你获得等量护甲，此后每个你的回合开始时，若你有护甲，你将一点护甲转为体力上限。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:false,
 			level:3,
 			skill:{
@@ -170,7 +170,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    "xjzh_qishu_suoding":{
 	        translate:"锁定目标",
 		    translate_info:"你使用非装备牌和非延时锦囊牌指定目标不小于2时，你可以为此牌重新指定一个目标(需合法)，此牌根据未重新指定目标前的目标数量对其额外生效等量次数。",
-			extra:"等阶：4<br><>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：4<br><>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			skill:{
@@ -204,7 +204,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    "xjzh_qishu_fenlie":{
 	        translate:"分裂箭矢",
 		    translate_info:"你使用不指定为全部目标的牌可以额外指定1个目标。",
-			extra:"等阶：5<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：5<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：320碎片",
 			noTranslate:false,
 			level:5,
 			status:{
@@ -256,7 +256,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        translate:"瓦西里的祷告",
 		    translate_info:"你的熊人技能也视为大地技能，你的所有大地技能等级+3，你的体力上限+3，每个回合开始时，以1：10（体力/灵力）的比例消耗灵力值以回复体力值。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“在面向大海的瓦西里雕像处生长着一些大橡树的根，它们有时会出现向后弯曲的情况，根内充满了狂暴的魔法。” - 巴雷特的《名器谱》</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_fengbaopaoxiao"],
@@ -319,7 +319,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        translate:"无餍之怒",
 			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为熊形态，你的熊人技能不再消耗灵力，改为回复等量灵力。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“灰烬之日”到来时，伟大的德鲁伊纳菲恩提醒他的门徒们说，为了保护图尔·杜拉不受阿斯塔洛斯的烈焰伤害，没有什么是不能牺牲的，哪怕他们的人性。</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_fenglangkx"],
@@ -344,7 +344,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    translate:"风暴咆哮",
 			translate_info:"你的狼人技能也视为风暴技能，你的所有风暴技能等级+3，你的会心几率+50%，你获得25%-35%灵力消耗减免。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“孩子，聆听风暴的天籁之音吧。它有自己的节奏，自己的旋律。听它那美妙的歌声，也许有一天你也能加入进来，与之合鸣。” - 艾蕊达</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_waxilidedaogao"],
@@ -391,7 +391,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    translate:"疯狼的狂喜",
 			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你释放狼人技能时有25%几率获得20点灵力，你的灵力上限+25。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“他不是诅咒的受害者 - 这都是他自找的。就算他的皮肤裂开，骨骼碎裂，他的笑声也从未停止。” - 疯狂贵族的故事</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_wuyan"],
@@ -418,8 +418,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		"xjzh_qishu_daojian":{
 		    translate:"疾疫刀尖",
-		    translate_info:"你使用【杀】造成伤害视为毒属性伤害，且有50%几率令该伤害+1。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+		    translate_info:"你使用【杀】造成伤害视为毒属性伤害且该伤害+1。",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
 			level:1,
 			skill:{
@@ -429,19 +429,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    direct:true,
     			priority:-1,
     		    lastDo:true,
-    			filter:function(event,player){
-    			    return event.card.name=="sha";
+    			filter(event,player){
+    			    return event.card&&get.name(event.card)=="sha";
     			},
-    		    content:function(){
-    		        if(Math.random()<=0.5) trigger.num++;
+    		    async content(event,trigger,player){
+					trigger.num++;
     		        game.setNature(trigger,'poison');
     		    },
+				ai:{
+					poisondamage:true,
+				},
     		},
     	},
 		"xjzh_qishu_fuchou":{
 			translate:"复仇之笼",
-			translate_info:"你所受到的伤害的20%-40%将会被储存起来，直到该数值不小于1时，你可以对一名其他角色以该数值的250%造成等量火焰伤害（四舍五入），若如此做，你清除储存的伤害数值。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			translate_info:"你所受到的伤害的30%-50%将会被储存起来，直到该数值不小于1时，你可以对一名其他角色以该数值的300%造成等量火焰伤害（四舍五入），若如此做，你清除储存的伤害数值。",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:true,
 			level:3,
 			skill:{
@@ -451,40 +454,33 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    direct:true,
     			priority:-1,
     		    lastDo:true,
-    			init:function(player){
-    			    if(!player.storage.xjzh_qishu_fuchou) player.storage.xjzh_qishu_fuchou=0;
+    			init(player,skill){
+    			    if(!player.storage[skill]) player.storage[skill]=0;
     			},
-    		    content:function(){
-    			    "step 0"
-    			    var numx=trigger.num;
-    			    var num2=get.rand(20,40);
-    			    var num3=numx*(num2/100);
-    			    player.storage.xjzh_qishu_fuchou+=num3;
-    			    game.log(player,"受到的伤害的",num2,"%将被储存起来，数值为",num3);
-    			    "step 1"
-    			    if(player.storage.xjzh_qishu_fuchou>=1){
-    			        var num=Math.round(player.storage.xjzh_qishu_fuchou);
-    			        player.chooseTarget("〖复仇之笼〗：请选择一名其他角色并对其造成"+num+"点火焰伤害",function(card,player,target){
+    		    async content(event,trigger,player){
+    			    let num=trigger.num,storage=player.storage.xjzh_qishu_fuchou;
+					let num2=get.rand(30,50);
+					storage+=num*num2;
+    			    game.log(player,`受到的伤害的${num2}%将被储存起来，数值为`,num*num2);
+					if(storage>=1){
+						let damageNum=Math.round(storage)*3;
+    			        const targets=await player.chooseTarget(`〖复仇之笼〗：请选择一名其他角色并对其造成${damageNum}点火焰伤害`,(card,player,target)=>{
     					    return target!=player;
-    				    }).set('ai',function(target){
-    			            if(get.damageEffect(target,_status.event.player,_status.event.player,"fire")) return 1;
+    				    }).set('ai',target=>{
+    			            return get.damageEffect(target,_status.event.player,_status.event.player,"fire");
     			        });
-    			    }else{
-    			        event.finish();
-    			    }
-    			    "step 2"
-    			    if(result.bool){
-    			        var num=Math.round(player.storage.xjzh_qishu_fuchou);
-    			        result.targets[0].damage(num,player,'nocard','fire');
-    			        player.storage.xjzh_qishu_fuchou=0;
-    			    }
+						if(targets){
+							targets[0].damage(damageNum,player,'nocard','fire');
+							storage=0;
+						}
+					}
     		    },
     		},
 		},
 		"xjzh_qishu_wuqijingtong":{
 			translate:"武器精通",
 			translate_info:"你无法再装备武器牌，改为将一张虚拟同名牌置于武将牌上并视为你拥有该武器牌的技能；你武将牌上的每张武器牌为你提供+1进攻距离。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:true,
 			level:3,
 			skill:{
@@ -560,7 +556,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_fangjujingtong":{
 			translate:"防具精通",
 			translate_info:"你无法再装备防具牌，改为将一张虚拟同名牌置于武将牌上并视为你拥有该防具牌的技能；你武将牌上的每张防具牌为你提供+1防御距离。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:true,
 			level:3,
 			skill:{
@@ -636,7 +632,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_binglengjiqiao":{
 			translate:"冰冷技巧",
 			translate_info:"你有30%几率防止冰属性伤害；当你防止冰属性伤害后，你视为对其使用一张不计入次数的【冰杀】;你造成冰属性伤害有30%几率暴击，造成额外100%基础伤害点伤害。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:true,
 			level:3,
 			skill:{
@@ -648,7 +644,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			priority:-1,
     		    lastDo:true,
     			filter:function(event,player){
-    			    if(!event.nature||event.nature!="ice") return false;
+    			    if(!game.hasNature(event,'ice')) return false;
     			    return Math.random()<=0.3;
     			},
     		    content:function(){
@@ -677,7 +673,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_qiyue":{
 			translate:"恶念契约",
 			translate_info:"你的回合开始时，你从以下3种效果种选择一种：1，获得一点护甲；2，装备一张攻击距离为2的武器牌；3，摸两张牌。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -726,8 +722,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		"xjzh_qishu_titoushi":{
 			translate:"剃头师",
-			translate_info:"你所造成的伤害将被其免疫之，40-20秒后将以每10秒提高50%令其流失等量体力。",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：150碎片",
+			translate_info:"你所造成的伤害将被其免疫之，40-20秒后将以每10秒提高70%（四舍五入）令其流失等量体力。",
+			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:true,
 			level:4,
 			skill:{
@@ -736,30 +732,28 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    },
     		    forced:true,
     		    priority:6,
-    		    filter:function(event,player){
+    		    filter(event,player){
     		        return !event.numFixed&&!event.cancelled;
     		    },
-    		    content:function(){
-    		        "step 0"
-    		        var num=get.rand(20000,40000);
-    		        var numx=(num/1000)*0.05;
-    		        var num2=Math.floor(trigger.num*(1+numx));
-    		        game.log(trigger.player,"受到",player,"的","#y〖剃头师〗","影响"+trigger.num+"点伤害将于"+num/1000+"s后转为流失"+num2+"点体力");
-    		        setTimeout(function(){
+    		    async content(event,trigger,player){
+    		        let num=get.rand(20000,40000);
+    		        let numx=(num/1000)*0.07;
+    		        let damageNum=Math.round(trigger.num*(1+numx));
+    		        game.log(trigger.player,"受到",player,"的","#y〖剃头师〗","影响",trigger.num,"点伤害将于",num/1000,"s后转为流失",damageNum,"点体力");
+    		        setTimeout(()=>{
     					if(trigger.player.isAlive()){
-    					    trigger.player.loseHp(num2);
-    					    game.log(trigger.player,"因",player,"的","#y〖剃头师〗","流失"+num2+"点体力");
+    					    trigger.player.loseHp(damageNum);
+    					    game.log(trigger.player,"因",player,"的","#y〖剃头师〗","流失",damageNum,"点体力");
     					}
     				},num);
-    				"step 1"
     				trigger.changeToZero();
     		    },
     		},
 		},
 		"xjzh_qishu_yaojishi":{
 			translate:"药剂师",
-			translate_info:"你造成伤害有5-15%几率令其额外受到毒属性、冰属性、火属性各一点伤害。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			translate_info:"你造成伤害有25-40%几率令其视为受到火、毒、冰属性伤害，每有一种额外的属性伤害，该伤害+1。",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -768,23 +762,33 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    },
     		    forced:true,
     		    priority:7,
-    		    filter:function(event,player){
-    		        var num=get.rand(5,15);
+    		    filter(event,player){
+    		        let num=get.rand(25,40);
     		        if(Math.random()>num/100) return false;
     		        if(event.getParent('xjzh_qishu_yaojishi').name=="xjzh_qishu_yaojishi") return false;
+					let list=get.natureList(event,player),list2=["poison","ice","fire"],num2=0;
+					list2.forEach(item=>{
+						if(!list.contains(item)) num2++;
+					});
+					if(num>=3) return false;
     		        return !event.numFixed&&!event.cancelled;
     		    },
-    		    content:function(){
-    		        trigger.player.damage(1,player,'nocard','poison');
-    		        trigger.player.damage(1,player,'nocard','ice');
-    		        trigger.player.damage(1,player,'nocard','fire');
+    		    async content(event,trigger,player){
+					let list=get.natureList(trigger,player),list2=["poison","ice","fire"],list3=[];
+					list2.forEach(item=>{
+						if(!list.contains(item)) list3.push(item);
+					});
+					if(list3.length){
+						game.setNature(trigger,list3,true);
+						trigger.num+=list3.length;
+					}
     		    },
     		},
 		},
 		"xjzh_qishu_wushitongku":{
 			translate:"无视痛苦",
 			translate_info:"你受到伤害有5-25%防止之，改为回复等量体力。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -807,7 +811,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_siwanghuanxing":{
 			translate:"死亡缓刑",
 			translate_info:"你造成伤害后有15-35%几率令其获得一种随机减益buff，你对有减益buff的角色造成伤害根据每1种减益buff附加额外1点毒属性伤害。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -835,7 +839,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_shengmingfusu":{
 			translate:"生命复苏",
 			translate_info:"锁定技，当一名角色因你回复体力时，其回复的体力值基础数值+1，若其处于濒死阶段，则额外+1回复基础数值。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
 			level:1,
 			skill:{
@@ -856,7 +860,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_heianxuewu":{
 			translate:"黑暗血舞",
 			translate_info:"你的体力值大于体力上限的一半时，你使用[伤害]卡牌须失去一点体力值并令本次造成的伤害+1，但你无需再弃置此牌。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
 			level:1,
 			skill:{
@@ -882,7 +886,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_jishudanyao":{
 			translate:"集束弹药",
 			translate_info:"你使用牌指定的目标有20%几率令其获得1层定身。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
 			level:1,
 			skill:{
@@ -903,7 +907,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_talaxia":{
 			translate:"塔拉夏之心",
 			translate_info:"若你造成的属性伤害与你上次对其造成的属性伤害不同，你本次造成的属性伤害+1，且你有几率获得一张与你本次造成的属性伤害类型不同的【杀】。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -937,7 +941,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_huanji":{
 			translate:"还击",
 			translate_info:"当你横置、翻面、判定区置入延时锦囊牌后，你可以令一名其他角色获得相同效果。",
-			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：100碎片",
+			extra:"等阶：3<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：12.5%<br><br>兑换所需：150碎片",
 			noTranslate:true,
 			level:3,
 			skill:{
@@ -946,15 +950,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    },
     		    forced:true,
     		    priority:4,
-    			filter:function(event,player){
-    			    if(["turnOver","link"].includes(event.name)){
-    			        return player.isLinked()||player.isTurnedOver();
-    			    }
-    			    if(event.name=="addJudge") return true;
-    			    return false;
-    			},
-    		    content:function(){
-    		        "step 0"
+    		    async content(event,trigger,player){
     		        if(trigger.name=="addJudge"){
     		            str="〖还击〗：请选择将"+get.translation(trigger.cards[0])+"置入一名其他角色的判定区";
     		        }
@@ -964,39 +960,31 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		        else if(trigger.name=="turnOver"){
     		            str="〖还击〗：请选择令一名其他角色翻面";
     		        }
-    		        player.chooseTarget(str,function(card,player,target){
+    		        const targets=await player.chooseTarget(str,(card,player,target)=>{
     		            if(trigger.name=="addJudge"){
-    		                return target.canAddJudge(trigger.card);
+    		                return target.canAddJudge(trigger.cards[0]);
     		            }
     		            return target!=player;
-    		        });
-    		        "step 1"
-    		        if(result.bool){
-    		            var target=result.targets[0];
-    		            switch(trigger.name){
-    					    case "turnOver":{
-    							target.turnOver(true);
-    							break;
-    						}
-    						case "link":{
-    						    target.link(true);
-    							break;
-    						}
-    						case "addJudge":{
-    							var card=game.createCard(trigger.card,get.number(trigger.card),get.suit(trigger.card));
-    							target.addJudge(card);
-    							target.$gain2(card);
-    							break;
-    						}
-    					}
-    		        }
+    		        }).set("ai",target=>{
+						return get.attitude(player,target);
+					}).forResultTargets();
+					if(targets){
+						let target=targets[0];
+						if(trigger.name=="addJudge"){
+							let card=game.createCard(trigger.card,get.number(trigger.card),get.suit(trigger.card));
+							target.addJudge(card);
+							target.$gain2(card);
+						}else{
+							target[trigger.name](true);
+						}
+					}
     		    },
     		},
 		},
 		"xjzh_qishu_maoxianmingyun":{
 			translate:"冒险命运",
 			translate_info:"若你造成伤害的点数不小于2，则该伤害增加100%，否则减少100％。",
-			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：30碎片",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
 			level:1,
 			skill:{
@@ -1018,7 +1006,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_chengfa":{
 			translate:"惩罚",
 			translate_info:"若你的攻击距离不小于3，你使用[伤害]卡牌指定目标后获得其随机一张牌。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{
@@ -1040,7 +1028,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_guimeihuanying":{
 			translate:"诡魅幻影",
 			translate_info:"其他角色使用牌前，你有几率使用一张同名牌。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：60碎片",
+			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
 			noTranslate:true,
 			level:2,
 			skill:{

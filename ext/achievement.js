@@ -278,7 +278,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		};
 		game.saveExtensionConfig('仙家之魂',"xjzhAchiStorage",key);
 	};
-	
+
 	_status.xjzhCheatCount=0;
     var xjzh_cheatChecked=function(){
         if(window.xjzhDebug&&window.xjzhDebug()){
@@ -307,7 +307,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         }
         return ret;
     };
-    
+
 	game.xjzhAchi={
 		//初始化成就系统数据
 		init:function(){
@@ -318,7 +318,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			let {...characters4}=lib.characterPack.XWTZ;
 			let {...characters5}=lib.characterPack.XWDM;
 			let xianhuns=Object.assign(characters,characters2,characters3,characters4,characters5);
-			
+
 			console.log(xianhuns)
 
 			if(xianhuns){
@@ -765,7 +765,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					bottom:'55px',height:'35px',
 				},function(){
 					var value=document.getElementById('xjzh_input').value;
-					var url="extension/仙家之魂/keys/兑换列表.json"; 
+					var url="extension/仙家之魂/keys/兑换列表.json";
                     game.readFileAsText(url,function(data){
                         var keys=JSON.parse(lib.init.decode(data));
 					    var keysList=Object.keys(keys);
@@ -808,9 +808,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     					}
                     });
                 });
-					
-				
-				
+
+
+
 				/*function(){
 					var value=document.getElementById('xjzh_input').value;
 					const url='https://101.34.7.123/xjzh/keys/兑换列表.json';
@@ -967,7 +967,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						if(level1>level2) return 1;
 						if(level1<level2) return -1;
 						if(a>b) return 1
-						return -1;						
+						return -1;
 					});
 					for(var i=0;i<8&&num+i<list.length;i++){
 						var equip=list[num+i];
@@ -1147,15 +1147,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			});
     			qishudisen.innerHTML="分解";
     			qishudisen.listen(function(){
-                    
+
                     bookWindow.delete();
 				    game.resume2();
 				    lib.onresize.remove(resize);
-				    
+
 				    game.xjzhAchi.openAchievementEquipIntro(item,state);
-				    
+
 				    game.delayx();
-				    
+
 				    var lvx=info.level;
             		var numberx=0;
             		switch(lvx){
@@ -1175,13 +1175,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             		        numberx=105;
             		    break;
             		};
-            		
+
                     game.xjzh_loseEquip(item);
                     game.xjzh_changeSuipian(numberx);
-                    
+
                     var loading=window.xjzhOpenLoading();
             		loading.subViews.text.innerHTML=`获得${Math.floor(numberx)}个碎片`;
-                    
+
         			setTimeout(function(){
                         loading.delete();
                     },1500);
@@ -1231,7 +1231,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						state.refreshDialog();
 					});
 				}
-				if(num>0){	
+				if(num>0){
 					var addPlayer=ui.create.div(characterDialog,{
 						top:'5%',height:'90%',
 						left:i*30+2+'%',width:'25%',
@@ -1725,7 +1725,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				textAlign:'center',fontSize:'70%',
 			});
 			tokensNum.innerHTML=get.xjzh_tokens();
-			
+
 			/*tokensNum.listen(function(){
     			var boxTime=ui.create.div(bk,{
     				left:'60%',width:'50%',
@@ -1733,7 +1733,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     				color:'white',textShadow:'none',
     				textAlign:'center',fontSize:'100%',
     			});*/
-    			
+
                 /*function format(dataString){
                     var time = new Date(dataString);
             		var year = time.getFullYear();
@@ -1744,9 +1744,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             		var second = time.getSeconds();
             		return year+'-'+(month<10?'0'+month:month)+'-'+(day<10?'0'+day:day)+' '+(hour<10?'0'+hour:hour)+':'+(minute<10?'0'+minute:minute)+':'+(second<10?'0'+second:second)
             	}*/
-            	
+
                 /*var targetDate=lib.config.xjzh_qishuyaojians.date+86400000;
-                
+
                 function diffTime(current,target){
                     var sub = Math.ceil((target-current)/1000)//时间戳
                     //计算天数
@@ -1777,7 +1777,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     window.xjzh_diffTime=((res.day*24*60)+(res.hours*60)+(res.minutes)+(res.seconds/60))*60*1000;
                     boxTime.innerHTML = `下次免费精魄剩余-${res.day}天${res.hours}时${res.minutes}分${res.seconds}秒`
                 },1000);
-                
+
     			var tokensTimeDelete=ui.create.div(ui.window,{
     			    zIndex:10000,
     			    width:'100%',height:'100%'
@@ -1786,7 +1786,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			    boxTime.delete();
     			    tokensTimeDelete.delete();
     			});
-				
+
 			});*/
 			//碎片数量显示
 			var suipian=ui.create.div(bk,{
@@ -1802,7 +1802,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				textAlign:'center',fontSize:'150%',
 			});
 			suipianNum.innerHTML=get.xjzh_suipian();
-			//稀世珍宝
+			//珍宝
 			/*var zhenbaoKuang=ui.create.div(bk,{
 				left:'80%',width:'15%',
 				top:'15%',height:'37.5%',
@@ -2066,12 +2066,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						btm.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/image/qishuyaojian/cards/"+link+".jpg')";
 						var level=get.xjzh_equipInfo(link).level||1;
 						switch(level){
-							case 1: price=30;break;
-							case 2: price=60;break;
-							case 3: price=100;break;
-							case 4: price=150;break;
-							case 5: price=250;break;
-							default: price=30;
+							case 1: price=50;break;
+							case 2: price=100;break;
+							case 3: price=150;break;
+							case 4: price=230;break;
+							case 5: price=320;break;
+							default: price=50;
 						}
 						infoAlert.item=link;
 				        infoAlert.listen(function(){
@@ -2656,7 +2656,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         return str;
     };
 	//成就计量技能
-	
+
 	lib.skill['_xjzh_achi_重金属中毒者']={
 		trigger:{player:"useCard"},
 		firstDo:true,
@@ -2675,5 +2675,5 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			game.xjzhAchi.addProgress('重金属中毒者','special',1);
 		},
 	};
-	
+
 });
