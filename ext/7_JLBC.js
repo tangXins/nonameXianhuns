@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('JLBC');
 		if(!lib.config.characters.includes('JLBC')) lib.config.characters.remove('JLBC');
 		lib.translate['JLBC_character_config']='极略补充';
 		var JLBC={
@@ -167,32 +168,32 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             firstDo:true,
                             popup:false,
                             forced:true,
-                            content(){      
+                            content(){
                                 if(event.name=="chooseUseTarget"){
                                     trigger.set('filterTarget',function(card,player,target){
                                         if(!_status.event.targets.includes(target)) return false;
-                                        if(!card) return false;			
-                                        if(_status.event.nodistance&&lib.filter.targetEnabledx(card,player,target)) return true; 
-                                        if(lib.filter.filterTarget(card,player,target)) return true;                                            
-                                        
+                                        if(!card) return false;
+                                        if(_status.event.nodistance&&lib.filter.targetEnabledx(card,player,target)) return true;
+                                        if(lib.filter.filterTarget(card,player,target)) return true;
+
                                         if(game.checkMod(card,player,target,'unchanged','playerEnabled',player)==false) return false;
                                         let mod=game.checkMod(card,player,target,'unchanged','targetEnabled',target);
                                         if(mod===false) return false;
-                                        if(mod===true) return true;	
+                                        if(mod===true) return true;
                                         let filter=get.info(card).modTarget;
                                         if(typeof filter=='boolean') return filter;
                                         if(typeof filter=='function') return filter(card,player,target);
                                         return false;
-                                    });                                                        
+                                    });
                                 }
-                                else{     
+                                else{
                                     trigger.set('filterTarget',function(card,player,target){
-                                        if(!card) return false;			
-                                        if(lib.filter.filterTarget(card,player,target)) return true;                            	
+                                        if(!card) return false;
+                                        if(lib.filter.filterTarget(card,player,target)) return true;
                                         if(game.checkMod(card,player,target,'unchanged','playerEnabled',player)==false) return false;
                                         let mod=game.checkMod(card,player,target,'unchanged','targetEnabled',target);
                                         if(mod===false) return false;
-                                        if(mod===true) return true;	
+                                        if(mod===true) return true;
                                         let filter=get.info(card).modTarget;
                                         if(typeof filter=='boolean') return filter;
                                         if(typeof filter=='function') return filter(card,player,target);
@@ -333,9 +334,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         },
                     },
                 },
-                
-                
-                
+
+
+
 			},
 			dynamicTranslate:{
 			    "xjzh_jlsg_sanjue":function(player){
@@ -348,19 +349,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        }
 			        return str+="<br><br><span style=\"color:#F3D22B\">三绝储备技能</span>："+skills;
 			    },
-			    
+
 			},
 			translate:{
 				"xjzh_jlsg_diaochan":"sp神貂蝉",
 				"xjzh_jlsg_zhaoyan":"赵嫣",
-				
+
 				"xjzh_jlsg_sanjue":"三绝",
 				"xjzh_jlsg_sanjue_info":"锁定技，当你第一次或第三次使用同名牌时，然后从未上场的吴势力武将中获得一个不为此技能的储备技能；出牌阶段，你可以令一名角色获得一个储备技能",
 				"xjzh_jlsg_lihun":"离魂",
 				"xjzh_jlsg_lihun_info":"回合结束时，你可以选择一名其他角色，该角色进行一个由你操控的额外回合，其于此额外回合内使用牌可以选择任意角色为目标，且无距离和次数限制。",
 				"xjzh_jlsg_jueshi":"绝世",
 				"xjzh_jlsg_jueshi_info":"锁定技，你的体力上限锁定为1，当你濒死时，你随机使用场上所有角色手牌及牌堆中的【桃】/【酒】直到你脱离濒死状态。",
-				
+
 				"JLBC_shen":"神武将",
                 "JLBC_other":"其他",
 			},

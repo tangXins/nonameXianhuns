@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('XWDM');
 		if(!lib.config.characters.includes('XWDM')) lib.config.characters.remove('XWDM');
 		lib.translate['XWDM_character_config']='仙武动漫';
 		var XWDM={
@@ -15,7 +16,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 			character:{
 				"xjzh_huoying_mingren":["male","qun",3,["xjzh_huoying_fenshen","xjzh_huoying_zuidun","xjzh_huoying_kaigua"],[]],
-				"xjzh_huoying_zuozhu":["male","qun",4,["xjzh_huoying_qiling","xjzh_huoying_qianniao"],[]],
+				"xjzh_huoying_zuozhu":["male","qun",3,["xjzh_huoying_qiling","xjzh_huoying_qianniao","xjzh_huoying_liudao"],[]],
 				"xjzh_huoying_dou":["male","qun",3,["xjzh_huoying_xianzhang","xjzh_huoying_sihun","xjzh_huoying_chuanyi"],[]],
 				"xjzh_huoying_kakaxi":["male","qun",3,["xjzh_huoying_kaobei","xjzh_huoying_shenwei","xjzh_huoying_leiqie"],[]],
 				"xjzh_huoying_zhishui":["male","qun",3,["xjzh_huoying_bietian","xjzh_huoying_shunshen","xjzh_huoying_xuzuo"],[]],
@@ -272,7 +273,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					marktext:"嘴",
 					intro:{
 						name:"嘴遁",
-						content:"已发动#次",
+						content(storage,player){
+							let num=player.countMark("xjzh_huoying_zuidun");
+							return `已发动${num}次`;
+						},
 					},
 					mode:["identity","guozhan"],
 					unique:true,
@@ -283,18 +287,17 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						return `嘴遁：是否令${get.translation(event.player)}改变${get.mode()=="guozhan"?"势力":"身份"}与你一致？`;
 					},
 					async content(event,trigger,player){
-						console.log(trigger)
-						await player.logSkill('xjzh_huoying_zuidun',trigger.player);
-						await player.addMark("xjzh_huoying_zuidun",1);
+						player.logSkill('xjzh_huoying_zuidun',trigger.player);
+						player.addMark("xjzh_huoying_zuidun",1,false);
                         let list=[
                             [1,`选项一：将所有牌交给漩涡鸣人，然后立即阵亡`],
                             [2,`选项二：改变${get.mode()=="guozhan"?"势力":"身份"}与漩涡鸣人一致`]
                         ];
 						const links=await trigger.player.chooseButton([`嘴遁：请选择一项`,[list,'textbutton']],true).set("ai",button=>{
-							let id=player.identity,num=game.countPlayer(current=>current.identity==id);
-							if(id==event.player.identity) return 1;
-							if(num+1>game.players.length-num) return 1;
-							return [1,2].randomGet();
+							let id=player.identity,num=game.countPlayer(current=>current.identity==id),link=button.link;
+							if(id==event.player.identity) return link==2;
+							if(num+1>game.players.length-num) return link==2;
+							return link==[1,2].randomGet();
 						}).forResultLinks();
 						if(links){
 							switch(links[0]){
@@ -312,10 +315,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 								};
 							}
 						}
-						trigger.player.loseMaxHp();
-						trigger.player.recoverTo(trigger.player.maxHp);
-						trigger.player.draw(trigger.player.hp);
-						player.draw(trigger.player.hp);
+						if(trigger.player.isAlive()){
+							trigger.player.loseMaxHp();
+							await trigger.player.recoverTo(trigger.player.maxHp);
+							trigger.player.draw(trigger.player.getHp(true));
+							player.draw(trigger.player.getHp(true));
+						}
 						if(player.countMark("xjzh_huoying_zuidun")>=2) player.removeSkill("xjzh_huoying_zuidun",true);
 					},
 				},
@@ -349,17 +354,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						let skills=[["xjzh_huoying_luoxuan","xjzh_huoying_dunshu","xjzh_huoying_liudaofenshen"],["xjzh_huoying_fenshen","xjzh_huoying_zuidun","xjzh_huoying_kaigua"]];
 						player.changeSkills(skills[0],skills[1]);
 						game.delay(2);
-						let node;
+						let node,node2
 						//觉醒时换头像
-						if(player.name2&&player.name2=='xjzh_huoying_mingren'){
+						if(player.name2&&player.name2=='xjzh_huoying_liudaomingren'){
 							node=player.node.avatar2;
+							node2=player.node.name2;
 						}else{
 							node=player.node.avatar;
+							node2=player.node.name;
 						}
-						player.node.name.innerHTML=get.slimName('xjzh_huoying_liudaomingren');
-						//game.broadcastAll((node)=>{
+						node2.innerHTML=get.slimName('xjzh_huoying_liudaomingren');
+						game.broadcastAll((node)=>{
 							node.setBackgroundImage('extension/仙家之魂/skin/yuanhua/xjzh_huoying_liudaomingren.jpg');
-						//},node);
+						},node);
 						game.log(player,'使用了自己的外挂');
 						game.log(player,'进入了六道模式');
 						player.update();
@@ -524,17 +531,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						player.update();
 						'step 2'
 						setTimeout(()=>{
-							let node;
+							let node,node2
 							//觉醒时换头像
 							if(player.name2&&player.name2=='xjzh_huoying_liudaomingren'){
 								node=player.node.avatar2;
+								node2=player.node.name2;
 							}else{
 								node=player.node.avatar;
+								node2=player.node.name;
 							}
-							player.node.name.innerHTML=get.slimName('xjzh_huoying_liudaomingrenfs');
-							//game.broadcastAll((node)=>{
+							node2.innerHTML=get.slimName('xjzh_huoying_liudaomingrenfs');
+							game.broadcastAll((node)=>{
 								node.setBackgroundImage('extension/仙家之魂/skin/min/六道鸣人·分身.jpg');
-							//},node);
+							},node);
 						},100);
 					},
 				},
@@ -552,17 +561,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						if(trigger.name=="die") trigger.cancel();
 						"step 1"
 						setTimeout(()=>{
-							let node;
+							let node,node2
 							//觉醒时换头像
 							if(player.name2&&player.name2=='xjzh_huoying_liudaomingren'){
 								node=player.node.avatar2;
+								node2=player.node.name2;
 							}else{
 								node=player.node.avatar;
+								node2=player.node.name;
 							}
-							player.node.name.innerHTML=get.slimName('xjzh_huoying_liudaomingren');
-							//game.broadcastAll((node)=>{
+							node2.innerHTML=get.slimName('xjzh_huoying_liudaomingren');
+							game.broadcastAll((node)=>{
 								node.setBackgroundImage('extension/仙家之魂/skin/yuanhua/xjzh_huoying_liudaomingren.jpg');
-							//},node);
+							},node);
 						},100);
 						'step 2'
 						event.storage=player.storage.xjzh_huoying_liudaofenshen1.slice(0);
@@ -613,91 +624,64 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				"xjzh_huoying_qiling":{
 					trigger:{
-						source:"damageBegin",
+						source:"damageBefore",
 					},
 					audio:"ext:仙家之魂/audio/skill:1",
-					filter:function (event,player){
-						return event.card&&!player.hasSkill("xjzh_huoying_qiling_jin");
+					filter(event,player){
+						if(!event.cards||!event.cards.length) return false;
+						if(get.suit(event.cards[0])=="none") return false;
+						return true;
 					},
 					forced:true,
 					locked:true,
-					priority:67,
+					priority:6,
 					marktext:"麒",
 					intro:{
 						name:"麒麟",
-						content:function(storage,player){
-							var str='';
-							var list=["huo","lei"]
-							for(var i of list){
+						content(storage,player){
+							let str='';
+							let list=["huo","lei"]
+							for(let i of list){
 								if(player.hasMark("xjzh_huoying_qiling_"+i)) str+=get.translation("xjzh_huoying_qiling_"+i)+':'+get.translation(player.countMark("xjzh_huoying_qiling_"+i))+'<br>';
 							}
 							return str;
 						},
 					},
-					group:["xjzh_huoying_qiling_damage"],
-					content:function (){
-						var colorx=get.color(trigger.card)
-						if(colorx=="red"){
-							game.setNature(trigger,'fire',false);
-						}
-						else if(colorx=="black"){
-							game.setNature(trigger,'thunder',false);
-						}
-						if(game.hasNature(trigger,"fire")){
-							player.addMark("xjzh_huoying_qiling_huo",1,false);
-						}
-						else{
-							player.addMark("xjzh_huoying_qiling_lei",1,false);
-						}
+					async content(event,trigger,player){
+						await game.setNature(trigger,get.color(trigger.cards[0])=="red"?"fire":"thunder",false);
+						await player.addMark(game.hasNature(trigger,"fire")?"xjzh_huoying_qiling_huo":"xjzh_huoying_qiling_lei",1,false);
 						player.markSkill("xjzh_huoying_qiling");
+						if(player.countMark("xjzh_huoying_qiling_huo")>=3&&player.countMark("xjzh_huoying_qiling_lei")>=1){
+							let evt=event.getParent("damage");
+							if(evt&&evt.getParent){
+								let next=game.createEvent('xjzh_huoying_qiling_trigger',false,evt.getParent());
+								next.player=player;
+								next.setContent(async ()=>{
+									const targets=await player.chooseTarget(get.prompt2('xjzh_huoying_qiling'),lib.filter.notMe).set("ai",target=>{
+										return get.damageEffect(target,player,player,"thunder");
+									}).forResultTargets();
+									if(targets){
+										player.removeMark("xjzh_huoying_qiling_huo",3);
+										player.removeMark("xjzh_huoying_qiling_lei",1);
+										let num=Math.max(player.awakenedSkills.includes("xjzh_huoying_liudao")?1:2,Math.abs(targets[0].getHp(true)-player.getHp(true)));
+										targets[0].damage("thunder",num,player,"nocard");
+										if(!player.hasMark("xjzh_huoying_qiling_huo")&&!player.hasMark("xjzh_huoying_qiling_lei")) player.unmarkSkill("xjzh_huoying_qiling");
+									}
+								});
+							}
+						}
+
 					},
-					subSkill:{
-						"huo":{sub:true,},
-						"lei":{sub:true,},
-						"damage":{
-							trigger:{
-								source:"damageAfter",
-							},
-							forced:true,
-							audio:"ext:仙家之魂/audio/skill:1",
-							filter:function (event,player){
-								return player.countMark("xjzh_huoying_qiling_huo")>=3&&player.countMark("xjzh_huoying_qiling_huo")>=1;
-							},
-							content:function (){
-								"step 0"
-								player.chooseTarget(get.prompt2('xjzh_huoying_qiling'),function(card,player,target){
-									return target!=player;
-								})
-								.ai=function(target){
-									return get.damageEffect(target,player,player,"thunder");
-								};
-								"step 1"
-								if(result.bool){
-									player.removeMark("xjzh_huoying_qiling_huo",3);
-									player.removeMark("xjzh_huoying_qiling_lei",1);
-									var target=result.targets[0];
-									var num1=Math.abs(target.hp-player.hp);
-									var num2=Math.max(1,num1);
-									result.targets[0].damage("thunder",num2,player);
-									if(!player.hasMark("xjzh_huoying_qiling_huo")&&!player.hasMark("xjzh_huoying_qiling_lei")) player.unmarkSkill(player.hasMark("xjzh_huoying_qiling"));
-								}
-							},
-							sub:true,
-						},
-					},
+					subSkill:{"huo":{sub:true,},"lei":{sub:true,},},
 				},
 				"xjzh_huoying_qianniao":{
 					trigger:{
 						player:["phaseZhunbeiBegin","phaseJieshuBegin"],
 					},
-					forced:true,
-					locked:true,
-					dutySkill:true,
+					frequent:true,
 					priority:-1,
-					filter:function (event,player){
-						return game.hasPlayer(function(current){
-							return current.inRangeOf(player);
-						});
+					filter(event,player,name){
+						return player.hasUseTarget("sha");
 					},
 					marktext:"瞳",
 					intro:{
@@ -706,214 +690,115 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					},
 					audio:"ext:仙家之魂/audio/skill:1",
 					derivation:["xjzh_huoying_tongshu"],
-					group:["xjzh_huoying_qianniao_target","xjzh_huoying_qianniao_add"],
-					content:function (){
-						"step 0"
-						var x=["fire","thunder"].randomGet();
-						player.chooseUseTarget({
-							name:'sha',
-							nature:x,
-							isCard:true
-						},game.filterPlayer(function(current){
+					async content(event,trigger,player){
+						let cards=game.createCard("sha",lib.suit.randomGet(),null,null);
+						await player.chooseUseTarget(cards,game.filterPlayer(current=>{
 							return current.inRangeOf(player);
 						}),false)
 						.set('prompt',"〖雷遁·千鸟〗选择一名角色视为对其使用一张随机属性为火/雷的【杀】")
-						.set('ai',function(target){
+						.set('ai',target=>{
 							return get.damageEffect(target,player,player,'thunder','fire');
 						});
-						"step 1"
-						if(player.getStat('damage')){
-							if(!player.hasSkill("xjzh_huoying_qianniao2")) player.addMark("xjzh_huoying_qianniao",1);
+						let history=player.getHistory('sourceDamage',evt=>evt.getParent(4).name=="xjzh_huoying_qianniao");
+						if(history.length){
+							if(!player.awakenedSkills.includes("xjzh_huoying_liudao")){
+								await player.addMark("xjzh_huoying_qianniao",1);
+								event.trigger("xjzh_huoying_liudaoTrigger");
+							}
+						}else{
+							player.draw(player.awakenedSkills.includes("xjzh_huoying_liudao")?1:2);
 						}
-						else{
-							player.draw();
-						}
-					},
-					subSkill:{
-						"target":{
-							trigger:{
-								global:["phaseZhunbeiBegin"],
-							},
-							direct:true,
-							priority:-1,
-							sub:true,
-							filter:function (event,player){
-								return event.player.countCards("h")!=event.player.hp&&event.player!=player;
-							},
-							audio:"ext:仙家之魂/audio/skill:1",
-							content:function (){
-								"step 0"
-								var naturex=["thunder","fire"].randomGet();
-								trigger.player.chooseUseTarget({
-									name:'sha',
-									nature:naturex,
-									isCard:true
-								},game.filterPlayer(function(current){
-								    return current==player;
-								}),false,"nodistance")
-								.set('prompt',"〖雷遁·千鸟〗对宇智波佐助使用一张随机属性为火/雷的【杀】")
-								.set('ai',function(target){
-									return get.damageEffect(target,trigger.player,player,'thunder','fire');
-								});
-								"step 1"
-								if(trigger.player.getStat('damage')){
-									player.removeMark("xjzh_huoying_qianniao",1);
-								}
-								else{
-									player.draw();
-								}
-							},
-						},
-						"add":{
-							trigger:{
-								global:["roundStart"],
-							},
-							direct:true,
-							priority:-1,
-							sub:true,
-							filter:function (event,player){
-								return game.roundNumber==2;
-							},
-							audio:"ext:仙家之魂/audio/skill:1",
-							content:function (){
-								if(player.hasMark("xjzh_huoying_qianniao")){
-									player.$skill('六道模式');
-									player.clearMark("xjzh_huoying_qianniao");
-									player.addSkill("xjzh_huoying_tongshu");
-									player.addSkill("xjzh_huoying_qianniao2");
-									player.maxHp=2
-									player.hp=2
-									player.update();
-									player.discard(player.getCards('j'));
-									player.link(false);
-									player.turnOver(false);
-									player.node.name.innerHTML=get.slimName('xjzh_huoying_liudaozuozhu');
-									game.broadcastAll()+player.node.avatar.setBackgroundImage('extension/仙家之魂/skin/yuanhua/xjzh_huoying_liudaozuozhu.jpg');
-									player.draw();
-									player.phase("xjzh_huoying_qianniao");
-								}
-								else{
-									player.addSkill("xjzh_huoying_qianniao2");
-									player.clearMark("xjzh_huoying_qianniao");
-									player.draw(2);
-								}
-							},
-						},
 					},
 				},
-				"xjzh_huoying_qianniao2":{sub:true,},
-				"xjzh_huoying_tongshu":{
+				"xjzh_huoying_liudao":{
+					trigger:{
+						player:"xjzh_huoying_liudaoTrigger",
+					},
 					forced:true,
 					locked:true,
-					group:["xjzh_huoying_tongshu1","xjzh_huoying_tongshu2","xjzh_huoying_tongshu3"]
+					unique:true,
+					mark:true,
+					marktext:"轮",
+					intro:{
+						name:"轮回眼",
+						content:"limited",
+					},
+					limited:true,
+					skillAnimation:true,
+					animationStr:'六道模式',
+					animationColor:'fire',
+					juexingji:true,
+					priority:1,
+					filter(event,player){
+						return player.countMark("xjzh_huoying_qianniao")>=6;
+					},
+					derivation:["xjzh_huoying_tonshu"],
+					async content(event,trigger,player){
+						player.awakenSkill("xjzh_huoying_liudao");
+						player.clearMark("xjzh_huoying_qianniao");
+						player.addSkills("xjzh_huoying_tongshu");
+						player.maxHp=3;
+						player.hp=3;
+						player.update();
+						player.discard(player.getCards('j'));
+						player.link(false);
+						player.turnOver(false);
+						player.node.name.innerHTML=get.slimName('xjzh_huoying_liudaozuozhu');
+						let node,node2
+						//觉醒时换头像
+						if(player.name2&&player.name2=='xjzh_huoying_zuozhu'){
+							node=player.node.avatar2;
+							node2=player.node.name2;
+						}else{
+							node=player.node.avatar;
+							node2=player.node.name;
+						}
+						node2.innerHTML=get.slimName('xjzh_huoying_liudaozuozhu');
+						game.broadcastAll((node)=>{
+							node.setBackgroundImage('extension/仙家之魂/skin/yuanhua/xjzh_huoying_liudaozuozhu.jpg');
+						},node);
+					},
 				},
-				"xjzh_huoying_tongshu1":{
+				"xjzh_huoying_tongshu":{
 					trigger:{
-						source:"damageBegin",
+						global:"damageBegin",
 					},
-					sub:true,
-					priority:66,
-					//nobracket:true,
+					frequent:true,
 					changeSeat:true,
-					audio:"ext:仙家之魂/audio/skill:1",
-					filter:function (event,player){
-						return event.source;
+					priority:6,
+					mod:{
+						globalFrom:function(from,to,distance){
+							return 1;
+						},
 					},
-					check:function (event,player){
+					audio:"ext:仙家之魂/audio/skill:1",
+					prompt(event,player){
+						return `是否发动〖天手力〗与${get.translation(event.source)}交换位置并视为对其使用一张【杀】`;
+					},
+					filter(event,player){
+						return event.source!=player;
+					},
+					check(event,player){
 						return get.attitude(player,event.player)>0;
 					},
-					prompt:function(event,player){
-						return '是否发动〖天手力〗与'+get.translation(event.player)+'交换位置并代替其承受该伤害';
-					},
-					content:function (){
-						game.swapSeat(player,trigger.player);
+					async content(event,trigger,player){
+						if(trigger.player!=player) game.swapSeat(player,trigger.player);
 						game.delay(0.5);
-						trigger.player=player;
-						game.log(player,'代替了',trigger.player,'承受了伤害。');
-					},
-				},
-				"xjzh_huoying_tongshu2":{
-					trigger:{
-						player:"damageBegin",
-					},
-					filter:function (event,player){
-						return event.source&&event.source!=player;
-					},
-					sub:true,
-					//nobracket:true,
-					changeSeat:true,
-					audio:"xjzh_huoying_tongshu1",
-					check:function (event,player){
-						return get.attitude(player,event.source)<0;
-					},
-					prompt:function(event,player){
-						return '是否发动〖天手力〗与'+get.translation(event.source)+'交换位置并视为对其使用一张【杀】';
-					},
-					content:function (){
-						'step 0'
-						game.swapSeat(player,trigger.source);
-						'step 1'
-						player.chooseBool('是否视为对'+get.translation(trigger.source)+'使用一张【杀】').ai=function(card){
-							return get.attitude(player,trigger.player)<0;
-						}
-						'step 2'
-						if(result.bool){
-							player.useCard({
-							name:'sha'},
-							trigger.source);
-						}
-						'step 3'
-						if(player.getStat('damage')){
-							trigger.cancel();
+						let cards=game.createCard("sha",lib.suit.randomGet(),null,null);
+						await player.useCard(cards,trigger.source,false).set('addCount',false).set('oncard',(card,player)=>{
+							let that=this;
+							if(!that.baseDamage) that.baseDamage=1;
+							that.baseDamage++;
+						});
+						let history=player.getHistory('sourceDamage',evt=>evt.getParent(3).name=="xjzh_huoying_tongshu1");
+						if(history.length){
+							trigger.changeToZero();
+							game.log(trigger.player,"因",player,'的技能〖天手力〗防止了此伤害。');
 						}
 						else{
-							trigger.num++
+							trigger.player=player;
+							game.log(player,'代替了',trigger.player,'承受了伤害。');
 						}
-					},
-				},
-				"xjzh_huoying_tongshu3":{
-					enable:"phaseUse",
-					usable:1,
-					filterTarget:function (card,player,target){
-						return target!=player;
-					},
-					sub:true,
-					mark:'character',
-					selectTarget:1,
-					audio:"ext:仙家之魂/audio/skill:1",
-					prompt:function(event,player){
-						return '选择〖炎遁·加具土命〗的目标';
-					},
-					content:function (){
-						'step 0'
-						target.addTempSkill("xjzh_huoying_tongshu3_mark",{player:"phaseZhunbeiBefore"});
-						'step 1'
-						player.storage.xjzh_huoying_tongshu3_from=target;
-						player.addTempSkill("xjzh_huoying_tongshu3_from");
-					},
-					subSkill:{
-						"from":{
-							mark:true,
-							sub:true,
-							intro:{
-								content:"你与<font color=yellow>$</font>计算距离为一",
-							},
-							mod:{
-								globalFrom:function (from,to,distance){
-									if(to.hasSkill('xjzh_huoying_tongshu3_mark')){
-										return -Infinity;
-									}
-								},
-							},
-						},
-						"mark":{
-							mark:true,
-							sub:true,
-							marktext:'炎',
-							intro:{
-								content:"<font color=yellow>宇智波佐助</font>与你计算距离为一",
-							},
-						},
 					},
 				},
 				"xjzh_huoying_xianzhang":{
@@ -1738,7 +1623,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_xianshu":"仙术",
 				"xjzh_huoying_xianshu_info":"<b><font color=orange>〖仙人模式〗</font><b>游戏开始时，你获得3个仙术查克拉，之后每隔3分钟获得一个仙术查克拉，至多3个，当你失去最后一张手牌时，你可以消耗一个仙术查克拉，将手牌补至体力上限。",
 				"xjzh_huoying_zuidun":"嘴遁",
-				"xjzh_huoying_zuidun_info":"<b><font color=orange>〖最强嘴遁〗</font><b>限定技，每局游戏限2次，当一名角色濒死时，若你与其均不为主公，你可以令其选择一项：1、将所有牌交给你，然后立即阵亡；2、改变身份/势力与你一致。技能结算后，其失去一点体力上限并回复体力至体力上限，然后你与其各摸x张牌（x为其体力值）（限身份模式和国战模式）",
+				"xjzh_huoying_zuidun_info":"<b><font color=orange>〖最强嘴遁〗</font><b>限定技，每局游戏限2次，当一名角色濒死时，若你与其均不为主公，你可以令其选择一项：1、将所有牌交给你，然后立即阵亡；2、改变身份/势力与你一致。技能结算后，若其未阵亡，其失去一点体力上限并回复体力至体力上限，然后你与其各摸x张牌（x为其体力值）（限身份模式和国战模式）",
 				"xjzh_huoying_kaigua":"开挂",
 				"xjzh_huoying_kaigua_info":"<b><font color=orange>〖开挂封号〗</font><b>觉醒技，当你濒死时，你使用自己的外挂并进入〖六道模式〗<br><br><b><font color=orange>〖六道模式〗</font><b>你将你的的体力上限改为为3并回复体力至体力上限，然后重置武将牌和判定区，技能结算后，你失去技能〖分身〗、〖嘴遁〗、〖开挂〗，获得技能〖螺旋手里剑〗、〖阴阳遁术〗、〖多重·影分身之术〗。",
 				"xjzh_huoying_dunshu":"遁术",
@@ -1751,12 +1636,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_huoying_qiling_huo":"火遁",
 				"xjzh_huoying_qiling_lei":"雷遁",
 				"xjzh_huoying_qianniao":"千鸟",
-				"xjzh_huoying_qianniao_info":"<b><font color=orange>〖雷遁·千鸟〗</font><b>使命技，你的回合开始和结束时，你可以视为对你攻击范围内的一个目标使用一张【杀】，该【杀】花色随机且不计入出牌次数，若其闪避了此【杀】，你摸一张牌；其他角色回合开始时，若其手牌数和体力值不等，其可以视为对你使用一张【杀】，若你闪避了此【杀】，你摸一张牌；你因此技能造成／受到伤害获得／失去一个“瞳”标记，第二轮开始前，若你的武将牌上有“瞳”标记，你进入〖六道模式〗，否则你摸两张牌<br><br><b><font color=orange>〖六道模式〗</font><b>你将你的的体力上限改为为2并回复体力至体力上限，然后摸一张牌并重置武将牌和判定区，技能结算后，你获得技能〖瞳术〗。",
+				"xjzh_huoying_qianniao_info":"<b><font color=orange>〖雷遁·千鸟〗</font><b>你的回合开始及结束时，你可以视为对一名你攻击范围内的一名其他角色使用一张颜色随机的【杀】，此【杀】不计入出牌次数，若其闪避了此杀，你摸一张牌，你因此技能造成伤害获得一个“瞳”标记。",
+				"xjzh_huoying_liudao":"六道",
+				"xjzh_huoying_liudao_info":"<b><font color=orange>〖六道模式〗</font><b>觉醒技，当你至少拥有4个“瞳”标记时，你进入重置武将牌并将体力值和体力上限改为3，然后回复体力至体力上限，并获得技能〖瞳术〗，此后你的〖雷遁·千鸟〗被闪避时摸2张牌、〖雷遁·麒麟〗的伤害基数改为2",
 				"xjzh_huoying_tongshu":"瞳术",
-				"xjzh_huoying_tongshu_info":"<b><font color=orange>〖天手力〗</font><b>当你造成伤害时，你可以与其交换位置，若如此做，你代替其受到伤害。当你受到不由你造成的伤害时，你可以与其交换位置，若如此做，视为对其使用一张无次数限制的【杀】，若该【杀】造成了伤害，则你免疫本次伤害，否则该伤害+1<br><br><b><font color=orange>〖炎遁·加具土命〗</font><b>出牌阶段限一次，你指定一名角色令其获得一个“炎”标记直到其受到你的伤害或其下个回合开始时，你与其计算距离始终为1。",
-				"xjzh_huoying_tongshu1":"天手力",
-				"xjzh_huoying_tongshu2":"天手力",
-				"xjzh_huoying_tongshu3":"炎遁",
+				"xjzh_huoying_tongshu_info":"<b><font color=orange>〖天手力〗</font><b>当一名角色受到来源不为你伤害时，你可以与其交换位置，并视为对伤害来源使用一张颜色随机且不计入次数的【杀】，若此杀造成伤害，你令其防止此伤害，否则你代替其受到此伤害，你以此法造成的伤害+1；你计算与其他角色距离始终为1。",
 				"xjzh_huoying_xianzhang":"仙掌",
 				"xjzh_huoying_xianzhang_info":"<b><font color=orange>〖掌仙术〗</font><b>转换技<br><li>阴：每回合限一次，你使用非[伤害]卡牌指定目标后，其可以摸两张牌或回复一点体力；<br><li>阳:每回合限一次，其他角色使用[伤害]卡牌指定你为目标时，你可以扣置一张[伤害]卡牌，其猜测此牌牌名，若错，你可以移除此牌的一个目标。",
 				"xjzh_huoying_sihun":"死魂",

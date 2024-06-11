@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('XWTZ');
 		if(!lib.config.characters.includes('XWTZ')) lib.config.characters.remove('XWTZ');
 		lib.translate['XWTZ_character_config']='仙武挑战';
 		var XWTZ={

@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('XWTR');
 		if(!lib.config.characters.includes('XWTR')) lib.config.characters.remove('XWTR');
 		lib.translate['XWTR_character_config']='仙武同人';
 		var XWTR={

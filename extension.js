@@ -1,5 +1,5 @@
 import { lib,get,_status,ui,game,ai } from '../../noname.js';
-import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage } from './ext/modules/index.js';
+import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage,xjzhCardPack } from './ext/modules/index.js';
 //还是有很多提示，消一下
 Array.prototype.contains=Array.prototype.includes;
 lib.xjzhTitle=xjzhTitle;
@@ -864,6 +864,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					"xjzh_Background3",
 					"xjzh_Background4",
 					"xjzh_Background5",
+					"xjzh_Background6",
 					];
 					if (_status.xjzhBackground_Picture) list.remove(_status.xjzhBackground_Picture);
 					temp = list.randomGet();
@@ -1069,6 +1070,81 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					console.log(error);
 				}
 				else new Promise((resolve,reject)=>window.resolveLocalFileSystemURL(`${lib.assetURL}extension/仙家之魂/${files}`,resolve,reject)).then(directoryEntry=>directoryEntry.removeRecursively());
+			};
+			/**
+			 * 异步复制文件或文件夹。
+			 * 使用node.js的文件系统模块在node环境复制文件，对于非node环境，则使用File API进行复制。
+			 * @param {string} source - 源文件或文件夹的路径。
+			 * @param {string} target - 目标文件或文件夹的路径。
+			 * @param {function} onCopyCompleted - 复制完成后调用的回调函数，接收已复制文件数和总文件数作为参数。
+			 */
+			game.xjzh_copyFiles = async (source, target, onCopyCompleted) => {
+				/**
+				 * 根据路径和当前环境（node.js或浏览器），构造完整的文件路径。
+				 * @param {string} path - 相对路径。
+				 * @returns {string} 构造的完整路径。
+				 */
+				const getFullPath = (path) => lib.node ? `${__dirname}/${path}` : `${lib.assetURL}${path}`;
+
+				// 当前环境为node.js且存在fs模块时，使用node.js的方式复制文件
+				if (lib.node && lib.node.fs) {
+					let totalFiles = 0; // 总文件数
+				  	let copiedFiles = 0; // 已复制的文件数
+
+					/**
+					 * 递归复制文件夹及其内容。
+					 * @param {string} srcRelative - 源文件夹的相对路径。
+					 * @param {string} destRelative - 目标文件夹的相对路径。
+					 */
+					const copyFolderRecursive = async (srcRelative, destRelative) => {
+						const src = getFullPath(srcRelative);
+						const dest = getFullPath(destRelative);
+						// 如果源文件夹不存在，则直接返回
+						if (!lib.node.fs.existsSync(src)) return;
+						// 如果目标文件夹不存在，则创建目标文件夹
+						if (!lib.node.fs.existsSync(dest)) lib.node.fs.mkdirSync(dest, { recursive: true });
+						const files = lib.node.fs.readdirSync(src);
+						totalFiles = files.length;
+
+						await Promise.all(files.map(async (file) => {
+						const srcPath = `${src}/${file}`;
+						const destPath = `${dest}/${file}`;
+						// 如果是子文件夹，则递归复制
+						if (lib.node.fs.lstatSync(srcPath).isDirectory()) {
+							await copyFolderRecursive(`${srcRelative}/${file}`, `${destRelative}/${file}`);
+						} else {
+							// 如果是文件，则直接复制
+							lib.node.fs.copyFileSync(srcPath, destPath);
+							copiedFiles++;
+						}
+						}));
+					};
+
+					try {
+						await copyFolderRecursive(source, target);
+						// 复制完成后，调用回调函数
+						onCopyCompleted(copiedFiles, totalFiles);
+					} catch (error) {
+						console.log(error);
+					}
+				} else {
+					// 在非node.js环境下，使用File API进行文件复制
+					new Promise((resolve, reject) =>
+						window.resolveLocalFileSystemURL(getFullPath(source), resolve, reject)
+					)
+					.then(sourceEntry =>
+					  new Promise((resolve, reject) =>
+						window.resolveLocalFileSystemURL(getFullPath(target), resolve, reject)
+						  .catch(() => window.resolveLocalFileSystemURL(getFullPath(''), dirEntry =>
+							dirEntry.getDirectory(target.split('/').pop(), { create: true }, resolve)
+						  ))
+					  	).then(targetEntry =>
+							sourceEntry.copyTo(targetEntry, null, resolve, reject)
+					  	)
+					)
+					.then(() => onCopyCompleted(null, null)) // 在复制完成后调用回调
+					.catch(error => console.error(error));
+				}
 			};
 			//重置所有技能
 			lib.element.player.xjzh_resetSkill=function(){
@@ -2420,9 +2496,17 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			if(xjzh.enable){
 				// ---------------------------------------移除【删除扩展按钮】------------------------------------------//
 				delete lib.extensionMenu.extension_仙家之魂.delete;
+
+				/**
+				 * 初始化卡片包
+				 * 该函数用于加载和初始化卡片包，卡片包是应用程序中包含特定功能或信息的可视化组件。
+				 * 参数: 无
+				 * 返回值: 无
+				 */
+				//导入卡牌包
+				xjzhCardPack();
 				// ---------------------------------------导入JS------------------------------------------//
 				var extList=[
-				'0_Cards.js',
 				'1_Skin.js',
 				'2_XWSG.js',
 				'3_XWTR.js',
@@ -2433,7 +2517,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				'gonglve.js',
 				'9_Buff.js',
 				'animation.js',
-				"mathList.js",
 				];
 				for(var i of extList){
 					var extURL=lib.assetURL+'extension/仙家之魂/ext/'+i;
@@ -2786,8 +2869,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro4={
 				"name":"<b><li>清除存档",
 				"clear":true,
-				"onclick":function(){
-
+				"onclick":async function(){
 					//重启选项
 					game.xjzh_createDailog('已为你重置所选存档，是否重启游戏？',['确定','取消'],function(bool){
 						if(bool=='确定'){
@@ -2821,7 +2903,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							game.xjzhAchi.reset();
 						}
 					});
-
 				},
 			};
 		},

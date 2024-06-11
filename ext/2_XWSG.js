@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('XWSG');
 		if(!lib.config.characters.includes('XWSG')) lib.config.characters.remove('XWSG');
 		lib.translate['XWSG_character_config']='仙武三国';
 		var XWSG={
@@ -815,30 +816,29 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        audio:"ext:仙家之魂/audio/skill:2",
 			        check(event,player){return 1;},
 			        async content(event,trigger,player){
-			            const list=game.xjzh_wujiangpai().filter(function(name){
-			                return lib.character[name][3].some(function(skill){
-			                    var info=get.info(skill);
+			            let list=game.xjzh_wujiangpai().filter(name=>{
+			                return lib.character[name][3].some(skill=>{
+			                    let info=get.info(skill);
 			                    if(info&&info.shaRelated&&!player.skills.includes(skill)) return true;
 			                });
-			            });
-			            let skills=[];
-			            do{
-			                const target=await list.shift();
-			                for(let skill of lib.character[target][3]){
+			            }),pijianSkills=[];
+						for await(let target of list){
+							let skills=lib.character[target][3];
+							skills.forEach(skill=>{
 			                    let info=get.info(skill);
-			                    if(info&&info.shaRelated&&!player.skills.includes(skill))  await skills.push(skill);
-			                }
-			            }while(list.length);
-			            if(!skills.length) return;
-			            const bool=await player.xjzh_chooseSkill(skills.randomGets(3)).set('callback',function(result,player,target){
+			                    if(info&&info.shaRelated&&!player.skills.includes(skill)) pijianSkills.push(skill);
+							});
+						}
+			            if(!pijianSkills.length) return;
+			            const bool=await player.xjzh_chooseSkill(pijianSkills.randomGets(3)).set('callback',function(result,player,target){
                             event.skill=result.links[0];
                         }).set("ai",()=>Math.random()).forResultBool()
 			            if(bool&&event.skill){
     						let name=[event.skill];
     						game.addVideo('skill',player,['xjzh_sanguo_pijian',name])
-    						game.broadcastAll(function(list){
+    						game.broadcastAll(function(){
     							lib.skill.xjzh_sanguo_pijian.createCard(name);
-    						},list);
+    						},name);
     						let cards=name.map(name=>{
     							var card=game.createCard('xjzh_sanguo_pijian_'+name,'none');
     							return card;
@@ -910,13 +910,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			        async content(event,trigger,player){
 			            let history=player.getHistory('gain',evt=>{
 			                return evt&&evt.getParent().name=="xjzh_sanguo_zhirui";
-			            });
+			            }),card;
 			            if(!history.length){
-			                var card=get.cardPile(cardx=>{
+			                card=get.cardPile(cardx=>{
 			                    return get.tag(cardx,'damage');
 			                });
 			            }else{
-			                var card=get.cardPile(cardx=>{
+			                card=get.cardPile(cardx=>{
 			                    return get.tag(cardx,'damage')&&cardx.name!=history[history.length-1].cards[0].name;
 			                });
 			            }

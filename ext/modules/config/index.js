@@ -133,7 +133,7 @@ export const xjzhConfig={
                 if (game.allUpdatesCompleted) return alert('游戏文件和素材全部更新完毕');
             }
             if (button.innerText != '检查扩展更新') return;
-            
+
             /**
              * 判断是否能进行更新(即是否能连接上百度)
              * @returns { Promise<number | void> }
@@ -187,10 +187,10 @@ export const xjzhConfig={
                     }).catch(reject);
                 });
             };
-            
+
             /**
              * @description 请求错误处理
-             * @param { { url: string, error: number | Error, message: string } | Error | String } err 
+             * @param { { url: string, error: number | Error, message: string } | Error | String } err
              */
             const response_catch = err => {
                 console.error(err);
@@ -449,18 +449,18 @@ export const xjzhConfig={
                     };
                     return parent;
                 };
-                
+
                 game.xjzhDownload = (url, onsuccess, onerror, onprogress) => {
                     let downloadUrl = url, path = 'extension/仙家之魂', name = url;
                     if (url.indexOf('/') != -1) {
                         path = path + "/" + url.slice(0, url.lastIndexOf('/'));
                         name = url.slice(url.lastIndexOf('/') + 1);
                     }
-    
+
                     if (url.indexOf('http') != 0) {
                         url = lib.xjzh_updateURL + '/main/' + url;
                     }
-    
+
                     /**
                      * 下载成功
                      * @param { FileEntry } [FileEntry] 文件系统
@@ -496,7 +496,7 @@ export const xjzhConfig={
                             }
                         }
                     }
-    
+
                     /**
                      * 错误处理
                      * @param { FileTransferError | Error } e 错误对象
@@ -522,7 +522,7 @@ export const xjzhConfig={
                                 error: errorCode[e.code]
                             });
                             switch(e.http_status) {
-                                case 404: 
+                                case 404:
                                     game.print(`更新源中不存在${path}/${name}`);
                                     console.log(`更新源中不存在${path}/${name}`);
                                     success(undefined, true);
@@ -541,7 +541,7 @@ export const xjzhConfig={
                                         onerror(e, e.body);
                                     }
                             }
-                            
+
                         } else {
                             // 电脑端下载的错误
                             console.error(e, message);
@@ -560,7 +560,7 @@ export const xjzhConfig={
                             }
                         }
                     }
-    
+
                     if (window.FileTransfer) {
                         // 判断是不是文件夹，不是才下载
                         function download() {
@@ -569,7 +569,7 @@ export const xjzhConfig={
                         }
                         window.resolveLocalFileSystemURL(lib.assetURL,
                             /**
-                             * @param { DirectoryEntry } DirectoryEntry 
+                             * @param { DirectoryEntry } DirectoryEntry
                              */
                             DirectoryEntry => {
                                 DirectoryEntry.getDirectory(path, { create: false }, dir => {
@@ -582,7 +582,7 @@ export const xjzhConfig={
                             }, download);
                     } else if (typeof window.require == 'function'){
                         const fetch = myFetch(`${url}`);
-    
+
                         fetch.then(response => response.arrayBuffer())
                             .then(arrayBuffer => {
                                 const fs = require('fs');
@@ -633,7 +633,7 @@ export const xjzhConfig={
                     let max = 5;
                     /**
                      * 下载文件，失败后300ms重新下载
-                     * @param { string } current 文件名 
+                     * @param { string } current 文件名
                      */
                     let reload = current => {
                         game.xjzhDownload(current, skipDownload => {
@@ -657,7 +657,7 @@ export const xjzhConfig={
                             }
                         });
                     };
-                    
+
                     let download = () => {
                         if (length < list.length) {
                             let num_copy = list3.length;
@@ -677,7 +677,7 @@ export const xjzhConfig={
                     };
                     download();
                 };
-                
+
                 game.xjzhCheckVersion = (ver1, ver2) => {
                     if (typeof ver1 != 'string') ver1 = '';
                     if (typeof ver2 != 'string') ver2 = '';
@@ -697,20 +697,20 @@ export const xjzhConfig={
                         }
                         if (part) yield Number(part);
                     }
-    
+
                     const iterator1 = walk(ver1), iterator2 = walk(ver2);
                     let item1 = iterator1.next(), item2 = iterator2.next();
-    
+
                     function iterNext() {
                         item1 = iterator1.next();
                         item2 = iterator2.next();
                     }
-    
+
                     function iterReturn() {
                         iterator1.return();
                         iterator2.return();
                     }
-    
+
                     while (!item1.done && !item2.done) {
                         if (item1.value === item2.value || isNaN(item1.value) || isNaN(item2.value)) {
                             iterNext();
@@ -722,7 +722,7 @@ export const xjzhConfig={
                             return -1;
                         }
                     }
-    
+
                     if (item1.done && !item2.done) {
                         iterReturn();
                         return -1;
@@ -839,7 +839,7 @@ export const xjzhConfig={
                                 progressBar: { value: 0 }
                             });
                         }
-                        
+
                         game.xjzhMultiDownload(updates, (fileNameList) => {
                             n1++;
                             span.innerHTML = `正在下载文件（${n1}/${n2}）`;
@@ -1012,6 +1012,7 @@ export const xjzhConfig={
             "xjzh_Background3":"冰肌玉骨",
             "xjzh_Background4":"吊带连心",
             "xjzh_Background5":"池水深深",
+            "xjzh_Background6":"碧波荡漾",
             "auto":"自动换背景",
         },
         onclick:function (item) {
@@ -1205,5 +1206,5 @@ export const xjzhConfig={
         "clear":true,
         "init":true,
     },
-    
+
 };

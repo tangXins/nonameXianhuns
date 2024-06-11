@@ -1,6 +1,7 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.import('character',function(){
+        lib.config.all.characters.push('XWCS');
 		if(!lib.config.characters.includes('XWCS')) lib.config.characters.remove('XWCS');
 		lib.translate['XWCS_character_config']='仙武创世';
 		var XWCS={
@@ -23,12 +24,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_meiren_huangyuke":["female","qun",3,["xjzh_meiren_huizhi","xjzh_meiren_lanxin","xjzh_meiren_gupan"],[]],
 				"xjzh_meiren_xiangwanru":["female","qun",3,["xjzh_meiren_rouqing","xjzh_meiren_jiaqi","xjzh_meiren_huimeng","xjzh_meiren_xianyou"],[]],
 				"xjzh_meiren_huangdanxue":["female","qun",3,["xjzh_meiren_zhongqing","xjzh_meiren_yiqing","xjzh_meiren_shangqing"],[]],
-			    
+
 			    //天命奇侠
 			    "xjzh_qixia_daxiongxiaomao":["male","qun",3,["xjzh_qixia_qice","xjzh_qixia_tianshu","xjzh_qixia_xiongmao"],[]],
 			    "xjzh_qixia_maybe":["male","qun",6,["xjzh_qixia_jiyuan","xjzh_qixia_jibian"],[]],
 			    "xjzh_qixia_mumuxiao":["male","qun",3,["xjzh_qixia_tubian"],[]],
-			    
+
 			},
 			characterIntro:{
 			    //美女如云
@@ -40,12 +41,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_meiren_huangyuke":"",
 				"xjzh_meiren_xiangwanru":"",
 				"xjzh_meiren_huangdanxue":"",
-				
+
 				//天命奇侠
 				"xjzh_qixia_daxiongxiaomao":"",
 				"xjzh_qixia_maybe":"",
 				"xjzh_qixia_mumuxiao":""
-				
+
 			},
 			characterTitle:{
 			    //美女如云
@@ -57,12 +58,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_meiren_huangyuke":"蕙质兰心",
 				"xjzh_meiren_xiangwanru":"婉如清扬",
 				"xjzh_meiren_huangdanxue":"伤情别恋",
-				
+
 				//天命奇侠
 				"xjzh_qixia_daxiongxiaomao":"无字天书",
 				"xjzh_qixia_maybe":"侠肝义胆",
 				"xjzh_qixia_mumuxiao":"颖悟绝伦",
-				
+
 			},
 			perfectPair:{
 			},
@@ -1807,7 +1808,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						    filter:function(event,player){
 						        var target2=game.filterPlayer(function(current){return current.hasSkill("xjzh_meiren_zhongqing_target")}).shift();
 						        if(event.target.hasSkill('xjzh_meiren_zhongqing_target')&&event.player!=event.target) return true;
-						        if(player!=event.player&&event.target==player&&target2.isAlive()) return true 
+						        if(player!=event.player&&event.target==player&&target2.isAlive()) return true
 						        if(!event.isFirstTarget) return false;
 						        return false;
 						    },
@@ -2038,7 +2039,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				        },
 				    },
 				},
-				
+
 				//天命奇侠
 				"xjzh_qixia_qice":{
 				    trigger:{
@@ -2160,7 +2161,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                                     let skills=lib.character[links[0]][3].filter(skill=>{
 										let info=get.info(skill);
                                         if(lib.translate[skill]&&lib.translate[skill+"_info"]) return info&&(info.gainable||!info.unique)&&!info.zhuSkill&&!info.juexingji&&!info.limited&&!info.dutySkill;
-									});		
+									});
 									if(event.isMine()){
 										dialog=ui.create.dialog('forcebutton');
 										dialog.add('请选择获得一项技能');
@@ -2402,7 +2403,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     selectTarget:1,
                     content:function(){
                         "step 0"
-						//以下代码借鉴自《阳光包》			
+						//以下代码借鉴自《阳光包》
 						/* 创建dialog */
 						var dialog=ui.create.dialog(false);
 						/* dialog标题 */
@@ -2415,9 +2416,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						input.setAttribute('maxlength','5');
 						/* input内按键不继续冒泡*/
 						input.addEventListener('keydown',e=>{
-							e.stopPropagation();
-						});
-						input.addEventListener('keyup',e=>{
 							e.stopPropagation();
 						});
 						/* 输入前的提示 */
@@ -2811,7 +2809,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         },
                     },
 				},
-				
+
 			},
 			dynamicTranslate:{
 			    "xjzh_qixia_tianshu":function(player){
@@ -2829,7 +2827,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_meiren_huangyuke":"黄毓珂",
 				"xjzh_meiren_xiangwanru":"向婉茹",
 				"xjzh_meiren_huangdanxue":"黄丹雪",
-				
+
 				"xjzh_meiren_juese":"绝色",
 				"xjzh_meiren_juese_info":"出牌阶段限一次，你可以弃置一张黑色牌选择一名男性角色或弃置一张红色牌选择一名其他女性角色，然后执行以下规则：黑色，令其随机获得“弃置两张牌（不足则改为你摸两张牌）”或“失去所有技能直到其回合结束”；红色，令其随机获得“摸两张牌”或“回复一点体力（若其未受伤你可以再次发动该技能）”。",
 				"xjzh_meiren_xiuya":"秀雅",
@@ -2889,12 +2887,12 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_meiren_hanshuang_info":"觉醒技，当你阵亡时，你失去一点体力上限取消之并将清泉中的“获得一点护甲”改为“获得两点护甲”，然后回复体力至1并获得技能〖凛冬〗。",
 				"xjzh_meiren_lingdong":"凛冬",
 				"xjzh_meiren_lingdong_info":"锁定技，场上除你之外的所有角色回复体力都会令你获得一点护甲；你有护甲时，造成伤害始终视为冰属性伤害，且目标有几率获得1层冰缓；你的回合开始时，若场上除你之外所有角色均有冰缓，你移除场上所有角色冰缓，并令其受到等同于其冰缓层数的冰属性伤害。",
-				
+
 				//天命奇侠
 				"xjzh_qixia_daxiongxiaomao":"大熊小猫",
 				"xjzh_qixia_maybe":"昔日烈火",
 				"xjzh_qixia_mumuxiao":"木木枭",
-				
+
 				"xjzh_qixia_qice":"奇策",
 				"xjzh_qixia_qice_info":"其他角色摸牌后，若这些牌的类别不小于2，你可以观看并选择其中一种类别，令其弃置该类别的所有牌然后摸等量牌。",
 				"xjzh_qixia_tianshu":"天书",
@@ -2907,10 +2905,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_qixia_jibian_info":"当你受到伤害后，你摸x张点数为y的牌(x为你与伤害来源的体力差的绝对值，至低为1，y为体力和，至多为13)，然后令其技能描述中含有[伤害]的技能替换为〖仁德〗。",
 				"xjzh_qixia_tubian":"图变",
 				"xjzh_qixia_tubian_info":"出牌阶段、你受到伤害后限一次，你可以输入一名武将的武将名并展示3张武将名中包含你所输入的值的武将牌(至多5个汉字，若无对应汉字的武将牌或未输入，则改为随机展示3张武将牌)，并将一名角色武将图片改为你选择的武将图片，若其性别与你选择的武将性别不一致，你选择并令其失去当前武将牌上的一个技能，然后你选择令其获得你选择武将牌上的一个技能，否则其（或你为目标时）获得你选择的武将牌上的所有技能，若如此做，你随机切换你的武将性别。技能结算后，若你的武将性别为双，你获得一点体力上限，若你未改变性别，你回复一点体力并摸一张牌，否则你失去一点体力。",
-				
+
 				"XWCS_meiren":"美人如玉",
 				"XWCS_qixia":"天命奇侠",
-				
+
 			},
 		};
 		if(true){

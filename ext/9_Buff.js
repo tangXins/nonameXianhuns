@@ -14,20 +14,20 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 			silent:true,
 			priority:3,
-			filter:function(event,player){
-			    var num=get.xjzhBUFFNum(player,"qianggu");
-			    if(num>=player.hp) return true;
+			filter(event,player){
+			    let num=get.xjzhBUFFNum(player,"qianggu");
+			    if(num>=player.hp) return Math.random()<=0.2;
 			    return false;
 			},
-			content:function (){
+			async content(event,trigger,player){
 			    trigger.cancel(null,null,'notrigger');
 			},
 			ai:{
 			    effect:{
-					target:function(player,target){
+					target(player,target){
 					    if(!target.hasFriend()) return;
 						if(get.tag(card,'damage')){
-							var num=player.countMark("xjzh_diablo_zhongou");
+							let num=player.countMark("xjzh_diablo_zhongou");
 							if(num>=player.hp) return [0.2,0.2]
 						}
 					},
@@ -35,8 +35,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 			xjzhBuffInfo:{
 				naturalLose:true,
-				limit:function(){
-				    var player=_status.event.player;
+				limit(){
+				    let player=_status.event.player;
 				    return player.maxHp;
 				},
 			},
@@ -100,7 +100,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 			},
 		},
-		
+
 		///减益
 		"zhongdu":{
 			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_zhongdu.png>",
@@ -139,7 +139,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_binghuan.png>",
 			intro:{
 				name:"冰缓",
-				content:"「<font color=yellow>冰霜缓速</font>」<br><li>自然衰减：<b>是</b> 上限：1<br><li>你的出牌时间改为10秒，你的出牌等待时间增加50%",
+				content:"「<font color=yellow>冰霜缓速</font>」<br><li>自然衰减：<b>是</b> 上限：1<br><li>你的出牌时间基数改为10秒，每有一层冰缓，该时间减少50%(乘算)",
 			},
 			trigger:{
 				player:["phaseUseBegin","changexjzhBUFFEnd"],
@@ -152,13 +152,17 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				//return get.xjzhBUFFName(event.buff,false)=='binghuan'&&event.naturalLose==true;
 				return true;
 			},
-			content:function (){
+			async content(event,trigger,player){
 				if(trigger.name=="phaseUse"||trigger.name=="changexjzhBUFF"){
-					game.broadcastAll(function(player){
-						player.forceCountChoose={phaseUse:10};
+					let num=get.xjzhBUFFNum(player,"binghuan"),time=10;
+					do{
+						num--;
+						time*=0.5;
+					}while(num>0);
+					game.broadcastAll(player=>{
+						player.forceCountChoose={phaseUse:time};
 					},player);
-					player.addSkill('xjzh_buff_binghuan_use');
-					player.addSkill('xjzh_buff_binghuan_cancel');
+					player.addSkill(['xjzh_buff_binghuan_use','xjzh_buff_binghuan_cancel']);
 				}
 			},
 			subSkill:{
@@ -167,35 +171,41 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					charlotte:true,
 					silent:true,
 					popup:false,
-					filter:function(event,player){
+					filter(event,player){
 						if(!player.forceCountChoose||!player.forceCountChoose.phaseUse){
 							return false;
 						}
 						return true;
 					},
-					content:function(){
-						var num=get.xjzhBUFFNum(player,"binghuan")*0.5;
-						if(typeof time!='number') time=1;
+					async content(event,trigger,player){
+						let num=get.xjzhBUFFNum(player,"binghuan"),time=1;
 						switch(lib.config.game_speed){
-							case 'vslow':time*=2.5;
-							break;
-							case 'slow':time*=1.5;
-							break;
-							case 'fast':time*=0.7;
-							break;
-							case 'vfast':time*=0.4;
-							break;
-							case 'vvfast':time*=0.2;
-							break;
+							case "vslow":
+								time*=2.5;
+								break;
+							case "slow":
+								time*=1.5;
+								break;
+							case "fast":
+								time*=0.7;
+								break;
+							case "vfast":
+								time*=0.4;
+								break;
+							case "vvfast":
+								time*=0.2;
+								break;
 						}
-						game.delayx(time+num);
-						if(player.forceCountChoose.phaseUse==1){
-							var evt=event.getParent('phaseUse');
+						do{
+							num--;
+							time*=1.5;
+						}while(num>0);
+						if(player.forceCountChoose.phaseUse<=1){
+							let evt=event.getParent('phaseUse');
 							if(evt) evt.skipped=true;
-						}
-						else{
-							game.broadcastAll(function(player){
-								player.forceCountChoose.phaseUse-=1+Math.ceil(time+num);
+						}else{
+							game.broadcastAll(player=>{
+								player.forceCountChoose.phaseUse-=1+Math.round(time);
 							},player);
 						}
 					},
@@ -205,11 +215,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					priority:50,
 					silent:true,
 					charlotte:true,
-					content:function(){
-						game.broadcastAll(function(player){
+					async content(event,trigger,player){
+						game.broadcastAll(player=>{
 							delete player.forceCountChoose;
-						},
-						player);
+						},player);
 						//ui.auto.show();
 						player.removeSkill('xjzh_buff_binghuan_use');
 						player.removeSkill('xjzh_buff_binghuan_cancel');

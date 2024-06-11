@@ -1,7 +1,39 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 
+let jsonInfo=await lib.init.promises.json(`${lib.assetURL}/extension/仙家之魂/info.json`);
+
 export const xjzhUpdateLog={
-    version:'3.06041',
+    version:`${jsonInfo.version}`,
+	'3.06111':{
+        changeLog:[
+			"卡牌包改为es_modules，如有bug请反馈",
+			"调整卡牌【卡德兰戒】，现在只会反射武器、防具、宝物",
+			"调整buff“冰缓”，出牌等待时间改为每层buff减少50%出牌时间（四舍五入）",
+			"调整宇智波佐助〖千鸟〗，将技能中的觉醒部分拆分为一个新技能〖六道〗",
+			"调整宇智波佐助〖千鸟〗，不再在其他角色回合开始时对佐助使用【杀】",
+			"调整宇智波佐助〖瞳术〗，移除了〖炎遁〗",
+			"调整宇智波佐助〖瞳术〗，〖天手力〗调整，具体看技能介绍",
+			"调整宇智波佐助〖瞳术〗，新增“你计算与其他角色距离始终为1”",
+			"调整漩涡鸣人〖嘴遁〗ai，修复ai只会选择阵亡的问题",
+			"修复漩涡鸣人〖嘴遁〗，偶尔会出现ai选择更改势力之后未摸牌的问题",
+			"修复使用双将时，漩涡鸣人更改武将名错误",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:["xjzh_huoying_mingren","xjzh_huoying_zuozhu"],
+		cards:[],
+		romoveFiles:async function(){
+			let folderFiles=[
+				"audio/skill/xjzh_sanguo_qianniao_add1.mp3",
+				"audio/skill/xjzh_sanguo_qianniao_target1.mp3",
+				"audio/skill/xjzh_sanguo_tongshu11.mp3",
+				"audio/skill/xjzh_sanguo_tongshu31.mp3",
+			];
+			for await(let i of folderFiles){
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
+			}
+		},
+    },
 	'3.06041':{
         changeLog:[
 			"重新开放亚非克拉",
