@@ -729,6 +729,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					animationColor:'fire',
 					juexingji:true,
 					priority:1,
+					audio:"ext:仙家之魂/audio/skill:1",
 					filter(event,player){
 						return player.countMark("xjzh_huoying_qianniao")>=6;
 					},

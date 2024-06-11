@@ -6,7 +6,6 @@ window.xjzh_updateversion={
 			"info.json",
 			"extension.js",
 
-			"ext/0_Cards.js",
 			"ext/1_Skin.js",
 			"ext/2_XWSG.js",
 			"ext/3_XWTR.js",
@@ -19,7 +18,6 @@ window.xjzh_updateversion={
 			"ext/achievement.js",
 			"ext/animation.js",
 			"ext/gonglve.js",
-			"ext/mathList.js",
 			"ext/qishuyaojians.js",
 			"ext/qsyjOption.js",
 
@@ -44,13 +42,16 @@ window.xjzh_updateversion={
 
 			"css/mainPage.css",
 
-			"audio/skill/xjzh_sanguo_linnue1.mp3",
-			"audio/skill/xjzh_sanguo_linnue2.mp3",
+			"ext/modules/cards/index.js",
+			"ext/modules/cards/card/card.js",
+			"ext/modules/cards/skill/skill.js",
+			"ext/modules/cards/translate/translate.js",
+			"ext/modules/cards/list/list.js",
 
-			"image/cardpicture/xjzh_card_zhaoyaojing.png",
-			"image/cardpicture/xjzh_card_dingshenzhou.png",
-			"image/cardpicture/xjzh_card_hunyuandan.png",
-			"image/cardpicture/xjzh_card_huoyundao.png",
-			"image/cardpicture/xjzh_card_tianganghuo.png"
+			"ext/modules/mathList/index.js",
+
+			"audio/skill/xjzh_huoying_tongshu1.mp3",
+			"audio/skill/xjzh_huoying_liudao1.mp3",
+			"audio/skill/xjzh_huoying_qianniao1.mp3",
 	],
 };

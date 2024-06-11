@@ -955,6 +955,35 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				};
 			};
 			// ---------------------------------------定义函数------------------------------------------//
+			/**
+			 * 复制文本到剪贴板的功能函数。
+			 * 通过创建一个临时的textarea元素，将指定文本写入该元素，选中该文本，然后执行浏览器的复制命令来实现复制功能。
+			 * 由于不同浏览器对复制命令的支持程度不同，因此使用try-catch语句来捕获可能的错误。
+			 *
+			 * @param {string} text 需要复制到剪贴板的文本。
+			 */
+			game.xjzh_copyToText=function(text){
+				// 创建一个textarea元素
+				let textarea=document.createElement("textarea");
+				// 设置textarea的值为待复制的文本
+				textarea.value = text;
+				// 将textarea添加到文档体中
+				document.body.appendChild(textarea);
+				// 选中textarea中的文本
+				textarea.select();
+				try {
+					// 尝试执行浏览器的复制命令
+					document.execCommand("copy");
+					// 如果执行成功，给出提示
+					alert("文本已复制到剪贴板！");
+				} catch (e) {
+					// 如果执行失败，输出错误到控制台，并给出提示
+					console.error("复制失败", e);
+					alert("当前浏览器不支持自动复制到剪贴板。");
+				}
+				// 删除临时的textarea元素
+				document.body.removeChild(textarea);
+			};
 			//以下代码借鉴自《金庸群侠传》
 			//显示更新内容
 			get.xjzh_update=function(){

@@ -6,6 +6,7 @@ export const xjzhUpdateLog={
     version:`${jsonInfo.version}`,
 	'3.06111':{
         changeLog:[
+			"新增兑换码<a style='color:#FFFF00' href=\"javascript:game.xjzh_copyToText('duanwuankang');\">duanwuankang</a>(点击复制)",
 			"卡牌包改为es_modules，如有bug请反馈",
 			"调整卡牌【卡德兰戒】，现在只会反射武器、防具、宝物",
 			"调整buff“冰缓”，出牌等待时间改为每层buff减少50%出牌时间（四舍五入）",
@@ -24,10 +25,10 @@ export const xjzhUpdateLog={
 		cards:[],
 		romoveFiles:async function(){
 			let folderFiles=[
-				"audio/skill/xjzh_sanguo_qianniao_add1.mp3",
-				"audio/skill/xjzh_sanguo_qianniao_target1.mp3",
-				"audio/skill/xjzh_sanguo_tongshu11.mp3",
-				"audio/skill/xjzh_sanguo_tongshu31.mp3",
+				"audio/skill/xjzh_huoying_qianniao_add1.mp3",
+				"audio/skill/xjzh_huoying_qianniao_target1.mp3",
+				"audio/skill/xjzh_huoying_tongshu11.mp3",
+				"audio/skill/xjzh_huoying_tongshu31.mp3",
 			];
 			for await(let i of folderFiles){
 				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
