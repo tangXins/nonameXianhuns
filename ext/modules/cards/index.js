@@ -1,8 +1,8 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
-import cards from './card/card.js';
-import skills from './skill/skill.js';
-import lists from './list/list.js';
-import translates from './translate/translate.js';
+import cards from './card.js';
+import skills from './skill.js';
+import lists from './list.js';
+import translates from './translate.js';
 export function xjzhCardPack(){
 	game.import('card',function(){
         lib.config.all.cards.push('xjzh_Card');
@@ -22,7 +22,7 @@ export function xjzhCardPack(){
                 lib.decade_extCardImage = {};
             }
             for(let cardname in xjzh_Card.card){
-                var url = lib.assetURL+"extension/仙家之魂/image/cardimage/tenui/"+cardname+".webp";
+                let url = lib.assetURL+"extension/仙家之魂/image/cardimage/tenui/"+cardname+".webp";
                 lib.decade_extCardImage[cardname] = url;
             }
         }

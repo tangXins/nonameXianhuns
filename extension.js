@@ -1,5 +1,6 @@
 import { lib,get,_status,ui,game,ai } from '../../noname.js';
 import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage,xjzhCardPack } from './ext/modules/index.js';
+import xjzhCharacterInit from './ext/modules/character/index.js';
 //还是有很多提示，消一下
 Array.prototype.contains=Array.prototype.includes;
 lib.xjzhTitle=xjzhTitle;
@@ -987,89 +988,92 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			//以下代码借鉴自《金庸群侠传》
 			//显示更新内容
 			get.xjzh_update=function(){
-				let update=xjzhUpdateLog;
-				lib.extensionPack['仙家之魂'].version=xjzhUpdateLog.version;
-				let gengxing=update[update.version]
-				if(lib.extensionPack['仙家之魂']&&lib.extensionPack['仙家之魂'].version!=game.getExtensionConfig("仙家之魂","changelog")){
-					game.saveExtensionConfig("仙家之魂","changelog",lib.extensionPack['仙家之魂'].version);
-				}
-				else{
-					return false;
-				};
-				if(gengxing.romoveFiles&&typeof gengxing.romoveFiles=="function") gengxing.romoveFiles();
-				let ul=document.createElement('ul');
-				ul.style.textAlign='left';
-				let caption;
-				let version=update.version;
-				let players=gengxing.players||[];
-				let cards=gengxing.cards||[];
-				let changeLog=gengxing.changeLog||[];
-				caption='仙家之魂更新';
-				for(let i of changeLog){
-					let li=document.createElement('li');
-					li.innerHTML=i;
-					ul.appendChild(li);
-				};
-				let dialog=ui.create.dialog(caption,'hidden');
-				dialog.add(version);
-				dialog.forcebutton=true;
-				dialog.classList.add('forcebutton');
-				let lic=ui.create.div(dialog.content);
-				lic.style.display='block';
-				ul.style.display='inline-block';
-				ul.style.marginLeft='20px';
-				lic.appendChild(ul);
-				if(players.length){
-					for(let i=0;i<players.length;i++){
-						if(!lib.character[players[i]]){
-							let result=get.character(players[i]);
-							if(result){
-								if(!result[4]){
-									result[4]=[];
+				try{
+					let update=xjzhUpdateLog;
+					lib.extensionPack['仙家之魂'].version=xjzhUpdateLog.version;
+					let gengxing=update[update.version];
+					if(lib.extensionPack['仙家之魂']&&lib.extensionPack['仙家之魂'].version!=game.getExtensionConfig("仙家之魂","changelog")){
+						game.saveExtensionConfig("仙家之魂","changelog",lib.extensionPack['仙家之魂'].version);
+					}else{
+						return false;
+					};
+					if(gengxing.removeFiles&&typeof gengxing.removeFiles=="function") gengxing.removeFiles();
+					let ul=document.createElement('ul');
+					ul.style.textAlign='left';
+					let caption;
+					let version=update.version;
+					let players=gengxing.players||[];
+					let cards=gengxing.cards||[];
+					let changeLog=gengxing.changeLog||[];
+					caption='仙家之魂更新';
+					for(let i of changeLog){
+						let li=document.createElement('li');
+						li.innerHTML=i;
+						ul.appendChild(li);
+					};
+					let dialog=ui.create.dialog(caption,'hidden');
+					dialog.add(version);
+					dialog.forcebutton=true;
+					dialog.classList.add('forcebutton');
+					let lic=ui.create.div(dialog.content);
+					lic.style.display='block';
+					ul.style.display='inline-block';
+					ul.style.marginLeft='20px';
+					lic.appendChild(ul);
+					if(players.length){
+						for(let i=0;i<players.length;i++){
+							if(!lib.character[players[i]]){
+								let result=get.character(players[i]);
+								if(result){
+									if(!result[4]){
+										result[4]=[];
+									};
+									lib.character[players[i]]=result;
 								};
-								lib.character[players[i]]=result;
+							};
+							if(!lib.character[players[i]]){
+								players.splice(i--,1);
 							};
 						};
-						if(!lib.character[players[i]]){
-							players.splice(i--,1);
-						};
-					};
-					if(players.length){
-						dialog.addText('武将更新');
-						dialog.add([players,'character']);
-						//dialog.addSmall([players,'character']);
-					};
-				};
-				if(cards.length){
-					for(let i=0;i<cards.length;i++){
-						if(!lib.card[cards[i]]){
-							cards.splice(i--,1);
+						if(players.length){
+							dialog.addText('武将更新');
+							dialog.add([players,'character']);
+							//dialog.addSmall([players,'character']);
 						};
 					};
 					if(cards.length){
 						for(let i=0;i<cards.length;i++){
-							cards[i]=[get.translation(get.type(cards[i])),'',cards[i]];
+							if(!lib.card[cards[i]]){
+								cards.splice(i--,1);
+							};
 						};
-						dialog.addText('卡牌更新');
-						dialog.add([cards,'vcard']);
-						//dialog.addSmall([cards,'vcard']);
+						if(cards.length){
+							for(let i=0;i<cards.length;i++){
+								cards[i]=[get.translation(get.type(cards[i])),'',cards[i]];
+							};
+							dialog.addText('卡牌更新');
+							dialog.add([cards,'vcard']);
+							//dialog.addSmall([cards,'vcard']);
+						}
 					}
-				}
-				dialog.addText('-----------------END-----------------');
-				dialog.open();
-				let hidden=false;
-				if(!ui.auto.classList.contains('hidden')){
-					ui.auto.hide();
-					hidden=true;
+					dialog.addText('-----------------END-----------------');
+					dialog.open();
+					let hidden=false;
+					if(!ui.auto.classList.contains('hidden')){
+						ui.auto.hide();
+						hidden=true;
+					};
+					game.pause();
+					let control=ui.create.control('确定',function(){
+						dialog.close();
+						control.close();
+						if(hidden) ui.auto.show();
+						game.resume();
+					});
+					lib.init.onfree();
+				}catch(error){
+					console.log(error);
 				};
-				game.pause();
-				let control=ui.create.control('确定',function(){
-					dialog.close();
-					control.close();
-					if(hidden) ui.auto.show();
-					game.resume();
-				});
-				lib.init.onfree();
 			};
 			let _showChangeLog=game.showChangeLog;
 			game.showChangeLog=function(){
@@ -2048,24 +2052,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if(bool) return true;
 				return false;
 			},
-			game.xjzh_washCard=function(){
-				var cards=[]
-				for(i=0;i<ui.discardPile.childNodes.length;i++){
-					var currentcard=ui.discardPile.childNodes[i];
-					currentcard.vanishtag.length=0;
-					if(get.info(currentcard).vanish||currentcard.storage.vanish){
-						currentcard.remove();
-						continue;
-					}
-					cards.push(currentcard);
-				}
-				cards.randomSort();
-				for(var i=0;i<cards.length;i++){
-					ui.cardPile.appendChild(cards[i]);
-				}
-				game.updateRoundNumber();
-				if(_status.event.trigger) _status.event.trigger('washCard');
-			};
 			//检索卡牌
 			//代码借鉴自《金庸群侠传》
 			get.randomCard = function(name,create) {
@@ -2526,6 +2512,15 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				// ---------------------------------------移除【删除扩展按钮】------------------------------------------//
 				delete lib.extensionMenu.extension_仙家之魂.delete;
 
+
+				/**
+				 * 初始化武将包
+				 * 该函数用于加载和初始化武将包，武将包是应用程序中包含特定功能或信息的可视化组件。
+				 * 参数: 无
+				 * 返回值: 无
+				 */
+				//导入武将包
+				xjzhCharacterInit();
 				/**
 				 * 初始化卡片包
 				 * 该函数用于加载和初始化卡片包，卡片包是应用程序中包含特定功能或信息的可视化组件。
@@ -2537,15 +2532,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				// ---------------------------------------导入JS------------------------------------------//
 				var extList=[
 				'1_Skin.js',
-				'2_XWSG.js',
-				'3_XWTR.js',
-				'4_XWCS.js',
-				'5_XWDM.js',
-				'6_XWTZ.js',
-				'7_JLBC.js',
+				'3_Buff.js',
 				'gonglve.js',
-				'9_Buff.js',
-				'animation.js',
+				'animation.js'
 				];
 				for(var i of extList){
 					var extURL=lib.assetURL+'extension/仙家之魂/ext/'+i;

@@ -4,6 +4,44 @@ let jsonInfo=await lib.init.promises.json(`${lib.assetURL}/extension/仙家之�
 
 export const xjzhUpdateLog={
     version:`${jsonInfo.version}`,
+	'3.06121':{
+        changeLog:[
+			"模块化武将包，如有bug请反馈",
+			"移除boss神左幽",
+			"修复周泰〖奋激〗，只有玩家获得牌",
+			"修复管辂衍生卡牌【神机妙算】报错",
+			"在上次调整孙悟空的技能〖如意〗后，在多次对局中均未有机会获得衍生牌，所以做如下调整",
+			"调整孙悟空〖如意〗，现在受到火焰伤害也可以获得衍生牌",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:[],
+		cards:[],
+		removeFiles:async function(){
+			let folderFiles=[
+				"skin/yuanhua/xjzh_boss_zuoyou.jpg",
+				"ext/2_XWSG.js",
+				"ext/3_XWTR.js",
+				"ext/4_XWCS.js",
+				"ext/5_XWDM.js",
+				"ext/6_XWTZ.js",
+				"ext/7_JLBC.js",
+			],folderFiles2=[
+				"ext/modules/cards/translate",
+				"ext/modules/cards/card",
+				"ext/modules/cards/list",
+				"ext/modules/cards/skill"
+
+			];
+			for await(let i of folderFiles){
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
+			}
+
+			for await(let i of folderFiles2){
+				game.xjzh_removeFiles(i);
+			}
+		},
+    },
 	'3.06111':{
         changeLog:[
 			"新增兑换码<a style='color:#FFFF00' href=\"javascript:game.xjzh_copyToText('duanwuankang');\">duanwuankang</a>(点击复制)",
@@ -23,7 +61,7 @@ export const xjzhUpdateLog={
         ],
 	    players:["xjzh_huoying_mingren","xjzh_huoying_zuozhu"],
 		cards:[],
-		romoveFiles:async function(){
+		removeFiles:async function(){
 			let folderFiles=[
 				"audio/skill/xjzh_huoying_qianniao_add1.mp3",
 				"audio/skill/xjzh_huoying_qianniao_target1.mp3",
@@ -107,7 +145,7 @@ export const xjzhUpdateLog={
         ],
 	    players:["xjzh_zxzh_jiangningzhi","xjzh_sanguo_dongzhuo"],
 		cards:[],
-		romoveFiles:async function(){
+		removeFiles:async function(){
 			let folderFiles=[
 				"audio/skill/xjzh_sanguo_zongjiu1.mp3",
 				"audio/skill/xjzh_sanguo_zongjiu2.mp3",
@@ -152,7 +190,7 @@ export const xjzhUpdateLog={
 			"xjzh_sanguo_zhangning"
 		],
 		cards:[],
-		romoveFiles:async function(){
+		removeFiles:async function(){
 			let folderFiles=[
 				"image/effect/12345.png",
 				"image/effect/skill_baozha.png",
@@ -201,7 +239,7 @@ export const xjzhUpdateLog={
         ],
 	    players:[],
 		cards:[],
-		romoveFiles:async function(){
+		removeFiles:async function(){
 			let folderFiles=[
 				"audio/skill/xjzh_sanguo_yingbing1.mp3",
 				"audio/skill/xjzh_sanguo_yingbing2.mp3",
@@ -242,7 +280,7 @@ export const xjzhUpdateLog={
         ],
 	    players:[],
 		cards:[],
-		romoveFiles:async function(){
+		removeFiles:async function(){
 			let folderFiles=[
 				"ext/modules/version",
 				"css/images/limitedCards",

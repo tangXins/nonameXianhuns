@@ -456,7 +456,7 @@ export const CHRskills={
 		                    targets[0].hp^=targets[1].hp;
 			                targets[1].hp^=targets[0].hp;
 			                targets[0].hp^=targets[1].hp;
-			                game.log(targets[0],"与",targets[1],"交换了体力值");   
+			                game.log(targets[0],"与",targets[1],"交换了体力值");
 	                    }
 	                    break;
 	                    case 1:{
@@ -1264,10 +1264,10 @@ export const CHRskills={
 			unique:true,
 			ai:{
 				viewHandcard:true,
-				skillTagFilter:function(player,tag,arg){
+				skillTagFilter(player,tag,arg){
 					if(tag=='viewHandcard'){
-						if(game.me==arg) return false;
-						return true
+						if(player==arg) return false;
+						return true;
 					};
 				},
 			},
@@ -1296,7 +1296,7 @@ export const CHRskills={
 				},
 			},
 		},
-		
+
 	},
 	translate:{
 		"xjzh_zengyi_pianxian":"翩跹",
