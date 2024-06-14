@@ -37,18 +37,38 @@ const characters = {
 
 	//暗黑破坏神
 	"xjzh_diablo_lamasi":["male","qun",3,["xjzh_diablo_hunhuo"],[]],
-	"xjzh_diablo_nataya":["female","qun",4,["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],[],["xjzhMp:100"]],
-	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],["xjzhMp:0/100"]],
+	"xjzh_diablo_nataya":["female","qun",4,["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],[],[{
+		"name":"xjzhMp",
+		"maxMp":100,
+		"mp":100
+	}]],
+	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],[{
+		"name":"xjzhMp",
+		"maxMp":100,
+		"mp":0
+	}]],
 	"xjzh_diablo_moruina":["female","qun",4,["xjzh_diablo_luanshe","xjzh_diablo_jingshe","xjzh_diablo_guanzhu"],[]],
 	"xjzh_diablo_kaxia":["female","qun",4,["xjzh_diablo_sushe","xjzh_diablo_yingbi","xjzh_diablo_jianyu"],[]],
-	"xjzh_diablo_yafeikela":["male","qun",4,["xjzh_diablo_lingshou","xjzh_diablo_shilue"],[],["xjzhMp:100"]],
+	"xjzh_diablo_yafeikela":["male","qun",4,["xjzh_diablo_lingshou","xjzh_diablo_shilue"],[],[{
+		"name":"xjzhMp",
+		"maxMp":100,
+		"mp":100
+	}]],
 	"xjzh_diablo_xiong":["male","qun",4,["xjzh_diablo_zhongou","xjzh_diablo_fensui"],["unseen","forbidai"]],
 	"xjzh_diablo_lang":["male","qun",4,["xjzh_diablo_leibao","xjzh_diablo_kuanghou"],["unseen","forbidai"]],
 	"xjzh_diablo_lilisi":["female","qun",3,["xjzh_boss_lianji","xjzh_boss_qiangji"],["unseen","forbidai"]],
 
 	//地下城与勇士
-	"xjzh_dnf_jianshen":["male","qun",4,["xjzh_dnf_levelUp"],[],["xjzhMp:80"]],
-	"xjzh_dnf_shengqi":["male","qun",4,["xjzh_dnf_levelUp"],[],["xjzhMp:/80100"]],
+	"xjzh_dnf_jianshen":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
+		"name":"xjzhMp",
+		"maxMp":80,
+		"mp":80
+	}]],
+	"xjzh_dnf_shengqi":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
+		"name":"xjzhMp",
+		"maxMp":100,
+		"mp":80
+	}]],
 	"xjzh_dnf_suodeluosi":["male","qun",3,["xjzh_dnf_jianshenx","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],[],[]],
 
 	//西游释厄传

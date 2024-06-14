@@ -6,8 +6,8 @@ Array.prototype.contains=Array.prototype.includes;
 lib.xjzhTitle=xjzhTitle;
 
 //检测无名杀版本
-(async function getVersionUpdate(){
-	let getVersionUpdate2=function(a,b){
+(async()=>{
+	let getVersionUpdate=function(a,b){
 		if(!a )a="0.0.0";
 		if(!b) b="0.0.0";
 		let arr1=a.split(".");
@@ -26,15 +26,14 @@ lib.xjzhTitle=xjzhTitle;
 		}
 		return 0;
 	};
-	if(lib.version&&!lib.config.xjzhNotMetionNonameVersion){
-		if(getVersionUpdate2(lib.version,"1.10.12")<0){
+	if(lib.version){
+		if(getVersionUpdate(lib.version,"1.10.12")<0){
 			alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本1.10.12，可能会引起报错，已为你关闭本扩展`);
 			game.saveExtensionConfig("仙家之魂","enable",false);
 			game.reload();
 		}
 	};
 })();
-
 
 game.import("extension",function(lib,game,ui,get,ai,_status){
 	return {
@@ -1920,120 +1919,168 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}
 				ui.window.appendChild(obj);
 			};
-			//获取角色魔力和魔力上限
-			get.xjzhMp=function(player){
-				if(player.storage.xjzhMp==undefined) return false;
-				if(typeof player.storage.xjzhMp=='number') return player.storage.xjzhMp;
-				return false;
+			get.xjzh_isMaxMp=function(player){
+				if(!player||get.itemtype(player)!="player"){
+					console.error("Player不存在");
+        			return false;
+				}
+				return typeof player.xjzhmaxMp === 'number' && typeof player.xjzhMp === 'number' && player.xjzhmaxMp === player.xjzhMp;
 			};
-			get.xjzhmaxMp=function(player){
-				if(player.storage.xjzhmaxMp==undefined) return false;
-				if(typeof player.storage.xjzhmaxMp=='number') return player.storage.xjzhmaxMp;
-				return false;
-			};
-			get.isMaxMp=(player)=>{
-				return get.xjzhmaxMp(player)==get.xjzhMp(player);
+			get.xjzh_consumeMp=function(player){
+				if(!player||get.itemtype(player)!="player"){
+					console.error("Player不存在");
+        			return NaN;
+				}
+				if (typeof player.xjzhmaxMp !== 'number' || typeof player.xjzhMp !== 'number') {
+					return NaN;
+				}
+				return player.xjzhmaxMp-player.xjzhMp;
 			};
 			//修改魔力
-			lib.element.player.changexjzhMp=function(num){
-				var next=game.createEvent('changexjzhMp',false);
-				next.num=num;
-				next.player=this;
-				next.setContent('changexjzhMp');
-				return next;
-			};
-			lib.element.content.changexjzhMp=function(){
-				"step 0"
-				if(num==0||!player.storage.xjzhmaxMp){
-					event.finish();
-					return;
-				}
-				"step 1"
-				if(!player.storage.xjzhMp) player.storage.xjzhMp=0;
-				player.storage.xjzhMp+=num;
-				if(num>0){
-					player.$recover();
+			lib.element.player.changexjzhMp=async function(num){
+				if(num==0||!this.xjzhmaxMp) return;
+				let str=`${get.translation(this)}${num>0?'回复':'消耗'}了${num>get.xjzh_consumeMp(this)?get.xjzh_consumeMp(this):Math.abs(num)}点能量`;
+				if(game.roundNumber!=0) game.log(this,str);
+				this.xjzhMp+=num;
+				if(num>0&&get.xjzh_consumeMp(this)>0){
+					this.$recover();
 					game.playAudio('effect','recover');
 				}
-				if(isNaN(player.storage.xjzhMp)||player.storage.xjzhMp<0) player.storage.xjzhMp=0;
-				if(player.storage.xjzhMp>player.storage.xjzhmaxMp) player.storage.xjzhMp=player.storage.xjzhmaxMp;
-				"step 2"
-				player.xjzhshowMp(player.storage.xjzhMp,player.storage.xjzhmaxMp);
-				"step 3"
-				if(game.roundNumber==0){
-					event.goto(4);
-					return;
-				}
-				if(num>0){
-					var str2="回复了";
-					if(num>get.xjzhmaxMp(player)-get.xjzhMp(player)){
-						var numx=get.xjzhmaxMp(player)-get.xjzhMp(player);
-					}else{
-						var numx=num;
-					}
-				}else{
-					var str2="消耗了";
-					var numx=-num;
-				}
-				var str=`${str2}${numx}点能量`;
-				game.log(player,str);
-				"step 4"
-				event.trigger('changexjzhMp');
+				if(isNaN(this.xjzhMp)||this.xjzhMp<0) this.xjzhMp=0;
+				if(this.xjzhMp>this.xjzhmaxMp) this.xjzhMp=this.xjzhmaxMp;
+				this.xjzhshowMp(this.xjzhMp,this.xjzhmaxMp);
+
+				let next=game.createEvent('changexjzhMp',false);
+				next.num=num;
+				next.player=this;
+				next.setContent(()=>{
+					event.trigger('changexjzhMp');
+				});
+				return next;
 			};
 			//修改魔力上限
-			lib.element.player.changexjzhmaxMp=function(num){
-				var next=game.createEvent('changexjzhmaxMp',false);
-				next.num=num;
-				next.player=this;
-				next.setContent('changexjzhmaxMp');
-				return next;
-			};
-			lib.element.content.changexjzhmaxMp=function(){
-				'step 0'
+			lib.element.player.changexjzhmaxMp=async function(num){
 				if(num==0) return;
-				"step 1"
-				if(!player.storage.xjzhmaxMp) player.storage.xjzhmaxMp=0;
-				if(!player.storage.xjzhMp) player.storage.xjzhMp=0;
-				player.storage.xjzhmaxMp+=num;
+				let str=`${get.translation(this)}${num>0?'增加':'减少'}了${num>0?num:Math.abs(num)}点能量上限`;
+				if(game.roundNumber!=0) game.log(this,str);
+				if(!this.xjzhmaxMp) this.xjzhmaxMp=0;
+				if(!this.xjzhMp) this.xjzhMp=0;
+				this.xjzhmaxMp+=num;
 				if(num>0){
-					player.$recover();
+					this.$recover();
 					game.playAudio('effect','recover');
 				}
-				if(isNaN(player.storage.xjzhmaxMp)||player.storage.xjzhmaxMp<0) player.storage.xjzhmaxMp=0;
-				if(player.storage.xjzhMp>player.storage.xjzhmaxMp){
-					player.storage.xjzhMp=player.storage.xjzhmaxMp;
-				}
-				'step 2'
-				player.xjzhshowMp(get.xjzhMp(player),get.xjzhmaxMp(player));
-				"step 3"
-				if(game.roundNumber==0){
-					event.goto(4);
+				if(isNaN(this.xjzhmaxMp)||this.xjzhmaxMp<0) this.xjzhmaxMp=1;
+				if(this.xjzhMp>this.xjzhmaxMp) this.xjzhMp=this.xjzhmaxMp;
+				this.xjzhshowMp(this.xjzhMp,this.xjzhmaxMp);
+				let next=game.createEvent('changexjzhmaxMp',false);
+				next.num=num;
+				next.player=this;
+				next.setContent(()=>{
+					event.trigger('changexjzhmaxMp');
+				});
+				return next;
+			};
+			lib.element.player.xjzhshowMp = function(arg, arg2) {
+				// 参数验证
+				if (typeof arg !== 'number' || typeof arg2 !== 'number' || arg < 0 || arg2 <= 0) {
+					console.error('参数必须是数字且必须是正数');
 					return;
 				}
-				if(num<0){
-					var str2="减少了";
-					var numx=-num;
-				}else{
-					var str2="增加了";
-					var numx=num;
+
+				// 确保 mp 容器存在
+				if (!this.node.mp) {
+					this.node.mp = ui.create.div(".mp", this);
 				}
-				var str=`${str2}${numx}点能量上限`;
-				game.log(player,str);
-				"step 4"
-				event.trigger('changexjzhmaxMp');
-			};
-			//魔力显示
-			lib.element.player.xjzhshowMp=function(arg,arg2){
-				//if(!this.node.mp){
-					this.node.mp=ui.create.div(".mp",this);
-				//}
-				var mpdiv=ui.create.div(".mpdiv",this.node.mp,"<span class='mptext'>"+arg+"/"+arg2+"</span>");
-				mpdiv.style.width=arg/arg2*100+"%";
+
+				// 获取或创建 .mpdiv 元素，并始终设置圆角样式
+				let mpdiv = this.node.mp.querySelector('.mpdiv') || ui.create.div(".mpdiv", this.node.mp);
+				mpdiv.style.borderRadius = "50px";
+
+				// 更新文本内容
+				let mptext = mpdiv.querySelector('.mptext') || document.createElement('span');
+				mptext.className = 'mptext';
+				mptext.textContent = arg + "/" + arg2;
+				if (!mpdiv.querySelector('.mptext')) {
+					mpdiv.appendChild(mptext);
+				}
+
+				function animateWidthChange(element, targetWidth, duration) {
+					let startWidth = parseFloat(element.style.width);
+					let startTime = performance.now();
+					let currentWidth = startWidth;
+
+					function easeInOutCubic(t) {
+						return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+					}
+
+					function step(timestamp) {
+						let timeElapsed = timestamp - startTime;
+						let progress = timeElapsed / duration;
+
+						// 使用easeInOutCubic函数实现缓入缓出效果
+						let easingProgress = easeInOutCubic(progress);
+
+						// 计算当前宽度，确保缓入缓出变化
+						let currentWidth = startWidth + easingProgress * (targetWidth - startWidth);
+
+						element.style.width = currentWidth + "%";
+
+						// 如果动画还在进行中，则继续请求下一帧
+						if (timeElapsed < duration) {
+							requestAnimationFrame(step);
+						} else {
+							// 确保动画结束时宽度精确为目标值
+							element.style.width = targetWidth + "%";
+						}
+					}
+
+					requestAnimationFrame(step);
+				}
+
+				// 计算剩余能量百分比
+				let remainingPercentage = arg / arg2;
+
+				animateWidthChange(mpdiv, remainingPercentage * 100, 1500);
+
+				// 设置剩余能量的宽度，同时确保mpdiv有正确的宽度
+				mpdiv.style.width = remainingPercentage * 100 + "%";
+
+				// 添加边框样式处理
+				if (remainingPercentage === 1) {
+					// 能量条满时，应用黄色闪光边框样式
+					mpdiv.classList.add("xjzh_full-flash");
+				} else {
+					// 能量条未满时，移除任何可能存在的特殊边框样式，假设默认边框样式已经定义好
+					mpdiv.classList.remove("xjzh_full-flash");
+				}
+				// 处理失去能量部分为白色底色
+				let lostEnergyDiv = mpdiv.querySelector('.lost-energy');
+				let lostEnergyWidth = (1 - remainingPercentage) * 100;
+
+				if (lostEnergyWidth > 0) {
+					if (!lostEnergyDiv) {
+						// 创建并设置样式，注意调整lostEnergyDiv的样式以露出mpdiv的左圆角
+						lostEnergyDiv = document.createElement('div');
+						lostEnergyDiv.className = 'lost-energy';
+						lostEnergyDiv.style.width = lostEnergyWidth + "%";
+						lostEnergyDiv.style.backgroundColor = "#fff";
+						// 通过负margin-left让lostEnergyDiv不遮挡mpdiv的左圆角
+						lostEnergyDiv.style.marginLeft = "-1px"; // 假设1px是边框宽度或需要调整的值
+						mpdiv.insertBefore(lostEnergyDiv, mpdiv.firstChild);
+					} else {
+						// 更新宽度
+						lostEnergyDiv.style.width = lostEnergyWidth + "%";
+					}
+				} else if (lostEnergyDiv) {
+					mpdiv.removeChild(lostEnergyDiv);
+				}
+
 			};
 			//地下城与勇士角色库
 			lib.xjzh_dnf_character=[
-			"xjzh_dnf_jianshen",
-			"xjzh_dnf_shengqi",
+				"xjzh_dnf_jianshen",
+				"xjzh_dnf_shengqi",
 			],
 			//判断武将是否为地下城与勇士
 			get.dnfCharacter=function(player){

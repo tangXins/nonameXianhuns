@@ -1917,55 +1917,34 @@ const skills={
 		},
 		frequent:true,
 		priority:12,
-		filter:function(event,player){
+		filter(event,player){
 			return player.isAlive();
 		},
-		check:function(event,player){
-			return 1;
-		},
+		check(){return 1;},
 		mod:{
-			targetEnabled:function(card,player,target,now){
+			targetEnabled(card,player,target,now){
 				if(get.tag('multitarget',card)) return false;
 				if(get.info(card).allowMultiple==false) return false;
 			},
 		},
-		content:function(){
-			"step 0"
-			player.chooseTarget("〖默情〗:请选择一个目标与其交换体力值",function(target){
-				return target!=player&&target.hp!=player.hp;
-			}).set('ai',function(target){
-				var att=get.attitude(player,target)
-				if(att<0) return player.hp<target.hp;
-				if(att>0) return player.hp>target.hp;
+		async content(event,trigger,player){
+
+			const targets=await player.chooseTarget("〖默情〗:请选择一个目标与其交换体力值",(caed,target,player)=>{
+				return target!=player&&target.getHp(true)!=player.getHp(true);
+			}).set('ai',target=>{
+				let att=get.attitude(player,target)
+				if(att<0) return player.getHp(true)<target.getHp(true);
+				if(att>0) return player.getHp(true)>target.getHp(true);
 				return att>0;
-			});
-			"step 1"
-			if(result.bool){
-				var hp1=result.targets[0].hp
-				var hp2=player.hp
-				player.hp=hp1
-				result.targets[0].hp=hp2
+			}).forResultTargets();
+			if(targets){
+				let hp1=targets[0].getHp(true),hp2=player.getHp(true);
+				player.hp=hp1;
+				targets[0].hp=hp2;
 				player.update();
-				result.targets[0].update();
-				if(result.targets[0].hp>player.hp){
-					player.addSkill("xjzh_meiren_moqing_use");
-				}
+				targets[0].update();
+				if(targets[0].getHp(true)>player.getHp(true)) player.insertEvent(event.name,"phaseUse");
 			}
-		},
-		subSkill:{
-			"use":{
-				trigger:{
-					player:"phaseAfter",
-				},
-				direct:true,
-				priority:-2,
-				sub:true,
-				content:function(){
-					player.draw()
-					player.phaseUse();
-					player.removeSkill("xjzh_meiren_moqing_use");
-				},
-			},
 		},
 	},
 

@@ -6210,9 +6210,10 @@ const skills={
 			if(!player.storage.xjzh_diablo_linglijianmian) player.storage.xjzh_diablo_linglijianmian=0;
 			player.storage.xjzh_diablo_linglijianmian+=30;
 			player.storage.xjzh_diablo_shilue=false;
+			//player.addMark("xjzh_diablo_lingshou",1000000);
 		},
 		filter(event,player){
-			if(get.isMaxMp(player)) return false;
+			if(get.xjzh_isMaxMp(player)) return false;
 			return player.countMark("xjzh_diablo_lingshou")>0;
 		},
 		getshilue(player,num){
@@ -6311,7 +6312,7 @@ const skills={
 			result:{
 				player:function(player,target){
 					if(player.countMark("xjzh_diablo_lingshou")>100){
-						if(get.xjzhMp(player)<=get.xjzhmaxMp(player)/2) return 10;
+						if(player.xjzhMp<=player.xjzhmaxMp/2) return 10;
 						return 0.5;
 					}
 					return 0.1;
@@ -6335,7 +6336,7 @@ const skills={
 			}
 			var num2=lib.skill.xjzh_diablo_leibao.powerDrain;
 			var numx=Math.floor(num2*(1-num/100));
-			return get.xjzhMp(player)>=numx;
+			return player.xjzhMp>=numx;
 		},
 		content:function(){
 			"step 0"
@@ -6377,7 +6378,7 @@ const skills={
 		xjzh_langrenSkill:true,
 		check:function(event,player){
 			if(player.isDamaged()){
-				if(get.xjzhMp(player)<get.xjzhmaxMp(player)) return 10;
+				if(player.xjzhMp<player.xjzhmaxMp) return 10;
 				return 2;
 			}
 			return 0.5;
@@ -6449,12 +6450,12 @@ const skills={
 					event.finish();
 					return;
 				}
-				else if(get.xjzhMp(player)<numx){
+				else if(player.xjzhMp<numx){
 					event.finish();
 					return;
 				}
 				player.chooseBool('〖重欧〗：是否消耗'+numx+'点灵力获得点护甲强固点体力值').set('ai',function(){
-					var num=get.xjzhMp(player);
+					var num=player.xjzhMp;
 					if(num>numx) return 1;
 					return 0;
 				}).set('numx',numx);
@@ -6552,7 +6553,7 @@ const skills={
 			source:"damageBegin",
 		},
 		filter:function(event,player){
-			if(get.xjzhMp(player)<25) return false;
+			if(player.xjzhMp<25) return false;
 			return true;
 		},
 		content:function(){
@@ -6787,9 +6788,9 @@ const skills={
 				var str=""
 				if(player.storage.xjzh_dnf_levelUp) str+="<li>等级："+get.translation(player.storage.xjzh_dnf_levelUp)+"<br>";
 				if(player.storage.xjzh_dnf_exp) str+="<li>经验："+get.translation(player.storage.xjzh_dnf_exp)+"<br>";
-				var num=get.xjzhMp(player);
-				var num2=get.xjzhmaxMp(player);
-				if(get.xjzhMp(player)>=0||get.xjzhmaxMp(player)>=0) str+="<li>魔力："+num+"/"+num2+"<br>";
+				var num=player.xjzhMp;
+				var num2=player.xjzhmaxMp;
+				if(player.xjzhMp>=0||player.xjzhmaxMp>=0) str+="<li>魔力："+num+"/"+num2+"<br>";
 				if(player.storage.basexjzhMp) str+="<li>魔力回复：每回合"+player.storage.basexjzhMp+"点<br>";
 				str+="<li>每3级手牌上限+1，每5级出牌次数+1、摸牌数量+1";
 				return str;
@@ -6964,7 +6965,7 @@ const skills={
 				filter:function(event,player){
 					if(!get.dnfCharacter(player)) return false;
 					if(!player.storage.xjzhMp) return false;
-					return get.xjzhMp(player)<get.xjzhmaxMp(player);
+					return player.xjzhMp<player.xjzhmaxMp;
 				},
 				content:function(){
 					var num=player.storage.basexjzhMp
@@ -7038,7 +7039,7 @@ const skills={
 		enable:"phaseUse",
 		filter:function(event,player){
 			if(!game.hasPlayer(function(current){return current.isDamaged()})) return false;
-			return get.xjzhMp(player)>=20;
+			return player.xjzhMp>=20;
 		},
 		filterTarget:function(card,player,target){
 			if(target.hp>=target.maxHp) return false;
@@ -7054,7 +7055,7 @@ const skills={
 			result:{
 				target:function(player,target){
 					if(target.hp==1) return 5;
-					if(player==target&&get.xjzhMp(player)>=40) return 5;
+					if(player==target&&player.xjzhMp>=40) return 5;
 					return 2;
 				},
 			},
@@ -7068,7 +7069,7 @@ const skills={
 		},
 		filter:function(event,player){
 			if(!game.hasPlayer(function(current){return current.isDamaged()})) return false;
-			return get.xjzhMp(player)>=30;
+			return player.xjzhMp>=30;
 		},
 		filterTarget:function(card,player,target){
 			if(target.hp>=target.maxHp) return false;
@@ -7084,7 +7085,7 @@ const skills={
 			result:{
 				target:function(player,target){
 					if(target.hp==1) return 5;
-					if(player==target&&get.xjzhMp(player)>=50) return 5;
+					if(player==target&&player.xjzhMp>=50) return 5;
 					return 2;
 				},
 			},
@@ -7098,7 +7099,7 @@ const skills={
 		},
 		filter:function(event,player){
 			if(!game.hasPlayer(function(current){return current.isDamaged()})) return false;
-			return get.xjzhMp(player)>=50;
+			return player.xjzhMp>=50;
 		},
 		filterTarget:function(card,player,target){
 			if(target.hp>=target.maxHp) return false;
@@ -7115,7 +7116,7 @@ const skills={
 			result:{
 				target:function(player,target){
 					if(target.hp==1) return 5;
-					if(player==target&&get.xjzhMp(player)>=80) return 5;
+					if(player==target&&player.xjzhMp>=80) return 5;
 					return 2;
 				},
 			},
@@ -7146,7 +7147,7 @@ const skills={
 			return 0.5;
 		},
 		filter:function(event,player){
-			if(get.xjzhMp(player)<30) return false;
+			if(player.xjzhMp<30) return false;
 			if(player.countCards("h",{subtype:"basic"})<=0) return false;
 			return event.notLink();
 		},
@@ -7168,7 +7169,7 @@ const skills={
 		},
 		enable:"phaseUse",
 		filter:function(event,player){
-			if(get.xjzhMp(player)<30) return false;
+			if(player.xjzhMp<30) return false;
 			if(event.getParent("xjzh_dnf_shouhu").name=="xjzh_dnf_shouhu") return false;
 			return true;
 		},
@@ -7187,13 +7188,13 @@ const skills={
 		},
 		ai:{
 			order:function(event,player){
-				var num=get.xjzhMp(player);
+				var num=player.xjzhMp;
 				if(num<30) return 0;
 				return Math.round(num/6);
 			},
 			result:{
 				target:function(target){
-					var num=get.xjzhMp(player);
+					var num=player.xjzhMp;
 					if(num<30) return 0;
 					return Math.round(num/30);
 				},

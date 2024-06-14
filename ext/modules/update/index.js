@@ -4,6 +4,35 @@ let jsonInfo=await lib.init.promises.json(`${lib.assetURL}/extension/仙家之�
 
 export const xjzhUpdateLog={
     version:`${jsonInfo.version}`,
+	'3.06141':{
+        changeLog:[
+			"新增get.xjzh_consumeMp()以获取已消耗的能量",
+			"移除get.xjzhMp()和get.xjzhmaxMp()，改为直接以this.xjzhMp和this.xjzhMp获取当前能量值",
+			"调整get.isMaxMp()为get.xjzh_isMaxMp()",
+			"调整了能量（魔力）相关代码",
+			"初始的能量值储存在lib.character[name][5]中，改为对象存储",
+			"调整changexjzhMp()和changexjzhmaxMp()，使代码量大幅减少",
+			"以上函数的调整使相关时机不再能阻止获得/失去能量或修改获得/失去的能量值",
+			"调整xjzhshowMp()，现在能量条能动态显示，且支持圆角显示",
+			"现在能量条能的显示，不会再使蓝色部分超出容器，即始终会以圆角显示",
+			"现在能量变化时，能量条会缓速变化而不是直接变化",
+			"当能量条能量为满值时，添加一个无限闪烁的黄色边框，不为满值时移除",
+			"修复黄丹雪〖默情〗报错",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:[],
+		cards:[],
+		removeFiles:async function(){
+			let folderFiles=[
+				"audio/skill/xjzh_boss_xiuluo_hp1.mp3",
+				"audio/skill/xjzh_boss_xiuluo_hp2.mp3"
+			];
+			for await(let i of folderFiles){
+				game.removeFile(`${lib.assetURL}/extension/仙家之魂/${i}`);
+			}
+		},
+    },
 	'3.06121':{
         changeLog:[
 			"模块化武将包，如有bug请反馈",

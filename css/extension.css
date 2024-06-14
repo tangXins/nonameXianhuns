@@ -1,3 +1,22 @@
+.xjzh_full-flash {
+  position: relative; /* 为包含伪元素做准备 */
+}
+
+.xjzh_full-flash::before {
+  content: ""; /* 伪元素必须有内容 */
+  position: absolute; /* 脱离文档流，覆盖在原始元素上 */
+  top: -4px; right: -4px; bottom: -4px; left: -4px; /* 调整位置以包裹原始元素 */
+  border: 4px solid yellow; /* 设置边框 */
+  border-radius: 50px; /* 添加圆角效果，根据需要调整大小 */
+  opacity: 1;
+  animation: xjzh_fullflash 2s ease-in-out infinite; /* 应用动画 */
+}
+
+@keyframes xjzh_fullflash {
+  0% { opacity: 1; }
+  50% { opacity: 0; } /* 改为完全透明以增强闪烁效果 */
+  100% { opacity: 1; }
+}
 
 @font-face{
   font-family: lier;
@@ -249,154 +268,3 @@
 .player .xjzhhp .xjzhhpdiv .xjzhhptext{
   padding-left: 5px;
 }
-
-/*字体渐变方法  百度的    */
-/*基础样式：*/
-/*****************************************************************************************/
-.gradient-text {
-    text-align: left;
-    text-indent: 25px;
-    line-height: 25px;
-    font-size: 25px;
-    font-weight: bolder;
-    position: relative;
-}
-.gradient-text-one{  
-    background-image:-webkit-linear-gradient(bottom,red,#fd8403,yellow); 
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-/*方法*/
-/*`<div class="gradient-text gradient-text-one" >更新内容</div>`*/
-/*****************************************************************************************/
-.gradient-text-two {
-    color: red;
-}
-.gradient-text-two[data-content]::after {
-    content: attr(data-content);
-    display: block;
-    position: absolute;
-    color: yellow;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
-    from(yellow), to(rgba(0, 0, 255, 0)));
-}
-/*方法*/
-/*`<div class="gradient-text gradient-text-two" data-content="更新内容">更新内容</div>`*/
-/*****************************************************************************************/
-.gradient-text2 {
-    font-family: '微软雅黑';
-    font-weight: bolder;
-    position: relative;
-}
-.gradient-text2-two {
-    color: red;
-}
-.gradient-text2-two[data-content]::after {
-    content: attr(data-content);
-    display: block;
-    position: absolute;
-    color: yellow;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
-    from(yellow), to(rgba(0, 0, 255, 0)));
-}
-/*方法*/
-/*`<div class="gradient-text2 gradient-text2-two" data-content="更新内容">更新内容</div>`*/
-/*****************************************************************************************/
-.gradient-text3 {
-    color: blue;
-}
-.gradient-text3[data-content]::after {
-    content: attr(data-content);
-    display: block;
-    position: absolute;
-    color: red;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
-    from(red), to(rgba(0, 0, 255, 0)));
-}
-.gradient-text3[data-content]::before {
-    content: attr(data-content);
-    display: block;
-    position: absolute;
-    color: yellow;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    -webkit-mask-image: -webkit-gradient(linear, 0 0, 0 bottom, 
-    from(yellow), to(rgba(0, 0, 70, 0)));
-}
-/*方法*/
-/*`<div class="gradient-text3 " data-content="更新内容">更新内容</div>`*/
-/*****************************************************************************************/
-/*变色代码*/
-@keyframes xjzh_jianbian {
-    0% {
-        text-shadow: rgb(255, 0, 0) 0 0 1px,
-        rgb(255, 0, 0) 0 0 2px,
-        rgb(255, 0, 0) 0 0 5px,
-        rgb(255, 0, 0) 0 0 10px,
-        rgb(255, 0, 0) 0 0 10px;
-    }
-    14.3% {
-        text-shadow: rgb(255, 165, 0) 0 0 1px,
-        rgb(255, 165, 0) 0 0 2px,
-        rgb(255, 165, 0) 0 0 5px,
-        rgb(255, 165, 0) 0 0 10px,
-        rgb(255, 165, 0) 0 0 10px;
-    }
-    28.6% {
-        text-shadow: rgb(255, 255, 0) 0 0 1px,
-        rgb(255, 255, 0) 0 0 2px,
-        rgb(255, 255, 0) 0 0 5px,
-        rgb(255, 255, 0) 0 0 10px,
-        rgb(255, 255, 0) 0 0 10px;
-    }
-    42.9% {
-        text-shadow: rgb(0, 255, 0) 0 0 1px,
-        rgb(0, 255, 0) 0 0 2px,
-        rgb(0, 255, 0) 0 0 5px,
-        rgb(0, 255, 0) 0 0 10px,
-        rgb(0, 255, 0) 0 0 10px;
-    }
-    57.2% {
-        text-shadow: rgb(0, 0, 255) 0 0 1px,
-        rgb(0, 0, 255) 0 0 2px,
-        rgb(0, 0, 255) 0 0 5px,
-        rgb(0, 0, 255) 0 0 10px,
-        rgb(0, 0, 255) 0 0 10px;
-    }
-    71.5% {
-        text-shadow: rgb(6,82,121) 0 0 1px,
-        rgb(6,82,121) 0 0 2px,
-        rgb(6,82,121) 0 0 5px,
-        rgb(6,82,121) 0 0 10px,
-        rgb(6,82,121) 0 0 10px;
-    }
-    85.8% {
-        text-shadow: rgb(128, 0, 128) 0 0 1px,
-        rgb(128, 0, 128) 0 0 2px,
-        rgb(128, 0, 128) 0 0 5px,
-        rgb(128, 0, 128) 0 0 10px,
-        rgb(128, 0, 128) 0 0 10px;
-    }
-    100% {
-        text-shadow: rgb(255, 0, 0) 0 0 1px,
-        rgb(255, 0, 0) 0 0 2px,
-        rgb(255, 0, 0) 0 0 5px,
-        rgb(255, 0, 0) 0 0 10px,
-        rgb(255, 0, 0) 0 0 10px;
-    }
-}
-xjzh_bianse {
-    animation: xjzh_jianbian 4s infinite;  
-}
-/*方法*/
-/*`<xjzh_bianse>更新内容</xjzh_bianse>`*/

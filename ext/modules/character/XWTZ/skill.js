@@ -2112,6 +2112,7 @@ const skills={
 	"xjzh_boss_benxi":{
 		trigger:{
 			source:["damageAfter"],
+			global:["phaseZhunbeiBegin"],
 		},
 		forced:true,
 		locked:true,
@@ -2145,201 +2146,142 @@ const skills={
 				return distance-list.length;
 			}
 		},
-		group:"xjzh_boss_benxi_phase",
 		audio:"ext:仙家之魂/audio/skill:2",
-		async content(event,trigger,player){
-			let skills=[],list=game.xjzh_wujiangpai(true);
-			list.forEach(name=>{
-				let skillx=lib.character[name][3];
-				skills.addArray(skillx.filter(skill=>{
-					let info=get.info(skill);
-					if(info&&(info.gainable||!info.unique)&&!info.zhuSkill&&!info.juexingji&&!info.limited&&!info.dutySkill&&!info.nogainsSkill&&info.xjzh_xinghunSkill) return true;
-					return !player.skills.includes(skill);
-				}));
-			});
-			player.addSkills(skills.randomGet());
-			player.update();
-			player.updateMarks();
+		filter(event,player){
+			if(event.name=="phaseZhunbei"){
+				let list=player.getSkills(null,false,false).filter(skill=>{
+					let info=lib.skill[skill];
+					return info&&info.xjzh_xinghunSkill;
+				});
+				if(list.length) return event.player!=player;
+				return false;
+			}
+			return !event.numFixed&&!event.cancelled;
 		},
-		subSkill:{
-			"phase":{
-				trigger:{
-					global:"phaseZhunbeiBegin",
-				},
-				prompt:"〖奔袭〗：是否移除一个“星魂”技能执行一个额外的出牌阶段？",
-				filter:function(event,player){
-					var list=player.getSkills(null,false,false).filter(function(skill){
-						var info=lib.skill[skill];
+		async content(event,trigger,player){
+			let name=trigger.name;
+			if(name=="damage"){
+				let skills=[],list=game.xjzh_wujiangpai(true).filter(name=>{
+					return name.startsWith("xjzh_");
+				});
+				list.forEach(name=>{
+					let names=lib.character[name][3];
+					skills.addArray(names.filter(skill=>{
+						let info=get.info(skill);
+						if(player.skills.includes(skill)) return false;
+						if(info&&(info.zhuSkill||info.zhuSkill||info.juexingji||info.limited||info.dutySkill||info.nogainsSkill||info.unique)) return false;
 						return info&&info.xjzh_xinghunSkill;
-					});
-					if(list.length) return event.player!=player;
-					return false;
-				},
-				content:function(){
-					"step 0"
-					event.list=player.getSkills(null,false,false).filter(function(skill){
-						var info=lib.skill[skill];
+					}));
+				});
+				if(skills.length){
+					player.addSkills(skills.randomGet());
+					player.update();
+					player.updateMarks();
+				}
+			}else{
+				const bool=await player.chooseBool("〖奔袭〗：是否移除一个“星魂”技能执行一个额外的出牌阶段？").set('ai',()=>{return true;}).forResultBool();
+				if(bool){
+					let list=player.getSkills(null,false,false).filter(skill=>{
+						let info=lib.skill[skill];
 						return info&&info.xjzh_xinghunSkill;
-					});
+					}),dialog;
 					if(event.isMine()){
-						var dialog=ui.create.dialog('forcebutton');
-						dialog.add('请选择移除一项技能');
-						for(i=0;i<event.list.length;i++){
-							if(lib.translate[event.list[i]+'_info']){
-								var translation=get.translation(event.list[i]);
+						dialog=ui.create.dialog('forcebutton');
+						dialog.add('〖奔袭〗：请选择移除一项技能');
+						for(let i=0;i<list.length;i++){
+							if(lib.translate[list[i]+'_info']){
+								let translation=get.translation(list[i]);
 								if(translation[0]=='新'&&translation.length==3){
 									translation=translation.slice(1,3);
 								}else{
 									translation=translation.slice(0,2);
 								}
-								var item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[event.list[i]+'_info']+'</div></div>');
-								item.firstChild.link=event.list[i];
+								let item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[list[i]+'_info']+'</div></div>');
+								item.firstChild.link=list[i];
 							}
 						}
 					}
-					player.chooseControl(event.list).set('prompt','请选择移除一项技能').set('ai',function(){
+					const control=await player.chooseControl(list).set('prompt','〖奔袭〗：请选择移除一项技能').set('ai',()=>{
 						return get.min(event.list,get.skillRank,'item');
-					}).set('dialog',dialog);
-					"step 1"
-					if(result.control){
-						player.removeSkills(result.control);
-						game.log(player,"失去了技能","#y〖"+get.translation(result.control)+"〗");
-						player.phaseUse();
+					}).set('dialog',dialog).forResultControl();
+					if(control){
+						player.removeSkills(control);
+						let oldcurrentPhase=_status.currentPhase;
+						_status.currentPhase=player;
+						player.phaseUse()._extraPhaseReason="xjzh_boss_benxi_phase";
+						_status.currentPhase=oldcurrentPhase;
 					}
-				},
-			},
+				}
+			}
 		},
 	},
 	"xjzh_boss_xiuluo":{
 		trigger:{
-			player:"changeSkillsAfter",
+			player:["changeHp","changeSkillsAfter"],
 		},
 		forced:true,
 		locked:true,
 		priority:20,
-		filter:function(event,player){
-			let list=player.getSkills(null,false,false).filter(function(skill){
-				var info=lib.skill[skill];
+		filter(event,player){
+			let list=player.getSkills(null,false,false).filter(skill=>{
+				let info=lib.skill[skill];
 				return info&&info.xjzh_xinghunSkill;
 			});
-			if(list.length==6) return true;
+			if(event.name=="changeSkills"?list.length==6:list.length) return true;
 			return false;
 		},
-		audio:"ext:仙家之魂/audio/skill:2",
-		group:["xjzh_boss_xiuluo_hp"],
-		content:function(){
-			"step 0"
-			event.delay=false;
-			event.targets=game.filterPlayer();
-			event.targets.remove(player);
-			event.targets.sort(lib.sort.seat);
-			player.line(event.targets,'green');
-			event.targets2=event.targets.slice(0);
-			event.targets3=event.targets.slice(0);
-			"step 1"
-			if(event.targets2.length){
-				event.targets2.shift().damage('nocard');
-				event.redo();
-			}
-			"step 2"
-			if(event.targets.length){
-				event.current=event.targets.shift()
-				if(event.current.countCards('e')) event.delay=true;
-				event.current.discard(event.current.getCards('e')).delay=false;
-			}
-			"step 3"
-			if(event.delay) game.delay(0.5);
-			event.delay=false;
-			if(event.targets.length) event.goto(1);
-			"step 4"
-			if(event.targets3.length){
-				var target=event.targets3.shift();
-				target.chooseToDiscard(4,'h',true).delay=false;
-				if(target.countCards('h')) event.delay=true;
-			}
-			"step 5"
-			if(event.delay) game.delay(0.5);
-			event.delay=false;
-			if(event.targets3.length) event.goto(3);
-		},
-		subSkill:{
-			"hp":{
-				trigger:{
-					player:"changeHp",
-				},
-				audio:"ext:仙家之魂/audio/skill:2",
-				prompt:function(event,player){
-					var str="〖修罗〗：是否移除一个“星魂”技能";
-					if(player.isDamaged()){
-						str+="回复一点体力";
-					}else{
-						var list=player.getSkills(null,false,false).filter(function(skill){
-							var info=lib.skill[skill];
-							return info&&info.xjzh_xinghunSkill;
-						});
-						var num=Math.max(1,list.length);
-						str+="摸"+get.translation(num)+"张牌";
-					}
-					return str;
-				},
-				filter:function(event,player){
-					var list=player.getSkills(null,false,false).filter(function(skill){
-						var info=lib.skill[skill];
+		audio:"ext:仙家之魂/audio/skill:4",
+		async content(event,trigger,player){
+			if(trigger.name=="changeSkills"){
+				let targets=game.filterPlayer(current=>current!=player);
+				targets.sort(lib.sort.seat);
+				player.line(targets,'green');
+				for await(let target of targets){
+					target.damage('nocard');
+					target.chooseToDiscard(4,"he",true)
+				}
+			}else{
+				let list=player.getSkills(null,false,false).filter(skill=>{
+					let info=lib.skill[skill];
+					return info&&info.xjzh_xinghunSkill;
+				});
+				let str=`〖修罗〗：是否移除一个“星魂”技能${player.isDamaged()?"回复一点体力":`摸${get.translation(Math.max(1,list.length))}张牌`}`;
+				const bool=await player.chooseBool(str).set('ai',()=>{
+					let player=get.player();
+					let list=player.getSkills(null,false,false).filter(skill=>{
+						let info=lib.skill[skill];
 						return info&&info.xjzh_xinghunSkill;
 					});
+					if(player.isDamaged()) return list.length-player.hp;
 					return list.length;
-				},
-				sub:true,
-				check:function(event,player){return 1;},
-				content:function(){
-					"step 0"
-					event.list=player.getSkills(null,false,false).filter(function(skill){
-						var info=lib.skill[skill];
-						return info&&info.xjzh_xinghunSkill;
-					});
+				}).forResultBool();
+				if(bool){
+					let dialog;
 					if(event.isMine()){
-						var dialog=ui.create.dialog('forcebutton');
-						dialog.add('请选择移除一项技能');
-						for(i=0;i<event.list.length;i++){
-							if(lib.translate[event.list[i]+'_info']){
-								var translation=get.translation(event.list[i]);
+						dialog=ui.create.dialog('forcebutton');
+						dialog.add('〖修罗〗：请选择移除一项技能');
+						for(let i=0;i<list.length;i++){
+							if(lib.translate[list[i]+'_info']){
+								let translation=get.translation(list[i]);
 								if(translation[0]=='新'&&translation.length==3){
 									translation=translation.slice(1,3);
 								}else{
 									translation=translation.slice(0,2);
 								}
-								var item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[event.list[i]+'_info']+'</div></div>');
-								item.firstChild.link=event.list[i];
+								let item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[list[i]+'_info']+'</div></div>');
+								item.firstChild.link=list[i];
 							}
 						}
 					}
-					player.chooseControl(event.list).set('prompt','请选择移除一项技能').set('ai',function(){
+					const control=await player.chooseControl(list).set('prompt','〖修罗〗：请选择移除一项技能').set('ai',()=>{
 						return get.min(event.list,get.skillRank,'item');
-					}).set('dialog',dialog);
-					"step 1"
-					if(result.control){
-						player.removeSkill(result.control);
-						game.log(player,"失去了技能","#y〖"+get.translation(result.control)+"〗");
-						if(player.isDamaged()){
-							player.recover();
-						}else{
-							player.draw(Math.max(1,event.list.length));
-						}
+					}).set('dialog',dialog).forResultControl();
+					if(control){
+						player.removeSkills(control);
+						player.isDamaged()?player.recover():player.draw(Math.max(1,list.length));
 					}
-				},
-				ai:{
-					result:{
-						player:function(player){
-							var list=player.getSkills(null,false,false).filter(function(skill){
-								var info=lib.skill[skill];
-								return info&&info.xjzh_xinghunSkill;
-							});
-							if(player.isDamaged()) return list.length-player.hp;
-							return list.length;
-						},
-					},
-				},
-			},
+				}
+			}
 		},
 	},
 

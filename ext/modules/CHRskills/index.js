@@ -11,57 +11,35 @@ export const CHRskills={
 	        silent:true,
 	        priority:Infinity,
 	        firstDo:true,
-	        filter:function(event,player){
+	        filter(event,player){
 	            if(!get.xjzh_wujiang(player)) return false;
-	            var list=[];
-	            if(player.name) list.push(player.name);
-	            if(player.name1) list.push(player.name1);
-	            if(player.name2) list.push(player.name2);
-	            var num=0;
-	            var bool=function(){
-	                for(var i of list){
-	                    if(i.indexOf("xjzh_")!=0) continue;
-	                    if(lib.character[i][5]&&lib.character[i][5]!=undefined&&lib.character[i][5].length){
-	                        for(var mp of lib.character[i][5]){
-	                            if(typeof mp!="string") continue;
-	                            if(mp.indexOf("xjzhMp:")!=-1){
-	                                num++;
-	                                break;
-	                            }
-	                        }
-	                    }
-	                }
-	                if(num>0) return true;
-	                return false;
-	            };
-	            if(bool()) return true;
-	            return false;
+				if(player.isOut()) return false;
+				let nameList=get.playerName(player),num=0;
+				nameList.forEach(item=>{
+					let names=lib.character[item][5];
+					if(names&&Array.isArray(names)){
+						let object=names.filter(index=>{
+							if(Object.prototype.toString.call(index)==='[object Object]'&&index.name=='xjzhMp') return true;
+							return false;
+						});
+						if(object.length>0) num++;
+					}
+				});
+				return num>0;
 	        },
-	        content:function(){
-	            var list=[];
-	            if(player.name) list.push(player.name);
-	            if(player.name1) list.push(player.name1);
-	            if(player.name2) list.push(player.name2);
-	            for(var i of list){
-	                if(lib.character[i][5]&&lib.character[i][5]!=undefined&&lib.character[i][5].length){
-	                    for(var j=0;j<lib.character[i][5].length;j++){
-	                        if(lib.character[i][5][j].indexOf("xjzhMp:")!=-1){
-                                event.mp=lib.character[i][5][j];
-                                break;
-	                        }
-	                    }
-	                }
-	            };
-	            var mp=event.mp.split(":")[1];
-	            if(mp.indexOf("/")!=-1){
-	                var mps=event.mp.split(":")[1].split("/");
-	                player.changexjzhmaxMp(Number(mps[1]));
-	                player.changexjzhMp(Number(mps[0]));
-	            }else{
-	                var mp=Number(mp);
-	                player.changexjzhmaxMp(mp);
-	                player.changexjzhMp(mp);
-	            }
+	        async content(event,trigger,player){
+				let nameList=get.playerName(player),object;
+				nameList.forEach(item=>{
+					let names=lib.character[item][5];
+					if(names&&Array.isArray(names)){
+						object=names.filter(index=>{
+							if(Object.prototype.toString.call(index)==='[object Object]'&&index.name=='xjzhMp') return true;
+							return false;
+						})[0];
+					}
+				});
+				await player.changexjzhmaxMp(object["maxMp"]);
+				await player.changexjzhMp(object["mp"]);
 	        },
 	    },
 		// ---------------------------------------状态技能------------------------------------------//
