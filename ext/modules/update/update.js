@@ -1,6 +1,6 @@
 window.xjzh_updateversion={
-	version:'3.06141',
-	update:'3.06121',
+	version:'3.06181',
+	update:'3.06141',
 	files:[
 			"LICENSE",
 			"info.json",
@@ -130,11 +130,7 @@ window.xjzh_updateversion={
 
 			"ext/modules/character/index.js",
 
-			"audio/skill/xjzh_huoying_tongshu1.mp3",
-			"audio/skill/xjzh_huoying_liudao1.mp3",
-			"audio/skill/xjzh_huoying_qianniao1.mp3",
-			"audio/skill/xjzh_boss_xiuluo3.mp3",
-			"audio/skill/xjzh_boss_xiuluo4.mp3"
+			"ext/modules/introduce.index.js"
 
 	],
 };

@@ -4,7 +4,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	lib.xjzhBUFF={
 	    ///增益
 	    "qianggu":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_qianggu.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_qianggu.png>`,
 			intro:{
 				name:"强固",
 				content:"「<font color=yellow>生命固有</font>」<br><li>自然衰减：<b>是</b> 上限：角色体力上限<br><li>当你的强固体力值不小于你的体力值时，你有20%几率防止伤害，强固的体力值不能超过体力上限。",
@@ -42,7 +42,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 	    },
 		"criticalstrikes":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_criticalstrikes.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_criticalstrikes.png>`,
 			intro:{
 				name:"暴击球",
 				content:"「<font color=yellow>暴击增益</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>每个暴击球令你获得+20%<a style='color:#FF0000' href=\"javascript:game.xjzh_openDialog('xjzh_intro_baoji');\">暴击</a>几率",
@@ -103,7 +103,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 
 		///减益
 		"zhongdu":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_zhongdu.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_zhongdu.png>`,
 			intro:{
 				name:"中毒",
 				content:"「<font color=yellow>毒素缠身</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>使用牌有30%几率失效且有几率受到1点无来源毒属性伤害，每层中毒使该几率提高10%",
@@ -136,7 +136,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 		},
 		"binghuan":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_binghuan.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_binghuan.png>`,
 			intro:{
 				name:"冰缓",
 				content:"「<font color=yellow>冰霜缓速</font>」<br><li>自然衰减：<b>是</b> 上限：1<br><li>你的出牌时间基数改为10秒，每有一层冰缓，该时间减少50%(乘算)",
@@ -236,7 +236,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 		},
 		"gandian":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_gandian.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_gandian.png>`,
 			intro:{
 				name:"感电",
 				content:"「<font color=yellow>雷电衰弱</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>任意角色对你造成伤害有每层20%几率+1",
@@ -265,7 +265,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 		},
 		"ranshao":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_ranshao.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_ranshao.png>`,
 			intro:{
 				name:"燃烧",
 				content:"「<font color=yellow>火焰衰弱</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>基于你所受到的火焰伤害令你额外受到火焰伤害，每当buff衰减时，受到一点无来源火焰伤害",
@@ -314,7 +314,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 		},
 		"bingdong":{
-			marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_bingdong.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_bingdong.png>`,
 			intro:{
 				name:"冰冻",
 				content:"「<font color=yellow>冰霜衰弱</font>」<br><li>自然衰减：<b>是</b> 上限：1<br><li>当你获得此buff时，弃置所有牌，然后直到此buff移除，你无法使用或打出牌",
@@ -352,7 +352,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 		},
 		"mumang":{
-		    marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_mumang.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_mumang.png>`,
 			intro:{
 				name:"目盲",
 				content:"「<font color=yellow>视力衰弱</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>你使用牌有每层30%几率改为随机目标",
@@ -394,7 +394,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 		},
 		"yishang":{
-		    marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_yishang.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_yishang.png>`,
 			intro:{
 				name:"易伤",
 				content:"「<font color=yellow>衰弱体质</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>受到伤害有30%乘层数几率加层数点伤害",
@@ -424,7 +424,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 		},
 		"jiansu":{
-		    marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_jiansu.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_jiansu.png>`,
 			intro:{
 				name:"减速",
 				content:"「<font color=yellow>蹒跚而行</font>」<br><li>自然衰减：<b>是</b> 上限：4<br><li>你的攻击距离减少buff层数",
@@ -446,7 +446,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 		},
 		"dingshen":{
-		    marktext:"<img style=width:"+(lib.config.extension_十周年UI_newDecadeStyle?"15px":"26px")+" 	src="+lib.assetURL+"extension/仙家之魂/image/buff/xjzh_icon_buff_dingshen.png>",
+			marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_dingshen.png>`,
 			intro:{
 				name:"定身",
 				content:"「<font color=yellow>寸步难行</font>」<br><li>自然衰减：<b>是</b> 上限：4<br><li>你计算与其他角色距离增加buff层数",

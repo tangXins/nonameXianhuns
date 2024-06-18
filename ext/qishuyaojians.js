@@ -1,4 +1,8 @@
 "use strict";
+
+const { match } = require("assert");
+const { dir } = require("console");
+
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
     //部分代码借鉴自《时空枢纽》
 	//保存存档到本地
@@ -139,6 +143,41 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	];
 	//奇术要件列表
 	lib.xjzh_qishuyaojians={
+	    "xjzh_qishu_tongkuhushou":{
+	        translate:"痛苦吞食者",
+		    translate_info:"你使用基本牌造成伤害令其获得等量个“痛”标记；你使用牌对标记的目标造成伤害时，令场上所有被标记的角色受到额外x点伤害，每因此造成一点伤害，你摸一张牌（x为其拥有的标记数量）。",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>这副手套以督瑞尔的甲壳碎片制成, 戴着它或被它击中都会导致剧痛, 如同将手插入千万片碎玻璃一样。</font></span>",
+			extra:"等阶：4<br><>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
+			noTranslate:false,
+			level:4,
+			skill:{
+				trigger:{
+	    	        source:"damageSource",
+	    	    },
+    		    direct:true,
+    			priority:10,
+    		    lastDo:true,
+				marktext:"痛",
+				intro:{
+					content:"#",
+				},
+	   		    filter(event,player,name){
+					if(!event.cards||!event.cards.length) return false;
+					return !event.numFixed&&!event.cancelled;
+	    	    },
+	    	    async content(event,trigger,player){
+					if(!trigger.player.hasMark("xjzh_qishu_tongkuhushou")){
+						if(get.type(trigger.cards[0])=="basic") await trigger.player.addMark("xjzh_qishu_tongkuhushou",trigger.num,false);
+					}else{
+						let targets=game.filterPlayer(current=>current.hasMark("xjzh_qishu_tongkuhushou"));
+						for await(let target of targets){
+							target.damage(target.countMark("xjzh_qishu_tongkuhushou"),"nocard",player)._triggered=null;
+							target.clearMark("xjzh_qishu_tongkuhushou");
+						}
+					}
+	   		    },
+	   		},
+		},
 	    "xjzh_qishu_jiandun":{
 	        translate:"坚毅之盾",
 		    translate_info:"当你受到伤害后，你获得等量护甲，此后每个你的回合开始时，若你有护甲，你将一点护甲转为体力上限。",
@@ -261,38 +300,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_fengbaopaoxiao"],
 			filter:"xjzh_diablo_yafeikela",
-			init:function(player){
-			    "step 0"
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")){
-                    event.finish();
-                    return;
-                }
-				"step 1"
-				var list=player.getSkills(null,false,false).filter(function(skill){
-					var info=lib.skill[skill];
+			async init(player){
+                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+				let skills=player.getSkills(null,false,false).filter(function(skill){
+					let info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
-					return info&&info.xjzh_xiongrenSkill;
+					return info&&(info.xjzh_xiongrenSkill||info.xjzh_dadiSkill);
 				});
-				if(list.length){
-    				for(var skill of list){
-    				    var info=get.info(skill);
-    				    info.xjzh_dadiSkill=true;
-    				}
-				}
-				"step 2"
-				var list=player.getSkills(null,false,false).filter(function(skill){
-					var info=lib.skill[skill];
-					if(lib.skill.global.includes(skill)) return false;
-					return info&&info.xjzh_dadiSkill&&info.level;
-				});
-				if(list.length){
-					for(var skill of list){
-					    var info=get.info(skill);
-					    info.level+=3;
+				if(skills.length){
+					for await(let skill of skills){
+					    let info=get.info(skill);
+						if(info.xjzh_xiongrenSkill) info.xjzh_dadiSkill=true;
 					}
+					do{
+						let skill=skills.shift(),info=get.info(skill);
+						if(info.level) info.level+=3;
+					}while(skills.length);
 				}
-				"step 3"
-				player.gainMaxHp(3);
+				await player.gainMaxHp(3);
+				await player.recoverTo(player.maxHp);
 		    },
 			skill:{
 				trigger:{
@@ -301,17 +327,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    direct:true,
     			priority:10,
     		    lastDo:true,
-	   		    filter:function(event,player){
+	   		    filter(event,player){
 	    		    if(player.isHealthy()) return false;
 	    		    return get.xjzhMp(player)>=10;
 	    	    },
-	    	    content:function(){
-	   		        var num=Math.floor(get.xjzhMp(player)/10);
-	   		        var num2=player.getDamagedHp();
-	    		    var num3=Math.min(num,num2);
-	    		    player.changexjzhMp(-(num3*10));
-	    	        player.recover(num3);
-	    	        game.log(player,"将",num3*10,"点灵力转化为了",num3,"点体力值");
+	    	    async content(event,trigger,player){
+	   		        let num=Math.floor(player.xjzhMp/10);
+	    		    let num2=Math.min(num,player.getDamagedHp(true));
+	    		    player.changexjzhMp(-(num2*10));
+	    	        player.recover(num2);
+	    	        game.log(player,"将",num2*10,"点灵力转化为了",num2,"点体力值");
 	   		    },
 	   		},
 		},
@@ -324,20 +349,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_fenglangkx"],
 			filter:"xjzh_diablo_yafeikela",
-			init:function(player){
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")){
-                    event.finish();
-                    return;
-                }
-	    		player.setAvatar('xjzh_diablo_yafeikela','xjzh_diablo_xiong');
-	            player.node.name.innerHTML=get.translation("xjzh_diablo_xiong");
-		        if(player.storage.xjzh_diablo_lingshou2){
-	    	        var list=lib.character[player.storage.xjzh_diablo_lingshou2][3];
-	    	        player.removeSkill(list,true);
-	    	    }
-	    		player.storage.xjzh_diablo_lingshou2="xjzh_diablo_xiong";
-	            var list=lib.character["xjzh_diablo_xiong"][3];
-		        player.addSkill(list);
+			async init(player){
+                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+				let node;
+				if(player.name2&&player.name2=='xjzh_diablo_yafeikela'){
+					node=player.node.name2;
+				}else{
+					node=player.node.name;
+				}
+				player.setAvatar('xjzh_diablo_yafeikela','xjzh_diablo_xiong');
+	            node.innerHTML=get.translation("xjzh_diablo_xiong");
+	            let skills=lib.character["xjzh_diablo_xiong"][3];
+		        player.addSkill(skills);
 		    },
 		},
 		"xjzh_qishu_fengbaopaoxiao":{
@@ -349,72 +372,71 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_waxilidedaogao"],
 			filter:"xjzh_diablo_yafeikela",
-			init:function(player){
-			    "step 0"
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")){
-                    event.finish();
-                    return;
-                }
-                "step 1"
-				var list=player.getSkills(null,false,false).filter(function(skill){
-					var info=lib.skill[skill];
+			async init(player){
+                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+
+				let skills=player.getSkills(null,false,false).filter(function(skill){
+					let info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
-					return info&&info.xjzh_langrenSkill;
+					return info&&(info.xjzh_langrenSkill||info.xjzh_fengbaoSkill);
 				});
-				if(list.length){
-					for(var skill of list){
-					    var info=get.info(skill);
-					    info.xjzh_fengbaoSkill=true;
+				if(skills.length){
+					for await(let skill of skills){
+					    let info=get.info(skill);
+						if(info.xjzh_langrenSkill) info.xjzh_fengbaoSkill=true;
 					}
+					do{
+						let skill=skills.shift(),info=get.info(skill);
+						if(info.level) info.level+=3;
+					}while(skills.length);
 				}
-				"step 2"
-				var list=player.getSkills(null,false,false).filter(function(skill){
-					var info=lib.skill[skill];
-					if(lib.skill.global.includes(skill)) return false;
-					return info&&info.xjzh_fengbaoSkill&&info.level;
-				});
-				if(list.length){
-					for(var skill of list){
-					    var info=get.info(skill);
-					    info.level+=3;
-					}
-				}
-				"step 3"
-				if(!player.storage.xjzh_diablo_linglijianmian) player.storage.xjzh_diablo_linglijianmian=0;
-				player.storage.xjzh_card_fengbaopaoxiao=get.rand(25,35);
-				player.storage.xjzh_diablo_linglijianmian+=player.storage.xjzh_card_fengbaopaoxiao;
-				if(!player.storage.xjzh_diablo_randomhuixin) player.storage.xjzh_diablo_randomhuixin;
-				player.storage.xjzh_diablo_randomhuixin=50;
+				player.xjzhHuixin=0.5;
+				player.xjzhReduce=(get.rand(25,35)/100);
             },
 		},
 		"xjzh_qishu_fenglangkx":{
 		    translate:"疯狼的狂喜",
-			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你释放狼人技能时有25%几率获得20点灵力，你的灵力上限+25。",
+			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你的灵力上限+25。<li>会心：你释放狼人技能时有25%几率获得20点灵力，",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“他不是诅咒的受害者 - 这都是他自找的。就算他的皮肤裂开，骨骼碎裂，他的笑声也从未停止。” - 疯狂贵族的故事</font></span>",
 			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_wuyan"],
 			filter:"xjzh_diablo_yafeikela",
-			init:function(player){
-			    "step 0"
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")){
-                    event.finish();
-                    return;
-                }
-                "step 1"
+			async init(player){
+				game.log(get.playerName(player,"xjzh_diablo_yafeikela"))
+                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
                 player.changexjzhmaxMp(25);
 				player.changexjzhMp(25);
-	    		player.setAvatar('xjzh_diablo_yafeikela','xjzh_diablo_lang');
-	    		player.node.name.innerHTML=get.translation("xjzh_diablo_lang");
-	    		if(player.storage.xjzh_diablo_lingshou2){
-	    		    var list=lib.character[player.storage.xjzh_diablo_lingshou2][3];
-	    		    player.removeSkill(list,true);
-	    		}
-	    		player.storage.xjzh_diablo_lingshou2="xjzh_diablo_lang";
-	    		var list=lib.character["xjzh_diablo_lang"][3];
-	    		player.addSkill(list);
-            },
+				let node;
+				if(player.name2&&player.name2=='xjzh_diablo_yafeikela'){
+					node=player.node.name2;
+				}else{
+					node=player.node.name;
+				}
+				player.setAvatar('xjzh_diablo_yafeikela','xjzh_diablo_lang');
+	            node.innerHTML=get.translation("xjzh_diablo_lang");
+	            let skills=lib.character["xjzh_diablo_lang"][3];
+		        player.addSkill(skills);
+		    },
+			skill:{
+				trigger:{
+					player:"$logSkill",
+				},
+				direct:true,
+				locked:true,
+				priority:-1,
+				filter(event,player){
+					let skills=event.skill;
+					let info=get.info(skills);
+					if(lib.skill.global.includes(event.skill)) return false;
+					if(info&&!info.xjzh_langrenSkill) return false;
+					return Math.random()<=0.25*player.xjzhHuixin;
+				},
+				async content(event,trigger,player){
+					player.changexjzhMp(20);
+				},
+			},
 		},
 		"xjzh_qishu_daojian":{
 		    translate:"疾疫刀尖",
@@ -1028,9 +1050,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		"xjzh_qishu_guimeihuanying":{
 			translate:"诡魅幻影",
 			translate_info:"其他角色使用牌前，你有几率使用一张同名牌。",
-			extra:"等阶：2<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：25%<br><br>兑换所需：100碎片",
+			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
 			noTranslate:true,
-			level:2,
+			level:1,
 			skill:{
     		    trigger:{
     		        global:"useCard",
@@ -1509,18 +1531,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			global:'gameStart',
 		},
 		silent:true,
-		firstDo:true,
+		lastDo:true,
 		priority:Infinity,
 		filter:function(event,player){
-			if(!player.name) return false;
+			if(get.playerName(player).length==0) return false;
 			if(!lib.xjzh_qishuMode||!lib.xjzh_qishuMode.includes(get.mode())) return false;
 			if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return false;
 			return true;
 		},
 		content:function (){
 			player.xjzh_qishuyaojians=[null,null,null];
-			if(lib.config.xjzh_qishuyaojians.player&&player.name1){
-				var choice=lib.config.xjzh_qishuyaojians.player[player.name1]||[];
+			if(lib.config.xjzh_qishuyaojians.player&&get.playerName(player).length>0){
+				let names=get.playerName(player),choice;
+				let name=names.filter(item=>{
+					return lib.config.xjzh_qishuyaojians.player[item];
+				})[0];
+				choice=lib.config.xjzh_qishuyaojians.player[name]||[];
 				var initSkill=function(name,player){
 					if(!name) return;
 					var item=lib.xjzh_qishuyaojians[name];
@@ -1671,7 +1697,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							    }
 							}
 						}
-						player.addSkillLog(newSkill);
+						player.addSkills(newSkill);
 					}
 				}
 				var name1,name2,name3;

@@ -1033,7 +1033,7 @@ const skills={
 	},
 	"xjzh_huoying_kaobei":{
 		trigger:{
-			global:['$logSkill'],
+			global:'$logSkill',
 		},
 		usable:1,
 		bannedList:[

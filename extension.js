@@ -1,5 +1,5 @@
 import { lib,get,_status,ui,game,ai } from '../../noname.js';
-import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage,xjzhCardPack } from './ext/modules/index.js';
+import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage,xjzhCardPack,introduces } from './ext/modules/index.js';
 import xjzhCharacterInit from './ext/modules/character/index.js';
 //还是有很多提示，消一下
 Array.prototype.contains=Array.prototype.includes;
@@ -61,125 +61,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				console.log(e);
 			};
 
-
-			var introduce={
-				"xjzh_intro_zhongdu":{
-					name:"中毒",
-					info:"使用牌有每层20%几率失效且有几率受到1点无来源毒属性伤害",
-				},
-				"xjzh_intro_fumian":{
-					name:"负面状态",
-					info:"翻面、横置、判定区有牌、装备区被废除",
-				},
-				"xjzh_intro_mumang":{
-					name:"目盲",
-					info:"你使用牌有每层30%几率改为随机目标",
-				},
-				"xjzh_intro_yishang":{
-					name:"易伤",
-					info:"受到伤害有30%乘层数几率加层数点伤害",
-				},
-				"xjzh_intro_xuanyun":{
-					name:"眩晕",
-					info:"翻面",
-				},
-				"xjzh_intro_lingjiu":{
-					name:"灵柩",
-					info:"场上已阵亡的角色",
-				},
-				"xjzh_intro_huanxing":{
-					name:"唤醒",
-					info:"将一名已阵亡的角色唤醒为你选择的灵魂，不解放灵魂",
-				},
-				"xjzh_intro_jiefang":{
-					name:"解放",
-					info:"将死亡之书中收集的灵魂移除",
-				},
-				"xjzh_intro_bingdong":{
-					name:'冰冻',
-					info:'当你获得此buff时，弃置所有牌，然后直到此buff移除，你无法使用或打出牌',
-				},
-				"xjzh_intro_guanzhu":{
-					name:'灌注',
-					info:'令某张牌造成属性伤害',
-				},
-				"xjzh_intro_ranshao":{
-					name:'燃烧',
-					info:'基于你所受到的火焰伤害令你额外受到火焰伤害，每当buff衰减时，受到一点无来源火焰伤害',
-				},
-				"xjzh_intro_binghuan":{
-					name:'冰缓',
-					info:'出牌时间限定为10s，出牌等待时间提高50%',
-				},
-				"xjzh_intro_gandian":{
-					name:'感电',
-					info:'任意角色对拥有此效果的角色造成伤害有20%几率+1',
-				},
-				"xjzh_intro_zhouwei":{
-					name:'周围',
-					info:'攻击范围内的武将',
-				},
-				"xjzh_intro_baojiRan":{
-					name:'暴击几率',
-					info:'造成伤害有几率暴击',
-				},
-				"xjzh_intro_baoji":{
-					name:'暴击',
-					info:'造成伤害基于你的暴击伤害加成提高其受到的伤害，基础暴击伤害加成为100%，暴击伤害无视白银狮子等装备的伤害减免',
-				},
-				"xjzh_intro_baojiDamage":{
-					name:'暴击伤害',
-					info:'暴击时根据暴击伤害加成增加额外伤害，基础为100%',
-				},
-				"xjzh_intro_criticalstrike":{
-					name:'暴击球',
-					info:'每个暴击球为你提供+20%暴击几率',
-				},
-				"xjzh_intro_fanji":{
-					name:"反击",
-					info:"受到伤害或格挡时有几率对其使用一张杀",
-				},
-				"xjzh_intro_gedang":{
-					name:"格挡",
-					info:"你受到伤害前有几率免疫之，并回复等量体力",
-				},
-				"xjzh_intro_qianggu":{
-					name:"强固",
-					info:"当你的强固体力值不小于你的体力值时，你有20%几率防止伤害，强固的体力值不能超过体力上限。",
-				},
-				"xjzh_intro_maxGedang":{
-					name:"格挡上限",
-					info:"你最多能获得的格挡几率",
-				},
-				"xjzh_intro_gongji":{
-					name:"物理攻击",
-					info:"无属性伤害",
-				},
-				"xjzh_intro_fashu":{
-					name:"法术攻击",
-					info:"属性伤害",
-				},
-				"xjzh_intro_fujin":{
-					name:"附近",
-					info:"上家和下家",
-				},
-				"xjzh_intro_youjun":{
-					name:"友军",
-					info:"与你身份一致（国战改为势力一致）",
-				},
-				"xjzh_intro_jufeng":{
-					name:"提速尾流",
-					info:"每层飓风提供3%几率伤害免疫，每两层飓风使你摸牌阶段额外摸1张牌且使你手牌上限+1，每5层飓风使你卡牌使用次数+1，最大10层",
-				},
-				"xjzh_intro_jiansu":{
-				    name:"减速",
-				    info:"你的攻击距离减少buff层数",
-				},
-				"xjzh_intro_dingshen":{
-				    name:"定身",
-				    info:"你计算与其他角色距离增加buff层数",
-				},
-			};
 	        lib.arenaReady.push(function(){
 		        if(lib.config.xjzh_diablo_hunhuo){
 			        alert("第一次安装【仙家之魂】或上一版本所有对局中均未出现死灵法师拉马斯这一角色的请无视此次提示");
@@ -330,6 +211,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jufeng');\">飓风</a>`;
 							str=str.replace(/飓风/g,str2);
 						};
+						if(str.includes("会心")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;
+							str=str.replace(/会心/g,str2);
+						};
 						if(str.includes("减速")){
 							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_jiansu');\">减速</a>`;
 							str=str.replace(/减速/g,str2);
@@ -398,27 +283,22 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				},false);
 				var dialog=ui.create.div('.xjzh-dialog-name',obj);
 				var text=ui.create.div('.xjzh-dialog-text',obj);
-				if(typeof str=="function"){
-					dialog.innerHTML=str()[0];
-					text.innerHTML=str()[1];
-				}else{
-					if(typeof introduce[str]!='undefined'){
-						dialog.innerHTML=introduce[str].name;
-						text.innerHTML=introduce[str].info;
+				if(typeof introduces[str]!='undefined'){
+					dialog.innerHTML=introduces[str].name;
+					text.innerHTML=introduces[str].info;
+				}
+				else{
+					if(typeof lib.translate[str]!='undefined'||typeof lib.translate[str+"_info"]!='undefined'){
+						if(lib.translate[str]) dialog.innerHTML=lib.translate[str];
+						if(lib.translate[str+"_info"]){
+							text.innerHTML=lib.translate[str+"_info"];
+						}else{
+							text.innerHTML=get.info(str).intro.content;
+						}
 					}
 					else{
-						if(typeof lib.translate[str]!='undefined'||typeof lib.translate[str+"_info"]!='undefined'){
-							if(lib.translate[str]) dialog.innerHTML=lib.translate[str];
-							if(lib.translate[str+"_info"]){
-								text.innerHTML=lib.translate[str+"_info"];
-							}else{
-								text.innerHTML=get.info(str).intro.content;
-							}
-						}
-						else{
-							pbg.remove();
-							throw new Error(str+"参数不存在，请检查！");
-						}
+						pbg.remove();
+						throw new Error(str+"参数不存在，请检查！");
 					}
 				}
 				var node=ui.create.div('.xjzh-dialog-remove',obj);
@@ -1937,49 +1817,54 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				return player.xjzhmaxMp-player.xjzhMp;
 			};
 			//修改魔力
-			lib.element.player.changexjzhMp=async function(num){
-				if(num==0||!this.xjzhmaxMp) return;
-				let str=`${get.translation(this)}${num>0?'回复':'消耗'}了${num>get.xjzh_consumeMp(this)?get.xjzh_consumeMp(this):Math.abs(num)}点能量`;
-				if(game.roundNumber!=0) game.log(this,str);
-				this.xjzhMp+=num;
-				if(num>0&&get.xjzh_consumeMp(this)>0){
-					this.$recover();
-					game.playAudio('effect','recover');
-				}
-				if(isNaN(this.xjzhMp)||this.xjzhMp<0) this.xjzhMp=0;
-				if(this.xjzhMp>this.xjzhmaxMp) this.xjzhMp=this.xjzhmaxMp;
-				this.xjzhshowMp(this.xjzhMp,this.xjzhmaxMp);
-
+			lib.element.player.changexjzhMp=function(num){
 				let next=game.createEvent('changexjzhMp',false);
 				next.num=num;
 				next.player=this;
-				next.setContent(()=>{
-					event.trigger('changexjzhMp');
-				});
+				next.setContent("changexjzhMp");
 				return next;
 			};
-			//修改魔力上限
-			lib.element.player.changexjzhmaxMp=async function(num){
-				if(num==0) return;
-				let str=`${get.translation(this)}${num>0?'增加':'减少'}了${num>0?num:Math.abs(num)}点能量上限`;
-				if(game.roundNumber!=0) game.log(this,str);
-				if(!this.xjzhmaxMp) this.xjzhmaxMp=0;
-				if(!this.xjzhMp) this.xjzhMp=0;
-				this.xjzhmaxMp+=num;
-				if(num>0){
-					this.$recover();
+			lib.element.content.changexjzhMp=function(){
+				"step 0"
+				event.trigger('changexjzhMp');
+				"step 1"
+				if(num==0||!player.xjzhmaxMp) return;
+				let str=`${get.translation(player)}${num>0?'回复':'消耗'}了${num>get.xjzh_consumeMp(player)?get.xjzh_consumeMp(player):Math.abs(num)}点能量`;
+				if(game.roundNumber!=0) game.log(player,str);
+				player.xjzhMp+=num;
+				if(num>0&&get.xjzh_consumeMp(player)>0){
+					player.$recover();
 					game.playAudio('effect','recover');
 				}
-				if(isNaN(this.xjzhmaxMp)||this.xjzhmaxMp<0) this.xjzhmaxMp=1;
-				if(this.xjzhMp>this.xjzhmaxMp) this.xjzhMp=this.xjzhmaxMp;
-				this.xjzhshowMp(this.xjzhMp,this.xjzhmaxMp);
+				if(isNaN(player.xjzhMp)||player.xjzhMp<0) player.xjzhMp=0;
+				if(player.xjzhMp>player.xjzhmaxMp) player.xjzhMp=player.xjzhmaxMp;
+				player.xjzhshowMp(player.xjzhMp,player.xjzhmaxMp);
+			};
+			//修改魔力上限
+			lib.element.player.changexjzhmaxMp=function(num){
 				let next=game.createEvent('changexjzhmaxMp',false);
 				next.num=num;
 				next.player=this;
-				next.setContent(()=>{
-					event.trigger('changexjzhmaxMp');
-				});
+				next.setContent("changexjzhmaxMp");
 				return next;
+			};
+			lib.element.content.changexjzhmaxMp=function(){
+				"step 0"
+				event.trigger('changexjzhmaxMp');
+				"step 1"
+				if(num==0) return;
+				let str=`${get.translation(player)}${num>0?'增加':'减少'}了${num>0?num:Math.abs(num)}点能量上限`;
+				if(game.roundNumber!=0) game.log(player,str);
+				if(!player.xjzhmaxMp) player.xjzhmaxMp=0;
+				if(!player.xjzhMp) player.xjzhMp=0;
+				player.xjzhmaxMp+=num;
+				if(num>0){
+					player.$recover();
+					game.playAudio('effect','recover');
+				}
+				if(isNaN(player.xjzhmaxMp)||player.xjzhmaxMp<0) player.xjzhmaxMp=1;
+				if(player.xjzhMp>player.xjzhmaxMp) player.xjzhMp=player.xjzhmaxMp;
+				player.xjzhshowMp(player.xjzhMp,player.xjzhmaxMp);
 			};
 			lib.element.player.xjzhshowMp = function(arg, arg2) {
 				// 参数验证
@@ -1989,12 +1874,12 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}
 
 				// 确保 mp 容器存在
-				if (!this.node.mp) {
-					this.node.mp = ui.create.div(".mp", this);
+				if (!this.node.xjzhmp) {
+					this.node.xjzhmp = ui.create.div(".mp", this);
 				}
 
 				// 获取或创建 .mpdiv 元素，并始终设置圆角样式
-				let mpdiv = this.node.mp.querySelector('.mpdiv') || ui.create.div(".mpdiv", this.node.mp);
+				let mpdiv = this.node.xjzhmp.querySelector('.mpdiv') || ui.create.div(".mpdiv", this.node.xjzhmp);
 				mpdiv.style.borderRadius = "50px";
 
 				// 更新文本内容
@@ -2077,6 +1962,37 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}
 
 			};
+
+			/**
+			 * 移除播放器中的MP容器。
+			 *
+			 * 该函数用于彻底移除播放器界面中的MP模块容器，包括容器内的所有元素。
+			 * 这是对播放器界面进行动态调整的重要功能，可以用于在不需要MP模块时清理界面。
+			 *
+			 * @function
+			 * @memberOf lib.element.player
+			 * @name xjzhremoveMp
+			 * @returns {undefined}
+			 */
+			lib.element.player.xjzhremoveMp = function() {
+				// 获取MP容器节点
+				let mpNode = this.node.xjzhmp;
+
+				// 如果MP容器存在
+				if (mpNode) {
+					// 从父节点中移除MP容器
+					// 移除mp容器以及其内部的所有子元素（包括进度条、文本等）
+					mpNode.parentNode.removeChild(mpNode);
+
+					// 删除播放器实例中与MP容器相关的属性
+					delete this.xjzhMp;
+					delete this.xjzhmaxMp;
+					// 清除节点对象中的MP容器引用
+					// 清空对mp容器的引用
+					delete this.node.xjzhmp;
+				}
+			};
+
 			//地下城与勇士角色库
 			lib.xjzh_dnf_character=[
 				"xjzh_dnf_jianshen",
@@ -2610,10 +2526,10 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						try{
 							//成就初始化
 							game.xjzhAchi.init();
-							if(!game.getExtensionConfig("仙家之魂","xjzh_importCalculateScore")){
+							if(!game.getExtensionConfig("仙家之魂","xjzh_importCalculateScore")&&typeof game.xjzhAchi.calculateScore()=="number"){
 								let num=game.xjzhAchi.calculateScore();
 								game.xjzh_changeTokens(num);
-								game.xjzh_changeSuipian(num*100);
+								game.xjzh_changeSuipian(num*50);
 								game.saveExtensionConfig("仙家之魂","xjzh_importCalculateScore",true);
 							}
 
@@ -2761,215 +2677,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                 });
 
 			};
-			// ---------------------------------------拉马斯相关选项------------------------------------------//
-			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro={
-				"name":"<b><li>【拉马斯相关选项】",
-				"clear":true,
-			};
-			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro2={
-				"name":"<b><li>导出存档",
-				"clear":true,
-				"onclick":function(){
-					let list,data;
-					if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")){
-						list=JSON.stringify(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
-						data="成就存档备份："+list.slice(0);
-						game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','成就存档备份.json',function(err){});
-					}
 
-					if(lib.config.xjzh_qishuyaojians){
-						list=JSON.stringify(lib.config.xjzh_qishuyaojians);
-						data="奇术要件存档备份："+list.slice(0);
-						game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','奇术要件存档备份.json',function(err){});
-					}
-
-					game.xjzh_createDailog('是否帮助拉马斯复制死灵之书？',['确定','取消'],function(bool){
-						if(bool=='确定'){
-							list=window.localStorage.getItem("xjzh_diablo_hunhuo");
-							if(list==null){
-								game.xjzh_createDailog('死灵之书不存在！');
-								return;
-							}
-							data=lib.init.encode("死灵之书副本："+list.slice(0));
-							game.writeFile(data,'extension/仙家之魂/save','死灵之书副本.json',function(err){
-								if(err){
-									game.xjzh_createDailog('死灵之书复制成功！');
-									game.xjzh_createDailog('导出存档');
-								}
-								else{
-									game.xjzh_createDailog('死灵之书复制失败了！');
-									game.xjzh_createDailog('导出存档');
-								}
-							})
-						}
-						else{
-							game.xjzh_createDailog('你拒绝了拉马斯复制死灵之书！');
-						}
-					});
-				},
-			};
-
-			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro3={
-				"name":'<b><li>导入存档',
-				"clear":true,
-				"onclick":function(){
-					if(this.kzol_openedjm==undefined) {
-						var div=ui.create.div();
-						div.link_XX=true;
-						div.innerHTML='<div style="white-space:nowrap;width:calc(100% - 10px)">' +
-						'<input type="file" style="width:calc(100% - 40px)">' +
-						'<button style="width:40px">导入</button></div>';
-						div.querySelector('button').onclick=function(){
-							var fileToLoad=this.previousSibling.files[0];
-							var names=this.previousSibling.files[0]["name"];
-							if(!names.includes("json")){
-							    alert("文件不正确，请重试！");
-							    return;
-							}
-							if(fileToLoad){
-								var fileReader=new FileReader();
-								fileReader.onload=function(fileLoadedEvent){
-									var data=fileLoadedEvent.target.result;
-									if(!data){
-										alert("文件不正确，请重试！");
-										return;
-									}else{
-									    try{
-									        data=lib.init.decode(data);
-									        _status.event.dataCover=data;
-									    }
-									    catch(e){
-									        alert("文件不正确，请重试！");
-									    }
-									    if(data.indexOf("死灵之书副本")==0){
-            							    game.xjzh_createDailog('是否帮助拉马斯重写死灵之书？',['确定','取消'],function(bool){
-                        						if(bool=='确定'){
-                        							this.innerHTML='正在重写死灵之书......';
-                        							var data=_status.event.dataCover.slice(7);
-                        							window.localStorage.setItem("xjzh_diablo_hunhuo",data);
-                        							var list=window.localStorage.getItem("xjzh_diablo_hunhuo");
-                        							if(list==null){
-                        								game.xjzh_createDailog('重写死灵之书失败了！');
-                        							}
-                        							else{
-                        								game.xjzh_createDailog('重写死灵之书成功了！');
-                        							}
-                        						}else{
-                        						    game.xjzh_createDailog('你拒绝了重写死灵之书!！');
-                        						}
-                							});
-            							}
-            							else if(data.indexOf("成就存档备份")==0){
-											var data=JSON.parse(data.slice(7));
-											game.saveExtensionConfig("仙家之魂","xjzhAchiStorage",data);
-											alert("正在为你覆盖存档，将于3秒后重启");
-											setTimeout(function(){
-												game.reload();
-											},3000);
-                    					}
-                    					else if(data.indexOf("奇术要件存档备份")==0){
-                    						var data=JSON.parse(data.slice(9));
-
-                                        	var Name=ui.create.div(ui.window,{
-                                            	zIndex:'1000',
-                                       			left:'0',width:'100%',
-                                            	top:'0',height:'100%'
-                                    		});
-                                    		var inputDiv=ui.create.div(Name,{
-                                            	left:'50%',top:'30%',
-                                            	transform:'translate(-50%, -50%)',
-                                            	width:'400px',height:'270px',
-                                            	textAlign:'center',
-                                            	backgroundSize:'100%',
-                                            	backgroundImage:"url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/loadFiles.png')",
-                                            });
-                                            var input=ui.create.node('input',inputDiv,{
-                                            	top:'110px',left:'80px',
-                                            	position:'absolute',
-                                            	width:'230px',height:'20px',
-                                            	background:'none',borderStyle:'none'
-                                            });
-                                            input.id='xjzh_qishu_filesName';
-                                            var okBtm=ui.create.div(inputDiv,{
-                                            	left:'153px',width:'100px',
-                                            	bottom:'55px',height:'35px',
-                                            },function(){
-                                            	var value=document.getElementById('xjzh_qishu_filesName').value;
-                                            	if(value!=data.name){
-                                            	    window.xjzhOpenLoading('你输入的用户名与存档不一致，已为你取消导入');
-                                            	}else{
-                                            	    game.saveConfig('xjzh_qishuyaojians',data);
-                            						alert("正在为你覆盖存档，将于3秒后重启");
-                            						setTimeout(function(){
-                            						    game.reload();
-                            						},3000);
-                                            	}
-                                            	Name.delete();
-                                            });
-                                            var cancelBtm=ui.create.div(inputDiv,{
-                                            	right:'35px',width:'25px',
-                                            	top:'42px',height:'25px',
-                                            },function(){
-                                                window.xjzhOpenLoading('你点击了取消，已为你取消导入');
-                                            	Name.delete();
-                                            });
-                    					}
-									}
-								}
-								fileReader.readAsText(fileToLoad,"UTF-8");
-							}else{
-							    alert("文件不正确，请重试！");
-							    return;
-							}
-						}
-						this.parentNode.insertBefore(div,this.nextSibling);
-						this.kzol_openedjm=div;
-					}
-					else{
-						this.parentNode.removeChild(this.kzol_openedjm);
-						delete this.kzol_openedjm;
-					};
-				}
-			};
-			lib.extensionMenu.extension_仙家之魂.xjzh_diablo_lamasiintro4={
-				"name":"<b><li>清除存档",
-				"clear":true,
-				"onclick":async function(){
-					//重启选项
-					game.xjzh_createDailog('已为你重置所选存档，是否重启游戏？',['确定','取消'],function(bool){
-						if(bool=='确定'){
-							setTimeout(function(){
-								game.reload();
-							},500);
-						}
-					});
-
-					//重置死灵之书存档
-					let list=window.localStorage.getItem("xjzh_diablo_hunhuo");
-					if(list!=null){
-							game.xjzh_createDailog('是否重置死灵之书存档？',['确定','取消'],function(bool){
-							if(bool=='确定'){
-								window.localStorage.removeItem("xjzh_diablo_hunhuo");
-							}
-						});
-					}
-
-					//重置奇术要件存档
-					game.xjzh_createDailog('是否重置奇术要件存档？',['确定','取消'],function(bool){
-						if(bool=='确定'){
-							game.xjzh_resetQishu();
-						}
-					});
-
-					//重置成就存档
-					game.xjzh_createDailog('是否重置成就存档？',['确定','取消'],function(bool){
-						if(bool=='确定'){
-							//重置成就存档
-							game.xjzhAchi.reset();
-						}
-					});
-				},
-			};
 		},
 		help:{},
 		config:{...xjzhConfig},

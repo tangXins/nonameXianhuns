@@ -1,4 +1,5 @@
 import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
+import {createApp, onMounted,ref, handleError} from '../../../../../game/vue.esm-browser.js';
 import { xjzh_updateURLS,xjzhUpdateLog } from '../index.js';
 
 export const xjzhConfig={
@@ -1205,6 +1206,215 @@ export const xjzhConfig={
         "intro":"",
         "clear":true,
         "init":true,
+    },
+
+    // ---------------------------------------存档相关选项------------------------------------------//
+    "xjzh_saveIntro":{
+        "name":"<b><li>【存档相关选项】",
+        "clear":true,
+    },
+    "xjzh_exportSave":{
+        "name":"<b><li>导出存档",
+        "clear":true,
+        "onclick":function(){
+            let list,data;
+            if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")){
+                list=JSON.stringify(game.getExtensionConfig("仙家之魂","xjzhAchiStorage"));
+                data="成就存档备份："+list.slice(0);
+                game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','成就存档备份.json',function(err){});
+            }
+
+            if(lib.config.xjzh_qishuyaojians){
+                list=JSON.stringify(lib.config.xjzh_qishuyaojians);
+                data="奇术要件存档备份："+list.slice(0);
+                game.writeFile(lib.init.encode(data),'extension/仙家之魂/save','奇术要件存档备份.json',function(err){});
+            }
+
+            game.xjzh_createDailog('是否帮助拉马斯复制死灵之书？',['确定','取消'],function(bool){
+                if(bool=='确定'){
+                    list=window.localStorage.getItem("xjzh_diablo_hunhuo");
+                    if(list==null){
+                        game.xjzh_createDailog('死灵之书不存在！');
+                        return;
+                    }
+                    data=lib.init.encode("死灵之书副本："+list.slice(0));
+                    game.writeFile(data,'extension/仙家之魂/save','死灵之书副本.json',function(err){
+                        if(err){
+                            game.xjzh_createDailog('死灵之书复制成功！');
+                            game.xjzh_createDailog('导出存档');
+                        }
+                        else{
+                            game.xjzh_createDailog('死灵之书复制失败了！');
+                            game.xjzh_createDailog('导出存档');
+                        }
+                    })
+                }
+                else{
+                    game.xjzh_createDailog('你拒绝了拉马斯复制死灵之书！');
+                }
+            });
+        },
+    },
+    "xjzh_importSave":{
+        "name":'<b><li>导入存档',
+        "clear":true,
+        "onclick":function(){
+            if(this.kzol_openedjm==undefined) {
+                var div=ui.create.div();
+                div.link_XX=true;
+                div.innerHTML='<div style="white-space:nowrap;width:calc(100% - 10px)">' +
+                '<input type="file" style="width:calc(100% - 40px)">' +
+                '<button style="width:40px">导入</button></div>';
+                div.querySelector('button').onclick=function(){
+                    var fileToLoad=this.previousSibling.files[0];
+                    var names=this.previousSibling.files[0]["name"];
+                    if(!names.includes("json")){
+                        alert("文件不正确，请重试！");
+                        return;
+                    }
+                    if(fileToLoad){
+                        var fileReader=new FileReader();
+                        fileReader.onload=function(fileLoadedEvent){
+                            var data=fileLoadedEvent.target.result;
+                            if(!data){
+                                alert("文件不正确，请重试！");
+                                return;
+                            }else{
+                                try{
+                                    data=lib.init.decode(data);
+                                    _status.event.dataCover=data;
+                                }
+                                catch(e){
+                                    alert("文件不正确，请重试！");
+                                }
+                                if(data.indexOf("死灵之书副本")==0){
+                                    game.xjzh_createDailog('是否帮助拉马斯重写死灵之书？',['确定','取消'],function(bool){
+                                        if(bool=='确定'){
+                                            this.innerHTML='正在重写死灵之书......';
+                                            var data=_status.event.dataCover.slice(7);
+                                            window.localStorage.setItem("xjzh_diablo_hunhuo",data);
+                                            var list=window.localStorage.getItem("xjzh_diablo_hunhuo");
+                                            if(list==null){
+                                                game.xjzh_createDailog('重写死灵之书失败了！');
+                                            }
+                                            else{
+                                                game.xjzh_createDailog('重写死灵之书成功了！');
+                                            }
+                                        }else{
+                                            game.xjzh_createDailog('你拒绝了重写死灵之书!！');
+                                        }
+                                    });
+                                }
+                                else if(data.indexOf("成就存档备份")==0){
+                                    var data=JSON.parse(data.slice(7));
+                                    game.saveExtensionConfig("仙家之魂","xjzhAchiStorage",data);
+                                    alert("正在为你覆盖存档，将于3秒后重启");
+                                    setTimeout(function(){
+                                        game.reload();
+                                    },3000);
+                                }
+                                else if(data.indexOf("奇术要件存档备份")==0){
+                                    var data=JSON.parse(data.slice(9));
+
+                                    var Name=ui.create.div(ui.window,{
+                                        zIndex:'1000',
+                                        left:'0',width:'100%',
+                                        top:'0',height:'100%'
+                                    });
+                                    var inputDiv=ui.create.div(Name,{
+                                        left:'50%',top:'30%',
+                                        transform:'translate(-50%, -50%)',
+                                        width:'400px',height:'270px',
+                                        textAlign:'center',
+                                        backgroundSize:'100%',
+                                        backgroundImage:"url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/loadFiles.png')",
+                                    });
+                                    var input=ui.create.node('input',inputDiv,{
+                                        top:'110px',left:'80px',
+                                        position:'absolute',
+                                        width:'230px',height:'20px',
+                                        background:'none',borderStyle:'none'
+                                    });
+                                    input.id='xjzh_qishu_filesName';
+                                    var okBtm=ui.create.div(inputDiv,{
+                                        left:'153px',width:'100px',
+                                        bottom:'55px',height:'35px',
+                                    },function(){
+                                        var value=document.getElementById('xjzh_qishu_filesName').value;
+                                        if(value!=data.name){
+                                            window.xjzhOpenLoading('你输入的用户名与存档不一致，已为你取消导入');
+                                        }else{
+                                            game.saveConfig('xjzh_qishuyaojians',data);
+                                            alert("正在为你覆盖存档，将于3秒后重启");
+                                            setTimeout(function(){
+                                                game.reload();
+                                            },3000);
+                                        }
+                                        Name.delete();
+                                    });
+                                    var cancelBtm=ui.create.div(inputDiv,{
+                                        right:'35px',width:'25px',
+                                        top:'42px',height:'25px',
+                                    },function(){
+                                        window.xjzhOpenLoading('你点击了取消，已为你取消导入');
+                                        Name.delete();
+                                    });
+                                }
+                            }
+                        }
+                        fileReader.readAsText(fileToLoad,"UTF-8");
+                    }else{
+                        alert("文件不正确，请重试！");
+                        return;
+                    }
+                }
+                this.parentNode.insertBefore(div,this.nextSibling);
+                this.kzol_openedjm=div;
+            }
+            else{
+                this.parentNode.removeChild(this.kzol_openedjm);
+                delete this.kzol_openedjm;
+            };
+        }
+    },
+    "xjzh_cleanSave":{
+        "name":"<b><li>清除存档",
+        "clear":true,
+        "onclick":async function(){
+            //重启选项
+            game.xjzh_createDailog('已为你重置所选存档，是否重启游戏？',['确定','取消'],function(bool){
+                if(bool=='确定'){
+                    setTimeout(function(){
+                        game.reload();
+                    },500);
+                }
+            });
+
+            //重置死灵之书存档
+            let list=window.localStorage.getItem("xjzh_diablo_hunhuo");
+            if(list!=null){
+                    game.xjzh_createDailog('是否重置死灵之书存档？',['确定','取消'],function(bool){
+                    if(bool=='确定'){
+                        window.localStorage.removeItem("xjzh_diablo_hunhuo");
+                    }
+                });
+            }
+
+            //重置奇术要件存档
+            game.xjzh_createDailog('是否重置奇术要件存档？',['确定','取消'],function(bool){
+                if(bool=='确定'){
+                    game.xjzh_resetQishu();
+                }
+            });
+
+            //重置成就存档
+            game.xjzh_createDailog('是否重置成就存档？',['确定','取消'],function(bool){
+                if(bool=='确定'){
+                    //重置成就存档
+                    game.xjzhAchi.reset();
+                }
+            });
+        },
     },
 
 };

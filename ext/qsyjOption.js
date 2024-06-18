@@ -31,13 +31,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        func();
 	        return;
 	    };
-	    
+
 	    //判断材料数量是否能够开启莉莉丝挑战
         var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
 	    if(Object.keys(cailiaoList).some(item=>get.xjzh_cailiao(item)<1)){
 	        func2("xjzh_boss_lilisi");
 	    }
-	    
+
 	    //判断材料数量是否能够开启瓦尔申挑战
 	    if(Object.keys(cailiaoList).filter(function(item){
 	        return ["xjzh_cailiao_gugu","xjzh_cailiao_toulu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"].includes(item);
@@ -46,7 +46,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    })){
 	        func2("xjzh_boss_waershen");
 	    }
-	    
+
 	    //判断材料数量是否能够开启格里高利挑战
 	    if(get.xjzh_cailiao("xjzh_cailiao_gangtie")<5){
 	        func2("xjzh_boss_geligaoli");
@@ -59,22 +59,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    })){
 	        func2("xjzh_boss_duruier");
 	    }
-	    
+
 	    //判断材料数量是否能够开启冰川巨兽挑战
 	    if(get.xjzh_cailiao("xjzh_cailiao_kongju")<9){
 	        func2("xjzh_boss_bingchuanjushou");
 	    }
-	    
+
 	    //判断材料数量是否能够开启齐尔领主挑战
 	    if(get.xjzh_cailiao("xjzh_cailiao_xianxue")<9){
 	        func2("xjzh_boss_qier");
 	    }
-	    
+
 	    //判断材料数量是否能够开启天堂试炼挑战
 	    if(get.xjzh_cailiao("xjzh_cailiao_shijieshi")<1){
 	        func2("xjzh_boss_ttshilian");
 	    }
-	    
+
 	    /*if(game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")){
 	        if(!lib.config.xjzh_qishuyaojians.date){
 	            lib.config.xjzh_qishuyaojians.date=new Date().getTime();
@@ -91,11 +91,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	            game.xjzhQishu_saveConfig();
 	        }
 	    }*/
-	    
+
 	});
-	
+
     if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
-    
+
     //显示倒计时
     /*lib.arenaReady.push(function(){
         //if(get.mode()!="boss") return;
@@ -132,7 +132,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             if(window.xjzh_diffTime>0&&get.mode()=="boss") box.innerHTML = `恶念之心限时挑战剩余-${res.day}天${res.hours}时${res.minutes}分${res.seconds}秒`
         },1000);
     });*/
-    
+
     game.xjzh_qishuWinner=function(str,str2){
         var boxRemove=ui.create.div(ui.window,{
             zIndex:10000,
@@ -152,7 +152,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         beijing.innerHTML=str;
         text.innerHTML=str2;
     };
-    
+
     lib.onover.push(async function(ret){
         if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
         if(ret){
@@ -176,14 +176,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             var source=player.getAllHistory('sourceDamage').length;
             var kill=player.getAllHistory('kill').length;
             var recover=player.getAllHistory('recover').length;
-            
+
             //var num=get.rand(1,2);
             var num=1+(lib.config.xjzh_qishuyaojians.level/20);
             //var num2=Math.floor(((draw>use?use+draw/2:use)+(source-damage)+(source==kill?kill:source)+recover)*num);
             //对局得分不再计算摸牌数
             var num3=Math.floor(use+(source-damage)+(source==kill?kill:source)+recover);
             var num2=Math.floor((use+(source-damage)+(source==kill?kill:source)+recover)*num)
-            
+
             var qishuReward={
         		"jingpo":0,
         		"suipian":0,
@@ -198,15 +198,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             //碎片获得
             var suipian=Math.floor(num2);
             qishuReward["suipian"]+=suipian;
-            
+
             //材料获得
             var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
             var cailiaoList2=Object.keys(cailiaoList).filter(function(item){
 	            return ["xjzh_cailiao_gugu","xjzh_cailiao_toulu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"].includes(item);
 	        });
-	        
+
 	        console.log(cailiaoList2)
-	        
+
 	        var numx=0;
 	        while(numx<4){
 	            if(Math.random()<=num2/300){
@@ -215,13 +215,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	            }
 	            numx++
 	        }
-	        
+
             var qishuList=[];
             for(var i in lib.xjzh_qishuyaojians){
 				var level=get.xjzh_equipInfo(i).level||1;
 				if(level&&level<5) qishuList.push(i);
 			}
-			
+
             //精魄及奇术要件获得，若boss为莉莉丝则必定获得一个，额外获得至少0个，至多为3个;
             if(get.mode()=="boss"){
                 //消耗材料
@@ -244,6 +244,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     //获得活体钢铁2个
                     //获得粘液覆盖的蛋1个
                     //额外获得3个碎片
+                    //必定掉落疯狼的狂喜、瓦西里的祷告之一
                     case "xjzh_boss_waershen":
                         if(!qishuReward["cailiao"]["xjzh_cailiao_gangtie"]) qishuReward["cailiao"]["xjzh_cailiao_gangtie"]=0;
                         if(!game.xjzhAchi.hasAchi('净化恶念','game')) qishuReward["cailiao"]["xjzh_cailiao_gangtie"]+=2;
@@ -269,13 +270,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     //获得提纯的恐惧2个
                     //获得提纯的鲜血2个
                     //额外获得7个碎片
+                    //必定掉落风暴咆哮、剃头师、痛苦吞食者之一
                     case "xjzh_boss_duruier":
                         if(!qishuReward["cailiao"]["xjzh_cailiao_kongju"]) qishuReward["cailiao"]["xjzh_cailiao_kongju"]=0;
                         qishuReward["cailiao"]["xjzh_cailiao_kongju"]+=2;
                         if(!qishuReward["cailiao"]["xjzh_cailiao_xianxue"]) qishuReward["cailiao"]["xjzh_cailiao_xianxue"]=0;
                         qishuReward["cailiao"]["xjzh_cailiao_xianxue"]+=2;
                         qishuReward["suipian"]+=7;
-                        var qishuLevel4=["xjzh_qishu_fengbaopaoxiao","xjzh_qishu_titoushi"];
+                        var qishuLevel4=["xjzh_qishu_fengbaopaoxiao","xjzh_qishu_titoushi","xjzh_qishu_tongkuhushou"];
                         var qishuLevel4Arr=qishuLevel4.randomGet();
                         if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
                         qishuReward["qishuyaojian"][qishuLevel4Arr]++;
@@ -283,6 +285,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     //如果boss为齐尔领主
                     //获得提纯的恐惧3个
                     //额外获得10个碎片
+                    //必定掉落疯狼的狂喜、瓦西里的祷告之一
                     case "xjzh_boss_qier":
                         if(!qishuReward["cailiao"]["xjzh_cailiao_kongju"]) qishuReward["cailiao"]["xjzh_cailiao_kongju"]=0;
                         qishuReward["cailiao"]["xjzh_cailiao_kongju"]+=3;
@@ -295,6 +298,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     //如果boss为冰川巨兽
                     //获得提纯的鲜血3个
                     //额外获得10个碎片
+                    //必定掉落无餍之怒
                     case "xjzh_boss_bingchuanjushou":
                         if(!qishuReward["cailiao"]["xjzh_cailiao_xianxue"]) qishuReward["cailiao"]["xjzh_cailiao_xianxue"]=0;
                         qishuReward["cailiao"]["xjzh_cailiao_xianxue"]+=3;
@@ -305,16 +309,16 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                         qishuReward["qishuyaojian"][qishuLevel4Arr]++;
                     break;
                 };
-                
+
             }
-    	    
+
     	    console.log(qishuReward);
-			
+
             //展示奖励结算面板数据
             var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+num2+'<br><br>对局奖励：';
-            
+
             str+='<br>&emsp;&emsp;经验（'+num3+'）';
-                            
+
             for(var i in qishuReward){
                 switch(i){
                     case "suipian":{
@@ -366,15 +370,15 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     str+=`<br>&emsp;&emsp;${name[1]}：<br>&emsp;&emsp;&emsp;&emsp;碎片：${info.level*100}<br>&emsp;&emsp;&emsp;&emsp;精魄：${info.level}`;
                 }
             }
-            
+
             game.xjzh_levelUp(num3);
-            
+
             console.log(lib.xjzh_hasDoneAchievement)
 
             game.xjzh_qishuWinner("奖励结算",str)
         }
     });
-    
+
     lib.skill['xjzh_qishu_materialRemove']={
         trigger:{
             global:"gameStart",
@@ -481,5 +485,5 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             },
         },
     };
-    
+
 });

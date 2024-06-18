@@ -40,7 +40,8 @@ const characters = {
 	"xjzh_diablo_nataya":["female","qun",4,["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],[],[{
 		"name":"xjzhMp",
 		"maxMp":100,
-		"mp":100
+		"mp":100,
+		"huixin":1
 	}]],
 	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],[{
 		"name":"xjzhMp",
@@ -52,7 +53,9 @@ const characters = {
 	"xjzh_diablo_yafeikela":["male","qun",4,["xjzh_diablo_lingshou","xjzh_diablo_shilue"],[],[{
 		"name":"xjzhMp",
 		"maxMp":100,
-		"mp":100
+		"mp":100,
+		"huixin":0.2,
+		"reduce":0.3
 	}]],
 	"xjzh_diablo_xiong":["male","qun",4,["xjzh_diablo_zhongou","xjzh_diablo_fensui"],["unseen","forbidai"]],
 	"xjzh_diablo_lang":["male","qun",4,["xjzh_diablo_leibao","xjzh_diablo_kuanghou"],["unseen","forbidai"]],

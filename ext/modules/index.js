@@ -5,3 +5,4 @@ export { xjzhUpdateLog } from './update/index.js';
 export { xjzhConfig } from './config/index.js';
 export { xjzhPackage } from './package/index.js';
 export { xjzhCardPack } from './cards/index.js';
+export { introduces } from './introduce/index.js';

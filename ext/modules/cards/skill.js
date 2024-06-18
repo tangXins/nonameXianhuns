@@ -331,7 +331,7 @@ const skills={
         firstDo:true,
         equipSkill:true,
         mark:true,
-        marktext:"<img style=width:33px height:33px src="+lib.assetURL+"extension/仙家之魂/image/icon/xjzh_card_rongyankaijia.png>",
+        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_card_rongyankaijia.png>`,
         intro:{
             name:"熔岩铠甲",
             content(storage,player){

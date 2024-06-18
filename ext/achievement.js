@@ -502,7 +502,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 			let list=this.ofName(name)
 			let info=this.info(list[1],list[0]);
-			let suipian=(info.level)*100;
+			let suipian=(info.level)*50;
 			let tokens=info.level;
 			game.xjzh_changeTokens(tokens);
 			game.xjzh_changeSuipian(suipian);
@@ -890,6 +890,23 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				state.pageNum--;
 				state.refreshPage();
 			});
+
+			// 确保bk变量是有效的DOM元素
+			bk.addEventListener('wheel', function(event) {
+				// 阻止浏览器默认的滚动行为
+				event.preventDefault();
+
+				// 根据滚动方向决定pageNum增减
+				if (event.deltaY < 0) { // 向上滚动
+					if(state.pageNum>0) state.pageNum--;
+				} else { // 向下滚动
+					if((state.equipNum/8-1)>state.pageNum) state.pageNum++;
+				}
+
+				// 刷新页面
+				state.refreshPage();
+			});
+
 			//材料按钮
 			var cailiaoBox=ui.create.div('.xjzh-equipPage-cailiao',bk);
 			cailiaoBox.listen(function(){
@@ -1148,14 +1165,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     			qishudisen.innerHTML="分解";
     			qishudisen.listen(function(){
 
-                    bookWindow.delete();
-				    game.resume2();
-				    lib.onresize.remove(resize);
-
-				    game.xjzhAchi.openAchievementEquipIntro(item,state);
-
-				    game.delayx();
-
 				    var lvx=info.level;
             		var numberx=0;
             		switch(lvx){
@@ -1185,6 +1194,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         			setTimeout(function(){
                         loading.delete();
                     },1500);
+
+                    bookWindow.delete();
+				    game.resume2();
+				    lib.onresize.remove(resize);
+
+				    game.xjzhAchi.openAchievementEquipIntro(item,state);
+
+				    game.delayx();
     			});
     			//奇术要件升级按钮
     			var qishuLvUp=ui.create.div(bk,{
@@ -1337,8 +1354,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     					if(!xianhunCharacter[i]){
     					    xianhunCharacter[i]=lib.character[i];
     					}
-    					if(namecapt.indexOf(getCapt(lib.character[i]))==-1){
-    						namecapt.push(getCapt(lib.character[i]));
+    					if(namecapt.indexOf(getCapt(i))==-1){
+    						namecapt.push(getCapt(i));
     					}
     				}
     			}else{
@@ -2020,29 +2037,36 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						game.xjzh_changeTokens(1);
 					},
 					price:75,
-				},'xjzh_qishu_daojian',
+				},
+				//等阶1
+				'xjzh_qishu_daojian',
+				'xjzh_qishu_shengmingfusu',
+				'xjzh_qishu_heianxuewu',
+				'xjzh_qishu_maoxianmingyun',
+				'xjzh_qishu_jishudanyao',
+				'xjzh_qishu_guimeihuanying',
+				//等阶2
+				'xjzh_qishu_yaojishi',
+				'xjzh_qishu_wushitongku',
+				'xjzh_qishu_talaxia',
+				'xjzh_qishu_qiyue',
+				'xjzh_qishu_siwanghuanxing',
+				'xjzh_qishu_chengfa',
+				//等阶3
 				'xjzh_qishu_fuchou',
+				'xjzh_qishu_huanji',
 				'xjzh_qishu_wuqijingtong',
 				'xjzh_qishu_fangjujingtong',
 				'xjzh_qishu_binglengjiqiao',
-				'xjzh_qishu_qiyue',
+				"xjzh_qishu_jiandun",
+				//等阶4
 				'xjzh_qishu_titoushi',
-				'xjzh_qishu_yaojishi',
-				'xjzh_qishu_wushitongku',
-				'xjzh_qishu_siwanghuanxing',
-				'xjzh_qishu_shengmingfusu',
-				'xjzh_qishu_heianxuewu',
-				'xjzh_qishu_jishudanyao',
-				'xjzh_qishu_talaxia',
-				'xjzh_qishu_huanji',
-				'xjzh_qishu_maoxianmingyun',
-				'xjzh_qishu_chengfa',
-				'xjzh_qishu_guimeihuanying',
 				'xjzh_qishu_wuyan',
 				'xjzh_qishu_waxilidedaogao',
 				'xjzh_qishu_fenglangkx',
 				'xjzh_qishu_fengbaopaoxiao',
-				"xjzh_qishu_jiandun",
+				"xjzh_qishu_suoding",
+				"xjzh_qishu_tongkuhushou"
 
 				];
 				for(var i=0;i<list.length;i++){

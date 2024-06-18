@@ -1,5 +1,3 @@
-import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
-
 export const xjzhTitle={
     //仙武三国
     "xjzh_sanguo_wenyang":"万将披靡",

@@ -127,10 +127,6 @@ window.xjzh_updateSource=[
 
 	"ext/modules/character/index.js",
 
-	"audio/skill/xjzh_huoying_tongshu1.mp3",
-	"audio/skill/xjzh_huoying_liudao1.mp3",
-	"audio/skill/xjzh_huoying_qianniao1.mp3",
-	"audio/skill/xjzh_boss_xiuluo3.mp3",
-	"audio/skill/xjzh_boss_xiuluo4.mp3"
+	"ext/modules/introduce.index.js"
 
 ];

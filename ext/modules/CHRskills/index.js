@@ -5,12 +5,30 @@ export const CHRskills={
 	    //获取角色初始法力值并显示
 	    "_xjzh_skill_showMpCount":{
 	        trigger:{
-	            global:"gameStart",
+	            global:["gameStart"],
 	            player:"enterGame",
 	        },
 	        silent:true,
 	        priority:Infinity,
 	        firstDo:true,
+			/*locked:true,
+			fixed:true,
+			charlotte:true,
+			unique:true,
+			superCharlotte:true,*/
+        	marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_skill_showMpCount.png>`,
+			intro:{
+				name:"魔力面板",
+				content(storage,player){
+					let str=``;
+					if(player.xjzhHuixin) str+=`<li>会心几率：${player.xjzhHuixin*100}%`;
+					if(player.xjzhReduce) str+=`<li>消耗减免：${player.xjzhReduce*100}%`;
+					return str;
+				},
+			},
+			/*onremove(player){
+				player.xjzhremoveMp();
+			},*/
 	        filter(event,player){
 	            if(!get.xjzh_wujiang(player)) return false;
 				if(player.isOut()) return false;
@@ -38,8 +56,19 @@ export const CHRskills={
 						})[0];
 					}
 				});
-				await player.changexjzhmaxMp(object["maxMp"]);
-				await player.changexjzhMp(object["mp"]);
+				if(!player.node.xjzhmp){
+					await player.changexjzhmaxMp(object["maxMp"]);
+					await player.changexjzhMp(object["mp"]);
+					if(object["huixin"]){
+						if(!player.xjzhHuixin) player.xjzhHuixin=object["huixin"];
+						else player.xjzhHuixin+=object["huixin"];
+					}
+					if(object["reduce"]){
+						if(!player.xjzhReduce) player.xjzhReduce=object["reduce"];
+						else player.xjzhReduce+=object["reduce"];
+					}
+				}
+				player.markSkill(event.name);
 	        },
 	    },
 		// ---------------------------------------状态技能------------------------------------------//

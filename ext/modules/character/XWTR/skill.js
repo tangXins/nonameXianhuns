@@ -1838,7 +1838,7 @@ const skills={
 				return -1;
 			});
 			judgeEvent.judge2=result=>result.bool;
-			const {result:{judge}}=await judgeEvent;
+			const {result:{judge}}=judgeEvent;
 			if(judge<0) return;
 			switch(judge){
 				case 2:
@@ -4014,7 +4014,7 @@ const skills={
 		fixed:true,
 		popup:false,
 		marktext2:"剑",
-		marktext:"<img style=width:33px height:33px src="+lib.assetURL+"extension/仙家之魂/image/icon/xjzh_wzry_xiaxing.png>",
+        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_xiaxing.png>`,
 		intro:{
 			content:"当前已有#道剑气",
 		},
@@ -4449,7 +4449,7 @@ const skills={
 		priority:100,
 		locked:true,
 		marktext2:"剑",
-		marktext:"<img style=width:33px height:33px src="+lib.assetURL+"extension/仙家之魂/image/icon/xjzh_wzry_jianzhong.png>",
+        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianzhong.png>`,
 		intro:{
 			mark:function(dialog,content,player){
 				var cards=player.getExpansions('xjzh_wzry_jianzhong');
@@ -4569,7 +4569,7 @@ const skills={
 		},
 		limited:true,
 		marktext2:"剑来",
-		marktext:"<img style=width:33px height:33px src="+lib.assetURL+"extension/仙家之魂/image/icon/xjzh_wzry_jianlai.png>",
+        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianlai.png>`,
 		init:function(player,skill){
 			player.storage.xjzh_wzry_jianlai=false;
 		},
@@ -6111,106 +6111,80 @@ const skills={
 	"xjzh_diablo_lingshou":{
 		trigger:{
 			player:"phaseBefore",
+			source:"damageAfter",
 		},
-		filter:function(event,player){
-			if(game.xjzh_hasEquiped("xjzh_qishu_wuyan",player.name1)) return false;
-			if(game.xjzh_hasEquiped("xjzh_qishu_fenglangkx",player.name1)) return false;
-			return player.countMark("xjzh_diablo_lingshou")>=100;
-		},
+		forced:true,
+		locked:true,
+		priority:10,
 		mark:true,
 		marktext:"贡",
 		intro:{
 			name:"德鲁伊灵体贡品",
-			content:function(storage,player){
-				var str="贡品："+player.countMark("xjzh_diablo_lingshou")+"个<br>";
-				if(player.storage.xjzh_diablo_linglijianmian) str+="灵力消耗减免："+player.storage.xjzh_diablo_linglijianmian+"%<br>";
-				if(player.storage.xjzh_diablo_randomhuixin) str+="会心几率："+player.storage.xjzh_diablo_randomhuixin+"％";
-				return str;
-			},
+			content:"#",
 		},
 		lingshouList:["xjzh_diablo_lang","xjzh_diablo_xiong"],
-		group:["xjzh_diablo_lingshou_end","xjzh_diablo_lingshou_damage"],
-		content:function(){
-			"step 0"
-			player.removeMark("xjzh_diablo_lingshou",100,false);
-			"step 1"
-			var list=lib.skill.xjzh_diablo_lingshou.lingshouList.slice(0);
-			if(player.storage.xjzh_diablo_lingshou2){
-				list.remove(player.storage.xjzh_diablo_lingshou2);
+		async content(event,trigger,player){
+			let names=get.playerName(player),arr=["xjzh_qishu_wuyan","xjzh_qishu_fenglangkx"],bool=false;
+			for await(let name of names){
+				if(arr.some(item=>game.xjzh_hasEquiped(item,name))){
+					bool=true;
+					break;
+				};
 			}
-			var dialog=ui.create.dialog('〖灵兽〗：请选择所要变形的形态，取消变回人类',[list,"character"],'hidden');
-			player.chooseButton(dialog).set('ai',function(){
-				return list.randomGet()
-			});
-			"step 2"
-			if(result.links){
-				player.setAvatar('xjzh_diablo_yafeikela',result.links[0]);
-				player.node.name.innerHTML=get.translation(result.links[0]);
-				if(player.storage.xjzh_diablo_lingshou2){
-					var list=lib.character[player.storage.xjzh_diablo_lingshou2][3];
-					player.removeSkill(list,true);
-				}
-				player.storage.xjzh_diablo_lingshou2=result.links[0];
-				var list=lib.character[result.links[0]][3];
-				player.addSkill(list);
-			}else{
-				player.setAvatar('xjzh_diablo_yafeikela',"xjzh_diablo_yafeikela");
-				if(player.storage.xjzh_diablo_lingshou2){
-					var list=lib.character[player.storage.xjzh_diablo_lingshou2][3];
-					player.removeSkill(list,true);
-				}
-				player.node.name.innerHTML=get.translation("xjzh_diablo_yafeikela");
-				delete player.storage.xjzh_diablo_lingshou2;
-			}
-		},
-		subSkill:{
-			"end":{
-				trigger:{
-					player:"phaseAfter",
-				},
-				direct:true,
-				sub:true,
-				filter:function(event,player){
-					if(game.xjzh_hasEquiped("xjzh_qishu_wuyan",player.name1)) return false;
-					if(game.xjzh_hasEquiped("xjzh_qishu_fenglangkx",player.name1)) return false;
-					if(!player.storage.xjzh_diablo_lingshou2) return false;
-					return ["xjzh_diablo_lang","xjzh_diablo_xiong"].includes(player.storage.xjzh_diablo_lingshou2);
-				},
-				content:function(){
+			if(bool==true) return;
+
+			if(event.triggername=="damageAfter") player.addMark("xjzh_diablo_lingshou",get.rand(1,100));
+			else{
+				let list=lib.skill.xjzh_diablo_lingshou.lingshouList.slice(0),node,skills;
+
+				if(player.name2&&player.name2=="xjzh_diablo_yafeikela") node=player.node.name2;
+				else node=player.node.name;
+
+				if(player.countMark("xjzh_diablo_lingshou")>=100){
+
+					if(player.storage.xjzh_diablo_lingshou2) list.remove(player.storage.xjzh_diablo_lingshou2);
+
+					let dialog=ui.create.dialog('〖灵兽〗：请选择所要变形的形态，取消变回人类',[list,"character"],'hidden');
+					const links=await player.chooseButton(dialog).set('ai',()=>{
+						return list.randomGet()
+					}).forResultLinks();
+					if(links){
+						await player.removeMark("xjzh_diablo_lingshou",100,false);
+						player.setAvatar('xjzh_diablo_yafeikela',links[0]);
+						node.innerHTML=get.translation(links[0]);
+						if(player.storage.xjzh_diablo_lingshou2){
+							skills=lib.character[player.storage.xjzh_diablo_lingshou2][3];
+							player.removeSkill(list,true);
+						}
+						player.storage.xjzh_diablo_lingshou2=links[0];
+						let skills=lib.character[links[0]][3];
+						player.addSkill(skills);
+					}else{
+						player.setAvatar('xjzh_diablo_yafeikela',"xjzh_diablo_yafeikela");
+						if(player.storage.xjzh_diablo_lingshou2){
+							skills=lib.character[player.storage.xjzh_diablo_lingshou2][3];
+							player.removeSkill(list,true);
+						}
+						node.innerHTML=get.translation("xjzh_diablo_yafeikela");
+						delete player.storage.xjzh_diablo_lingshou2;
+					}
+				}else{
 					player.setAvatar('xjzh_diablo_yafeikela',"xjzh_diablo_yafeikela");
 					if(player.storage.xjzh_diablo_lingshou2){
-						var list=lib.character[player.storage.xjzh_diablo_lingshou2][3];
+						skills=lib.character[player.storage.xjzh_diablo_lingshou2][3];
 						player.removeSkill(list,true);
 					}
-					player.node.name.innerHTML=get.translation("xjzh_diablo_yafeikela");
+					node.innerHTML=get.translation("xjzh_diablo_yafeikela");
 					delete player.storage.xjzh_diablo_lingshou2;
-				},
-			},
-			"damage":{
-				trigger:{
-					source:"damageEnd",
-				},
-				silent:true,
-				sub:true,
-				priority:-1,
-				filter:function(event,player){
-					if(game.xjzh_hasEquiped("xjzh_qishu_wuyan",player.name1)) return false;
-					if(game.xjzh_hasEquiped("xjzh_qishu_fenglangkx",player.name1)) return false;
-					return true;
-				},
-				content:function(){
-					player.addMark("xjzh_diablo_lingshou",get.rand(1,100));
-				},
-			},
+				}
+			}
 		},
 	},
 	"xjzh_diablo_shilue":{
 		enable:"phaseUse",
-		init(player){
-			if(!player.storage.xjzh_diablo_linglijianmian) player.storage.xjzh_diablo_linglijianmian=0;
-			player.storage.xjzh_diablo_linglijianmian+=30;
-			player.storage.xjzh_diablo_shilue=false;
-			//player.addMark("xjzh_diablo_lingshou",1000000);
+		init(player,skill){
+			player.storage[skill]=false;
+			//player.addMark("xjzh_diablo_lingshou",1520);
 		},
 		filter(event,player){
 			if(get.xjzh_isMaxMp(player)) return false;
@@ -6219,70 +6193,107 @@ const skills={
 		getshilue(player,num){
 			player.removeMark("xjzh_diablo_lingshou",num);
 			player.changexjzhMp(num);
-			let storage=player.storage.xjzh_diablo_linglijianmian;
-			storage>30?storage-=30:storage=0;
+			let numx=player.xjzhReduce;
+			numx>0.3?numx-=0.3:numx=0;
 			player.storage.xjzh_diablo_shilue=true;
 		},
 		group:"xjzh_diablo_shilue_round",
 		async content(event,trigger,player){
 			let num,num2=player.countMark("xjzh_diablo_lingshou");
 			if(event.isMine()){
-				//创建输入框
-				let node=ui.create.div();
-				node.style.width='400px';
-				node.style.height='30px';
-				node.style.lineHeight='30px';
-				node.style.fontFamily='xinwei';
-				node.style.fontSize='30px';
-				node.style.padding='10px';
-				node.style.left='calc(50% - 200px)';
-				node.style.top='calc(50% - 20px)';
-				node.style.whiteSpace='nowrap';
-				node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;
-				node.contentEditable=true;
-				node.style.webkitUserSelect='text';
-				node.style.textAlign='center';
-				//创建确定按钮
-				let button=ui.create.div('.menubutton.highlight.large','确定');
-				button.style.width='70px';
-				button.style.left='calc(50% - 35px)';
-				button.style.top='calc(50% + 60px)';
-				//将输入框和确定按钮添加到界面上
+				// 创建输入框
+				let node = ui.create.div();
+				applyStylesToNode(node, 'input');
+				node.contentEditable = true;
+				node.innerText = `请输入有效的数字，至多${num2}`;
+				node.addEventListener('input', (event) => {
+					validateAndHandleInput(node, num2);
+				});
+
+				// 创建确定按钮
+				let button = ui.create.div('.menubutton.highlight.large', '确定');
+				applyStylesToNode(button, 'button');
+				button.addEventListener('click', (e) => {
+					handleButtonClick(node, num2);
+				});
+
+				// 将输入框和确定按钮添加到界面上
 				ui.window.appendChild(node);
 				ui.window.appendChild(button);
-				//选中输入框清空文字
-				node.onfocus=()=>{
-					node.innerHTML='';
+
+				// 选中输入框清空文字
+				node.onfocus = () => {
+					node.innerText = '';
 				};
-				button.onclick=(e)=>{
-					let name=node.innerText;
-					if(/^\d+$/.test(name)&&Number(name)<=num2){
-						ui.window.removeChild(node);
-						ui.window.removeChild(button);
-						game.resume();
-						num=Number(name);
-						lib.skill[event.name].getshilue(player,num);
-					}else{
-						if(name.length==0){
-							alert(`请先输入一个有效的数字`);
-						}else if(/^\d+$/.test(name)==false){
-							alert(`${name}不是一个有效的数字`);
-						}
-						else if(Number(name)>num2){
-							alert(`${Number(name)}超过${num2}，请重新输入`);
-						}
-						node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;;
-					}
-					setTimeout(()=>{
-						node.innerHTML=`<span style="color: red;">请输入有效的数字，至多${num2}</span>`;;
-					},10);
-				};
-				node.onkeydown=(e)=>{
+
+				node.onkeydown = (e) => {
 					e.stopPropagation();
-					if (e.keyCode==13) button.onclick();
+					if (e.keyCode == 13) button.click();
 				};
-				_status.imchoosing=true;
+
+				_status.imchoosing = true;
 				game.pause();
+
+				function applyStylesToNode(node, type) {
+					switch (type) {
+						case 'input':
+							node.style.width = '400px';
+							node.style.height = '30px';
+							node.style.lineHeight = '30px';
+							node.style.fontFamily = 'xinwei';
+							node.style.fontSize = '30px';
+							node.style.padding = '10px';
+							node.style.left = 'calc(50% - 200px)';
+							node.style.top = 'calc(50% - 20px)';
+							node.style.whiteSpace = 'nowrap';
+							node.style.webkitUserSelect = 'text';
+							node.style.textAlign = 'center';
+							break;
+						case 'button':
+							node.style.width = '70px';
+							node.style.left = 'calc(50% - 35px)';
+							node.style.top = 'calc(50% + 60px)';
+							break;
+					}
+				}
+
+				function validateAndHandleInput(node, num2) {
+					const name = node.innerText.trim();
+					if (/^\d+$/.test(name) && Number(name) <= num2) {
+						// 正确的数字输入处理
+					} else {
+						node.innerText = `请输入有效的数字，至多${num2}`;
+					}
+				}
+
+				function handleButtonClick(node, num2) {
+					const name = node.innerText.trim();
+					try {
+						if (/^\d+$/.test(name) && Number(name) <= num2) {
+							ui.window.removeChild(node);
+							ui.window.removeChild(button);
+							game.resume();
+							num = Number(name);
+							lib.skill[event.name].getshilue(player, num);
+						} else {
+							alert(getAlertMessage(name, num2));
+						}
+					} catch (error) {
+						console.error("An error occurred:", error);
+					} finally {
+						node.innerText = `请输入有效的数字，至多${num2}`;
+					}
+				}
+
+				function getAlertMessage(name, num2) {
+					if (name.length == 0) {
+						return `请先输入一个有效的数字`;
+					} else if (!/^\d+$/.test(name)) {
+						return `${name}不是一个有效的数字`;
+					} else if (Number(name) > num2) {
+						return `${Number(name)}超过${num2}，请重新输入`;
+					}
+				}
 			}else{
 				num=get.rand(1,player.countMark("xjzh_diablo_lingshou"));
 				lib.skill[event.name].getshilue(player,num);
@@ -6296,14 +6307,14 @@ const skills={
 				direct:true,
 				priority:10,
 				sub:true,
-				filter:function(event,player){
+				filter(event,player){
 					if(game.roundNumber==0) return false;
 					if(!player.storage.xjzh_diablo_shilue) return false;
 					return true;
 				},
 				async content(event,trigger,player){
 					player.storage.xjzh_diablo_shilue=false;
-					player.storage.xjzh_diablo_linglijianmian+=30;
+					player.xjzhReduce+=0.3;
 				},
 			},
 		},
@@ -6325,48 +6336,28 @@ const skills={
 		level:1,
 		powerDrain:45,
 		xjzh_fengbaoSkill:true,
-		filterTarget:function(card,player,target){
+		filterTarget(card,player,target){
 			return target!=player;
 		},
-		filter:function(event,player){
-			if(player.storage.xjzh_diablo_linglijianmian){
-				var num=Math.min(player.storage.xjzh_diablo_linglijianmian,100);
-			}else{
-				var num=0;
-			}
-			var num2=lib.skill.xjzh_diablo_leibao.powerDrain;
-			var numx=Math.floor(num2*(1-num/100));
-			return player.xjzhMp>=numx;
+		filter(event,player){
+			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce;
+			return player.xjzhMp>=powerDrain*(1-num);
 		},
-		content:function(){
-			"step 0"
-			if(player.storage.xjzh_diablo_linglijianmian){
-				var num=Math.min(player.storage.xjzh_diablo_linglijianmian,100);
-			}else{
-				var num=0;
-			}
-			var num2=lib.skill.xjzh_diablo_leibao.powerDrain;
-			var numx=Math.floor(num2*(1-num/100));
-			player.changexjzhMp(-numx);
-			"step 1"
+		async content(event,trigger,player){
+			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce,level=lib.skill.xjzh_diablo_leibao.level;
+			let num2=powerDrain*(1-num);
+			await player.changexjzhMp(-num2);
 			game.xjzh_playEffect('xjzh_skillEffect_leiji',target);
-			var num=lib.skill.xjzh_diablo_leibao.level;
-			target.damage(num,'nocard',player,'thunder');
-			"step 2"
-			var numx=0.15;
-			if(player.storage.xjzh_diablo_randomhuixin){
-				var num=player.storage.xjzh_diablo_randomhuixin;
-				numx*=(1+num/100)
-			}
+			await target.damage(num,'nocard',player,'thunder');
+			let numx=player.xjzhHuixin*0.35;
 			if(Math.random()<=numx) target.changexjzhBUFF('gandian',1);
 		},
 		ai:{
 			order:12,
 			expose:0.5,
 			result:{
-				target:function(target){
-					var num=lib.skill.xjzh_diablo_leibao.level;
-					return -num;
+				target(target){
+					return -lib.skill.xjzh_diablo_leibao.level;
 				},
 			},
 		},
@@ -6376,37 +6367,26 @@ const skills={
 		level:1,
 		usable:1,
 		xjzh_langrenSkill:true,
-		check:function(event,player){
+		check(event,player){
 			if(player.isDamaged()){
 				if(player.xjzhMp<player.xjzhmaxMp) return 10;
 				return 2;
 			}
 			return 0.5;
 		},
-		content:function(){
-			"step 0"
-			var num=lib.skill.xjzh_diablo_leibao.level;
+		async content(event,trigger,player){
+			let num=lib.skill.xjzh_diablo_leibao.level;
 			player.recover(Math.floor(num/5));
 			player.changexjzhMp(20);
-			var numx=0.05;
-			if(player.storage.xjzh_diablo_randomhuixin){
-				var num=player.storage.xjzh_diablo_randomhuixin;
-				numx*=(1+num/100)
-			}
-			if(Math.random()<=numx) player.recoverTo(player.maxHp);
-			"step 1"
-			var numx=0.25;
-			if(game.xjzh_hasEquiped("xjzh_card_fengbaopaoxiao",player.name1)){
-				if(Math.random<=numx) player.changexjzhMp(20);
-			}
+			if(Math.random()<=player.xjzhHuixin*0.05) player.recoverTo(player.maxHp);
 		},
 		ai:{
 			order:12,
 			expose:0.5,
 			result:{
-				player:function(player){
-					var num=lib.skill.xjzh_diablo_kuanghou.level;
-					return num/5+player.getDamagedHp();
+				player(player){
+					let num=lib.skill.xjzh_diablo_kuanghou.level;
+					return num/5+player.getDamagedHp(true);
 				},
 			},
 		},
@@ -6416,71 +6396,44 @@ const skills={
 			player:"useCardToPlayer",
 		},
 		mod:{
-			selectTarget:function(card,player,range){
-				var type=get.tag(card,'damage');
+			selectTarget(card,player,range){
+				let type=get.tag(card,'damage');
 				if(!get.tag(card,'damage')) return
 				range[1]=1;
 			},
 		},
-		filter:function(event,player){
-			return get.tag(event.card,'damage');
+		filter(event,player){
+			return event.card&&get.tag(event.card,'damage');
 		},
 		level:1,
 		powerDrain:35,
 		forced:true,
 		locked:false,
 		xjzh_xiongrenSkill:true,
-		content:function(){
-			"step 0"
-			player.addTempSkill('unequip','useCardAfter');
+		async content(event,trigger,player){
+			await player.addTempSkill('unequip','useCardAfter');
 			event.qianggu=false;
-			"step 1"
 			if(player.getStat('damage')){
-				if(player.storage.xjzh_diablo_linglijianmian){
-					var num=Math.min(player.storage.xjzh_diablo_linglijianmian,100);
-				}else{
-					var num=0;
+				let num=lib.skill.xjzh_diablo_zhongou.powerDrain*(1-player.xjzhReduce),level=lib.skill.xjzh_diablo_zhongou.level;
+				let qianggu=get.playerName(player).filter(name=>game.xjzh_hasEquiped("xjzh_qishu_wuyan",name)).length?true:false;
+				if(player.xjzhMp>=num||qianggu==true){
+					const {result:{bool}}=
+					qianggu==true?{result:{bool:true}}:
+					await player.chooseBool(`〖重欧〗：是否消耗${num}灵力获得${level}点护甲和强固点体力值`).set('ai',()=>{return 1});
+					if(bool){
+						player.changexjzhMp(qianggu==false?num:-num);
+						player.changeHujia(level);
+						player.changexjzhBUFF('qianggu',level);
+					}
 				}
-				var num2=lib.skill.xjzh_diablo_zhongou.powerDrain;
-				var numx=Math.floor(num2*(1-num/100));
-				event.numx=numx;
-				if(game.xjzh_hasEquiped("xjzh_qishu_wuyan",player.name1)){
-					event.qianggu=true;
-					event.goto(2);
-					event.finish();
-					return;
-				}
-				else if(player.xjzhMp<numx){
-					event.finish();
-					return;
-				}
-				player.chooseBool('〖重欧〗：是否消耗'+numx+'点灵力获得点护甲强固点体力值').set('ai',function(){
-					var num=player.xjzhMp;
-					if(num>numx) return 1;
-					return 0;
-				}).set('numx',numx);
-			}else{
-				event.finish();
-				return;
-			}
-			"step 2"
-			if(result.bool||event.qianggu){
-				player.changexjzhMp(event.qianggu==true?event.numx:-event.numx);
-				var num=lib.skill.xjzh_diablo_zhongou.level;
-				player.changeHujia(num);
-				player.changexjzhBUFF('qianggu',num);
-				var numx=0.25;
-				if(player.storage.xjzh_diablo_randomhuixin){
-					var num=player.storage.xjzh_diablo_randomhuixin;
-					numx*=(1+num/100)
-				}
-				if(Math.random()<=numx) trigger.target.changexjzhBUFF('jiansu',1);
+				if(Math.random()<=player.xjzhHuixin*0.25) trigger.target.changexjzhBUFF('jiansu',1);
 			}
 		},
 	},
 	"xjzh_diablo_fensui":{
 		trigger:{
-			player:"useCard",
+			player:["useCard","phaseBefore"],
+			source:"damageBegin",
 		},
 		forced:true,
 		locked:true,
@@ -6491,60 +6444,29 @@ const skills={
 		marktext:"碎",
 		intro:{
 			name:"粉碎",
-			content:function(storage,player){
-				var num=player.countMark("xjzh_diablo_fensui");
+			content(storage,player){
+				let num=player.countMark("xjzh_diablo_fensui");
 				if(num==0||!num) return;
-				if(num==12) return "你下一次造成伤害必定暴击";
+				if(num>=6) return "你下一次造成伤害必定暴击";
 				return get.translation(num);
 			},
 		},
-		filter:function(event,player){
-			if(["delay","equip"].includes(get.type(event.card))) return false;
+		filter:function(event,player,name){
+			if(name=="phaseBefore") return true;
+			if(name=="damageBegin") return player.countMark("xjzh_diablo_fensui")>=6;
+			if(!event.cards||!event.cards.length) return false;
+			if(["delay","equip"].includes(get.type(event.cards[0]))) return false;
 			return player.isHealthy();
 		},
-		group:["xjzh_diablo_fensui_damage","xjzh_diablo_fensui_phase"],
-		content:function(){
-			trigger.effectCount++
-			game.log(trigger.card,"额外结算一次");
-		},
-		subSkill:{
-			"damage":{
-				trigger:{
-					source:"damageBegin",
-				},
-				direct:true,
-				priority:3,
-				sub:true,
-				filter:function(event,player){
-					if(event.cancelled||event.numFixed) return false;
-					return game.phaseNumber%12==0;
-				},
-				content:function(){
-					var num=lib.skill.xjzh_diablo_fensui.level+1;
-					game.xjzh_Criticalstrike(player,trigger.num,num,null,true);
-					player.clearMark("xjzh_diablo_fensui",false);
-					var numx=0.15;
-					if(player.storage.xjzh_diablo_randomhuixin){
-						var num=player.storage.xjzh_diablo_randomhuixin;
-						numx*=(1+num/100)
-					}
-					if(Math.random()<=numx) trigger.player.turnOver(true);
-				},
-			},
-			"phase":{
-				trigger:{
-					player:"phaseBefore",
-				},
-				direct:true,
-				priority:3,
-				sub:true,
-				filter:function(event,player){
-					if(player.countMark("xjzh_diablo_fensui")<12) return true;
-					return false;
-				},
-				content:function(){
-					player.addMark("xjzh_diablo_fensui",1,false);
-				},
+		async content(event,trigger,player){
+			if(event.triggername=="phaseBefore") player.addMark("xjzh_diablo_fensui",1,false);
+			else if(event.triggername=="damageBegin"){
+				trigger.num*=2;
+				player.clearMark("xjzh_diablo_fensui",false);
+				if(Math.random()<=player.xjzhHuixin*0.50) trigger.player.turnOver(true);
+			}else{
+				trigger.effectCount++
+				game.log(trigger.card,"额外结算一次");
 			}
 		},
 	},
@@ -6552,26 +6474,19 @@ const skills={
 		trigger:{
 			source:"damageBegin",
 		},
-		filter:function(event,player){
+		filter(event,player){
 			if(player.xjzhMp<25) return false;
 			return true;
 		},
-		content:function(){
-			"step 0"
+		async content(event,trigger,player){
 			if(!game.hasNature(trigger)||!game.hasNature(trigger,"poison")) game.setNature(trigger,"poison",false);
-			"step 1"
-			var num=0.33;
-			var num2=0.25;
+			let huixin=player.xjzhHuixin,num=huixin*0.33,num2=huixin*0.25;
 			if(get.xjzhBUFFNum(player,'zhongdu')>0){
 				num*=1.5;
 				num2*=1.5;
 			}
-			if(Math.random()>num){
-				player.changexjzhMp(-25);
-			}
-			if(Math.random()<=num2){
-				trigger.player.changexjzhBUFF('zhongdu',1);
-			}
+			if(Math.random()>num) player.changexjzhMp(-25);
+			if(Math.random()<=num2) trigger.player.changexjzhBUFF('zhongdu',1);
 		},
 	},
 	"xjzh_diablo_xianjing":{
@@ -6581,69 +6496,53 @@ const skills={
 		marktext:"陷",
 		intro:{
 			name:"剧毒陷阱",
-			mark:function(dialog,storage,player){
-				if(!player.storage.xjzh_diablo_xianjing) return;
-				var storage=player.storage.xjzh_diablo_xianjing;
+			mark(dialog,storage,player){
+				if(!storage) return;
 				if(player.isUnderControl(true)) dialog.addAuto([storage,'vcard']);
-
 			},
 		},
-		init:function(player){
-			if(!player.storage.xjzh_diablo_xianjing) player.storage.xjzh_diablo_xianjing=[];
+		init(player,skill){
+			if(!player.storage[skill]) player.storage[skill]=[];
 		},
-		group:"xjzh_diablo_xianjing_lose",
-		content:function(event,player){
-			"step 0"
-			var cards=Array.from(ui.cardPile.childNodes).filter(card=>!player.storage.xjzh_diablo_xianjing.includes(card));
+		group:"xjzh_diablo_xianjing_gain",
+		async content(event,trigger,player){
+			let cards=Array.from(ui.cardPile.childNodes).filter(card=>!player.storage[event.name].includes(card));
 			if(!cards.length) return;
-			event.card=cards.randomGet();
-			var dialog=ui.create.dialog('hidden',[[event.card],'vcard']);
+			let card=cards.randomGet(),dialog=ui.create.dialog('hidden',[[event.card],'vcard']);
 			player.chooseControl('ok').set('dialog',dialog);
-			"step 1"
-			player.storage.xjzh_diablo_xianjing.push(event.card);
-			"step 2"
-			game.log(player.storage.xjzh_diablo_xianjing)
-			var num=get.rand(ui.cardPile.childElementCount);
-			event.card.fix();
-			ui.cardPile.insertBefore(event.card,ui.cardPile.childNodes[num]);
+			player.storage[event.name].push(card);
+			let num=get.rand(ui.cardPile.childElementCount);
+			card.fix();
+			ui.cardPile.insertBefore(card,ui.cardPile.childNodes[num]);
 			game.updateRoundNumber();
 		},
 		subSkill:{
-			"lose":{
+			"gain":{
 				trigger:{
-					global:"loseAfter",
+					global:"gainAfter",
 				},
 				forced:true,
 				priority:1,
-				filter:function(event,player){
+				filter(event,player){
 					if(event.player==player) return false;
-					var cards=event.cards;
-					var num=0
-					for(var i=0;i<cards.length;i++){
-						if(player.storage.xjzh_diablo_xianjing.includes(cards[i])){
-							num++
+					let cards=event.cards.slice(0),bool=false;
+					for(let card of cards){
+						if(player.storage.xjzh_diablo_xianjing.includes(card)){
+							bool=true;
 							break;
 						}
 					}
-					if(num==0) return false;
-					return true;
+					return bool==true;
 				},
-				content:function(){
-					"step 0"
+				async content(event,trigger,player){
 					trigger.player.changexjzhBUFF('zhongdu',get.xjzhBUFFInfo("zhongdu",'limit'));
-					"step 1"
-					if(Math.random()<=0.3) player.changexjzhMp(25);
-					"step 2"
-					var list=[];
-					var cards=trigger.cards;
-					for(var i=0;i<cards.length;i++){
-						if(player.storage.xjzh_diablo_xianjing.includes(cards[i])){
-							list.push(cards[i]);
-							player.storage.xjzh_diablo_xianjing.remove(cards[i]);
-						}
+					let num=player.xjzhHuixin;
+					if(Math.random()<=num*0.3) player.changexjzhMp(25);
+					let cards=trigger.cards.filter(card=>player.storage.xjzh_diablo_xianjing.includes(card));
+					if(Math.random()<=num*0.2){
+						player.draw(2);
+						player.gain(cards,'gain2',log);
 					}
-					if(!list.length) return;
-					if(Math.random()<=0.2) player.gain(list,'gain2',log);
 				},
 			},
 		},
@@ -6658,28 +6557,18 @@ const skills={
 		trigger:{
 			source:"damageBegin1",
 		},
-		direct:true,
+		forced:true,
 		priority:1,
 		locked:true,
-		filter:function(event,player){
-			if(!player.storage.xjzh_diablo_xianjing) return false;
-			var cards=event.player.getCards('hej',function(card){
-				return player.storage.xjzh_diablo_xianjing.includes(card);
-			});
-			if(!cards.length) return false;
-			return Math.random()<=0.25;
+		filter(event,player){
+			if(get.xjzhBUFFNum(event.player,"zhongdu")>0) return true;
+			return false;
 		},
-		content:function(){
-			var num=get.rand(1,2);
-			switch(num){
-				case 0:
-				game.setNature(trigger,'poison',false);
-				trigger.num++
-				break;
-				case 1:
-				player.useSkill("xjzh_diablo_xianjing",player);
-				break;
-			}
+		async content(event,trigger,player){
+			game.setNature(trigger,'poison',false);
+			trigger.num++;
+			let num=player.xjzhHuixin*0.25;
+			if(Math.random()<=num) player.useSkill("xjzh_diablo_xianjing",player);
 		},
 	},
 
