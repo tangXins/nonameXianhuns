@@ -1114,7 +1114,7 @@ const skills={
 		init(player,skill){
 			player.storage[skill]=new Map(
 				[
-					["out",15],
+					["out",20],
 					["time",12000],
 				]
 			);
@@ -1183,9 +1183,8 @@ const skills={
 		},
 		async content(event,trigger,player){
 			player.removeMark("xjzh_boss_zenghen",1,false);
-			player.gainMaxHp(player.maxHp);
+			await player.gainMaxHp(player.maxHp);
 			player.recoverTo(player.maxHp);
-			player.addSkill("xjzh_boss_xueyan");
 			player.update();
 			let list=player.getEnemies().sortBySeat(player);
 			while(list.length){
@@ -1202,6 +1201,7 @@ const skills={
 					storage.set("count",storage.get("count")+1);
 				}
 			}
+			await player.addSkills("xjzh_boss_xueyan");
 		},
 	},
 	"xjzh_boss_xueyan":{

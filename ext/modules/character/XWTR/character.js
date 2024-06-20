@@ -41,12 +41,15 @@ const characters = {
 		"name":"xjzhMp",
 		"maxMp":100,
 		"mp":100,
-		"huixin":1
+		"huixin":1,
+		"reduce":0
 	}]],
 	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],[{
 		"name":"xjzhMp",
 		"maxMp":100,
-		"mp":0
+		"mp":0,
+		"huixin":0.1,
+		"reduce":0
 	}]],
 	"xjzh_diablo_moruina":["female","qun",4,["xjzh_diablo_luanshe","xjzh_diablo_jingshe","xjzh_diablo_guanzhu"],[]],
 	"xjzh_diablo_kaxia":["female","qun",4,["xjzh_diablo_sushe","xjzh_diablo_yingbi","xjzh_diablo_jianyu"],[]],
@@ -65,12 +68,16 @@ const characters = {
 	"xjzh_dnf_jianshen":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
 		"name":"xjzhMp",
 		"maxMp":80,
-		"mp":80
+		"mp":80,
+		"huixin":0.1,
+		"reduce":0
 	}]],
 	"xjzh_dnf_shengqi":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
 		"name":"xjzhMp",
 		"maxMp":100,
-		"mp":80
+		"mp":80,
+		"huixin":0.1,
+		"reduce":0
 	}]],
 	"xjzh_dnf_suodeluosi":["male","qun",3,["xjzh_dnf_jianshenx","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],[],[]],
 

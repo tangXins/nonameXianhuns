@@ -891,21 +891,36 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				state.refreshPage();
 			});
 
-			// 确保bk变量是有效的DOM元素
-			bk.addEventListener('wheel', function(event) {
-				// 阻止浏览器默认的滚动行为
+			// 创建节流函数
+			function throttle(func, delay) {
+				let lastTime = 0;
+				return function() {
+					const now = new Date().getTime();
+					if (now - lastTime > delay) {
+						lastTime = now;
+						func.apply(this, arguments);
+					}
+				};
+			}
+
+			// 使用节流包装原有处理函数
+			const handleWheel = throttle(function(event) {
 				event.preventDefault();
 
-				// 根据滚动方向决定pageNum增减
+				// 获取总页数并更新页码
+				const totalPages = Math.ceil(state.equipNum / 8);
+
 				if (event.deltaY < 0) { // 向上滚动
-					if(state.pageNum>0) state.pageNum--;
+					state.pageNum = (state.pageNum - 1 + totalPages) % totalPages; // 循环回到上一页
 				} else { // 向下滚动
-					if((state.equipNum/8-1)>state.pageNum) state.pageNum++;
+					state.pageNum = (state.pageNum + 1) % totalPages; // 循环进入下一页
 				}
 
-				// 刷新页面
 				state.refreshPage();
-			});
+			}, 100); // 限制每100毫秒内只执行一次
+
+			// 添加节流后的事件监听器
+			bk.addEventListener('wheel', handleWheel);
 
 			//材料按钮
 			var cailiaoBox=ui.create.div('.xjzh-equipPage-cailiao',bk);

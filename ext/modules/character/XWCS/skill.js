@@ -2004,7 +2004,7 @@ const skills={
 			},
 			mark(dialog,storage,player){
 				if(storage&&storage.length){
-					dialog.addSmall([[storage],'character']);
+					dialog.addSmall([[storage[storage.length-1]],'character']);
 					dialog.add('----------------<br>----------------');
 				};
 				if(storage&&storage.length){
@@ -2073,7 +2073,7 @@ const skills={
 						if(event.isMine()){
 							dialog=ui.create.dialog('forcebutton');
 							dialog.add('请选择获得一项技能');
-							for(i=0;i<skills.length;i++){
+							for(let i=0;i<skills.length;i++){
 								if(lib.translate[skills[i]+'_info']){
 									var translation=get.translation(skills[i]);
 									if(translation[0]=='新'&&translation.length==3){
@@ -2133,18 +2133,23 @@ const skills={
 			let list=game.xjzh_wujiangpai().filter(name=>{
 				return lib.character[name][0]=='female';
 			}).randomGet();
-			player.setAvatar(player.name1=="xjzh_qixia_daxiongxiaomao"?player.name1:player.name2,list);
-			var info=lib.character[list]
+			player.setAvatar("xjzh_qixia_daxiongxiaomao",list);
+			let info=lib.character[list],arr=[];
 			player.sex=info[0];
 			if(typeof info[2]=="string"){
-				info[2]=Array.from(info[2])
-				player.maxHp=info[2][2]
-				player.hp=info[2][0]
+				if(info[2].includes("/")){
+					arr=info[2].split("/");
+					player.maxHp=Number(arr[1]);
+					player.hp=Number(arr[0]);
+				}else{
+					player.maxHp=Number(info[2]);
+					player.hp=Number(info[2]);
+				}
 			}else{
-				player.maxHp=info[2]
-				player.hp=info[2]
+				player.maxHp=info[2];
+				player.hp=info[2];
 			}
-			player.group=info[1]
+			player.changeGroup(info[1]);
 			player.update();
 		},
 		ai:{

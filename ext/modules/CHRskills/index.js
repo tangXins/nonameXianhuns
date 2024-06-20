@@ -16,13 +16,13 @@ export const CHRskills={
 			charlotte:true,
 			unique:true,
 			superCharlotte:true,*/
-        	marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_skill_showMpCount.png>`,
+        	marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_skill_showMpCount.png>`,
 			intro:{
 				name:"魔力面板",
 				content(storage,player){
 					let str=``;
-					if(player.xjzhHuixin) str+=`<li>会心几率：${player.xjzhHuixin*100}%`;
-					if(player.xjzhReduce) str+=`<li>消耗减免：${player.xjzhReduce*100}%`;
+					if(player.xjzhHuixin) str+=`<li>会心几率：${Math.round(player.xjzhHuixin*100)}%`;
+					if(player.xjzhReduce) str+=`<li>消耗减免：${Math.round(player.xjzhReduce*100)}%`;
 					return str;
 				},
 			},

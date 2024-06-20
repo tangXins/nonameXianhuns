@@ -7309,153 +7309,105 @@ const skills={
 		},
 	},
 	"xjzh_sanguo_baima":{
-		enable:"phaseUse",
-		usable:1,
+		trigger:{
+			global:"equipAfter",
+		},
 		mark:true,
-		multitarget:true,
 		marktext:"白",
 		intro:{
 			name:"白马义从",
-			mark:function(dialog,content,player){
-				var num1=Array.from(ui.cardPile.childNodes).filter(card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4').length;
-				var num2=Array.from(ui.discardPile.childNodes).filter(card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4').length;
-				return '牌堆剩余'+get.cnNumber(num1)+'张坐骑牌<br>弃牌堆剩余'+get.cnNumber(num2)+'张坐骑牌';
+			mark(dialog,content,player){
+				let num=Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(event.card))).length;
+				return `牌堆剩余${get.cnNumber(num)}张坐骑牌`;
 			},
 		},
-		filter:function(event,player){
-			return game.hasPlayer(function(current){
-				if(current.hasEmptySlot("equip3_4")) return true;
-			});
-			return false;
+		forced:true,
+		locked:true,
+		filter(event,player){
+			return event.card&&["equip3","equip4"].includes(get.subtype(event.card));
 		},
-		filterTarget:function(card,player,target){
-			return target.hasEmptySlot('equip3_4');
-		},
-		selectTarget:1,
-		content:function(){
-			"step 0"
-			event.listEquip=[
-				'equip3',
-				'equip4',
-			];
-			while(event.listEquip.length){
-				var pos=event.listEquip.shift();
-				if(target.hasEmptySlot(pos)){
-					var equip=get.cardPile(function(card){
-						return get.type(card)=='equip'&&get.subtype(card)==pos;
-					});
-					if(equip){
-						target.equip(equip);
-						target.$gain2(equip,false);
-					};
-				};
-			}
-			"step 1"
-			player.insertPhase("xjzh_sanguo_baima",true);
-		},
-		ai:{
-			order:8,
-			result:{
-				player:1.5,
-				target:2,
-			},
+		async content(event,trigger,player){
+			await player.draw(2);
+			if(!Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(event.card))).length) player.insertPhase();
 		},
 	},
 	"xjzh_sanguo_yicong":{
 		mark:true,
 		marktext:"义",
-		locked:true,
-		group:["xjzh_sanguo_yicong_enable"],
-		init:function(player){
+		init(player){
 			player.disableEquip(3);
 			player.disableEquip(4);
 		},
-		onremove:function(player,skill){
+		onremove(player,skill){
 			player.enableEquip(3);
 			player.enableEquip(4);
 		},
 		intro:{
 			name:"白马义从",
-			content:function(storage,player){
-				var str=''
-				var num1=game.countPlayer(function(current){
-					return current.getEquip(3)
-				});
-				var num2=game.countPlayer(function(current){
-					return current.getEquip(4)
-				});
-				str+='进攻距离:'+get.translation(num2+1)+'<br>';
-				if(num1)str+='防御距离:'+get.translation(num1);
-				return str;
+			content(storage,player){
+				return `进攻距离：${game.countPlayer(current=>!current.getEquips(4))+1}<br>防御距离:${game.countPlayer(current=>!current.getEquips(3))+1}`;
 			},
 		},
 		mod:{
-			globalTo:function(from,to,distance){
-				var num=game.countPlayer(function(current){
-					return current.getEquip(3)
-				});
-				return distance+num;
+			globalFrom(from,to,distance){
+				return distance-game.countPlayer(current=>!current.getEquips(4));
 			},
-			globalFrom:function(from,to,distance){
-				var num=game.countPlayer(function(current){
-					return current.getEquip(4)
-				});
-				return distance-(1+num);
+			globalTo(from,to,distance){
+				return distance+game.countPlayer(current=>!current.getEquips(3));
 			},
 		},
-		trigger:{global:'equipAfter'},
+		trigger:{player:'enableEquipBefore'},
 		forced:true,
-		audio:"ext:仙家之魂/audio/skill:3",
-		filter:function(event,player){
-			return !event.audioed&&get.type(event.card)=='equip'&&(get.subtype(event.card)=='equip3'||get.subtype(event.card)=='equip4');
+		locked:true,
+		audio:"ext:仙家之魂/audio/skill:4",
+		filter(event,player){
+			return event.slots.some(item=>["equip3","equip4"].includes(item));
 		},
-		content:function(){
-			trigger.audioed=true;
+		async content(event,trigger,player){
+			while(trigger.slots.some(item=>["equip3","equip4"].includes(item))) trigger.slots.removeArray(["equip3","equip4"]);
+			game.log(player,"的坐骑栏已废除且无法恢复");
 		},
-		subSkill:{
-			"enable":{
-				trigger:{
-					player:["enableEquipBefore"],
-				},
-				forced:true,
-				popup:false,
-				audio:"ext:仙家之魂/audio/skill:1",
-				filter:function (event,player){
-					return event.pos=="equip3"||event.pos=="equip4";
-				},
-				content:function (){
-					trigger.cancel();
-					game.log(player,"的坐骑栏已废除且无法恢复");
-				},
-				ai:{
-					threaten:0.8,
-				}
-			},
+		ai:{
+			threaten:0.8,
 		},
 	},
 	"xjzh_sanguo_muma":{
 		trigger:{
-			player:["damageBegin"],
+			global:"loseAfter",
 		},
-		filter:function(event,player){
-			return Array.from(ui.discardPile.childNodes).filter(card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4').length;
+		filter(event,player){
+			if(!event.cards||!event.cards.length) return false;
+			if(!game.hasPlayer(current=>current.getEquips())) return false;
+			let cards=event.cards.filter(card=>{
+				if(!["equip3","equip4"].includes(get.subtype(card))) return false;
+				if(!game.hasPlayer(current=>current.canEquip(card))) return false;
+				return get.position(card)=='d';
+			});
+			return cards.length;
 		},
 		forced:true,
 		locked:true,
 		priority:10,
-		content:function(){
-			var card1=Array.from(ui.cardPile.childNodes).filter(card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4');
-			var card2=Array.from(ui.discardPile.childNodes).filter(card=>get.subtype(card)=='equip3'||get.subtype(card)=='equip4');
-			var num1=card1.length
-			var num2=card2.length
-			for(var k of card2){
-				k.fix();
-				if(k.storage.vanish) continue;
-				ui.cardPile.insertBefore(k,ui.cardPile.childNodes[get.rand(ui.cardPile.childElementCount)]);
-				player.updateMark("xjzh_sanguo_baima");
-				game.updateRoundNumber();
+		async content(event,trigger,player){
+			let cards=trigger.cards.filter(card=>{
+				if(!["equip3","equip4"].includes(get.subtype(card))) return false;
+				if(!game.hasPlayer(current=>current.canEquip(card))) return false;
+				return get.position(card)=='d';
+			}),str=`〖募马〗：选择一张坐骑牌令一名其他角色装备之`;
+			const links=await player.chooseCardButton(cards,1,str).set('ai',(button,target)=>{
+				return target.getUseValue(button.link);
+			}).forResultLinks();
+			if(links){
+				const targets=await player.chooseTarget(str,true,(card,player,target)=>{
+					if(!target.canEquip(links[0])) return false;
+					return player!=target;
+				}).set('ai',target=>{
+					return get.attitude(player,target);
+				}).forResultTargets();
+				if(targets){
+					targets[0].equip(links[0]);
+				}
 			}
-			if(num2>num1) trigger.changeToZero();
 		},
 	},
 	"xjzh_sanguo_yuewu":{
@@ -10058,68 +10010,47 @@ const skills={
 	},
 	"xjzh_sanguo_zhiheng":{
 		enable:"phaseUse",
-		usable:function(player){
+		usable(player){
 			return player.getDamagedHp()+1;
 		},
 		audio:"ext:仙家之魂/audio/skill:2",
 		derivation:["xjzh_sanguo_wuzhan","xjzh_sanguo_wumeng","xjzh_sanguo_wuxing","xjzh_sanguo_wuzuo"],
-		filter:function(event,player){
-			var num=lib.skill.xjzh_sanguo_zhiheng.usable(player);
-			if(get.skillCount("xjzh_sanguo_zhiheng",player)>=num) return false;
+		filter(event,player){
+			let num=lib.skill.xjzh_sanguo_zhiheng.usable(player);
+			if(player.countSkill("xjzh_sanguo_zhiheng")>=num) return false;
 			return player.countCards('he');
 		},
 		position:'he',
 		filterCard:lib.filter.cardDiscardable,
 		selectCard:[1,Infinity],
 		prompt:'〖制衡〗：弃置任意张牌并摸等量的牌',
-		check:function(card){
-			var player=_status.event.player;
-			if(get.position(card)=='h'&&!player.countCards('h','du')&&(player.hp>2||!player.countCards('h',function(card){
+		check(card){
+			let player=get.player();
+			if(get.position(card)=='h'&&!player.countCards('h','du')&&(player.hp>2||!player.countCards('h',card=>{
 				return get.value(card)>=8;
-			}))){
-				return 1;
-			}
+			}))) return 1;
 			return 6-get.value(card)
 		},
 		discard:false,
-		   lose:false,
-		   delay:false,
+		lose:false,
+	    delay:false,
 		audio:"ext:仙家之魂/audio/skill:2",
-		content:function(){
-			var num=0
-			var num2=0
-			var num3=0
-			var hs=player.getCards('h');
-			var hs2=player.getCards('e');
-			if(hs.length){
-				for(var i=0;i<hs.length;i++){
-					if(cards.includes(hs[i])) num++
-				}
-			}
-			if(hs2.length){
-				for(var i=0;i<hs2.length;i++){
-					if(cards.includes(hs2[i])) num2++
-				}
-			}
-			if(num==hs.length&&num!=0) num3++
-			if(num2==hs2.length&&num2!=0) num3++
+		async content(event,trigger,player){
+			let cards=event.cards.slice(0);
+			let suits=cards.map(card=>get.suit(card)).unique();
 			player.discard(cards);
-			player.draw(cards.length+num3)
-			if(!player.storage.xjzh_sanguo_zhiheng) player.storage.xjzh_sanguo_zhiheng=0
-			player.storage.xjzh_sanguo_zhiheng++
+			player.draw(cards.length+suits.length);
 		},
 		ai:{
 			order:3,
-			threaten:0.8,
+			threaten:1.5,
 			result:{
-				player:function(player,target){
-					var list=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0);
-					var num=get.skillCount("xjzh_sanguo_zhiheng",player);
+				player(player,target){
+					let list=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0),num=player.countSkill("xjzh_sanguo_zhiheng");
 					if(num<=4) return 1.5;
 					return 2;
 				},
 			},
-			threaten:1.5
 		},
 	},
 	"xjzh_sanguo_wuyun":{
@@ -10127,29 +10058,18 @@ const skills={
 			player:"phaseJieshuBegin",
 		},
 		forced:true,
+		locked:false,
 		priority:3,
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
-			if(!player.storage.xjzh_sanguo_zhiheng) return false;
-			var list=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0);
-			var num=0
-			for(var i of list){
-				if(player.hasSkill(i)) num++
-			}
-			if(num>=4) return false;
+		filter(event,player){
+			let history=player.getHistory('useSkill',evt=>evt&&evt.skill=="xjzh_sanguo_zhiheng"),skills=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0);
+			if(!history.length) return false;
+			if(player.hasSkill(skills[history.length-1])) return false;
 			return true;
 		},
-		content:function(){
-			"step 0"
-			var list=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0);
-			var num=player.storage.xjzh_sanguo_zhiheng
-			if(num<=4){
-				player.addSkillLog(list[num-1]);
-			}/*else{
-				player.addSkillLog(list);
-			}*/
-			"step 1"
-			delete player.storage.xjzh_sanguo_zhiheng
+		async content(event,trigger,player){
+			let skills=lib.skill.xjzh_sanguo_zhiheng.derivation.slice(0),history=player.getHistory('useSkill',evt=>evt&&evt.skill=="xjzh_sanguo_zhiheng");
+			if(history.length<=4&&!player.hasSkill(skills[history.length-1])) player.addSkills(skills[history.length-1]);
 		},
 	},
 	"xjzh_sanguo_wuzhan":{
@@ -10163,8 +10083,8 @@ const skills={
 			return true;
 		},
 		limited:true,
-		init(player){
-			if(!player.storage.xjzh_sanguo_wuzhan) player.storage.xjzh_sanguo_wuzhan=false;
+		init(player,skill){
+			if(!player.storage[skill]) player.storage[skill]=false;
 		},
 		skillAnimation:true,
 		animationColor:'thunder',
@@ -10173,8 +10093,8 @@ const skills={
 			return player.getEnemies().length;
 		},
 		async content(event,trigger,player){
-			player.awakenSkill('xjzh_sanguo_wuzhan');
-			player.storage.xjzh_sanguo_wuzhan=true;
+			player.awakenSkill(event.name);
+			player.storage[event.name]=true;
 			let number=trigger.num;
 			while(number>0){
 				const targets=await player.chooseTarget("〖吴战〗：请选择令一名其他角色受到来自你的至多2点伤害，剩余可分配"+number+"点伤害",(card,player,target)=>{
@@ -10202,6 +10122,7 @@ const skills={
 					const {result:{control}}=list.length==1?{result:{control:list[0]}}:await player.chooseControl(list,"cancel2").set('ai',()=>{
 						let att=get.attitude(get.player(),targets[0]);
 						if(att>0) return 'cancel2';
+						if(targets[0].hasSkillTag("filterDamage")) return list[0];
 						return list.randomGet();
 					});
 					if(control){
@@ -10222,46 +10143,32 @@ const skills={
 		usable:1,
 		audio:"ext:仙家之魂/audio/skill:2",
 		filter(event,player){
-			return game.hasPlayer(current=>{
-				let list=get.playerName(current);
-				let bool=false;
-				if(list.some(name=>{
-					return lib.character[name][1]!="wu";
-				})) bool=true;
-				return current.group!="wu"||bool==true;
-			});
+			return game.hasPlayer(current=>current.group!="wu");
 		},
-		content(){
-			"step 0"
-			player.chooseTarget(get.prompt("xjzh_sanguo_wumeng"),true,function(card,player,target){
+		check(event,player){
+			return game.hasPlayer(current=>current.group!="wu"&&get.attitude(player,current)>0);
+		},
+		async content(event,trigger,player){
+			const targets=await player.chooseTarget(get.prompt("xjzh_sanguo_wumeng"),true,(card,player,target)=>{
 				if(target==player) return false;
-				let list=get.playerName(target);
-				let bool=false;
-				if(list.some(name=>{
-					return lib.character[name][1]!="wu";
-				})) bool=true;
-				return target.group!="wu"||bool==true;
-			}).set('ai',function(target){
+				return target.group!="wu";
+			}).set('ai',target=>{
 				return get.attitude(player,target);
-			});
-			"step 1"
-			if(result.bool){
-				event.cards=get.cards(trigger.num*2);
-				game.cardsGotoOrdering(event.cards);
-				event.target=result.targets[0]
-				player.chooseCardButton([1,event.cards.length/2],event.cards,true,'〖吴盟〗：选择'+get.translation(event.cards.length/2)+'张牌获得之，并令'+get.translation(result.targets[0])+'获得剩余的牌').set('filterButton',function(button){
+			}).forResultTargets();
+			if(targets){
+				let cards=get.cards(trigger.num*2);
+				game.cardsGotoOrdering(cards);
+				const links=player.chooseCardButton(Math.round(cards.length),cards,true,'〖吴盟〗：选择'+get.translation(Math.round(cards.length/2))+'张牌获得之，并令'+get.translation(targets[0])+'获得剩余的牌').set('filterButton',button=>{
 					if(!ui.selected.buttons.length) return true;
-					var selected=ui.selected.buttons;
-					if(selected>=event.cards.length/2) return false;
+					let selected=ui.selected.buttons;
+					if(selected>=Math.round(cards.length/2)) return false;
 					return true;
-				}).set('cards',event.cards);
+				}).forResultLinks();
+				if(links){
+					player.gain(links,'draw',player);
+					targets[0].gain(cards.filter(card=>!links.includes(card)),'draw',player);
+				}
 			}
-			"step 2"
-			if(result.links&&result.links.length){
-				player.gain(result.links,'draw',player);
-				event.target.gain(event.cards.filter(card=>!result.links.includes(card)),'draw',player);
-			}
-			"step 3"
 			trigger.changeToZero();
 		},
 	},
@@ -10277,22 +10184,16 @@ const skills={
 			return player.countCards('h')>=8;
 		},
 		mod:{
-			maxHandcard:function (player,num){
-				return game.countPlayer(function(current){
-					var list=[]
-					if(current.name) list.push(current.name);
-					if(current.name1) list.push(current.name1);
-					if(current.name2) list.push(current.name2);
-					var bool=false;
-					for(var name of list){
-						if(lib.character[name][1]=="wu") bool=true;
-					}
-					return current.group=="wu"||bool==true;
-				})*2+num;
+			maxHandcard(player,num){
+				return game.countPlayer(current=>current.group=="wu")*2+num;
 			},
 		},
-		content:function(){
+		async content(event,trigger,player){
 			trigger.num++
+		},
+		damageBonus:true,
+		skillTagFilter(player,tag){
+			if(tag=="damageBonus") return player.countCards('h')>=8;
 		},
 	},
 	"xjzh_sanguo_wuzuo":{
@@ -10303,26 +10204,24 @@ const skills={
 		usable:1,
 		frequent:true,
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
+		filter(event,player){
 			if(player.countCards('h')) return false;
-			var evt=event.getl(player);
+			let evt=event.getl(player);
 			return evt&&evt.player==player&&evt.hs&&evt.hs.length>0;
 		},
-		content:function(){
+		async content(event,trigger,player){
 			player.draw(2);
 		},
 		ai:{
 			threaten:0.8,
 			effect:{
-				target:function(card){
-					if(card.name=='guohe'||card.name=='liuxinghuoyu') return 0.5;
+				target(card){
+					if(get.tag(card,"loseCard")||get.tag(card,"discard")||get.tag(card,"gain")) return 0.5;
 				}
 			},
 			noh:true,
-			skillTagFilter:function(player,tag){
-				if(tag=='noh'){
-					if(player.countCards('h')!=1) return false;
-				}
+			skillTagFilter(player,tag){
+				if(tag=='noh') return player.countCards('h')==1;
 			}
 		},
 	},

@@ -390,8 +390,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						if(info.level) info.level+=3;
 					}while(skills.length);
 				}
-				player.xjzhHuixin=0.5;
-				player.xjzhReduce=(get.rand(25,35)/100);
+				let num=get.rand(25,35)/100;
+				player.xjzhHuixin?player.xjzhHuixin+=0.5:player.xjzhHuixin=0.5;
+				player.xjzhReduce?player.xjzhReduce+=num:player.xjzhReduce=num;
             },
 		},
 		"xjzh_qishu_fenglangkx":{

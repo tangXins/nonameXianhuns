@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from "../../../../../../noname.js";
+import { set } from "../../../../../../noname/util/config.js";
 
 /** @type { importCharacterConfig['skill'] } */
 const skills={
@@ -4014,7 +4015,7 @@ const skills={
 		fixed:true,
 		popup:false,
 		marktext2:"剑",
-        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_xiaxing.png>`,
+        marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_xiaxing.png>`,
 		intro:{
 			content:"当前已有#道剑气",
 		},
@@ -4443,218 +4444,100 @@ const skills={
 	},
 	"xjzh_wzry_jianzhong":{
 		trigger:{
-			global:["damageAfter"],
+			source:["damageAfter","damageBegin1"],
 		},
-		direct:true,
-		priority:100,
+		forced:true,
 		locked:true,
+		priority:6,
 		marktext2:"剑",
-        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianzhong.png>`,
+        marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianzhong.png>`,
 		intro:{
-			mark:function(dialog,content,player){
-				var cards=player.getExpansions('xjzh_wzry_jianzhong');
+			mark(dialog,content,player){
+				let cards=player.getExpansions('xjzh_wzry_jianzhong');
 				if(!cards.length) return;
-				var str='增伤几率：'+get.translation(cards.length*8)+'%';
+				let str=`增伤：${[...new Set(player.getExpansions("xjzh_wzry_jianzhong").map(card=>get.type(card,"trick",player)))].length}`;
 				dialog.add(str)
 				dialog.add(cards)
 			},
 			markcount:"expansion",
 		},
-		unique:true,
 		audio:"ext:仙家之魂/audio/skill:2",
-		group:["xjzh_wzry_jianzhong_add"],
-		/*filter:function(event,player){
-			var cards=player.getExpansions('xjzh_wzry_jianzhong');
-			if(player.hasSkill('xjzh_wzry_jianlai_mod')) return false;
-			return cards.length<15;
-		},*/
-		filter:function(event,player){
-			if(event.source ) return player.isFriendsOf(event.source);
-			return player.getExpansions('xjzh_wzry_jianzhong').length<10;
+		init(player,skill){
+			if(!player.storage[skill]) player.storage[skill]=10;
 		},
-		content:function(){
-			/*if(event.triggername=="gameStart"){
-				player.logSkill('xjzh_wzry_jianzhong');
-				event.finish();
-				return;
-			}*/
-			if(player.hasSkill('xjzh_wzry_jianlai_mod')) return;
-			var cards=player.getExpansions('xjzh_wzry_jianzhong');
-			if(10-cards.length<trigger.num){
-				var num=10-cards.length
-			}else{
-				var num=trigger.num
-			}
-			player.addToExpansion(get.cards(num),'gain2').gaintag.add('xjzh_wzry_jianzhong');
-			player.logSkill('xjzh_wzry_jianzhong');
+		getIndex(event,player,triggername){
+			if(triggername=="damageBegin1") return 1;
+			return event.num||1;
 		},
-		subSkill:{
-			"add":{
-				trigger:{
-					source:"damageBegin1",
-					player:"damageBegin1",
-				},
-				sub:true,
-				direct:true,
-				filter:function(event,player){
-					return player.getExpansions('xjzh_wzry_jianzhong').length<10;
-				},
-				audio:"ext:仙家之魂/audio/skill:2",
-				content:function(){
-					var cards=player.getExpansions('xjzh_wzry_jianzhong');
-					if(trigger.source!=player){
-						if(cards.length==10&&player.inRange(trigger.source)){
-							trigger.untrigger();
-							trigger.finish();
-							player.logSkill(trigger.source,'xjzh_wzry_jianzhong_add');
-						}
-					}else{
-						if(player.hasSkill('xjzh_wzry_jianlai_mod')){
-							var num=0.8
-						}else{
-							var num=(cards.length/100)*8
-						}
-						if(Math.random()<=num){
-							trigger.num++
-							player.logSkill(trigger.player,'xjzh_wzry_jianzhong_add');
-						}
-					}
-				},
-				ai:{
-					effect:{
-						target:function(card,player,target){
-							var cards=player.getExpansions('xjzh_wzry_jianzhong');
-							if(cards.length<10) return;
-							if(get.tag(card,'damage')) return [0,0];
-						},
-					},
-				},
+		filter(event,player,name){
+			if(name=="damageBegin1") return !event.numFixed&&!event.cancelled;
+			return player.getExpansions('xjzh_wzry_jianzhong').length<player.storage.xjzh_wzry_jianzhong;
+		},
+		async content(event,trigger,player){
+			if(event.triggername=="damageBegin1"){
+				let cards=player.getExpansions("xjzh_wzry_jianzhong");
+				let suits=[...new Set(cards.map(card=>get.suit(card)))];
+				trigger.num+=suits.length;
+			}else player.addToExpansion(get.cards(),'gain2').gaintag.add('xjzh_wzry_jianzhong');
+		},
+		ai:{
+			damageBonus:true,
+			skillTagFilter(player,tag,arg){
+				if(tag=="damageBonus") return [...new Set(player.getExpansions("xjzh_wzry_jianzhong").map(card=>get.type(card,"trick",player)))].length>0;
 			},
 		},
 	},
 	"xjzh_wzry_cuijian":{
 		trigger:{
-			player:"useCardAfter",
+			player:"useCard",
 		},
-		direct:true,
+		forced:true,
 		locked:true,
 		audio:"ext:仙家之魂/audio/skill:4",
-		filter:function(event,player){
-			var evt=event.getParent("xjzh_wzry_cuijian");
-			if(evt.name=='xjzh_wzry_cuijian') return false;
-			if(!event.cards||!event.cards.length) return false;
-			if(!event.targets||!event.targets.length) return false;
-			if(event.targets.length!=1) return false;
-			if(event.target==player)return false;
-			if(['delay','equip','xjzh_danyao'].includes(get.type(event.card))) return false;
-			if(player.hasSkill('xjzh_wzry_jianlai_mod')) return false;
-			if(!player.inRange(event.targets[0])) return false;
-			return player.hasUseTarget(event.card);
+		filter(event,player){
+			if(!["basic","trick"].includes(get.type(event.card))) return false;
+			if(player.getEquips(1)) return get.type(event.card)=="basic";
+			return get.type(event.card)=="trick"
 		},
-		content:function(){
-			var card=game.createCard(trigger.card);
-			var next=player.chooseUseTarget(card,false)
-			next.set('prompt',get.prompt(event.name));
-			next.set('prompt2','视为使用一张'+get.translation(event.card)+'？');
-			next.set('logSkill',event.name);
+		async content(event,trigger,player){
+			trigger.effectCount++;
+			game.log(trigger.card,"额外结算1次");
 		},
 	},
 	"xjzh_wzry_jianlai":{
-		enable:"phaseUse",
-		locked:true,
+		trigger:{
+			player:"addToExpansionAfter",
+		},
 		audio:"ext:仙家之魂/audio/skill:4",
-		filter:function(event,player){
-			if(player.getExpansions('xjzh_wzry_jianzhong').length<10) return false;
-			return !player.storage.xjzh_wzry_jianlai;
+		filter(event,player){
+			return player.getExpansions('xjzh_wzry_jianzhong').length>=player.storage.xjzh_wzry_jianzhong;
 		},
-		limited:true,
+		forced:true,
+		locked:true,
+		mod:{
+			cardUsable(card,player,num){
+				if(!card.cards) return;
+				for(let i of card.cards){
+					if(i.hasGaintag("xjzh_wzry_jianzhong")) return Infinity;
+				}
+			},
+			targetInRange(card,player,target){
+				if(!card.cards) return;
+				for(let i of card.cards){
+					if(i.hasGaintag("xjzh_wzry_jianzhong")) return true;
+				}
+			},
+		},
 		marktext2:"剑来",
-        marktext:`<img style=width:100% src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianlai.png>`,
-		init:function(player,skill){
-			player.storage.xjzh_wzry_jianlai=false;
-		},
-		content:function(){
-			"step 0"
-			player.storage.xjzh_wzry_jianlai=true;
-			player.awakenSkill('xjzh_wzry_jianlai');
-			player.addTempSkill('xjzh_wzry_jianlai_mod');
-			player.addTempSkill('xjzh_wzry_jianlai_discard');
-			"step 1"
-			var cards=player.getExpansions('xjzh_wzry_jianzhong');
+        marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_wzry_jianlai.png>`,
+		async content(event,trigger,player){
+			let cards=player.getExpansions('xjzh_wzry_jianzhong');
 			player.directgain(cards,'gain2',null,'xjzh_wzry_jianzhong');
 			player.unmarkSkill('xjzh_wzry_jianzhong');
-			"step 2"
-			setTimeout(()=>{
-				player.restoreSkill("xjzh_wzry_jianlai");
-			},300000);
+			player.storage.xjzh_wzry_jianzhong+=10;
 		},
 		ai:{
 			combo:'xjzh_wzry_jianzhong',
-			order:function(name,player){
-				var event=_status.event
-				if(player==event.player){
-					if(player.hp<=1&&player.hasFriend()) return 12;
-				}
-				return 0.1;
-			},
-			result:{
-				player:function(target,player){
-					var event=_status.event
-					if(player==event.player){
-						if(player.hp<=1&&player.hasFriend()) return 12;
-					}
-					return 0.5;
-				},
-			},
-		},
-		subSkill:{
-			"mod":{
-				sub:true,
-				locked:true,
-				charlotte:true,
-				forced:true,
-				firstDo:true,
-				audio:'xjzh_wzry_jianlai',
-				trigger:{
-					player:'useCard1',
-				},
-				filter:function(event,player){
-					return !event.audioed&&event.getParent().type=='phase';
-				},
-				content:function(){
-					trigger.audioed=true;
-				},
-				mod:{
-					cardUsable:function (card,player,num){
-						return Infinity;
-					},
-					globalFrom:function(from,to,distance){
-						return distance-Infinity;
-					}
-				},
-			},
-			"discard":{
-				sub:true,
-				locked:true,
-				charlotte:true,
-				direct:true,
-				priority:99,
-				trigger:{
-					player:"phaseDiscardBefore",
-				},
-				filter:function(event,player){
-					if(player.countCards('h',function(card){
-						return card.hasGaintag('xjzh_wzry_jianzhong');
-					})) return true;
-					return false;
-				},
-				content:function(){
-					var cards=player.getCards('hs',function(card){
-						return card.hasGaintag('xjzh_wzry_jianzhong');
-					});
-					player.addToExpansion(cards,'gain2').gaintag.add('xjzh_wzry_jianzhong');
-				},
-			},
 		},
 	},
 	"xjzh_wzry_bieyue":{
@@ -6345,12 +6228,14 @@ const skills={
 		},
 		async content(event,trigger,player){
 			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce,level=lib.skill.xjzh_diablo_leibao.level;
-			let num2=powerDrain*(1-num);
+			let num2=Math.round(powerDrain*(1-num));
 			await player.changexjzhMp(-num2);
 			game.xjzh_playEffect('xjzh_skillEffect_leiji',target);
-			await target.damage(num,'nocard',player,'thunder');
-			let numx=player.xjzhHuixin*0.35;
-			if(Math.random()<=numx) target.changexjzhBUFF('gandian',1);
+			await target.damage(level,'nocard',player,'thunder');
+			if(Math.random()<=0.35*(1+player.xjzhHuixin)){
+				target.changexjzhBUFF('gandian',1);
+				game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(target)}获得一层感电`);
+			}
 		},
 		ai:{
 			order:12,
@@ -6378,7 +6263,10 @@ const skills={
 			let num=lib.skill.xjzh_diablo_leibao.level;
 			player.recover(Math.floor(num/5));
 			player.changexjzhMp(20);
-			if(Math.random()<=player.xjzhHuixin*0.05) player.recoverTo(player.maxHp);
+			if(Math.random()<=0.05*(1+player.xjzhHuixin)){
+				player.recoverTo(player.maxHp);
+				game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}回复体力至体力上限`);
+			}
 		},
 		ai:{
 			order:12,
@@ -6414,7 +6302,7 @@ const skills={
 			await player.addTempSkill('unequip','useCardAfter');
 			event.qianggu=false;
 			if(player.getStat('damage')){
-				let num=lib.skill.xjzh_diablo_zhongou.powerDrain*(1-player.xjzhReduce),level=lib.skill.xjzh_diablo_zhongou.level;
+				let num=Math.round(lib.skill.xjzh_diablo_zhongou.powerDrain*(1-player.xjzhReduce)),level=lib.skill.xjzh_diablo_zhongou.level;
 				let qianggu=get.playerName(player).filter(name=>game.xjzh_hasEquiped("xjzh_qishu_wuyan",name)).length?true:false;
 				if(player.xjzhMp>=num||qianggu==true){
 					const {result:{bool}}=
@@ -6426,7 +6314,10 @@ const skills={
 						player.changexjzhBUFF('qianggu',level);
 					}
 				}
-				if(Math.random()<=player.xjzhHuixin*0.25) trigger.target.changexjzhBUFF('jiansu',1);
+				if(Math.random()<=0.25*(1+player.xjzhHuixin)){
+					trigger.target.changexjzhBUFF('jiansu',1);
+					game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(trigger.player)}获得1层减速`);
+				}
 			}
 		},
 	},
@@ -6463,7 +6354,10 @@ const skills={
 			else if(event.triggername=="damageBegin"){
 				trigger.num*=2;
 				player.clearMark("xjzh_diablo_fensui",false);
-				if(Math.random()<=player.xjzhHuixin*0.50) trigger.player.turnOver(true);
+				if(Math.random()<=0.5*(1+player.xjzhHuixin)){
+					trigger.player.turnOver(true);
+					game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(trigger.player)}被眩晕`);
+				}
 			}else{
 				trigger.effectCount++
 				game.log(trigger.card,"额外结算一次");
@@ -6480,13 +6374,14 @@ const skills={
 		},
 		async content(event,trigger,player){
 			if(!game.hasNature(trigger)||!game.hasNature(trigger,"poison")) game.setNature(trigger,"poison",false);
-			let huixin=player.xjzhHuixin,num=huixin*0.33,num2=huixin*0.25;
-			if(get.xjzhBUFFNum(player,'zhongdu')>0){
-				num*=1.5;
-				num2*=1.5;
+			let huixin=player.xjzhHuixin;
+			if(get.xjzhBUFFNum(player,'zhongdu')>0) huixin+=0.5;
+			if(Math.random()>0.33*(1+huixin)) player.changexjzhMp(-25);
+			else game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，该技能不消耗魔力`);
+			if(Math.random()<=0.25*(1+huixin)){
+				trigger.player.changexjzhBUFF('zhongdu',1);
+				game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(trigger.player)}获得1层中毒`);
 			}
-			if(Math.random()>num) player.changexjzhMp(-25);
-			if(Math.random()<=num2) trigger.player.changexjzhBUFF('zhongdu',1);
 		},
 	},
 	"xjzh_diablo_xianjing":{
@@ -6508,7 +6403,7 @@ const skills={
 		async content(event,trigger,player){
 			let cards=Array.from(ui.cardPile.childNodes).filter(card=>!player.storage[event.name].includes(card));
 			if(!cards.length) return;
-			let card=cards.randomGet(),dialog=ui.create.dialog('hidden',[[event.card],'vcard']);
+			let card=cards.randomGet(),dialog=ui.create.dialog('hidden',[[card],'vcard']);
 			player.chooseControl('ok').set('dialog',dialog);
 			player.storage[event.name].push(card);
 			let num=get.rand(ui.cardPile.childElementCount);
@@ -6536,12 +6431,15 @@ const skills={
 				},
 				async content(event,trigger,player){
 					trigger.player.changexjzhBUFF('zhongdu',get.xjzhBUFFInfo("zhongdu",'limit'));
-					let num=player.xjzhHuixin;
-					if(Math.random()<=num*0.3) player.changexjzhMp(25);
+					if(Math.random()<=0.3*(1+player.xjzhHuixin)){
+						player.changexjzhMp(25);
+						game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}回复25点魔力`);
+					}
 					let cards=trigger.cards.filter(card=>player.storage.xjzh_diablo_xianjing.includes(card));
-					if(Math.random()<=num*0.2){
+					if(Math.random()<=0.2*(1+player.xjzhHuixin)){
 						player.draw(2);
 						player.gain(cards,'gain2',log);
+						game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}摸两张牌并获得了${get.translation(cards)}`);
 					}
 				},
 			},
@@ -6567,8 +6465,10 @@ const skills={
 		async content(event,trigger,player){
 			game.setNature(trigger,'poison',false);
 			trigger.num++;
-			let num=player.xjzhHuixin*0.25;
-			if(Math.random()<=num) player.useSkill("xjzh_diablo_xianjing",player);
+			if(Math.random()<=0.25*(1+player.xjzhHuixin)){
+				player.useSkill("xjzh_diablo_xianjing",player);
+				game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}发动了技能<span style="color: yellow;">〖${get.translation("xjzh_diablo_xianjing")}〗</span>`);
+			}
 		},
 	},
 
@@ -7685,7 +7585,19 @@ const skills={
 			player.gain(game.createCard(cards,null,null),"gain2","log",player)._triggered=null;
 		},
 		ai:{
-			combo:'xjzh_xyj_tianhuo',
+			expose:0.5,
+			threaten:1.5,
+			effect:{
+				target(card,player,target){
+					if(get.tag(card,"fireDamage")&&target.hasSkill("xjzh_xyj_ruyi")) return [1,0.5];
+				},
+			},
+			result:{
+				player(player,target){
+					if(get.tag(card,"fireDamage")&&player.hasSkill("xjzh_xyj_ruyi")) return 1.5;
+					return 1;
+				},
+			},
 		},
 	},
 
