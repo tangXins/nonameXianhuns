@@ -1,5 +1,5 @@
 window.xjzh_updateversion={
-	version:'3.06201',
+	version:'3.06211',
 	update:'3.06181',
 	files:[
 			"LICENSE",

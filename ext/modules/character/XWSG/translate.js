@@ -317,7 +317,7 @@ const translates = {
 		return "锁定技，游戏开始后，你将体力值改为场上除你之外所有角色体力值总和的平均数";
 	}(),
 	"xjzh_sanguo_baima":"白马",
-	"xjzh_sanguo_baima_info":"锁定技，其他角色装备坐骑牌后，你摸2张牌，若此时牌堆没有坐骑牌，你与当前回合结束后执行一个额外的回合。",
+	"xjzh_sanguo_baima_info":"锁定技，其他角色装备坐骑牌后，你摸2张牌，若此时牌堆没有坐骑牌，你于当前回合结束后执行一个额外的回合。",
 	"xjzh_sanguo_yicong":"义从",
 	"xjzh_sanguo_yicong_info":"锁定技，游戏开始时，你废除坐骑栏且无法恢复，其他角色装备的坐骑牌也为你提供相同的效果。",
 	"xjzh_sanguo_muma":"募马",
