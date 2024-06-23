@@ -325,3 +325,20 @@
     height: 8%;
     padding: 8.4% 0 0;
 }
+.xjzh-equipPage-zhuanshu{
+    left: 38%;
+    top: 3.25%;
+    width: 9%;
+    height: 7.5%;
+    background-size: 100%;
+    background-image: url('images/qishuyaojian/zhuanshu_on.png');
+}
+
+.xjzh-equipPage-tongyong{
+    right: 38%;
+    top: 3.25%;
+    width: 9%;
+    height: 7.5%;
+    background-size: 100%;
+    background-image: url('images/qishuyaojian/tongyong_on.png');
+}

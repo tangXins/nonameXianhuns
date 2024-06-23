@@ -27,8 +27,8 @@ lib.xjzhTitle=xjzhTitle;
 		return 0;
 	};
 	if(lib.version){
-		if(getVersionUpdate(lib.version,"1.10.12")<0){
-			alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本1.10.12，可能会引起报错，已为你关闭本扩展`);
+		if(getVersionUpdate(lib.version,"1.10.13")<0){
+			alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本1.10.13，可能会引起报错，已为你关闭本扩展`);
 			game.saveExtensionConfig("仙家之魂","enable",false);
 			game.reload();
 		}
@@ -103,9 +103,9 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                     if(lib.translate[name+"_info"]&&lib.translate[name+"_info"].length>0){
                         let str = lib.translate[name+ "_info"]
 
-						if(str.includes("负面状态")){
-							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_fumian');\">负面状态</a>`;
-							str=str.replace(/负面状态/g,str2);
+						if(str.includes("控制")){
+							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
+							str=str.replace(/控制/g,str2);
 						};
 						if(str.includes("目盲")){
 							let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_mumang');\">目盲</a>`;
@@ -666,7 +666,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				};
 			};
 			// ---------------------------------------阵亡配音------------------------------------------//
-			lib.skill._xjzh_dieaudio={
+			/*lib.skill._xjzh_dieaudio={
 				trigger:{player:'die'},
 				popup:false,
 				forced:true,
@@ -685,7 +685,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					},
 					1500);
 				},
-			};
+			};*/
 			// ---------------------------------------播放音乐------------------------------------------//
 			//代码借鉴自《金庸群侠传》
 			game.playXH=function(fn,dir,sex){
@@ -1641,30 +1641,28 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}
 				return true;
 			};
-			//判断是否存在负面状态
+			//判断是否被控制
 			get.xjzh_deEffect=function(player){
-				if(player.countCards('j',function(card){
-				return card.name!="jydiy_yungongliaoshang"})
-				>0) return true;
+				if(player.countCards('j',card=>card.name!="jydiy_yungongliaoshang")>0) return true;
 				if(player.isTurnedOver()) return true;
 				if(player.isLinked()) return true;
 				if(player.countDisabled()>=1) return true;
+				if(get.xjzhBUFFList(player,(player,item)=>lib.xjzh_Debuff.includes(item)).length>0) return true;
 				return false;
 			};
+			//获取其有几种控制效果
 			get.xjzh_deEffect2=function(player){
 				var num=0;
-				num+=player.countCards('j',function(card){
-					return card.name!="jydiy_yungongliaoshang"
-				});
+				num+=player.countCards('j',card=>card.name!="jydiy_yungongliaoshang");
 				if(player.isTurnedOver()) num++;
 				if(player.isLinked()) num++;
 				num+=player.countDisabled();
+				num+=get.xjzhBUFFList(player,(player,item)=>lib.xjzh_Debuff.includes(item)).length;
 				return num;
 			};
 			//获取装备子类型
 			get.subtype2=function(obj,player){
-				if(typeof obj=='string') obj={
-				name:obj};
+				if(typeof obj=='string') obj={name:obj};
 				if(typeof obj!='object') return;
 				var name=get.name(obj,player);
 				if(!lib.card[name]) return;

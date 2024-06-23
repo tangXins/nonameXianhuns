@@ -7,9 +7,9 @@ export const introduces={
         name:"中毒",
         info:"使用牌有每层20%几率失效且有几率受到1点无来源毒属性伤害",
     },
-    "xjzh_intro_fumian":{
-        name:"负面状态",
-        info:"翻面、横置、判定区有牌、装备区被废除",
+    "xjzh_intro_kongzhi":{
+        name:"控制",
+        info:"翻面、横置、判定区有牌、装备区被废除、角色拥有减益buff",
     },
     "xjzh_intro_mumang":{
         name:"目盲",

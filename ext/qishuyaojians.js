@@ -291,7 +291,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        translate:"瓦西里的祷告",
 		    translate_info:"你的熊人技能也视为大地技能，你的所有大地技能等级+3，你的体力上限+3，每个回合开始时，以1：10（体力/灵力）的比例消耗灵力值以回复体力值。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“在面向大海的瓦西里雕像处生长着一些大橡树的根，它们有时会出现向后弯曲的情况，根内充满了狂暴的魔法。” - 巴雷特的《名器谱》</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：亚非克拉<br><br>冲突装备：风暴咆哮`,
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_fengbaopaoxiao"],
@@ -340,7 +340,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	        translate:"无餍之怒",
 			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为熊形态，你的熊人技能不再消耗灵力，改为回复等量灵力。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“灰烬之日”到来时，伟大的德鲁伊纳菲恩提醒他的门徒们说，为了保护图尔·杜拉不受阿斯塔洛斯的烈焰伤害，没有什么是不能牺牲的，哪怕他们的人性。</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：亚非克拉<br><br>冲突装备：疯狼的狂喜`,
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_fenglangkx"],
@@ -363,7 +363,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    translate:"风暴咆哮",
 			translate_info:"你的狼人技能也视为风暴技能，你的所有风暴技能等级+3，你的会心几率+50%，你获得25%-35%灵力消耗减免。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“孩子，聆听风暴的天籁之音吧。它有自己的节奏，自己的旋律。听它那美妙的歌声，也许有一天你也能加入进来，与之合鸣。” - 艾蕊达</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：亚非克拉<br><br>冲突装备：瓦西里的祷告`,
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_waxilidedaogao"],
@@ -395,7 +395,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    translate:"疯狼的狂喜",
 			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你的灵力上限+25。<li>会心：你释放狼人技能时有25%几率获得20点灵力，",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“他不是诅咒的受害者 - 这都是他自找的。就算他的皮肤裂开，骨骼碎裂，他的笑声也从未停止。” - 疯狂贵族的故事</font></span>",
-			extra:"等阶：4<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：亚非克拉<br><br>冲突装备：无餍之怒`,
 			noTranslate:false,
 			level:4,
 			conflict:["xjzh_qishu_wuyan"],
@@ -432,6 +432,39 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				async content(event,trigger,player){
 					player.changexjzhMp(20);
+				},
+			},
+		},
+		"xjzh_qishu_wumingzhe":{
+		    translate:"无名者兜帽",
+			translate_info:"你的会心几率+35%，你对被控制的角色使用牌无距离和次数限制，且被控制的角色的手牌对你始终可见。",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“他被逐出了公会，名字也从书中被划去。彻底抹除他的存在就是对他的惩罚。” - 摘录于一张烧焦的羊皮纸</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：娜塔亚`,
+			noTranslate:false,
+			level:4,
+			filter:"xjzh_diablo_nataya",
+			async init(player){
+                if(!get.playerName(player,"xjzh_diablo_nataya")) return;
+				player.xjzhHuixin?player.xjzhHuixin+=0.35:player.xjzhHuixin=0.35;
+            },
+			skill:{
+				mod:{
+					cardUsableTarget(card,player,target){
+						if(get.xjzh_deEffect(target)) return true;
+					},
+					targetInRange(card,player,target){
+						if(get.xjzh_deEffect(target)) return true;
+					},
+				},
+				ai:{
+					viewHandcard:true,
+					skillTagFilter(player,tag,arg){
+						if(tag=='viewHandcard'){
+							if(player==arg) return false;
+							if(get.xjzh_deEffect(arg)) return true;
+							return false;
+						};
+					},
 				},
 			},
 		},
@@ -1669,7 +1702,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						}
 					}
 					if(item.skill){
-						var newSkill=name;
+						let newSkill=name;
 						if(!lib.skill[newSkill]){
 							lib.skill[newSkill]=item.skill;
 							lib.skill[newSkill].charlotte=true;
@@ -1693,6 +1726,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							        if(item.append_info) lib.translate[newSkill+'_append_info']=item.append_info;
 							    }
 							}
+							let str=lib.translate[newSkill+"_info"];
+							let colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
+							if(str.includes("控制")){
+								let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
+								str=str.replace(/控制/g,str2);
+							};
+							lib.translate[newSkill+"_info"]=str;
 						}
 						player.addSkills(newSkill);
 					}

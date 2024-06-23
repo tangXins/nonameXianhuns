@@ -922,6 +922,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			// 添加节流后的事件监听器
 			bk.addEventListener('wheel', handleWheel);
 
+			//专属配件书签
+			var zhuanshu=ui.create.div('.xjzh-equipPage-zhuanshu',bk);
+			zhuanshu.listen(function(){
+				if(state.zhuanshu_on) return;
+				state.zhuanshu_on=!state.zhuanshu_on;
+				state.tongyong_on=!state.tongyong_on;
+				state.pageNum=0;
+				state.refreshPage();
+			});
+			//通用配件书签
+			var tongyong=ui.create.div('.xjzh-equipPage-tongyong',bk);
+			tongyong.listen(function(){
+				if(state.tongyong_on) return;
+				state.zhuanshu_on=!state.zhuanshu_on;
+				state.tongyong_on=!state.tongyong_on;
+				state.pageNum=0;
+				state.refreshPage();
+			});
+
 			//材料按钮
 			var cailiaoBox=ui.create.div('.xjzh-equipPage-cailiao',bk);
 			cailiaoBox.listen(function(){
@@ -957,6 +976,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			var state={
 				pageNum:0,
 				equipNum:0,
+				tongyong_on:false,
+				zhuanshu_on:true,
 				map:{},
 				refreshMap:function(){
 					var map=state.map;
@@ -968,7 +989,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					}
 				},
 				showing:[],
+				filter:function(item){
+					let info=get.xjzh_equipInfo(item);
+					if(!info) return false;
+					if(typeof info.filter=='string') return state.zhuanshu_on;
+					return state.tongyong_on;
+				},
 				refreshPage:function(){
+					//刷新书签
+					if(state.zhuanshu_on) zhuanshu.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/zhuanshu_on.png')";
+					else zhuanshu.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/zhuanshu.png')";
+					if(state.tongyong_on) tongyong.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/tongyong_on.png')";
+					else tongyong.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/tongyong.png')";
 					//刷新奇术要件
 					for(var i=0;i<state.showing.length;i++){
 						state.showing[i].remove();
@@ -978,7 +1010,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					else arrow2.style.display='inline';
 					state.equipNum=0;
 					for(var i in lib.xjzh_qishuyaojians){
-						state.equipNum++;
+						if(state.filter(i)) state.equipNum++;
 					}
 					if((state.equipNum/8-1)<=state.pageNum) arrow.style.display='none';
 					else arrow.style.display='inline';
@@ -992,7 +1024,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						transition:'left 0s,top 0s'
 					});
 					for(var equip in state.map){
-						list.push(equip);
+						if(state.filter(equip)) list.push(equip);
 					}
 					list.sort(function(a,b){
 						var level1=get.xjzh_equipInfo(a).level||1,level2=get.xjzh_equipInfo(b).level||1;
@@ -2075,13 +2107,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				'xjzh_qishu_binglengjiqiao',
 				"xjzh_qishu_jiandun",
 				//等阶4
+				"xjzh_qishu_suoding",
+				"xjzh_qishu_tongkuhushou",
 				'xjzh_qishu_titoushi',
 				'xjzh_qishu_wuyan',
 				'xjzh_qishu_waxilidedaogao',
 				'xjzh_qishu_fenglangkx',
 				'xjzh_qishu_fengbaopaoxiao',
-				"xjzh_qishu_suoding",
-				"xjzh_qishu_tongkuhushou"
+				'xjzh_qishu_wumingzhe'
 
 				];
 				for(var i=0;i<list.length;i++){
@@ -2103,13 +2136,13 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					var link=list[i],price;
 					if(typeof link=='string'){
 						btm.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/image/qishuyaojian/cards/"+link+".jpg')";
-						var level=get.xjzh_equipInfo(link).level||1;
+						let info=get.xjzh_equipInfo(link),level=info.level||1;
 						switch(level){
-							case 1: price=50;break;
-							case 2: price=100;break;
-							case 3: price=150;break;
-							case 4: price=230;break;
-							case 5: price=320;break;
+							case 1: price=info.filter?50*(1+level):50;break;
+							case 2: price=info.filter?100*(1+level):100;break;
+							case 3: price=info.filter?150*(1+level):150;break;
+							case 4: price=info.filter?230*(1+level):230;break;
+							case 5: price=info.filter?320*(1+level):320;break;
 							default: price=50;
 						}
 						infoAlert.item=link;

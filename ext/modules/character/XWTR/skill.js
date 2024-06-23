@@ -1,5 +1,4 @@
 import { lib, game, ui, get, ai, _status } from "../../../../../../noname.js";
-import { set } from "../../../../../../noname/util/config.js";
 
 /** @type { importCharacterConfig['skill'] } */
 const skills={
@@ -6403,12 +6402,14 @@ const skills={
 		async content(event,trigger,player){
 			let cards=Array.from(ui.cardPile.childNodes).filter(card=>!player.storage[event.name].includes(card));
 			if(!cards.length) return;
-			let card=cards.randomGet(),dialog=ui.create.dialog('hidden',[[card],'vcard']);
+			let card=cards.randomGets(Math.ceil(cards.length/100)),dialog=ui.create.dialog('hidden',[card,'vcard']);
 			player.chooseControl('ok').set('dialog',dialog);
-			player.storage[event.name].push(card);
-			let num=get.rand(ui.cardPile.childElementCount);
-			card.fix();
-			ui.cardPile.insertBefore(card,ui.cardPile.childNodes[num]);
+			player.storage[event.name].addArray(card);
+			for await(let i of card){
+				let num=get.rand(ui.cardPile.childElementCount);
+				i.fix();
+				ui.cardPile.insertBefore(i,ui.cardPile.childNodes[num]);
+			}
 			game.updateRoundNumber();
 		},
 		subSkill:{
@@ -6419,28 +6420,22 @@ const skills={
 				forced:true,
 				priority:1,
 				filter(event,player){
-					if(event.player==player) return false;
-					let cards=event.cards.slice(0),bool=false;
-					for(let card of cards){
-						if(player.storage.xjzh_diablo_xianjing.includes(card)){
-							bool=true;
-							break;
-						}
-					}
-					return bool==true;
+					let cards=event.cards.slice(0);
+					return cards.some(item=>player.storage.xjzh_diablo_xianjing.includes(item));
 				},
 				async content(event,trigger,player){
-					trigger.player.changexjzhBUFF('zhongdu',get.xjzhBUFFInfo("zhongdu",'limit'));
+					if(trigger.player!=player) trigger.player.changexjzhBUFF('zhongdu',get.xjzhBUFFInfo("zhongdu",'limit'));
 					if(Math.random()<=0.3*(1+player.xjzhHuixin)){
 						player.changexjzhMp(25);
 						game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}回复25点魔力`);
 					}
-					let cards=trigger.cards.filter(card=>player.storage.xjzh_diablo_xianjing.includes(card));
+					let storage=player.storage.xjzh_diablo_xianjing,cards=trigger.cards.filter(card=>storage.includes(card));
 					if(Math.random()<=0.2*(1+player.xjzhHuixin)){
 						player.draw(2);
-						player.gain(cards,'gain2',log);
+						player.gain(cards,'gain2',"log");
 						game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(player)}摸两张牌并获得了${get.translation(cards)}`);
 					}
+					storage.removeArray(cards);
 				},
 			},
 		},
@@ -7174,6 +7169,11 @@ const skills={
 					for(var i=1;i<6;i++){
 						game.log(i)
 						if(player.isDisabled(i)) player.enableEquip(i);
+					}
+				}
+				if(get.xjzhBUFFList(player).length>0){
+					for(let i of get.xjzhBUFFList(player)){
+						player.changexjzhBUFF(i,get.xjzhBUFFNum(player,-i));
 					}
 				}
 				break;

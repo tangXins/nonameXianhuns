@@ -37,7 +37,7 @@ export const CHRskills={
 					let names=lib.character[item][5];
 					if(names&&Array.isArray(names)){
 						let object=names.filter(index=>{
-							if(Object.prototype.toString.call(index)==='[object Object]'&&index.name=='xjzhMp') return true;
+							if(Object.prototype.toString.call(index)==='[object Object]'&&index!==null&&index.name=='xjzhMp') return true;
 							return false;
 						});
 						if(object.length>0) num++;
@@ -51,7 +51,7 @@ export const CHRskills={
 					let names=lib.character[item][5];
 					if(names&&Array.isArray(names)){
 						object=names.filter(index=>{
-							if(Object.prototype.toString.call(index)==='[object Object]'&&index.name=='xjzhMp') return true;
+							if(Object.prototype.toString.call(index)==='[object Object]'&&index!==null&&index.name=='xjzhMp') return true;
 							return false;
 						})[0];
 					}
@@ -59,12 +59,12 @@ export const CHRskills={
 				if(!player.node.xjzhmp){
 					await player.changexjzhmaxMp(object["maxMp"]);
 					await player.changexjzhMp(object["mp"]);
-					if(object["huixin"]){
-						if(!player.xjzhHuixin) player.xjzhHuixin=object["huixin"];
+					if(object.hasOwnProperty("huixin")){
+						if(!player.xjzhHuixin) player.xjzhHuixin=object["huixin"]||0;
 						else player.xjzhHuixin+=object["huixin"];
 					}
-					if(object["reduce"]){
-						if(!player.xjzhReduce) player.xjzhReduce=object["reduce"];
+					if(object.hasOwnProperty("reduce")){
+						if(!player.xjzhReduce) player.xjzhReduce=object["reduce"]||0;
 						else player.xjzhReduce+=object["reduce"];
 					}
 				}

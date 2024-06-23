@@ -196,7 +196,10 @@ const skills={
 		skillAnimation:true,
 		animationColor:'water',
 		audio:"ext:仙家之魂/audio/skill:2",
-		audioname:["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"],
+		audioname2:{
+			"xjzh_sanguo_daqiqo":"ext:仙家之魂/audio/skill/xjzh_sanguo_lixiang1.mp3",
+			"xjzh_sanguo_xiaoqiqo":"ext:仙家之魂/audio/skill/xjzh_sanguo_lixiang2.mp3",
+		},
 		init:function(player,skill){
 			player.storage[skill]=false;
 		},
@@ -5590,7 +5593,7 @@ const skills={
 			return 0;
 		},
 		prompt(event,player){
-			return `〖奋激〗：是否展示牌堆顶${player.maxHp*2}张牌并令${get.translation(trigger.player)}获得其中任意一种花色的所有牌？`;
+			return `〖奋激〗：是否展示牌堆顶${player.maxHp*2}张牌并令${get.translation(event.player)}获得其中任意一种花色的所有牌？`;
 		},
 		async content(event,trigger,player){
 			await player.loseMaxHp();
@@ -7345,7 +7348,7 @@ const skills={
 		intro:{
 			name:"白马义从",
 			content(storage,player){
-				return `进攻距离：${game.countPlayer(current=>!current.getEquips(4))+1}<br>防御距离:${game.countPlayer(current=>!current.getEquips(3))+1}`;
+				return `进攻距离：${game.countPlayer(current=>!current.getEquips(4))+1}<br>防御距离：${game.countPlayer(current=>!current.getEquips(3))+1}`;
 			},
 		},
 		mod:{
@@ -7394,8 +7397,8 @@ const skills={
 				if(!game.hasPlayer(current=>current.canEquip(card))) return false;
 				return get.position(card)=='d';
 			}),str=`〖募马〗：选择一张坐骑牌令一名其他角色装备之`;
-			const links=await player.chooseCardButton(cards,1,str).set('ai',(button,target)=>{
-				return target.getUseValue(button.link);
+			const links=await player.chooseCardButton(cards,1,str).set('ai',(button)=>{
+				return get.equipValueNumber(button.link);
 			}).forResultLinks();
 			if(links){
 				const targets=await player.chooseTarget(str,true,(card,player,target)=>{

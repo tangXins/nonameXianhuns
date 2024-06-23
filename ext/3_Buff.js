@@ -24,10 +24,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			},
 			ai:{
 			    effect:{
-					target(player,target){
+					target(card,player,target){
 					    if(!target.hasFriend()) return;
 						if(get.tag(card,'damage')){
-							let num=player.countMark("xjzh_diablo_zhongou");
+							let num=get.xjzhBUFFNum(player,"qianggu");
 							if(num>=player.hp) return [0.2,0.2]
 						}
 					},

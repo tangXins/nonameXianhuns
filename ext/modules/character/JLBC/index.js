@@ -34,6 +34,7 @@ export function JLBCINIT(){
 		};
 		if(true){
 			for(let i in JLBC.character){
+				JLBC.character[i][4].push(`die:ext:仙家之魂/audio/die:true`);
                 JLBC.character[i][4].push('ext:仙家之魂/jlsg/skin/'+i+'.jpg');
 			}
 		}

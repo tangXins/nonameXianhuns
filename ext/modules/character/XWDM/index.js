@@ -36,6 +36,7 @@ export function XWDMINIT(){
 			for(let i in XWDM.character){
 				//阵亡配音
 				XWDM.character[i][4].push('xjzh_die_audio');
+				XWDM.character[i][4].push(`die:ext:仙家之魂/audio/die:true`);
                 //加载露头
                 if(lib.config.extension_仙家之魂_xjzh_lutoupifu){
                     XWDM.character[i][4].push('ext:仙家之魂/skin/lutou/'+i+'.jpg');
