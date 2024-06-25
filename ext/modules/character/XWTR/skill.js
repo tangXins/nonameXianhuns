@@ -2132,7 +2132,7 @@ const skills={
 		filter:function(event,player){
 			if(!lib.config.extension_仙家之魂_poelose) return false;
 			if(get.itemtype(player)!='player') return false;
-			if(!get.playerName(player).filter(name=>{
+			if(!get.nameList(player).filter(name=>{
 				return name.indexOf("xjzh_poe")==0;
 			}).length) return false;
 			var skills=player.skills.slice(0);
@@ -3918,7 +3918,7 @@ const skills={
 				mod:{
 					maxHandcard(player,num){
 						let target=game.findPlayer(function(current){
-							return get.playerName(current,"xjzh_wzry_duoliya")&&current.storage.xjzh_wzry_huange&&current.storage.xjzh_wzry_huange==player;
+							return get.nameList(current,"xjzh_wzry_duoliya")&&current.storage.xjzh_wzry_huange&&current.storage.xjzh_wzry_huange==player;
 						});
 						if(!target) return num;
 						if(num>=target.getHandcardLimit()) return num;
@@ -6006,7 +6006,7 @@ const skills={
 		},
 		lingshouList:["xjzh_diablo_lang","xjzh_diablo_xiong"],
 		async content(event,trigger,player){
-			let names=get.playerName(player),arr=["xjzh_qishu_wuyan","xjzh_qishu_fenglangkx"],bool=false;
+			let names=get.nameList(player),arr=["xjzh_qishu_wuyan","xjzh_qishu_fenglangkx"],bool=false;
 			for await(let name of names){
 				if(arr.some(item=>game.xjzh_hasEquiped(item,name))){
 					bool=true;
@@ -6302,7 +6302,7 @@ const skills={
 			event.qianggu=false;
 			if(player.getStat('damage')){
 				let num=Math.round(lib.skill.xjzh_diablo_zhongou.powerDrain*(1-player.xjzhReduce)),level=lib.skill.xjzh_diablo_zhongou.level;
-				let qianggu=get.playerName(player).filter(name=>game.xjzh_hasEquiped("xjzh_qishu_wuyan",name)).length?true:false;
+				let qianggu=get.nameList(player).filter(name=>game.xjzh_hasEquiped("xjzh_qishu_wuyan",name)).length?true:false;
 				if(player.xjzhMp>=num||qianggu==true){
 					const {result:{bool}}=
 					qianggu==true?{result:{bool:true}}:
@@ -7566,13 +7566,13 @@ const skills={
 		mod:{
 			ignoredHandcard(card,player){
 				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
-				if(!get.playerName(player,'xjzh_xyj_sunwukong')) return;
+				if(!get.nameList(player,'xjzh_xyj_sunwukong')) return;
 				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
 				if(cards.includes(card.name)) return true;
 			},
 			aiValue(player,card,num){
 				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
-				if(!get.playerName(player,'xjzh_xyj_sunwukong')) return;
+				if(!get.nameList(player,'xjzh_xyj_sunwukong')) return;
 				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
 				if(cards.includes(card.name)) return num+10;
 			},

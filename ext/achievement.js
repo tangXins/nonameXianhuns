@@ -2,7 +2,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     //部分代码借鉴自《玄武江湖》及《时空枢纽》
     //判断完成成就的角色是否是玩家且是否为成就需求角色
 	lib.element.player.isCharacter=function(name) {
-		return this.isUnderControl(true)&&get.playerName(this,name);
+		return this.isUnderControl(true)&&get.nameList(this,name);
 	};
 	//每次载入游戏自动备份成就存档
 	lib.arenaReady.push(function(){
@@ -225,7 +225,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     lib.onover.push(function(ret){
         if(ret){
             //esp刘协“再兴炎汉”成就
-            if(get.mode()=="identity"&&game.me&&get.playerName(game.me,"xjzh_sanguo_espliuxie")){
+            if(get.mode()=="identity"&&game.me&&get.nameList(game.me,"xjzh_sanguo_espliuxie")){
                 var history=game.me.getAllHistory('useSkill');
                 var obj=new Object(),list=["xjzh_sanguo_tiance","xjzh_sanguo_tianming","xjzh_sanguo_moubian","xjzh_sanguo_zhongxing"];
                 for(var i=0;i<history.length;i++){
@@ -242,26 +242,26 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 }
             }
             //神张角“驱雷掣电”成就
-            if(get.mode()=="boss"&&game.me&&game.me==game.boss&&get.playerName(game.me,"xjzh_boss_zhangjiao")){
+            if(get.mode()=="boss"&&game.me&&game.me==game.boss&&get.nameList(game.me,"xjzh_boss_zhangjiao")){
                 if(!game.xjzhAchi.hasAchi('驱雷掣电','character')){
 					game.xjzhAchi.addProgress('驱雷掣电','character',1);
                 }
             }
             //“莉莉丝的梦魇”成就
-            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.playerName(game.boss,"xjzh_boss_lilisi")){
+            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.nameList(game.boss,"xjzh_boss_lilisi")){
                 if(!game.xjzhAchi.hasAchi('莉莉丝的梦魇','special')){
 					game.xjzhAchi.addProgress('莉莉丝的梦魇','special',1);
                 }
             }
             //“净化恶念”成就
-            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.playerName(game.boss,"xjzh_boss_waershen")){
+            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.nameList(game.boss,"xjzh_boss_waershen")){
                 if(!game.xjzhAchi.hasAchi('净化恶念','game')){
 					game.xjzhAchi.addProgress('净化恶念','game',1);
                 }
             }
             //普通成就
-            if(get.mode()=="identity"&&game.me&&!get.config('double_character')&&get.xjzh_wujiang(game.me)){
-                let name=get.playerName(game.me)[0];
+            if(get.mode()=="identity"&&game.me&&!get.config('double_character')&&get.isXHwujiang(game.me)){
+                let name=get.nameList(game.me)[0];
                 if(!game.xjzhAchi.hasAchi(lib.xjzhTitle[name],'character')){
 					game.xjzhAchi.addProgress(lib.xjzhTitle[name],'character',1);
                 }
@@ -703,17 +703,41 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				setTimeout(setSize,500);
 			};
 			lib.onresize.push(resize);
-			//显示用户名
 			var qishuName=ui.create.div(bk,{
-				left:'34%',top:'24.8%',
-				transform:'translate(-50%, -50%)',
-				width:'400px',height:'270px',
+				position:'absolute',
+				left:'18%',
+				top:'7%',
+				width:'auto',
+				height:'auto',
 				textAlign:'left',
+				zIndex:2,
 			});
+			// 添加一个函数来根据窗口宽度调整字体（用户名）大小
+			function adjustFontSize() {
+				var screenWidth = window.innerWidth;
+				// 设定一个基础字体大小以及窗口宽度与字体大小的比例因子，根据实际情况调整
+				var baseSize = 10;
+				var scaleFactor = screenWidth / 1200; // 假设在1200px宽时字体大小适合
+				var newSize = Math.max(baseSize * scaleFactor, 8); // 确保字体大小不低于某个最小值，比如10px
+				qishuName.style.fontSize = newSize + 'px';
+			}
+
+			// 初始化字体大小
+			adjustFontSize();
+
+			// 监听窗口大小变化，实时调整字体大小
+			window.addEventListener('resize', adjustFontSize);
+
 			if(lib.config.xjzh_qishuyaojians.level===undefined||lib.config.xjzh_qishuyaojians.exp===undefined) game.xjzh_levelUp();
 			var qishuNameNum=lib.config.xjzh_qishuyaojians.level*(100+(lib.config.xjzh_qishuyaojians.level*10));
 			var qishuNameStr=`用户名：${lib.config.xjzh_qishuyaojians.name}<br>等级：${lib.config.xjzh_qishuyaojians.level}<br>经验：${lib.config.xjzh_qishuyaojians.exp}/${qishuNameNum}`;
 			qishuName.innerHTML=qishuNameStr;
+			qishuName.listen(function(){
+				bookWindow.remove();
+				game.resume2();
+				lib.onresize.remove(resize);
+				game.xjzhAchi.openAchievementUserInfo(get.nameList(game.me).find(item=>item.startsWith("xjzh_")&&lib.config.xjzh_qishuyaojians.player[item]&&lib.config.xjzh_qishuyaojians.player[item].length>0)||Object.keys({...lib.character}).filter(item=>item.startsWith("xjzh_")&&lib.config.xjzh_qishuyaojians.player[item]&&lib.config.xjzh_qishuyaojians.player[item].length>0).randomGet());
+			});
 			//qishuName.innerHTML="用户名：<span style=\"color:#f9ed89;font-family:xinwei\"><font size =5px>"+lib.config.xjzh_qishuyaojians.name+"</font></span>";
 			//退出按钮
 			var exit=ui.create.div('.xjzh-bookWindow-return',bk);
@@ -945,7 +969,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			var cailiaoBox=ui.create.div('.xjzh-equipPage-cailiao',bk);
 			cailiaoBox.listen(function(){
 			    var cailiaoBoxRemove=ui.create.div(ui.window,{
-                    zIndex:10000,
+                    zIndex:1000,
                     width:'100%',height:'100%'
                 });
         	    var obj=ui.create.div('.xjzh-dialog',cailiaoBoxRemove);
@@ -961,8 +985,28 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 });
                 var cailiaoStr="";
                 if(lib.config.xjzh_qishuyaojians.cailiao){
-                    var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
-                    var cailiaoList2=Object.keys(cailiaoList);
+                    let {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
+                    let cailiaoList2=Object.keys(cailiaoList);
+					let cailiaoList3={
+						//boss瓦尔申挑战材料
+						"xjzh_cailiao_enianzhixin":["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"],
+						//boss格里高利挑战材料
+						"xjzh_cailiao_gangtie":["活体钢铁",0,"格里高利挑战材料；似乎是一节拥有生命的钢铁。"],
+						//boss都瑞尔挑战材料
+						"xjzh_cailiao_nianyedan":["粘液覆盖的蛋",0,"都瑞尔挑战材料；里面蠕动着一个新生的强大存在。"],
+						"xjzh_cailiao_kutong":["苦痛碎片",0,"都瑞尔挑战材料；一块破碎的灵魂石，只是拿着他，你的胳膊就隐隐作痛。"],
+						//boss冰川巨兽挑战材料
+						"xjzh_cailiao_kongju":["提纯的恐惧",0,"冰川巨兽挑战材料；不反光的墨水，你发现自己敏锐地感知到自己终有一死。"],
+						//boss齐尔领主挑战材料
+						"xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"],
+						//安达利尔挑战材料
+						"xjzh_cailiao_wawa":["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"],
+						"xjzh_cailiao_jiasuo":["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"],
+						//冥狱石
+						"xjzh_cailiao_mingyushi":["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"],
+						//天堂试炼挑战材料
+						"xjzh_cailiao_shijieshi":["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"]
+					};
                     for(var i of cailiaoList2){
                         cailiaoStr+=""+cailiaoList[i][0]+"：剩余"+cailiaoList[i][1]+"个<br>";
                     }
@@ -1889,7 +1933,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			//抽奖
 			var map={
 			    6:["jingpo"],
-				5:["xjzh_cailiao_toulu","xjzh_cailiao_gugu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"],
+				5:["xjzh_cailiao_enianzhixin","xjzh_cailiao_gangtie","xjzh_cailiao_wawa","xjzh_cailiao_jiasuo"],
 				4:[],
 				3:[],
 				2:[],
@@ -2282,14 +2326,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					"suipian",
 					"jingpo",
 					"xjzh_cailiao_shijieshi",
-					"xjzh_cailiao_toulu",
-					"xjzh_cailiao_gugu",
-					"xjzh_cailiao_zhanshou",
 					"xjzh_cailiao_enianzhixin",
 					"xjzh_cailiao_gangtie",
 					"xjzh_cailiao_xianxue",
 					"xjzh_cailiao_kongju",
 					"xjzh_cailiao_nianyedan",
+					"xjzh_cailiao_wawa",
+					"xjzh_cailiao_jiasuo",
+					"xjzh_cailiao_mingyushi",
 					"xjzh_cailiao_kutong"
 				];
 				for(var i in lib.xjzh_qishuyaojians){
@@ -2376,20 +2420,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                             var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
                             var str=""+cailiaoList[this.item][2]+"<br><br>拥有"+cailiaoList[this.item][1]+"个";
                             switch(this.item){
-    							case "xjzh_cailiao_gugu":
-    							    str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>恶念之心、咕噜头颅、颤栗之手、发黑的股骨</font></span>各一个可以挑战BOSS瓦尔申";
-    							break;
-                    		    case "xjzh_cailiao_toulu":
-                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>恶念之心、咕噜头颅、颤栗之手、发黑的股骨</font></span>各一个可以挑战BOSS瓦尔申";
-                    		    break;
-                    		    case "xjzh_cailiao_zhanshou":
-                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>恶念之心、咕噜头颅、颤栗之手、发黑的股骨</font></span>各一个可以挑战BOSS瓦尔申";
-                    		    break;
                     		    case "xjzh_cailiao_enianzhixin":
-                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>恶念之心、咕噜头颅、颤栗之手、发黑的股骨</font></span>各一个可以挑战BOSS瓦尔申";
+                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐4个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>恶念之心</font></span>可以挑战BOSS瓦尔申";
                     		    break;
                     		    case "xjzh_cailiao_gangtie":
-                    		        str+="<br><br>获取途径：挑战瓦尔申概率掉落<br><br>集齐5个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>活体钢铁</font></span>可以挑战BOSS格里高利";
+                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐5个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>活体钢铁</font></span>可以挑战BOSS格里高利";
                     		    break;
                     		    case "xjzh_cailiao_nianyedan":
                     		        str+="<br><br>获取途径：挑战瓦尔申概率掉落<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>粘液覆盖的蛋、苦痛碎片</font></span>各两个可以挑战BOSS都瑞尔";
@@ -2398,13 +2433,22 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                     		        str+="<br><br>获取途径：挑战格里高利概率掉落<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>粘液覆盖的蛋、苦痛碎片</font></span>各两个可以挑战BOSS都瑞尔";
                     		    break;
                     		    case "xjzh_cailiao_kongju":
-                    		        str+="<br><br>获取途径：挑战都瑞尔、格里高利、齐尔领主概率掉落<br><br>集齐9个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>提纯的恐惧</font></span>可以挑战BOSS冰川巨兽";
+                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐9个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>提纯的恐惧</font></span>可以挑战BOSS冰川巨兽";
                     		    break;
                     		    case "xjzh_cailiao_xianxue":
-                    		        str+="<br><br>获取途径：挑战都瑞尔、格里高利、冰川巨兽概率掉落<br><br>集齐9个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>提纯鲜血</font></span>可以挑战BOSS齐尔领主";
+                    		        str+="<br><br>获取途径：对局概率掉落，抽奖<br><br>集齐9个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>提纯鲜血</font></span>可以挑战BOSS齐尔领主";
                     		    break;
                     		    case "xjzh_cailiao_shijieshi":
-                    		        str+="<br><br>获取途径：暂无<br><br>集齐1个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>世界石碎片</font></span>可以挑战天堂试炼";
+                    		        str+="<br><br>获取途径：莉莉丝<br><br>集齐1个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>世界石碎片</font></span>可以挑战天堂试炼";
+                    		    break;
+                    		    case "xjzh_cailiao_wawa":
+                    		        str+="<br><br>获取途径：挑战冰川巨兽概率掉落<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>针扎娃娃、焦沙枷锁</font></span>各2个可以挑战BOSS安达利尔";
+                    		    break;
+                    		    case "xjzh_cailiao_jiasuo":
+                    		        str+="<br><br>获取途径：挑战齐尔领主概率掉落<br><br>集齐<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>针扎娃娃、焦沙枷锁</font></span>各2个可以挑战BOSS安达利尔";
+                    		    break;
+                    		    case "xjzh_cailiao_mingyushi":
+                    		        str+="<br><br>获取途径：对局<br><br>集齐2个<span style=\"color:#800080;font-family:xinwei\"><font size =6.5px>冥狱石</font></span>可以强化所有奇术boss，但这会使你的基础材料消耗为之前的3倍";
                     		    break;
                             };
                             beijing.innerHTML=cailiaoList[this.item][0];
@@ -2710,6 +2754,82 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				});
 			});
 		},
+		//打开用户信息页
+		openAchievementUserInfo:function(name){
+			let playerEquips=lib.config.xjzh_qishuyaojians.player[name];
+			if(!playerEquips) return;
+			let blank=ui.create.div(ui.window,{
+				zIndex:'200',
+				top:'0',left:'0',
+				width:'100%',height:'100%',
+			}),setSize=function(){
+				window.style.height=blank.clientWidth*0.28+'px';
+				window.style.fontSize=blank.clientWidth*0.6+'px';
+			},resize=function(){
+				setTimeout(setSize,500);
+			};
+			lib.onresize.push(resize);
+			let removeBlank=function(){
+				blank.remove();
+				lib.onresize.remove(resize);
+			};
+			blank.listen(removeBlank);
+			let window=ui.create.div(blank,{
+				left:'20%',width:'60%',
+				top:'20%',height:blank.clientWidth*0.28+'px',
+				fontSize:blank.clientWidth*0.6+'px',
+				backgroundImage:"url('"+lib.assetURL+"extension/仙家之魂/css/images/qishuyaojian/userInfo.png')",
+				backgroundSize:'100%',backgroundRepeat:'no-repeat'
+			});
+			window.listen(removeBlank);
+			//角色图片
+			let playerImage=ui.create.div(window,{
+				bottom:'11%',left:'10%',
+				height:'68%',width:'23%',
+				backgroundSize:'100%',backgroundRepeat:'no-repeat',
+				borderRadius:'20px'
+			});
+			playerImage.listen(async (event)=>{
+				event.stopPropagation();
+			});
+			playerImage.setBackground(name,'character');
+			//文字窗口
+			let text=ui.create.div(window,{
+				top:'25%',left:'40%',
+				height:'10%',width:'45%',
+				color:'black',
+				textAlign:'center',
+				fontSize:'4%',fontFamily:'xinwei'
+			})
+			text.innerHTML=get.translation(name)+'已装备奇术要件';
+			//配件展示
+			let equipPart1=ui.create.div(window,{
+				left:"37%",top:'42%',
+				width:'17%',height:'47%',
+				backgroundSize:'100%',backgroundRepeat:'no-repeat',
+			});
+			let equip1=playerEquips[0];
+			equipPart1.item=equip1;
+			if(equip1) equipPart1.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/image/qishuyaojian/cards/"+equip1+".jpg')";
+			var equipPart2=ui.create.div(window,{
+				left:"55%",top:'42%',
+				width:'17%',height:'47%',
+				backgroundSize:'100%',backgroundRepeat:'no-repeat',
+			});
+			var equip2=playerEquips[1];
+			equipPart2.item=equip2;
+			if(equip2) equipPart2.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/image/qishuyaojian/cards/"+equip2+".jpg')";
+			var equipPart3=ui.create.div(window,{
+				left:"73%",top:'42%',
+				width:'17%',height:'47%',
+				backgroundSize:'100%',backgroundRepeat:'no-repeat',
+			});
+			var equip3=playerEquips[2];
+			equipPart3.item=equip3;
+			if(equip3) equipPart3.style.backgroundImage="url('"+lib.assetURL+"extension/仙家之魂/image/qishuyaojian/cards/"+equip3+".jpg')";
+
+		},
+
 	};
 	//日期格式化方法
 	Date.prototype.format=function (str){

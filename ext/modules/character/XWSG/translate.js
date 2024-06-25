@@ -364,7 +364,7 @@ const translates = {
 	"xjzh_sanguo_youxia_use":"游侠",
 	"xjzh_sanguo_youxia_tag":"invisible",
 	"xjzh_sanguo_luoyi":"裸衣",
-	"xjzh_sanguo_luoyi_info":"锁定技，游戏开始时，你废除防具栏，此后每当你不因〖虎痴〗获得防具牌时，你回复一点体力。出牌阶段，你可以将防具牌当一张无次数限制的【杀】使用，此【杀】基础伤害为2",
+	"xjzh_sanguo_luoyi_info":"锁定技，游戏开始时，你废除防具栏，此后每当你不因〖虎痴〗获得防具牌时，你回复一点体力。出牌阶段，你可以将防具牌当一张无次数限制的【杀】使用，此【杀】基础伤害为2。",
 	"xjzh_sanguo_luoyi_use":"裸衣",
 	"xjzh_sanguo_huchi":"虎痴",
 	"xjzh_sanguo_huchi_info":"锁定技，你由〖裸衣〗使用【杀】造成伤害后，你可以获得牌堆顶前3张牌中的所有防具牌和基本牌，若此时无防具牌和基本牌，你回复一点体力；你使用基本牌时可以失去一点体力令此牌伤害+1或获得一张防具牌。",

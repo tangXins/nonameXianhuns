@@ -27,9 +27,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		suipian:300,
     		cailiao:{
     		    //boss瓦尔申挑战材料
-    		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],
-    		    "xjzh_cailiao_toulu":["咕噜头颅",0,"瓦尔申挑战材料；一些浑浊的液体从其口中缓缓滴落。",],
-    		    "xjzh_cailiao_zhanshou":["颤栗之手",0,"瓦尔申挑战材料；腐烂的手掌，脓液从其指甲下渗出。"],
     		    "xjzh_cailiao_enianzhixin":["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"],
     		    //boss格里高利挑战材料
     		    "xjzh_cailiao_gangtie":["活体钢铁",0,"格里高利挑战材料；似乎是一节拥有生命的钢铁。"],
@@ -40,6 +37,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    "xjzh_cailiao_kongju":["提纯的恐惧",0,"冰川巨兽挑战材料；不反光的墨水，你发现自己敏锐地感知到自己终有一死。"],
     		    //boss齐尔领主挑战材料
     		    "xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"],
+				//安达利尔挑战材料
+    		    "xjzh_cailiao_wawa":["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"],
+    		    "xjzh_cailiao_jiasuo":["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"],
+				//冥狱石
+    		    "xjzh_cailiao_mingyushi":["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"],
     		    //天堂试炼挑战材料
     		    "xjzh_cailiao_shijieshi":["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"]
     		},
@@ -103,9 +105,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		suipian:300,
     		cailiao:{
     		    //boss瓦尔申挑战材料
-    		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],
-    		    "xjzh_cailiao_toulu":["咕噜头颅",0,"瓦尔申挑战材料；一些浑浊的液体从其口中缓缓滴落。",],
-    		    "xjzh_cailiao_zhanshou":["颤栗之手",0,"瓦尔申挑战材料；腐烂的手掌，脓液从其指甲下渗出。"],
     		    "xjzh_cailiao_enianzhixin":["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"],
     		    //boss格里高利挑战材料
     		    "xjzh_cailiao_gangtie":["活体钢铁",0,"格里高利挑战材料；似乎是一节拥有生命的钢铁。"],
@@ -116,6 +115,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    "xjzh_cailiao_kongju":["提纯的恐惧",0,"冰川巨兽挑战材料；不反光的墨水，你发现自己敏锐地感知到自己终有一死。"],
     		    //boss齐尔领主挑战材料
     		    "xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"],
+				//安达利尔挑战材料
+    		    "xjzh_cailiao_wawa":["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"],
+    		    "xjzh_cailiao_jiasuo":["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"],
+				//冥狱石
+    		    "xjzh_cailiao_mingyushi":["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"],
     		    //天堂试炼挑战材料
     		    "xjzh_cailiao_shijieshi":["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"]
     		},
@@ -297,7 +301,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			conflict:["xjzh_qishu_fengbaopaoxiao"],
 			filter:"xjzh_diablo_yafeikela",
 			async init(player){
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
 				let skills=player.getSkills(null,false,false).filter(function(skill){
 					let info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
@@ -346,7 +350,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			conflict:["xjzh_qishu_fenglangkx"],
 			filter:"xjzh_diablo_yafeikela",
 			async init(player){
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
 				let node;
 				if(player.name2&&player.name2=='xjzh_diablo_yafeikela'){
 					node=player.node.name2;
@@ -369,7 +373,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			conflict:["xjzh_qishu_waxilidedaogao"],
 			filter:"xjzh_diablo_yafeikela",
 			async init(player){
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
 
 				let skills=player.getSkills(null,false,false).filter(function(skill){
 					let info=lib.skill[skill];
@@ -401,8 +405,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			conflict:["xjzh_qishu_wuyan"],
 			filter:"xjzh_diablo_yafeikela",
 			async init(player){
-				game.log(get.playerName(player,"xjzh_diablo_yafeikela"))
-                if(!get.playerName(player,"xjzh_diablo_yafeikela")) return;
+				game.log(get.nameList(player,"xjzh_diablo_yafeikela"))
+                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
                 player.changexjzhmaxMp(25);
 				player.changexjzhMp(25);
 				let node;
@@ -444,7 +448,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			filter:"xjzh_diablo_nataya",
 			async init(player){
-                if(!get.playerName(player,"xjzh_diablo_nataya")) return;
+                if(!get.nameList(player,"xjzh_diablo_nataya")) return;
 				player.xjzhHuixin?player.xjzhHuixin+=0.35:player.xjzhHuixin=0.35;
             },
 			skill:{
@@ -1187,12 +1191,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	//改变材料数量
 	game.xjzh_changeCailiao=function(arg,num){
 		if(!game.xjzh_filterAddqishu()) return false;
-		if(lib.config.xjzh_qishuyaojians.cailiao.constructor!==Object){
+		if(!get.is.object(lib.config.xjzh_qishuyaojians.cailiao)){
 		    lib.config.xjzh_qishuyaojians.cailiao={
     		    //boss瓦尔申挑战材料
-    		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],
-    		    "xjzh_cailiao_toulu":["咕噜头颅",0,"瓦尔申挑战材料；一些浑浊的液体从其口中缓缓滴落。"],
-    		    "xjzh_cailiao_zhanshou":["颤栗之手",0,"瓦尔申挑战材料；腐烂的手掌，脓液从其指甲下渗出。"],
     		    "xjzh_cailiao_enianzhixin":["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"],
     		    //boss格里高利挑战材料
     		    "xjzh_cailiao_gangtie":["活体钢铁",0,"格里高利挑战材料；似乎是一节拥有生命的钢铁。"],
@@ -1203,6 +1204,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    "xjzh_cailiao_kongju":["提纯的恐惧",0,"冰川巨兽挑战材料；不反光的墨水，你发现自己敏锐地感知到自己终有一死。"],
     		    //boss齐尔领主挑战材料
     		    "xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"],
+				//安达利尔挑战材料
+    		    "xjzh_cailiao_wawa":["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"],
+    		    "xjzh_cailiao_jiasuo":["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"],
+				//冥狱石
+    		    "xjzh_cailiao_mingyushi":["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"],
     		    //天堂试炼挑战材料
     		    "xjzh_cailiao_shijieshi":["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"]
     		};
@@ -1215,18 +1221,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		if(typeof num!='number') num=1;
 		if(!lib.config.xjzh_qishuyaojians.cailiao[arg]){
 		    switch(arg){
-		        case "xjzh_cailiao_gugu":{
-		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"];
-		        }
-		        break;
-		        case "xjzh_cailiao_toulu":{
-		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["咕噜头颅",0,"瓦尔申挑战材料；一些浑浊的液体从其口中缓缓滴落。"];
-		        }
-		        break;
-		        case "xjzh_cailiao_zhanshou":{
-		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["颤栗之手",0,"瓦尔申挑战材料；腐烂的手掌，脓液从其指甲下渗出。"];
-		        }
-		        break;
 		        case "xjzh_cailiao_enianzhixin":{
 		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"];
 		        }
@@ -1255,6 +1249,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"];
 		        }
 		        break;
+		        case "xjzh_cailiao_wawa":{
+		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"];
+		        }
+		        break;
+		        case "xjzh_cailiao_jiasuo":{
+		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"];
+		        }
+		        break;
+		        case "xjzh_cailiao_mingyushi":{
+		            lib.config.xjzh_qishuyaojians.cailiao[arg]=["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"];
+		        }
+		        break;
 		    };
 		}
 		lib.config.xjzh_qishuyaojians.cailiao[arg][1]+=num;
@@ -1266,9 +1272,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	game.xjzh_resetCailiao=function(){
 		lib.config.xjzh_qishuyaojians.cailiao={
     	    //boss瓦尔申挑战材料
-   		    "xjzh_cailiao_gugu":["发黑的股骨",0,"瓦尔申挑战材料；散发着硫磺与腐朽臭味的黑色骨头。"],
-    		"xjzh_cailiao_toulu":["咕噜头颅",0,"瓦尔申挑战材料；一些浑浊的液体从其口中缓缓滴落。"],
-    	    "xjzh_cailiao_zhanshou":["颤栗之手",0,"瓦尔申挑战材料；腐烂的手掌，脓液从其指甲下渗出。"],
     	    "xjzh_cailiao_enianzhixin":["恶念之心",0,"瓦尔申挑战材料；他的肌肉毫无规律的抽动着。"],
    		    //boss格里高利挑战材料
    		    "xjzh_cailiao_gangtie":["活体钢铁",0,"格里高利挑战材料；似乎是一节拥有生命的钢铁。"],
@@ -1278,7 +1281,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
    		    //boss冰川巨兽挑战材料
    		    "xjzh_cailiao_kongju":["提纯的恐惧",0,"冰川巨兽挑战材料；不反光的墨水，你发现自己敏锐地感知到自己终有一死。"],
     		//boss齐尔领主挑战材料
-    	    "xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"]
+    	    "xjzh_cailiao_xianxue":["提纯的鲜血",0,"齐尔领主挑战材料；你几乎能透过玻璃感受到一下心跳。"],
+			//安达利尔挑战材料
+			"xjzh_cailiao_wawa":["针扎娃娃",0,"安达利尔挑战材料；每一针都是复仇的索取。"],
+			"xjzh_cailiao_jiasuo":["焦沙枷锁",0,"安达利尔挑战材料；牢狱与绞架的天作之合，但愿所有罪人都能带上沉重的铁镣。"],
+			//冥狱石
+			"xjzh_cailiao_mingyushi":["冥狱石",0,"奇术boss强化材料；这块怪石历经漫长岁月的沉淀，喃喃吟诵着古老的亵渎之词。"],
+			//天堂试炼挑战材料
+			"xjzh_cailiao_shijieshi":["世界石碎片",0,"天堂试炼挑战材料；世界之石破碎之后散落的碎片。"]
     	};
 		game.xjzhQishu_saveConfig();
 		return lib.config.xjzh_qishuyaojians.cailiao;
@@ -1552,8 +1562,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		if(!lib.xjzh_qishuyaojians[name]) return {};
 		return lib.xjzh_qishuyaojians[name]||{};
 	};
-	//允许奇术要件生效的模式
-	lib.xjzh_qishuMode=['identity','doudizhu','boss'];
 	//奇术要件生效
 	lib.translate["_xjzh_qishu_effect"]="奇术要件";
 	lib.skill["_xjzh_qishu_effect"]={
@@ -1563,19 +1571,20 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		silent:true,
 		lastDo:true,
 		priority:Infinity,
-		filter:function(event,player){
-			if(get.playerName(player).length==0) return false;
-			if(!lib.xjzh_qishuMode||!lib.xjzh_qishuMode.includes(get.mode())) return false;
+		filter(event,player){
+			if(get.nameList(player).length==0) return false;
+			if(!get.isXHwujiang(player)) return false;
+			if(!['identity','doudizhu','boss'].includes(get.mode())) return false;
 			if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return false;
 			return true;
 		},
-		content:function (){
+		async content(event,trigger,player){
 			player.xjzh_qishuyaojians=[null,null,null];
-			if(lib.config.xjzh_qishuyaojians.player&&get.playerName(player).length>0){
-				let names=get.playerName(player),choice;
-				let name=names.filter(item=>{
+			if(lib.config.xjzh_qishuyaojians.player&&get.nameList(player).length>0){
+				let names=get.nameList(player),choice;
+				let name=names.find(item=>{
 					return lib.config.xjzh_qishuyaojians.player[item];
-				})[0];
+				});
 				choice=lib.config.xjzh_qishuyaojians.player[name]||[];
 				var initSkill=function(name,player){
 					if(!name) return;
@@ -1726,13 +1735,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							        if(item.append_info) lib.translate[newSkill+'_append_info']=item.append_info;
 							    }
 							}
-							let str=lib.translate[newSkill+"_info"];
-							let colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
-							if(str.includes("控制")){
-								let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
-								str=str.replace(/控制/g,str2);
-							};
-							lib.translate[newSkill+"_info"]=str;
+							let str=lib.translate[newSkill+"_info"],colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
+							if(str){
+								if(str.includes("控制")){
+									let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
+									str=str.replace(/控制/g,str2);
+								};
+								lib.translate[newSkill+"_info"]=str;
+							}
 						}
 						player.addSkills(newSkill);
 					}

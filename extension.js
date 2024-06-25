@@ -51,11 +51,24 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						if(!lib.config.characters.includes(i)){
 							game.saveConfig('characters',lib.config.characters.concat(i));
 						}
-						else if(!lib.config.cards.includes('xjzh_Card')){
-							game.saveConfig('cards',lib.config.cards.concat('xjzh_Card'));
-						}
+					}
+					if(!lib.config.cards.includes('xjzh_Card')){
+						game.saveConfig('cards',lib.config.cards.concat('xjzh_Card'));
 					}
 					game.saveExtensionConfig("仙家之魂","xjzh_enableCharacters",true);
+					game.reload();
+				}
+			}catch(e){
+				console.log(e);
+			};
+
+			//第一次导入本扩展自动开启本扩展所有武将包
+			try{
+				if(!game.getExtensionConfig("仙家之魂","xjzh_qishuReset")){
+					game.xjzh_resetCailiao();
+					game.saveExtensionConfig("仙家之魂","xjzh_qishuReset",true);
+					alert("奇术要件系统已更新，已为你重置材料背包");
+					game.reload();
 				}
 			}catch(e){
 				console.log(e);
@@ -703,12 +716,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			game.xjzhplayBackgroundMusic = function () {
 				var temp = lib.config.extension_仙家之魂_xjzh_Background_Music;
 				if (temp == '0') {
-					//Math.random()*30 生成一个0到29但不等于29的数值
+					/*//Math.random()*30 生成一个0到29但不等于29的数值
 					temp = Math.floor(2 + Math.random() * 38);
 					//2加0到29
 					//生成一个范围2到31的整数
 					temp = temp.toString();
-					//转为字符串
+					//转为字符串*/
+					temp=get.rand(2,5).toString();
 				};
 				ui.backgroundMusic.pause();
 				var item = {
@@ -797,7 +811,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 						]
 						if(get.mode()=="boss"){
-							if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.playerName(game.boss))) return false;
+							if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss))) return false;
 						}
 						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 						for(var i of list){
@@ -805,7 +819,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 						}
 						if(player.hasSkill("xjzh_zengyi_off")) return false;
 						if(!player.isUnderControl(true))  return false;
-						if(get.playerName(player,"xjzh_sanguo_zuoyou")) return false;
+						if(get.nameList(player,"xjzh_sanguo_zuoyou")) return false;
 						return true;
 					},
 					async content(event,trigger,player){
@@ -822,7 +836,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 							}
 							break;
 							case "own":{
-								if(get.xjzh_wujiang(player)){
+								if(get.isXHwujiang(player)){
 									let skills=list.randomGet();
 									player.addSkill("xjzh_zengyi_off",false);
 									player.addSkill("xjzh_zengyi_"+skills);
@@ -1368,20 +1382,40 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}else{
 					this.addTempSkill(skill)
 				}
-			};
-			//判断是否为《仙家之魂》武将
-			get.xjzh_wujiang=function(player){
-				var name1=player.name1,name2=player.name2;
-				if(name1&&lib.character[name1]&&lib.character[name1][4]){
-					var list=lib.character[name1][4].slice(0);
-					if(list.includes('xjzh_die_audio')) return true;
-				};
-				if(name2&&lib.character[name2]&&lib.character[name2][4]){
-					var list=lib.character[name2][4].slice(0);
-					if(list.includes('xjzh_die_audio')) return true;
-				};
-				return false;
-			};
+			};    /**
+			* 判断指定玩家是否为仙家之魂武将
+			*
+			* 本函数通过检查玩家对象的属性来确定该玩家是否为特定身份。
+			* 它遍历函数接收到的所有参数，寻找玩家对象。然后，它检查玩家对象是否满足特定身份的条件。
+			* 这个条件是玩家对象的名字在特定数组中，并且该名字对应的字符有特定的标识。
+			*
+			* @returns {boolean} 如果玩家是仙家之魂武将，则返回true；否则返回false。
+			*/
+		   get.isXHwujiang=function(...arg){
+			   // 初始化变量，用于存储玩家对象和玩家名称列表
+			   let player, str, list = [];
+
+			   // 遍历函数的所有参数，寻找玩家对象
+			   // 遍历函数接收的所有参数
+			   for(let argument of arg) {
+				   // 如果参数是玩家对象，则将其赋值给player变量
+				   if (get.itemtype(argument) == "player") player = argument;
+			   }
+
+			   // 如果没有找到玩家对象，则返回false
+			   if(!player) return false;
+
+			   // 获取玩家对象的名字列表
+			   let names=get.nameList(player);
+			   // 如果玩家名字列表为空或不是数组，则返回false
+			   if(!names.length||!Array.isArray(names)) return false;
+
+			   // 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
+			   if(names.some(item=>lib.character[item][4]&&lib.character[item][4].includes('xjzh_die_audio'))) return true;
+
+			   // 如果没有满足条件的名字，则返回false
+			   return false;
+		   };
 			//判断字符串是否含有中文
 			get.xjzh_checkChinese=function(str){
 				let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
@@ -1393,52 +1427,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				let reg=/^[\u4E00-\u9FA5]+$/;
 				if(!reg.test(str)) return false;
 				return true ;
-			};
-			//显示一个弹窗，摘自《扩展ol》
-			game.xjzh_bolSay = function (str, num, num2) {
-				if (game.game_bolSayDialog_height == undefined) game.game_bolSayDialog_height = -45;
-				if (game.game_bolSayDialog_num == undefined) game.game_bolSayDialog_num = 0;
-				game.game_bolSayDialog_num++;
-				var func = function () {
-					game.game_bolSayDialog_onOpened = true;
-					game.game_bolSayDialog_height += 45;
-					var dialog = ui.create.dialog('hidden');
-					dialog.classList.add('static');
-					dialog.add('' + str + '');
-					dialog.classList.add('popped');
-					dialog.style['pointer-events'] = 'none';
-					dialog.style['font-family'] = "'STXinwei','xinwei'";
-					ui.window.appendChild(dialog);
-					var width = str.length * 20;
-					if (num != undefined) width -= num * 20;
-					dialog._mod_height = -16;
-					dialog.style.width = width + 'px';
-					lib.placePoppedDialog(dialog, {
-						clientX: (dialog.offsetLeft + dialog.offsetWidth / 2) * game.documentZoom,
-						clientY: (dialog.offsetTop + dialog.offsetHeight / 4) * game.documentZoom
-					});
-					if (dialog._mod_height) dialog.content.firstChild.style.padding = 0;
-					dialog.style.left = 'calc(50% - ' + (width + 16) / 2 + 'px' + ')';
-					dialog.style.top = 'calc(18% + ' + game.game_bolSayDialog_height + 'px)';
-					dialog.style['z-index'] = 999999;
-					setTimeout(function () {
-						dialog.delete();
-						if (game.game_bolSayDialog_height > ui.window.offsetHeight * 0.95 - dialog.offsetHeight * 2) game.game_bolSayDialog_height = -45;
-						setTimeout(function () {
-							if (game.game_bolSayDialog_num <= 0) game.game_bolSayDialog_height = -45;
-						}, 250);
-					}, num2 ? num2 : 5000);
-					setTimeout(function () {
-						delete game.game_bolSayDialog_onOpened;
-					}, 500);
-				};
-				var interval = setInterval(function () {
-					if (game.game_bolSayDialog_onOpened == undefined) {
-						func();
-						game.game_bolSayDialog_num--;
-						clearInterval(interval);
-					};
-				}, 100);
 			};
 			//增益buff
 			lib.xjzh_Buff=[
@@ -1492,19 +1480,35 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if(!num) return list;
 				return list.randomGets(num);
 			};
-			//获取武将ID
-			get.playerName=function(player,arg){
-				let list=new Array();
-				if(player.name) list.push(player.name);
-				if(player.name1) list.push(player.name1);
-				if(player.name2) list.push(player.name2);
-				if(!arg||typeof arg!="string"){
-					return list;
+			/**
+			 * nameList用于检查传入的参数中是否包含指定的玩家名称。
+			 * 如果未指定玩家名称，则返回所有玩家名称的列表。
+			 *
+			 * @async
+			 * @returns {Array|boolean} 如果未指定特定字符串，则返回玩家名称列表；
+			 * 如果指定了特定字符串，并且列表中存在该字符串，则返回true；否则返回false。
+			 */
+			get.nameList=function(...arg){
+				let player, str, list = [];
+
+				// 遍历函数接收的所有参数
+				for(let argument of arg) {
+					// 如果参数是玩家对象，则将其赋值给player变量
+					if (get.itemtype(argument) == "player") player = argument;
+					// 如果参数是字符串，则将其赋值给str变量
+					else if (typeof argument == "string") str = argument;
 				}
-				if(list.some(name=>{
-					return name==arg;
-				})) return true;
-				return false;
+
+				// 如果没有player或指定字符串，直接返回玩家名称列表
+				if(!player) return list;
+				// 将玩家的名称添加到列表中，如果存在多个名称
+				if (player.name) list.push(player.name);
+				if (player.name1) list.push(player.name1);
+				if (player.name2) list.push(player.name2);
+				if (!str) return list;
+				// 如果指定了特定字符串，检查列表中是否包含该字符串
+				// 如果包含，则返回true；否则返回false
+				return list.some(name => name == str) ? true : false;
 			};
 			//挑战模式切换随从
 			game.changeBossFellow=function(name,player){

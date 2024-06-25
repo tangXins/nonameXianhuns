@@ -85,5 +85,4 @@ const characters = {
 	"xjzh_xyj_sunwukong":["male","qun",4,["xjzh_xyj_tianhuo","xjzh_xyj_dongcha","xjzh_xyj_ruyi"],[],[]],
 
 };
-
 export default characters;

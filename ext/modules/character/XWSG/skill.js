@@ -204,7 +204,7 @@ const skills={
 			player.storage[skill]=false;
 		},
 		filter(event,player){
-			let list=get.playerName(player).filter(name=>{
+			let list=get.nameList(player).filter(name=>{
 				return ["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"].includes(name);
 			});
 			if(list.length==0) return false;
@@ -219,7 +219,7 @@ const skills={
 				target.checkConflict();
 				target.checkMarks();
 			}
-			let list=get.playerName(player).filter(name=>{
+			let list=get.nameList(player).filter(name=>{
 				return ["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"].includes(name);
 			});
 			let names;
@@ -227,7 +227,7 @@ const skills={
 				if(list.length>=2) names=["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"].randomGet();
 				player.removeFujiang();
 			}else{
-				if(get.playerName(player,"xjzh_sanguo_daqiao")) names="xjzh_sanguo_xiaoqiao";
+				if(get.nameList(player,"xjzh_sanguo_daqiao")) names="xjzh_sanguo_xiaoqiao";
 				else names="xjzh_sanguo_daqiao";
 			}
 			player.reinit(player.name,names,[player.hp,player.maxHp]);
@@ -320,7 +320,7 @@ const skills={
 		direct:true,
 		audio:"xjzh_sanguo_huishi",
 		filter(event,player){
-			return get.playerName(event.player,"xjzh_sanguo_chunhua");
+			return get.nameList(event.player,"xjzh_sanguo_chunhua");
 		},
 		init(player,skill){
 			player.addSkillBlocker(skill);
@@ -8035,7 +8035,7 @@ const skills={
 		mod:{
 			ignoredHandcard:function(card,player){
 				if(!player.hasSkill("xjzh_sanguo_busuan")) return;
-				if(!get.playerName(player,'xjzh_sanguo_guanlu')) return;
+				if(!get.nameList(player,'xjzh_sanguo_guanlu')) return;
 				var cards=[
 					"xjzh_card_chunfenghuayu",
 					"xjzh_card_zhizuijinmi",
@@ -8047,7 +8047,7 @@ const skills={
 			},
 			aiValue:function(player,card,num){
 				if(!player.hasSkill("xjzh_sanguo_busuan")) return;
-				if(!get.playerName(player,'xjzh_sanguo_guanlu')) return;
+				if(!get.nameList(player,'xjzh_sanguo_guanlu')) return;
 				var cards=[
 					"xjzh_card_chunfenghuayu",
 					"xjzh_card_zhizuijinmi",
@@ -8059,7 +8059,7 @@ const skills={
 			},
 			canBeGained:function(card,player,target,name,now){
 				if(!player.hasSkill("xjzh_sanguo_busuan")) return;
-				if(!get.playerName(player,'xjzh_sanguo_guanlu')) return;
+				if(!get.nameList(player,'xjzh_sanguo_guanlu')) return;
 				var cards=[
 					"xjzh_card_chunfenghuayu",
 					"xjzh_card_zhizuijinmi",
@@ -8071,7 +8071,7 @@ const skills={
 			},
 			canBeDiscarded:function(card,player,target,name,now){
 				if(!player.hasSkill("xjzh_sanguo_busuan")) return;
-				if(!get.playerName(player,'xjzh_sanguo_guanlu')) return;
+				if(!get.nameList(player,'xjzh_sanguo_guanlu')) return;
 				var cards=[
 					"xjzh_card_chunfenghuayu",
 					"xjzh_card_zhizuijinmi",
@@ -8083,7 +8083,7 @@ const skills={
 			},
 			cardDiscardable:function(card,player,name,now){
 				if(!player.hasSkill("xjzh_sanguo_busuan")) return;
-				if(!get.playerName(player,'xjzh_sanguo_guanlu')) return;
+				if(!get.nameList(player,'xjzh_sanguo_guanlu')) return;
 				var cards=[
 					"xjzh_card_chunfenghuayu",
 					"xjzh_card_zhizuijinmi",
@@ -8300,7 +8300,7 @@ const skills={
 		},
 		filter:function(event,player){
 			if(player.countCards('h','xjzh_card_fanyunfuyu')){
-				return get.playerName(player,'xjzh_sanguo_guanlu');
+				return get.nameList(player,'xjzh_sanguo_guanlu');
 			}
 			return false;
 		},
@@ -10662,7 +10662,7 @@ const skills={
 						}
 					}
 					if(event.name=="phase"){
-						if(get.playerName(event.player,"xjzh_sanguo_nanhua")) return true;
+						if(get.nameList(event.player,"xjzh_sanguo_nanhua")) return true;
 					}
 					return false;
 				},
@@ -10875,7 +10875,7 @@ const skills={
 				priority:-10,
 				sub:true,
 				filter:function(event,player){
-					if(!get.playerName(event,player,'xjzh_sanguo_nanhua')) return false;
+					if(!get.nameList(event,player,'xjzh_sanguo_nanhua')) return false;
 					return true;
 				},
 				content:function(){
@@ -11091,7 +11091,7 @@ const skills={
 				audio:"xjzh_sanguo_zhawang",
 				filter:function(event,player){
 					var zhu=get.zhu(player);
-					var players=game.filterPlayer2(current=>get.playerName(current,'xjzh_sanguo_espsunce'));
+					var players=game.filterPlayer2(current=>get.nameList(current,'xjzh_sanguo_espsunce'));
 					if(!players.length) return false;
 					var id=players[0].identity;
 					var count=game.countPlayer(current=>current.identity=="fan");
@@ -11117,7 +11117,7 @@ const skills={
 				content:function(){
 					"step 0"
 					game.playXH(['xjzh_sanguo_zhawang2'].randomGet());
-					var players=game.filterPlayer2(current=>get.playerName(current,'xjzh_sanguo_espsunce'));
+					var players=game.filterPlayer2(current=>get.nameList(current,'xjzh_sanguo_espsunce'));
 					if(game.dead.includes(players[0])){
 						event.targets=players[0];
 					}else{
@@ -11260,7 +11260,7 @@ const skills={
 				direct:true,
 				priority:10,
 				content:function(){
-					var target=game.findPlayer(current=>get.playerName(current,'xjzh_sanguo_espsunce'));
+					var target=game.findPlayer(current=>get.nameList(current,'xjzh_sanguo_espsunce'));
 					trigger.source=target;
 				},
 			},

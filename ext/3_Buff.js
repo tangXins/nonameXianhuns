@@ -1,5 +1,5 @@
 "use strict";
-window.XJZHimport(function(lib,game,ui,get,ai,_status){
+window.XJZHimport(function(lib,game,ui,get,ai,_status,gets){
 	//现在定义新的BUFF时，在lib.xjzhBUFF中请不要加前缀xjzh_buff_
 	lib.xjzhBUFF={
 	    ///增益
@@ -53,14 +53,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			silent:true,
 			priority:3,
 			init:function(player){
-			    if(get.playerName(player,"xjzh_poe_chuxing")){
+			    if(get.nameList(player,"xjzh_poe_chuxing")){
 			        if(!player.storage.xjzh_buff_criticalstrike) player.storage.xjzh_buff_criticalstrike=0
 			        if(!player.storage.xjzh_buff_criticalstrikeDamage) player.storage.xjzh_buff_criticalstrikeDamage=2
 			        player.storage.xjzh_buff_criticalstrike=get.xjzhBUFFNum(player,"criticalstrike")*20;
 			    }
 			},
 			onremove:function(player){
-			    if(!get.playerName(player,"xjzh_poe_chuxing")){
+			    if(!get.nameList(player,"xjzh_poe_chuxing")){
 			        if(player.storage.xjzh_buff_criticalstrike) delete player.storage.xjzh_buff_criticalstrike;
 			        if(player.storage.xjzh_buff_criticalstrikeDamage) delete player.storage.xjzh_buff_criticalstrikeDamage;
 			    }
@@ -95,7 +95,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				limit:function(){
 				    var player=_status.event.player;
-				    if(get.playerName(player,'xjzh_poe_chuxing')&&player.hasSkill('xjzh_poe_canbao')) return 5;
+				    if(get.nameList(player,'xjzh_poe_chuxing')&&player.hasSkill('xjzh_poe_canbao')) return 5;
 				    return 3;
 				},
 			},
@@ -130,7 +130,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				limit:function(){
 				    var player=_status.event.player;
-				    if(get.playerName(player,'xjzh_boss_duruier')) return 0;
+				    if(gets.nameList(player,'xjzh_boss_duruier')) return 0;
 				    return 3;
 				},
 			}

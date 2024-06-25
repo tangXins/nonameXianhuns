@@ -27,51 +27,63 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             lib.character[name].isAiForbidden=true;
             lib.character[name].isUnseen=true;
 	    };
-	    if(!lib.config.xjzh_qishuyaojians.cailiao||!characters||characters==undefined){
+	    if(!get.is.object(lib.config.xjzh_qishuyaojians.cailiao)||!characters||characters==undefined){
 	        func();
 	        return;
 	    };
 
+        let bool=false;
+        if(game.getExtensionConfig("仙家之魂","xjzh_qishuBossPower")){
+            if(get.xjzh_cailiao("xjzh_cailiao_mingyushi")>1) bool=true;
+        }
+
 	    //判断材料数量是否能够开启莉莉丝挑战
         var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
-	    if(Object.keys(cailiaoList).some(item=>get.xjzh_cailiao(item)<1)){
+
+        var lilisiCiaoliao=Object.keys(cailiaoList).filter(item=>!["xjzh_cailiao_shijieshi","xjzh_cailiao_mingyushi"].includes(item));
+	    if(lilisiCiaoliao.some(item=>get.xjzh_cailiao(item)<(bool?6:2))){
 	        func2("xjzh_boss_lilisi");
 	    }
 
 	    //判断材料数量是否能够开启瓦尔申挑战
-	    if(Object.keys(cailiaoList).filter(function(item){
-	        return ["xjzh_cailiao_gugu","xjzh_cailiao_toulu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"].includes(item);
-	    }).some((item,index)=>{
-	        return get.xjzh_cailiao(item)<1;
-	    })){
+        if(get.xjzh_cailiao("xjzh_cailiao_enianzhixin")<(bool?12:4)){
 	        func2("xjzh_boss_waershen");
 	    }
 
 	    //判断材料数量是否能够开启格里高利挑战
-	    if(get.xjzh_cailiao("xjzh_cailiao_gangtie")<5){
+	    if(get.xjzh_cailiao("xjzh_cailiao_gangtie")<(bool?15:5)){
 	        func2("xjzh_boss_geligaoli");
 	    }
 	    //判断材料数量是否能够开启都瑞尔挑战
 	    if(Object.keys(cailiaoList).filter(function(item){
 	        return ["xjzh_cailiao_nianyedan","xjzh_cailiao_kutong"].includes(item);
-	    }).some((item,index)=>{
-	        return get.xjzh_cailiao(item)<2;
+	    }).some((item)=>{
+	        return get.xjzh_cailiao(item)<(bool?6:2);
 	    })){
 	        func2("xjzh_boss_duruier");
 	    }
 
+	    //判断材料数量是否能够开启安达利尔挑战
+	    if(Object.keys(cailiaoList).filter(function(item){
+	        return ["xjzh_cailiao_wawa","xjzh_cailiao_jiasuo"].includes(item);
+	    }).some((item)=>{
+	        return get.xjzh_cailiao(item)<(bool?6:2);
+	    })){
+	        func2("xjzh_boss_andalier");
+	    }
+
 	    //判断材料数量是否能够开启冰川巨兽挑战
-	    if(get.xjzh_cailiao("xjzh_cailiao_kongju")<9){
+	    if(get.xjzh_cailiao("xjzh_cailiao_kongju")<(bool?27:9)){
 	        func2("xjzh_boss_bingchuanjushou");
 	    }
 
 	    //判断材料数量是否能够开启齐尔领主挑战
-	    if(get.xjzh_cailiao("xjzh_cailiao_xianxue")<9){
+	    if(get.xjzh_cailiao("xjzh_cailiao_xianxue")<(bool?27:9)){
 	        func2("xjzh_boss_qier");
 	    }
 
 	    //判断材料数量是否能够开启天堂试炼挑战
-	    if(get.xjzh_cailiao("xjzh_cailiao_shijieshi")<1){
+	    if(get.xjzh_cailiao("xjzh_cailiao_shijieshi")<(bool?3:1)){
 	        func2("xjzh_boss_ttshilian");
 	    }
 
@@ -158,17 +170,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         if(ret){
             //统计本剧得分
             var player=game.me;
+            var qishumingyushi=window.qishumingyushi;
             //限制仅为身份模式、斗地主模式、挑战模式，否则终止运行
             if(!['identity','doudizhu','boss'].includes(get.mode())) return;
             if(get.mode()=="boss"){
                 //如果为挑战模式且玩家为boss则终止运行
                 if(game.boss==player) return;
-                if(!get.xjzh_wujiang(game.boss)) return;
+                if(!get.isXHwujiang(game.boss)) return;
             }
             //判断是否为身份模式或斗地主模式
             else if(['identity','doudizhu'].includes(get.mode())){
                 //如果玩家操作的武将不为仙家之魂武将则终止运行
-                if(!get.xjzh_wujiang(player)) return;
+                if(!get.isXHwujiang(player)) return;
             }
             var draw=player.getAllHistory('draw').length;
             var use=player.getAllHistory('useCard').length;
@@ -189,29 +202,30 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         		"suipian":0,
         		"qishuyaojian":{},
         		"cailiao":{
-        		    "xjzh_cailiao_gugu":0,
-        		    "xjzh_cailiao_toulu":0,
-        		    "xjzh_cailiao_zhanshou":0,
-        		    "xjzh_cailiao_enianzhixin":0
+        		    "xjzh_cailiao_enianzhixin":0,
+        		    "xjzh_cailiao_gangtie":0,
+        		    "xjzh_cailiao_kongju":0,
+        		    "xjzh_cailiao_xianxue":0
         		},
         	};
             //碎片获得
             var suipian=Math.floor(num2);
-            qishuReward["suipian"]+=suipian;
+            qishuReward["suipian"]+=qishumingyushi?suipian:suipian*2;
 
             //材料获得
             var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
             var cailiaoList2=Object.keys(cailiaoList).filter(function(item){
-	            return ["xjzh_cailiao_gugu","xjzh_cailiao_toulu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"].includes(item);
+	            return ["xjzh_cailiao_enianzhixin","xjzh_cailiao_gangtie","xjzh_cailiao_kongju","xjzh_cailiao_xianxue","xjzh_cailiao_mingyushi"].includes(item);
 	        });
-
-	        console.log(cailiaoList2)
 
 	        var numx=0;
 	        while(numx<4){
 	            if(Math.random()<=num2/300){
 	                var index=cailiaoList2.randomGet();
-	                qishuReward["cailiao"][index]+=1;
+                    if(index=="xjzh_cailiao_mingyushi"){
+                        if(Math.random()<=0.2*(qishumingyushi?2:1)) qishuReward["cailiao"][index]+=1;
+                    }
+                    else qishuReward["cailiao"][index]+=1;
 	            }
 	            numx++
 	        }
@@ -222,97 +236,154 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				if(level&&level<5) qishuList.push(i);
 			}
 
-            //精魄及奇术要件获得，若boss为莉莉丝则必定获得一个，额外获得至少0个，至多为3个;
+            //精魄及奇术要件获得，若boss为莉莉丝则必定获得一个精魄，额外获得至少0个，至多为3个;
             if(get.mode()=="boss"){
                 //消耗材料
-                switch(get.playerName(game.boss)[0]){
+                switch(get.nameList(game.boss)[0]){
                     //如果boss为莉莉丝
-                    //必定获得精魄1个，额外获得精魄0-碎片数量个
+                    //必定获得精魄1个，额外获得0-3个精魄
+                    //额外获得60个碎片
                     //最终获得碎片数量乘2
-                    //有几率获得随机1-4级奇术要件1个
+                    //随机获得1-4级奇术要件1个
+                    //必定掉落一个冥狱石
                     case "xjzh_boss_lilisi":
-                        for(var i in cailiaoList){
-                            game.xjzh_changeCailiao(i,-2);
+                        qishuReward["jingpo"]+=qishumingyushi?1:2+get.rand(0,3);
+
+                        if(qishumingyushi==true){
+                            let number=2;
+                            while(number>0){
+                                var qishuLevelArr=qishuList.randomGet();
+                                if(!qishuReward["qishuyaojian"][qishuLevelArr]) qishuReward["qishuyaojian"][qishuLevelArr]=0;
+                                qishuReward["qishuyaojian"][qishuLevelArr]++;
+                                number--;
+                            }
+                        }else{
+                            var qishuLevelArr=qishuList.randomGet();
+                            if(!qishuReward["qishuyaojian"][qishuLevelArr]) qishuReward["qishuyaojian"][qishuLevelArr]=0;
+                            qishuReward["qishuyaojian"][qishuLevelArr]++;
                         }
-                        qishuReward["jingpo"]+=1+get.rand(0,3);
-                        if(Math.random()<=num2/100){
-                            qishuReward["qishuyaojian"][qishuList.randomGet()]=1;
-                        }
+
+                        if(!qishuReward["cailiao"]["xjzh_cailiao_shijieshi"]) qishuReward["cailiao"]["xjzh_cailiao_shijieshi"]=0;
+                        qishuReward["cailiao"]["xjzh_cailiao_shijieshi"]+=qishumingyushi?2:1;
+
+                        if(!qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]) qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]=0;
+                        qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]+=qishumingyushi?2:1;
+
+                        qishuReward["suipian"]+=qishumingyushi?60*2:60;
+
                         qishuReward["suipian"]*=2;
                     break;
                     //如果boss为瓦尔申
-                    //获得活体钢铁2个
                     //获得粘液覆盖的蛋1个
-                    //额外获得3个碎片
+                    //额外获得10个碎片
                     //必定掉落疯狼的狂喜、瓦西里的祷告之一
                     case "xjzh_boss_waershen":
-                        if(!qishuReward["cailiao"]["xjzh_cailiao_gangtie"]) qishuReward["cailiao"]["xjzh_cailiao_gangtie"]=0;
-                        if(!game.xjzhAchi.hasAchi('净化恶念','game')) qishuReward["cailiao"]["xjzh_cailiao_gangtie"]+=2;
-                        else qishuReward["cailiao"]["xjzh_cailiao_gangtie"]+=3;
+                        let number=1;
                         if(!qishuReward["cailiao"]["xjzh_cailiao_nianyedan"]) qishuReward["cailiao"]["xjzh_cailiao_nianyedan"]=0;
-                        if(!game.xjzhAchi.hasAchi('净化恶念','game')) qishuReward["cailiao"]["xjzh_cailiao_nianyedan"]+=1;
-                        else qishuReward["cailiao"]["xjzh_cailiao_nianyedan"]+=2;
-                        qishuReward["suipian"]+=3;
-                        var qishuLevel4=["xjzh_qishu_waxilidedaogao","xjzh_qishu_fenglangkx"];
-                        var qishuLevel4Arr=qishuLevel4.randomGet();
-                        if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
-                        qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        if(game.xjzhAchi.hasAchi('净化恶念','game')) number=2;
+
+                        qishuReward["cailiao"]["xjzh_cailiao_nianyedan"]+=qishumingyushi?number*2:number;
+
+                        qishuReward["suipian"]+=qishumingyushi?10*2:10;
                     break;
                     //如果boss为格里高利
                     //获得苦痛碎片1个
-                    //额外获得5个碎片
+                    //额外获得10个碎片
                     case "xjzh_boss_geligaoli":
                         if(!qishuReward["cailiao"]["xjzh_cailiao_kutong"]) qishuReward["cailiao"]["xjzh_cailiao_kutong"]=0;
-                        qishuReward["cailiao"]["xjzh_cailiao_kutong"]+=1;
-                        qishuReward["suipian"]+=5;
+                        qishuReward["cailiao"]["xjzh_cailiao_kutong"]+=qishumingyushi?2:1;
+
+                        qishuReward["suipian"]+=qishumingyushi?10*2:10;
                     break;
                     //如果boss为都瑞尔
-                    //获得提纯的恐惧2个
-                    //获得提纯的鲜血2个
-                    //额外获得7个碎片
-                    //必定掉落风暴咆哮、剃头师、痛苦吞食者之一
+                    //额外获得45个碎片
+                    //必定掉落风暴咆哮、瓦西里的祷告、痛苦吞食者之一
+                    //有几率掉落一个冥狱石
                     case "xjzh_boss_duruier":
-                        if(!qishuReward["cailiao"]["xjzh_cailiao_kongju"]) qishuReward["cailiao"]["xjzh_cailiao_kongju"]=0;
-                        qishuReward["cailiao"]["xjzh_cailiao_kongju"]+=2;
-                        if(!qishuReward["cailiao"]["xjzh_cailiao_xianxue"]) qishuReward["cailiao"]["xjzh_cailiao_xianxue"]=0;
-                        qishuReward["cailiao"]["xjzh_cailiao_xianxue"]+=2;
-                        qishuReward["suipian"]+=7;
-                        var qishuLevel4=["xjzh_qishu_fengbaopaoxiao","xjzh_qishu_titoushi","xjzh_qishu_tongkuhushou"];
-                        var qishuLevel4Arr=qishuLevel4.randomGet();
-                        if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
-                        qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        var randomNum=(Object.keys(cailiaoList).length/0.5)/100;
+                        if(Math.random()<randomNum){
+                            if(!qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]) qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]=0;
+                            qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]+=qishumingyushi?2:1;;
+                        }
+
+                        qishuReward["suipian"]+=qishumingyushi?45*2:45;
+
+                        var qishuLevel4=["xjzh_qishu_fengbaopaoxiao","xjzh_qishu_xjzh_qishu_waxilidedaogao","xjzh_qishu_tongkuhushou"];
+
+                        if(qishumingyushi==true){
+                            let number=2;
+                            while(number>0){
+                                var qishuLevel4Arr=qishuLevel4.randomGet();
+
+                                if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
+                                qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+
+                                number--;
+                            }
+                        }else{
+                            var qishuLevel4Arr=qishuLevel4.randomGet();
+
+                            if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
+                            qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        }
+
+
                     break;
                     //如果boss为齐尔领主
-                    //获得提纯的恐惧3个
+                    //获得焦沙枷锁1个
                     //额外获得10个碎片
                     //必定掉落疯狼的狂喜、瓦西里的祷告之一
                     case "xjzh_boss_qier":
-                        if(!qishuReward["cailiao"]["xjzh_cailiao_kongju"]) qishuReward["cailiao"]["xjzh_cailiao_kongju"]=0;
-                        qishuReward["cailiao"]["xjzh_cailiao_kongju"]+=3;
-                        qishuReward["suipian"]+=10;
-                        var qishuLevel4=["xjzh_qishu_waxilidedaogao","xjzh_qishu_fenglangkx"];
-                        var qishuLevel4Arr=qishuLevel4.randomGet();
-                        if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
-                        qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        if(!qishuReward["cailiao"]["xjzh_cailiao_jiasuo"]) qishuReward["cailiao"]["xjzh_cailiao_jiasuo"]=0;
+                        qishuReward["cailiao"]["xjzh_cailiao_jiasuo"]+=qishumingyushi?2:1;
+
+                        qishuReward["suipian"]+=qishumingyushi?10*2:10;
                     break;
                     //如果boss为冰川巨兽
-                    //获得提纯的鲜血3个
+                    //获得针扎娃娃1个
                     //额外获得10个碎片
-                    //必定掉落无餍之怒
                     case "xjzh_boss_bingchuanjushou":
-                        if(!qishuReward["cailiao"]["xjzh_cailiao_xianxue"]) qishuReward["cailiao"]["xjzh_cailiao_xianxue"]=0;
-                        qishuReward["cailiao"]["xjzh_cailiao_xianxue"]+=3;
-                        qishuReward["suipian"]+=10;
-                        var qishuLevel4=["xjzh_qishu_wuyan"];
-                        var qishuLevel4Arr=qishuLevel4.randomGet();
-                        if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
-                        qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        if(!qishuReward["cailiao"]["xjzh_cailiao_wawa"]) qishuReward["cailiao"]["xjzh_cailiao_wawa"]=0;
+                        qishuReward["cailiao"]["xjzh_cailiao_wawa"]+=qishumingyushi?2:1;
+
+                        qishuReward["suipian"]+=qishumingyushi?10*2:10;
+                    break;
+                    //如果boss为安达利尔
+                    //额外获得45个碎片
+                    //必定掉落无餍之怒、疯狼的狂喜、无名者兜帽之一
+                    //有几率掉落一个冥狱石
+                    case "xjzh_boss_andalier":
+                        var randomNum=(Object.keys(cailiaoList).length/0.5)/100;
+                        if(Math.random()<randomNum){
+                            if(!qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]) qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]=0;
+                            qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]+=qishumingyushi?2:1;
+                        }
+
+                        qishuReward["suipian"]+=qishumingyushi?45*2:45;
+
+                        var qishuLevel4=["xjzh_qishu_wuyan","xjzh_qishu_fenglangkx","xjzh_qishu_wumingzhe"];
+
+                        if(qishumingyushi==true){
+                            let number=2;
+                            while(number>0){
+                                var qishuLevel4Arr=qishuLevel4.randomGet();
+
+                                if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
+                                qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+
+                                number--;
+                            }
+                        }else{
+                            var qishuLevel4Arr=qishuLevel4.randomGet();
+
+                            if(!qishuReward["qishuyaojian"][qishuLevel4Arr]) qishuReward["qishuyaojian"][qishuLevel4Arr]=0;
+                            qishuReward["qishuyaojian"][qishuLevel4Arr]++;
+                        }
+
                     break;
                 };
 
             }
-
-    	    console.log(qishuReward);
 
             //展示奖励结算面板数据
             var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+num2+'<br><br>对局奖励：';
@@ -371,11 +442,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 }
             }
 
-            game.xjzh_levelUp(num3);
+            game.xjzh_levelUp(qishumingyushi?num3*2:num3);
 
-            console.log(lib.xjzh_hasDoneAchievement)
-
-            game.xjzh_qishuWinner("奖励结算",str)
+            game.xjzh_qishuWinner("奖励结算",str);
         }
     });
 
@@ -391,6 +460,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             return game.boss!=game.me;
         },
         init:function(player){
+            window.qishumingyushi=false;
+            if(game.getExtensionConfig("仙家之魂","xjzh_qishuBossPower")){
+                if(get.xjzh_cailiao("xjzh_cailiao_mingyushi")>1) window.qishumingyushi=true;
+            }
+
             if(!player.storage.xjzh_qishu_materialRemove) player.storage.xjzh_qishu_materialRemove=player.getOriginalSkills();
 			var qishuRemove=window.setInterval(function(){
 				for(var skill of player.storage.xjzh_qishu_materialRemove){
@@ -402,87 +476,87 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				    };
 				}
 			},1000);
+
+            let dieFunc=player.die;
+            player.die=()=>{
+                if(player.getHp(true)>0){
+                    game.log(`检测到${get.translation(player)}的体力值大于0，已为其终止阵亡结算`);
+                    return;
+                }
+                let die=dieFunc.apply(player,arguments);
+                return die;
+            };
         },
-        group:["xjzh_qishu_materialRemove_nodie"],
-        content:function(){
-            var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
-            var cailiaoList2=Object.keys(cailiaoList).filter(function(item){
-	            return ["xjzh_cailiao_gugu","xjzh_cailiao_toulu","xjzh_cailiao_zhanshou","xjzh_cailiao_enianzhixin"].includes(item);
-	        });
-	        console.log(cailiaoList2)
-	        var str="";
-	        var qishuName=lib.config.xjzh_qishuyaojians.name;
-            switch(get.playerName(game.boss)[0]){
+        async content(event,trigger,player){
+            let {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao,qishumingyushi=window.qishumingyushi,qishuName=lib.config.xjzh_qishuyaojians.name,str=`${qishuName?qishuName:"无名玩家"}消耗了`;
+
+            //只要qishumingyushi为真，就消耗两个冥狱石
+            //设置boss被强化的数据
+            if(qishumingyushi){
+                game.xjzh_changeCailiao("xjzh_cailiao_mingyushi",-2);
+                let boss=game.boss;
+                await game.boss.gainMaxHp(game.boss.maxHp);
+                await game.boss.recoverTo(game.boss.maxHp);
+                await game.boss.drawTo(game.boss.maxHp);
+            }
+
+            switch(get.nameList(game.boss)[0]){
                 //如果boss为天堂试炼
                 //消耗世界石碎片一个
                 case "xjzh_boss_ttshilian":
-                    game.xjzh_changeCailiao("xjzh_cailiao_shijieshi",-1);
-                    game.log(qishuName?qishuName:"无名玩家","消耗了1个","#g世界石碎片","开启了","#y天堂试炼","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_shijieshi",qishumingyushi?-3:-1);
+                    str+=`${qishumingyushi?3:1}个${get.xjzh_cailiaoTranslate("xjzh_cailiao_shijieshi")}开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为莉莉丝
-                //消耗所有材料各两个
+                //消耗除世界上碎片、冥狱石之外的所有材料各两个
                 case "xjzh_boss_lilisi":
-                    var list=Object.keys(cailiaoList);
+                    var list=Object.keys(cailiaoList).filter(item=>!["xjzh_cailiao_shijieshi","xjzh_cailiao_mingyushi"].includes(item)),arrList=[];
                     for(var i=0;i<list.length;i++){
-                        game.xjzh_changeCailiao(list[i],-2);
-                        str+=get.xjzh_cailiaoTranslate(list[i]);
-                        if(i!=list.length-1) str+="、";
+                        game.xjzh_changeCailiao(list[i],qishumingyushi?-6:-2);
+                        arrList.push(get.xjzh_cailiaoTranslate(list[i]));
                     }
-                    game.log(qishuName?qishuName:"无名玩家","消耗了","#g"+str+"","各2个开启了","#y莉莉丝","挑战");
+                    str+=`${arrList}各${qishumingyushi?6:2}个开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为瓦尔申
-                //消耗发黑的股骨、颤栗之手、恶念之心、咕噜头颅各一个
+                //消耗恶念之心四个
                 case "xjzh_boss_waershen":
-                    for(var i=0;i<cailiaoList2.length;i++){
-                        game.xjzh_changeCailiao(cailiaoList2[i],-1);
-                        str+=get.xjzh_cailiaoTranslate(cailiaoList2[i]);
-                        if(i!=cailiaoList2.length-1) str+="、";
-                    }
-                    game.log(qishuName?qishuName:"无名玩家","消耗了","#g"+str+"","各1个开启了","#y瓦尔申","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_enianzhixin",qishumingyushi?-12:-4);
+                    str+=`${qishumingyushi?12:4}个${get.xjzh_cailiaoTranslate("xjzh_cailiao_enianzhixin")}开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为格里高利
                 //消耗活体钢铁5个
                 case "xjzh_boss_geligaoli":
-                    game.xjzh_changeCailiao("xjzh_cailiao_gangtie",-5);
-                    game.log(qishuName?qishuName:"无名玩家","消耗了5个","#g活体钢铁","开启了","#y格里高利","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_gangtie",qishumingyushi?-15:-5);
+                    str+=`${qishumingyushi?15:5}个${get.xjzh_cailiaoTranslate("xjzh_cailiao_enianzhixin")}开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为都瑞尔
                 //消耗苦痛碎片、粘液覆盖的蛋各2个
                 case "xjzh_boss_duruier":
-                    game.xjzh_changeCailiao("xjzh_cailiao_nianyedan",-2);
-                    game.xjzh_changeCailiao("xjzh_cailiao_kutong",-2);
-                    game.log(qishuName?qishuName:"无名玩家","消耗了","#g苦痛碎片、粘液覆盖的蛋","各2个开启了","#y都瑞尔","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_nianyedan",qishumingyushi?-6:-2);
+                    game.xjzh_changeCailiao("xjzh_cailiao_kutong",qishumingyushi?-6:-2);
+                    str+=`${get.xjzh_cailiaoTranslate("xjzh_cailiao_nianyedan")}、${get.xjzh_cailiaoTranslate("xjzh_cailiao_kutong")}各${qishumingyushi?6:2}个开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为齐尔领主
                 //消耗提纯的鲜血9个
                 case "xjzh_boss_qier":
-                    game.xjzh_changeCailiao("xjzh_cailiao_xianxue",-9);
-                    game.log(qishuName?qishuName:"无名玩家","消耗了9个","#g提纯的鲜血","开启了","#y齐尔领主","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_xianxue",qishumingyushi?-27:-9);
+                    str+=`${qishumingyushi?27:9}个${get.xjzh_cailiaoTranslate("xjzh_cailiao_xianxue")}开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
                 //如果boss为冰川巨兽
                 //消耗提纯的恐惧9个
                 case "xjzh_boss_bingchuanjushou":
-                    game.xjzh_changeCailiao("xjzh_cailiao_kongju",-9);
-                    game.log(qishuName?qishuName:"无名玩家","消耗了9个","#g提纯的恐惧","开启了","#y冰川巨兽","挑战");
+                    game.xjzh_changeCailiao("xjzh_cailiao_kongju",qishumingyushi?-27:-9);
+                    str+=`${qishumingyushi?27:9}个${get.xjzh_cailiaoTranslate("xjzh_cailiao_kongju")}开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
+                break;
+                //如果boss为安达利尔
+                //消耗焦沙枷锁、针扎娃娃各2个
+                case "xjzh_boss_andalier":
+                    game.xjzh_changeCailiao("xjzh_cailiao_wawa",qishumingyushi?-6:-2);
+                    game.xjzh_changeCailiao("xjzh_cailiao_jiasuo",qishumingyushi?-6:-2);
+                    str+=`${get.xjzh_cailiaoTranslate("xjzh_cailiao_wawa")}、${get.xjzh_cailiaoTranslate("xjzh_cailiao_jiasuo")}各${qishumingyushi?6:2}个开启了${get.translation(get.nameList(game.boss)[0])}挑战`;
                 break;
             };
-        },
-        subSkill:{
-            "nodie":{
-                trigger:{
-                    player:"dieBefore",
-                },
-                silent:true,
-                sub:true,
-                priority:5,
-                filter:function(event,player){
-                    return player.hp>0;
-                },
-                content:function(){
-                    trigger.cancel(null,null,'notrigger');
-                    game.log(`检测到${get.translation(player)}的体力值大于0，已为其终止阵亡结算`);
-                },
-            },
+            game.log(str);
         },
     };
 

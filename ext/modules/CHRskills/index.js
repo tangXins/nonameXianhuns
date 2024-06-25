@@ -11,11 +11,6 @@ export const CHRskills={
 	        silent:true,
 	        priority:Infinity,
 	        firstDo:true,
-			/*locked:true,
-			fixed:true,
-			charlotte:true,
-			unique:true,
-			superCharlotte:true,*/
         	marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/icon/xjzh_skill_showMpCount.png>`,
 			intro:{
 				name:"魔力面板",
@@ -26,34 +21,36 @@ export const CHRskills={
 					return str;
 				},
 			},
-			/*onremove(player){
-				player.xjzhremoveMp();
-			},*/
 	        filter(event,player){
-	            if(!get.xjzh_wujiang(player)) return false;
+				if(!get.isXHwujiang(player)) return false;
 				if(player.isOut()) return false;
-				let nameList=get.playerName(player),num=0;
+				let nameList=get.nameList(player),num=0;
+				if(!Array.isArray(nameList)||!nameList.length) return false;
 				nameList.forEach(item=>{
-					let names=lib.character[item][5];
-					if(names&&Array.isArray(names)){
-						let object=names.filter(index=>{
-							if(Object.prototype.toString.call(index)==='[object Object]'&&index!==null&&index.name=='xjzhMp') return true;
-							return false;
-						});
-						if(object.length>0) num++;
-					}
+					if(lib.character[item][5]&&lib.character[item][5].length){
+						let names=lib.character[item][5];
+						if(Array.isArray(names)){
+							let object=names.filter(index=>{
+								if(get.is.object(index)&&index.name=='xjzhMp') return true;
+								return false;
+							});
+							if(object.length>0) num++;
+						}
+					};
 				});
 				return num>0;
 	        },
 	        async content(event,trigger,player){
-				let nameList=get.playerName(player),object;
+				let nameList=get.nameList(player),object;
 				nameList.forEach(item=>{
-					let names=lib.character[item][5];
-					if(names&&Array.isArray(names)){
-						object=names.filter(index=>{
-							if(Object.prototype.toString.call(index)==='[object Object]'&&index!==null&&index.name=='xjzhMp') return true;
-							return false;
-						})[0];
+					if(lib.character[item][5]&&lib.character[item][5].length){
+						let names=lib.character[item][5];
+						if(Array.isArray(names)){
+							object=names.filter(index=>{
+								if(get.is.object(index)&&index.name=='xjzhMp') return true;
+								return false;
+							})[0];
+						}
 					}
 				});
 				if(!player.node.xjzhmp){
