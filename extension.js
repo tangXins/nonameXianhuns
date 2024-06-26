@@ -1391,30 +1391,31 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			*
 			* @returns {boolean} 如果玩家是仙家之魂武将，则返回true；否则返回false。
 			*/
-		   get.isXHwujiang=function(...arg){
-			   // 初始化变量，用于存储玩家对象和玩家名称列表
-			   let player, str, list = [];
+		    get.isXHwujiang=function(...arg){
+				// 初始化变量，用于存储玩家对象和玩家名称列表
+				let player, str, list = [];
 
-			   // 遍历函数的所有参数，寻找玩家对象
-			   // 遍历函数接收的所有参数
-			   for(let argument of arg) {
-				   // 如果参数是玩家对象，则将其赋值给player变量
-				   if (get.itemtype(argument) == "player") player = argument;
-			   }
+				// 遍历函数的所有参数，寻找玩家对象
+				// 遍历函数接收的所有参数
+				for(let argument of arg) {
+					// 如果参数是玩家对象，则将其赋值给player变量
+					if (get.itemtype(argument) == "player") player = argument;
+				}
 
-			   // 如果没有找到玩家对象，则返回false
-			   if(!player) return false;
+				// 如果没有找到玩家对象，则返回false
+				if(!player) return false;
 
-			   // 获取玩家对象的名字列表
-			   let names=get.nameList(player);
-			   // 如果玩家名字列表为空或不是数组，则返回false
-			   if(!names.length||!Array.isArray(names)) return false;
+				// 获取玩家对象的名字列表
+				let names=get.nameList(player);
+				// 如果玩家名字列表为空或不是数组，则返回false
+				if(!names.length||!Array.isArray(names)) return false;
 
-			   // 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
-			   if(names.some(item=>lib.character[item][4]&&lib.character[item][4].includes('xjzh_die_audio'))) return true;
-
-			   // 如果没有满足条件的名字，则返回false
-			   return false;
+				// 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
+				return names.some(item=>{
+					if(!lib.character[item]) return false;
+					if(!lib.character[item][4]) return false;
+					return lib.character[item][4].includes('xjzh_die_audio');
+		   		})?true:false;
 		   };
 			//判断字符串是否含有中文
 			get.xjzh_checkChinese=function(str){
@@ -1508,7 +1509,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if (!str) return list;
 				// 如果指定了特定字符串，检查列表中是否包含该字符串
 				// 如果包含，则返回true；否则返回false
-				return list.some(name => name == str) ? true : false;
+				return list.some(name => name.startsWith(str)) ? true : false;
 			};
 			//挑战模式切换随从
 			game.changeBossFellow=function(name,player){

@@ -28,7 +28,7 @@ const translates = {
     "xjzh_card_wuxian_info":"当你装备此牌时，此装备随机获得3个效果",
     "xjzh_card_wuxian_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>指挥官莫托汲取原初之火制造的胸甲，当你穿戴它时，你会获得来源于原初之火的强大力量，同时你也需要承受来自强大力量的反噬。</font></span>",
     "xjzh_card_rongyankaijia":"熔岩铠甲",
-    "xjzh_card_rongyankaijia_info":"你受到伤害的50%（向上取整）会在你的回合结束后结算，若该伤害为火焰伤害，则免疫该伤害。",
+    "xjzh_card_rongyankaijia_info":"你防止火焰伤害；受到非火焰伤害的50%（向上取整）会在你的结束阶段结算。",
     "xjzh_card_rongyankaijia_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>火焰之神闲暇时随手制作的一件残次品，它不会为你增加任何防御力量，但当你穿戴它时，你会感觉到无比的强大。</font></span>",
 
     //技能

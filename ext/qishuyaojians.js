@@ -896,18 +896,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			translate:"生命复苏",
 			translate_info:"锁定技，当一名角色因你回复体力时，其回复的体力值基础数值+1，若其处于濒死阶段，则额外+1回复基础数值。",
 			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
-			noTranslate:true,
+			//noTranslate:true,
 			level:1,
 			skill:{
     		    trigger:{
-    		        player:"recoverBegin",
+    		        global:"recoverBegin",
     		    },
     		    priority:3,
     		    frequent:true,
-    			filter:function(event,player){
+    			filter(event,player){
     			    return event.source==player;
     			},
-    		    content:function(){
+    		    async content(event,trigger,player){
     		        trigger.num++;
     		        if(trigger.player.isDying()) trigger.num++;
     		    },

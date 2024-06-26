@@ -6,6 +6,23 @@ export const xjzhUpdateLog={
     version:`${jsonInfo.version}`,
 	'3.06251':{
         changeLog:[
+			"修正奇术要件“生命复苏”描述与代码一致",
+
+			"修复姜凝脂〖点灵〗ai报错",
+			"修复公孙瓒〖白马〗错误",
+			"修正公孙瓒〖募马〗描述与代码一致",
+			"修复【熔岩铠甲】结算游戏卡住",
+			"修复buff“中毒”报错",
+			"调整林嘉笙〖甘霖〗，“成为延时锦囊牌的目标获得一张同名牌”改为“不能成为延时锦囊的目标”",
+
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:[],
+		cards:[],
+    },
+	'3.06251':{
+        changeLog:[
 			"本次更新会重置奇术要件材料",
 			"新增兑换码<a style='color:#FFFF00' href=\"javascript:game.xjzh_copyToText('shujialaile');\">shujialaile</a>(点击复制)",
 			"调整奇术要件的用户名等字体及位置显示，不会再因为窗口缩放而超出容器",

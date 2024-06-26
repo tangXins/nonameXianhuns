@@ -321,7 +321,7 @@ const translates = {
 	"xjzh_sanguo_yicong":"义从",
 	"xjzh_sanguo_yicong_info":"锁定技，游戏开始时，你废除坐骑栏且无法恢复，其他角色装备的坐骑牌也为你提供相同的效果。",
 	"xjzh_sanguo_muma":"募马",
-	"xjzh_sanguo_muma_info":"锁定技，当坐骑牌进入弃牌堆时，你可以选择一张牌令一名角色装备之（不能替换）",
+	"xjzh_sanguo_muma_info":"锁定技，当坐骑牌进入弃牌堆时，你可以选择其中一张牌令一名角色装备之（不能替换）",
 	"xjzh_sanguo_yuewu":"月舞",
 	"xjzh_sanguo_yuewu_info":function(){
 		if(lib.config.extension_仙家之魂_xjzh_jiexiantupo) return "出牌阶段限一次，你选择两名其他角色令其各自获得对方手牌中没有的花色，然后你选择两名角色手牌的花色类别之一，你依次获得其所有该花色的手牌视为对另一角色使用一张决斗，该决斗不能被无懈可击响应。";

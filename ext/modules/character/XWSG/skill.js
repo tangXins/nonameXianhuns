@@ -7320,7 +7320,7 @@ const skills={
 		intro:{
 			name:"白马义从",
 			mark(dialog,content,player){
-				let num=Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(event.card))).length;
+				let num=Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(card))).length;
 				return `牌堆剩余${get.cnNumber(num)}张坐骑牌`;
 			},
 		},
@@ -7331,7 +7331,7 @@ const skills={
 		},
 		async content(event,trigger,player){
 			await player.draw(2);
-			if(!Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(event.card))).length) player.insertPhase();
+			if(!Array.from(ui.cardPile.childNodes).filter(card=>["equip3","equip4"].includes(get.subtype(card))).length) player.insertPhase();
 		},
 	},
 	"xjzh_sanguo_yicong":{
@@ -7348,15 +7348,15 @@ const skills={
 		intro:{
 			name:"白马义从",
 			content(storage,player){
-				return `进攻距离：${game.countPlayer(current=>!current.getEquips(4))+1}<br>防御距离：${game.countPlayer(current=>!current.getEquips(3))+1}`;
+				return `进攻距离：${game.countPlayer(current=>current.getEquips(4).length)+1}<br>防御距离：${game.countPlayer(current=>current.getEquips(3).length)+1}`;
 			},
 		},
 		mod:{
 			globalFrom(from,to,distance){
-				return distance-game.countPlayer(current=>!current.getEquips(4));
+				return distance-game.countPlayer(current=>current.getEquips(4).length);
 			},
 			globalTo(from,to,distance){
-				return distance+game.countPlayer(current=>!current.getEquips(3));
+				return distance+game.countPlayer(current=>current.getEquips(3).length);
 			},
 		},
 		trigger:{player:'enableEquipBefore'},
@@ -7380,13 +7380,15 @@ const skills={
 		},
 		filter(event,player){
 			if(!event.cards||!event.cards.length) return false;
+			if(event.type=="use") return false;
 			if(!game.hasPlayer(current=>current.getEquips())) return false;
 			let cards=event.cards.filter(card=>{
 				if(!["equip3","equip4"].includes(get.subtype(card))) return false;
 				if(!game.hasPlayer(current=>current.canEquip(card))) return false;
-				return get.position(card)=='d';
+				return true;
 			});
-			return cards.length;
+			if(!cards.length) return false;
+			return cards.filterInD('d').length;
 		},
 		forced:true,
 		locked:true,

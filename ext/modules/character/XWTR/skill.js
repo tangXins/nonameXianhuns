@@ -17,7 +17,7 @@ const skills={
 		},
 		check(event,player){
 			let att=get.attitude(player,event.player);
-			let num=event.player.needsToDiscard(null,null.true);
+			let num=event.player.needsToDiscard();
 			if(att<=0&&num>0) return num;
 			if(att>0&&num<=0) return num;
 			return 1;

@@ -564,13 +564,12 @@ const cards={
             let player=get.player();
             if(player.storage.xjzh_card_rongyankaijia_skill&&player.storage.xjzh_card_rongyankaijia_skill.length){
                 let storage=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
-                for await(let damageList of storage){
-                    player.damage.apply(player,damageList.slice(0));
+                for(let damageList of storage){
+                    if(player.isDead()) break;
+                    player.damage(...(damageList.slice(0)));
                 }
                 delete player.storage.xjzh_card_rongyankaijia_skill;
-
                 player.unmarkSkill("xjzh_card_rongyankaijia_skill2");
-                player.removeSkill("xjzh_card_rongyankaijia_skill2",true);
             }
         },
         skills:["xjzh_card_rongyankaijia_skill"],

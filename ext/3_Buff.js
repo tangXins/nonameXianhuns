@@ -1,5 +1,5 @@
 "use strict";
-window.XJZHimport(function(lib,game,ui,get,ai,_status,gets){
+window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	//现在定义新的BUFF时，在lib.xjzhBUFF中请不要加前缀xjzh_buff_
 	lib.xjzhBUFF={
 	    ///增益
@@ -130,7 +130,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status,gets){
 				},
 				limit:function(){
 				    var player=_status.event.player;
-				    if(gets.nameList(player,'xjzh_boss_duruier')) return 0;
+				    if(get.nameList(player,'xjzh_boss_duruier')) return 0;
 				    return 3;
 				},
 			}

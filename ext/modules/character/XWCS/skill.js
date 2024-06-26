@@ -156,27 +156,23 @@ const skills={
 	"xjzh_meiren_ganling":{
 		trigger:{
 			player:["damageBegin1","dieBegin","loseHpBegin","loseMaxHpBegin"],
-			target:"useCardToBefore",
 		},
 		forced:true,
 		locked:true,
 		priority:5,
-		filter:function(event,player){
+		filter(event,player){
 			if(event.name=="damage"&&event.num>0) return true;
-			if(event.name=="die"&&player.hp>0) return true;
+			if(event.name=="die"&&player.getHp()>0) return true;
 			if(["loseHp","loseMaxHp"].includes(event.name)&&_status.currentPhase!=player) return true;
-			if(event.targets&&event.targets.includes(player)&&event.card&&get.type(event.card)=='delay'&&event.card.isCard) return true;
 			return false;
 		},
-		content:function(){
-			"step 0"
+		mod:{
+			targetEnabled(card,player,target){
+				if(get.type(card)=="delay") return false;
+			},
+		},
+		async content(event,trigger,player){
 			trigger.cancel(null,null,'notrigger');
-			"step 1"
-			if(trigger.targets&&trigger.targets.includes(player)&&get.type(trigger.card)=='delay'&&trigger.card.isCard){
-				player.gain(game.createCard(trigger.card),'gain2');
-				game.log(player,'获得了'+get.translation(trigger.card)+'');
-			}
-			"step 2"
 			switch(trigger.name){
 				case "damage":
 					game.log("你防止受到所有伤害");
@@ -203,10 +199,6 @@ const skills={
 					if(get.tag(card,'damage')) return [0,0];
 					//if(get.tag(card,'loseHp')) return [0,0];
 					if(player.hasSkillTag('jueqing',false,target)) return [0,0];
-					if(card&&get.type(card)=="delay"){
-						if(player==target) return 0;
-						return [0,1];
-					};
 					return [1,-1];
 				},
 			},

@@ -29,7 +29,7 @@ export const CHRskills={
 				nameList.forEach(item=>{
 					if(lib.character[item][5]&&lib.character[item][5].length){
 						let names=lib.character[item][5];
-						if(Array.isArray(names)){
+						if(Array.isArray(names)&&names.length){
 							let object=names.filter(index=>{
 								if(get.is.object(index)&&index.name=='xjzhMp') return true;
 								return false;
@@ -45,11 +45,11 @@ export const CHRskills={
 				nameList.forEach(item=>{
 					if(lib.character[item][5]&&lib.character[item][5].length){
 						let names=lib.character[item][5];
-						if(Array.isArray(names)){
-							object=names.filter(index=>{
+						if(Array.isArray(names)&&names.length){
+							object=names.find(index=>{
 								if(get.is.object(index)&&index.name=='xjzhMp') return true;
 								return false;
-							})[0];
+							});
 						}
 					}
 				});
