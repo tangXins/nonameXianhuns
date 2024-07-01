@@ -1,5 +1,4 @@
 import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
-import { xjzh_updateURLS,xjzhUpdateLog } from '../index.js';
 import updateOnlines from '../update/updateOnline.js';
 
 export const xjzhConfig={

@@ -2,7 +2,7 @@ import { lib, game, ui, get, ai, _status } from "../../../../../../noname.js";
 import characters from "./character.js";
 import cards from "./card.js";
 import pinyins from "./pinyin.js";
-import skills from "./skill.js";
+import { starsSkills,poeSkills,wzrySkills,diabloSkills,dnfSkills,xiyouSkills } from './skills/index.js';
 import translates from "./translate.js";
 import characterIntros from "./intro.js";
 import characterFilters from "./characterFilter.js";
@@ -28,7 +28,7 @@ export function XWTRINIT(){
 			characterIntro:{...characterIntros},
 			characterReplace:{...characterReplaces},
 			card:{...cards},
-			skill:{...skills},
+			skill:{...starsSkills,...starsSkills,...poeSkills,...wzrySkills,...diabloSkills,...dnfSkills,...xiyouSkills},
 			translate:{...translates,...voices,...characterSortTranslate},
 			pinyins: {...pinyins},
 		};

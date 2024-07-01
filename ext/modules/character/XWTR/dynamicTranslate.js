@@ -1,12 +1,6 @@
 import { lib, game, ui, get, ai, _status } from "../../../../../../noname.js";
 
 const dynamicTranslates = {
-	"xjzh_dnf_levelUp":function(player){
-		var str="〖属性面板〗：每使用一张牌或造成伤害获得一点经验，经验值为3+等级时升级，基础魔力回复为每回合";
-		var num=player.storage.basexjzhMp
-		str+=""+num+"点魔力，每回合回复"+num+"点魔力";
-		return str;
-	},
 	"xjzh_wzry_daofeng":function(player){
 		var str="转换技，你的回合开始时，你获得附近所有角色各一张牌。";
 		var str2="阴：每个回合开始时，若场上有“巡”，你可以展示并从场上“巡”中弃置至多4张花色不一致的牌，然后对一名其他角色造成等量伤害。";
@@ -55,6 +49,15 @@ const dynamicTranslates = {
 	"xjzh_wzry_jianlai":function(player){
 		let cards=player.getExpansions('xjzh_wzry_jianzhong');
 		return `锁定技，当你的“剑”不少于${player.storage.xjzh_wzry_jianzhong}时，你获得所有“剑”，你使用“剑”无次数和距离限制，然后〖剑来〗、〖剑冢〗的基础数量+10。`;
+	},
+	"xjzh_zxzh_cangjian":function(player){
+		let str=lib.translate["xjzh_zxzh_cangjian_info"],storage=player.storage.xjzh_zxzh_cangjian;
+		if(!storage.length) return str;
+		return str+="<br><br><span style=\"color:#F3D22B\">已视为装备</span>："+get.translation(storage);
+	},
+	"xjzh_zxzh_jiantai":function(player){
+		let num=player.storage.xjzh_zxzh_cangjian?player.storage.xjzh_zxzh_cangjian.length:0;
+		return `锁定技，当你受到/造成伤害后，你可以展示牌堆顶${num?num+1:1}张牌，并获得其中所有的武器牌称为“剑胎”，若没有武器牌，则改为获得所有的装备牌；“剑胎”不计入手牌上限。`;
 	},
 
 };

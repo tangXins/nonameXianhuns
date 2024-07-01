@@ -3,12 +3,12 @@ const characters = {
 	"xjzh_zxzh_jiangningzhi":["female","qun",3,["xjzh_zxzh_dianling","xjzh_zxzh_tusu"],[]],
 	"xjzh_zxzh_linmo":["male","qun",3,["xjzh_zxzh_moyu","xjzh_zxzh_zhenwen","xjzh_zxzh_jinyan"],[]],
 	"xjzh_zxzh_yumuren":["male","qun",4,["xjzh_zxzh_shiqiao","xjzh_zxzh_baoxin"],[]],
-	"xjzh_zxzh_linlingshiyu":["double","qun",3,["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_jiezhen"],['zhuanshu:xjzh_zhuanshu_jianzong']],
+	"xjzh_zxzh_linlingshiyu":["double","qun",3,["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_jiezhen"],[]],
 	"xjzh_zxzh_yuanyuan":["female","qun",4,["xjzh_zxzh_renxin","xjzh_zxzh_xianghun","xjzh_zxzh_xunqing"],[]],
 	"xjzh_zxzh_mufeng":["male","qun",4,["xjzh_zxzh_yufeng","xjzh_zxzh_fengzhen","xjzh_zxzh_zonghuo"],[]],
 	"xjzh_zxzh_moqinwu":["female","qun",3,["xjzh_zxzh_shoutao","xjzh_zxzh_taoyuan","xjzh_zxzh_qiwu"],[]],
-	"xjzh_zxzh_moqinyan":["male","qun",3,["xjzh_zxzh_cangjian","xjzh_zxzh_yangjian","xjzh_zxzh_yujian"],['zhuanshu:xjzh_zhuanshu_jianzong']],
-	"xjzh_zxzh_linziyan":["male","qun",4,["xjzh_zxzh_leifax","xjzh_zxzh_leiyu","xjzh_zxzh_tianxin"],['zhuanshu:xjzh_zhuanshu_jianzong']],
+	"xjzh_zxzh_moqinyan":["male","qun",3,["xjzh_zxzh_cangjian","xjzh_zxzh_jiantai","xjzh_zxzh_yujian"],[]],
+	"xjzh_zxzh_linziyan":["male","qun",4,["xjzh_zxzh_leifax","xjzh_zxzh_leiyu","xjzh_zxzh_tianxin"],[]],
 
 	//流放之路
 	//女巫
@@ -65,20 +65,6 @@ const characters = {
 	"xjzh_diablo_lilisi":["female","qun",3,["xjzh_boss_lianji","xjzh_boss_qiangji"],["unseen","forbidai"]],
 
 	//地下城与勇士
-	"xjzh_dnf_jianshen":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
-		"name":"xjzhMp",
-		"maxMp":80,
-		"mp":80,
-		"huixin":0.1,
-		"reduce":0
-	}]],
-	"xjzh_dnf_shengqi":["male","qun",4,["xjzh_dnf_levelUp"],[],[{
-		"name":"xjzhMp",
-		"maxMp":100,
-		"mp":80,
-		"huixin":0.1,
-		"reduce":0
-	}]],
 	"xjzh_dnf_suodeluosi":["male","qun",3,["xjzh_dnf_jianshenx","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],[],[]],
 
 	//西游释厄传

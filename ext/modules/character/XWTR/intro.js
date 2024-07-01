@@ -38,8 +38,6 @@ const characterIntro = {
 	"xjzh_diablo_nataya":"游戏《DIABLO II》（暗黑破坏神II）ACT3库拉斯特海港中的一个NPC。一个被雇佣的女杀手，同时也是刺客宗族费斯贾塔（Viz-jaq'tarr）的一员。",
 
 	//地下城与勇士
-	"xjzh_dnf_jianshen":"只有运用剑术到极致的强大剑士才能获此殊荣，至此方可攀上神剑之巅。",
-	"xjzh_dnf_shengqi":"圣骑士是在贝尔玛尔大圣堂里受到神的保佑的法师。他们的职责是保护队员的安全。",
 	"xjzh_dnf_suodeluosi":"真正的剑魂索德罗斯，精通数万种武器，具有可以与周围的武器产生共鸣的特殊天赋，在战斗中可以发挥强大的威力。",
 
 	//西游释厄传

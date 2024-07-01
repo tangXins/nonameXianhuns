@@ -1,39 +1,10 @@
 import { lib,get,_status,ui,game,ai } from '../../noname.js';
-import { xjzhTitle,xjzhUpdateLog,xjzhConfig,xjzhPackage,xjzhCardPack,introduces } from './ext/modules/index.js';
+import { xjzhTitle,xjzhConfig,xjzhPackage,xjzhCardPack,introduces } from './ext/modules/index.js';
 import xjzhCharacterInit from './ext/modules/character/index.js';
-//还是有很多提示，消一下
-Array.prototype.contains=Array.prototype.includes;
+import checkUpdates from './ext/modules/update/checkUpdate.js';
 lib.xjzhTitle=xjzhTitle;
 
-//检测无名杀版本
-(async()=>{
-	let getVersionUpdate=function(a,b){
-		if(!a )a="0.0.0";
-		if(!b) b="0.0.0";
-		let arr1=a.split(".");
-		let arr2=b.split(".");
-		for(let i=0;i<Math.min(arr1.length,arr2.length);i++){
-			let num1=parseInt(arr1[i]);
-			let num2=parseInt(arr2[i]);
-			if(num1<num2) return -1;
-			if(num1>num2) return 1;
-		}
-		if(arr1.length>arr2.length){
-			return 1;
-		}
-		else if(arr1.length<arr2.length){
-			return -1;
-		}
-		return 0;
-	};
-	if(lib.version){
-		if(getVersionUpdate(lib.version,"1.10.13")<0){
-			alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本1.10.13，可能会引起报错，已为你关闭本扩展`);
-			game.saveExtensionConfig("仙家之魂","enable",false);
-			game.reload();
-		}
-	};
-})();
+
 
 game.import("extension",function(lib,game,ui,get,ai,_status){
 	return {
@@ -62,7 +33,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				console.log(e);
 			};
 
-			//第一次导入本扩展自动开启本扩展所有武将包
+			//重置材料
 			try{
 				if(!game.getExtensionConfig("仙家之魂","xjzh_qishuReset")){
 					game.xjzh_resetCailiao();
@@ -849,6 +820,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				};
 			};
 			// ---------------------------------------定义函数------------------------------------------//
+
 			/**
 			 * 复制文本到剪贴板的功能函数。
 			 * 通过创建一个临时的textarea元素，将指定文本写入该元素，选中该文本，然后执行浏览器的复制命令来实现复制功能。
@@ -856,7 +828,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 			 *
 			 * @param {string} text 需要复制到剪贴板的文本。
 			 */
-			game.xjzh_copyToText=function(text){
+			game.copyTotext=function(text){
 				// 创建一个textarea元素
 				let textarea=document.createElement("textarea");
 				// 设置textarea的值为待复制的文本
@@ -878,105 +850,69 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				// 删除临时的textarea元素
 				document.body.removeChild(textarea);
 			};
-			//以下代码借鉴自《金庸群侠传》
-			//显示更新内容
-			get.xjzh_update=function(){
-				try{
-					let update=xjzhUpdateLog;
-					lib.extensionPack['仙家之魂'].version=xjzhUpdateLog.version;
-					let gengxing=update[update.version];
-					if(lib.extensionPack['仙家之魂']&&lib.extensionPack['仙家之魂'].version!=game.getExtensionConfig("仙家之魂","changelog")){
-						game.saveExtensionConfig("仙家之魂","changelog",lib.extensionPack['仙家之魂'].version);
-					}else{
-						return false;
-					};
-					if(gengxing.removeFiles&&typeof gengxing.removeFiles=="function") gengxing.removeFiles();
-					let ul=document.createElement('ul');
-					ul.style.textAlign='left';
-					let caption;
-					let version=update.version;
-					let players=gengxing.players||[];
-					let cards=gengxing.cards||[];
-					let changeLog=gengxing.changeLog||[];
-					caption='仙家之魂更新';
-					for(let i of changeLog){
-						let li=document.createElement('li');
-						li.innerHTML=i;
-						ul.appendChild(li);
-					};
-					let dialog=ui.create.dialog(caption,'hidden');
-					dialog.add(version);
-					dialog.forcebutton=true;
-					dialog.classList.add('forcebutton');
-					let lic=ui.create.div(dialog.content);
-					lic.style.display='block';
-					ul.style.display='inline-block';
-					ul.style.marginLeft='20px';
-					lic.appendChild(ul);
-					if(players.length){
-						for(let i=0;i<players.length;i++){
-							if(!lib.character[players[i]]){
-								let result=get.character(players[i]);
-								if(result){
-									if(!result[4]){
-										result[4]=[];
-									};
-									lib.character[players[i]]=result;
-								};
-							};
-							if(!lib.character[players[i]]){
-								players.splice(i--,1);
-							};
-						};
-						if(players.length){
-							dialog.addText('武将更新');
-							dialog.add([players,'character']);
-							//dialog.addSmall([players,'character']);
-						};
-					};
-					if(cards.length){
-						for(let i=0;i<cards.length;i++){
-							if(!lib.card[cards[i]]){
-								cards.splice(i--,1);
-							};
-						};
-						if(cards.length){
-							for(let i=0;i<cards.length;i++){
-								cards[i]=[get.translation(get.type(cards[i])),'',cards[i]];
-							};
-							dialog.addText('卡牌更新');
-							dialog.add([cards,'vcard']);
-							//dialog.addSmall([cards,'vcard']);
-						}
-					}
-					dialog.addText('-----------------END-----------------');
-					dialog.open();
-					let hidden=false;
-					if(!ui.auto.classList.contains('hidden')){
-						ui.auto.hide();
-						hidden=true;
-					};
-					game.pause();
-					let control=ui.create.control('确定',function(){
-						dialog.close();
-						control.close();
-						if(hidden) ui.auto.show();
-						game.resume();
-					});
-					lib.init.onfree();
-				}catch(error){
-					console.log(error);
-				};
+
+			/**
+			* 判断指定玩家是否为仙家之魂武将
+			*
+			* 本函数通过检查玩家对象的属性来确定该玩家是否为特定身份。
+			* 它遍历函数接收到的所有参数，寻找玩家对象。然后，它检查玩家对象是否满足特定身份的条件。
+			* 这个条件是玩家对象的名字在特定数组中，并且该名字对应的字符有特定的标识。
+			*
+			* @returns {boolean} 如果玩家是仙家之魂武将，则返回true；否则返回false。
+			*/
+			get.isXHwujiang=function(...arg){
+				// 初始化变量，用于存储玩家对象和玩家名称列表
+				let player, str, list = [];
+
+				// 遍历函数的所有参数，寻找玩家对象
+				// 遍历函数接收的所有参数
+				for(let argument of arg) {
+					// 如果参数是玩家对象，则将其赋值给player变量
+					if (get.itemtype(argument) == "player") player = argument;
+				}
+
+				// 如果没有找到玩家对象，则返回false
+				if(!player) return false;
+
+				// 获取玩家对象的名字列表
+				let names=get.nameList(player);
+				// 如果玩家名字列表为空或不是数组，则返回false
+				if(!names.length||!Array.isArray(names)) return false;
+
+				// 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
+				return names.some(item=>{
+					if(!lib.character[item]) return false;
+					if(!lib.character[item][4]) return false;
+					return lib.character[item][4].includes('xjzh_die_audio');
+				})?true:false;
 			};
-			let _showChangeLog=game.showChangeLog;
-			game.showChangeLog=function(){
-				_showChangeLog();
-				let next=game.createEvent('xjzh_update',false);
-				next.setContent(function () {
-					get.xjzh_update();
-				});
+			/**
+			* nameList用于检查传入的参数中是否包含指定的玩家id。
+			* 如果未指定玩家名称，则返回所有玩家id的列表。
+			*
+			* @returns {Array|boolean} 如果未指定特定字符串，则返回玩家id列表；
+			* 如果指定了特定字符串，并且列表中存在该字符串，则返回true；否则返回false。
+			*/
+			get.nameList=function(...arg){
+				let player, str;
+
+				// 遍历函数接收的所有参数
+				for(let argument of arg) {
+					// 如果参数是玩家对象，则将其赋值给player变量
+					if (get.itemtype(argument) == "player") player = argument;
+					// 如果参数是字符串，则将其赋值给str变量
+					else if (typeof argument == "string") str = argument;
+				}
+
+				// 如果没有player或指定字符串，直接返回玩家名称列表
+				if(!player) return [];
+				// 将玩家的名称添加到列表中，如果存在多个名称
+				const names = ['name', 'name1', 'name2'].filter(prop => player[prop]).map(prop => player[prop]);
+				if (!str) return names;
+				// 如果指定了特定字符串，检查列表中是否包含该字符串
+				// 如果包含，则返回true；否则返回false
+				return names.some(name => name.startsWith(str));
 			};
-			//以上代码借鉴自《金庸群侠传》
 			//删除文件及文件夹
 			//为防止滥用，只支持操作本扩展目录
 			game.xjzh_removeFiles=(files)=>{
@@ -1382,41 +1318,7 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}else{
 					this.addTempSkill(skill)
 				}
-			};    /**
-			* 判断指定玩家是否为仙家之魂武将
-			*
-			* 本函数通过检查玩家对象的属性来确定该玩家是否为特定身份。
-			* 它遍历函数接收到的所有参数，寻找玩家对象。然后，它检查玩家对象是否满足特定身份的条件。
-			* 这个条件是玩家对象的名字在特定数组中，并且该名字对应的字符有特定的标识。
-			*
-			* @returns {boolean} 如果玩家是仙家之魂武将，则返回true；否则返回false。
-			*/
-		    get.isXHwujiang=function(...arg){
-				// 初始化变量，用于存储玩家对象和玩家名称列表
-				let player, str, list = [];
-
-				// 遍历函数的所有参数，寻找玩家对象
-				// 遍历函数接收的所有参数
-				for(let argument of arg) {
-					// 如果参数是玩家对象，则将其赋值给player变量
-					if (get.itemtype(argument) == "player") player = argument;
-				}
-
-				// 如果没有找到玩家对象，则返回false
-				if(!player) return false;
-
-				// 获取玩家对象的名字列表
-				let names=get.nameList(player);
-				// 如果玩家名字列表为空或不是数组，则返回false
-				if(!names.length||!Array.isArray(names)) return false;
-
-				// 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
-				return names.some(item=>{
-					if(!lib.character[item]) return false;
-					if(!lib.character[item][4]) return false;
-					return lib.character[item][4].includes('xjzh_die_audio');
-		   		})?true:false;
-		   };
+			};
 			//判断字符串是否含有中文
 			get.xjzh_checkChinese=function(str){
 				let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
@@ -1480,36 +1382,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
                 }
 				if(!num) return list;
 				return list.randomGets(num);
-			};
-			/**
-			 * nameList用于检查传入的参数中是否包含指定的玩家名称。
-			 * 如果未指定玩家名称，则返回所有玩家名称的列表。
-			 *
-			 * @async
-			 * @returns {Array|boolean} 如果未指定特定字符串，则返回玩家名称列表；
-			 * 如果指定了特定字符串，并且列表中存在该字符串，则返回true；否则返回false。
-			 */
-			get.nameList=function(...arg){
-				let player, str, list = [];
-
-				// 遍历函数接收的所有参数
-				for(let argument of arg) {
-					// 如果参数是玩家对象，则将其赋值给player变量
-					if (get.itemtype(argument) == "player") player = argument;
-					// 如果参数是字符串，则将其赋值给str变量
-					else if (typeof argument == "string") str = argument;
-				}
-
-				// 如果没有player或指定字符串，直接返回玩家名称列表
-				if(!player) return list;
-				// 将玩家的名称添加到列表中，如果存在多个名称
-				if (player.name) list.push(player.name);
-				if (player.name1) list.push(player.name1);
-				if (player.name2) list.push(player.name2);
-				if (!str) return list;
-				// 如果指定了特定字符串，检查列表中是否包含该字符串
-				// 如果包含，则返回true；否则返回false
-				return list.some(name => name.startsWith(str)) ? true : false;
 			};
 			//挑战模式切换随从
 			game.changeBossFellow=function(name,player){

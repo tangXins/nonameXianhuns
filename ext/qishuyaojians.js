@@ -405,7 +405,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			conflict:["xjzh_qishu_wuyan"],
 			filter:"xjzh_diablo_yafeikela",
 			async init(player){
-				game.log(get.nameList(player,"xjzh_diablo_yafeikela"))
                 if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
                 player.changexjzhmaxMp(25);
 				player.changexjzhMp(25);

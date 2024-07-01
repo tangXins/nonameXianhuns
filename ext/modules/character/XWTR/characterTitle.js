@@ -36,8 +36,6 @@ const characterTitles={
 	"xjzh_diablo_nataya":"潜影杀手",
 
 	//地下城与勇士
-	"xjzh_dnf_jianshen":"武器大师",
-	"xjzh_dnf_shengqi":"神选之光",
 	"xjzh_dnf_suodeluosi":"极诣剑圣",
 
 	//西游释厄传

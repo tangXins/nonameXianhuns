@@ -4,8 +4,7 @@ const characterSort = {
 		"XWTR_poe":["xjzh_poe_yuansushi","xjzh_poe_nvwu","xjzh_poe_youxia","xjzh_poe_juedouzhe","xjzh_poe_chuxing","xjzh_poe_weishi","xjzh_poe_ruiyan","xjzh_poe_guizu"],
 		"XWTR_wzry":["xjzh_wzry_duoliya","xjzh_wzry_huamulan","xjzh_wzry_haiyue","xjzh_wzry_libai","xjzh_wzry_yao","xjzh_wzry_ganjiangmoye"],
 		"XWTR_diablo":["xjzh_diablo_lilisi","xjzh_diablo_kelike","xjzh_diablo_nataya","xjzh_diablo_yafeikela","xjzh_diablo_lamasi","xjzh_diablo_moruina","xjzh_diablo_kaxia"],
-		"XWTR_dnfplayer":["xjzh_dnf_jianshen","xjzh_dnf_shengqi"],
-		"XWTR_dnfnpc":["xjzh_dnf_suodeluosi"],
+		"XWTR_dnf":["xjzh_dnf_suodeluosi"],
 		"XWTR_xyj":["xjzh_xyj_sunwukong"],
 
 	},
@@ -17,8 +16,7 @@ const characterSortTranslate = {
 	"XWTR_poe":"流放之路",
 	"XWTR_wzry":"王者荣耀",
 	"XWTR_diablo":"暗黑破坏神",
-	"XWTR_dnfplayer":"DNF·冒险家",
-	"XWTR_dnfnpc":"DNF·NPC",
+	"XWTR_dnf":"地下城与勇士",
 	"XWTR_xyj":"西游释厄传",
 };
 
