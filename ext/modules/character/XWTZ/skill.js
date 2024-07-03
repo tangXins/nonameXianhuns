@@ -152,18 +152,18 @@ const skills={
 			'step 0'
 			let list=["xjzh_boss_yinaruisi","xjzh_boss_masayier","xjzh_boss_taernasha"];
 			if(!list.filter(name=>{
-				return get.nameList(game.boss).includes(name);
+				return get.is.playerNames(current,name);
 			}).length) trigger.cancel(null,null,'notrigger');
 			'step 1'
 			game.delay();
 			"step 2"
-			if(get.nameList(game.boss,"xjzh_boss_datianshi")){
+			if(get.is.playerNames(game.boss,"xjzh_boss_datianshi")){
 				game.changeBoss('xjzh_boss_gaotianshi');
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_gaotianshi")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_gaotianshi")){
 				game.changeBoss('xjzh_boss_tianshizhang');
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_tianshizhang")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_tianshizhang")){
 				if(get.xjzh_checkTime("8:00","12:00")||get.xjzh_checkTime("20:00","24:00")){
 					game.changeBoss('xjzh_boss_yinaruisi');
 				}
@@ -180,16 +180,16 @@ const skills={
 			}
 			game.delay(0.5);
 			"step 3"
-			if(get.nameList(game.boss,"xjzh_boss_gaotianshi")){
+			if(get.is.playerNames(game.boss,"xjzh_boss_gaotianshi")){
 				game.changeBossFellow("xjzh_boss_datianshi");
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_tianshizhang")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_tianshizhang")){
 				game.changeBossFellow('xjzh_boss_gaotianshi');
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_yinaruisi")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_yinaruisi")){
 				game.changeBossFellow("xjzh_boss_tianshizhang");
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_masayier")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_masayier")){
 				var targets=game.filterPlayer(function(current){return current.identity=="zhong"});
 				if(targets.length){
 					if(targets.length>=2){
@@ -216,7 +216,7 @@ const skills={
 					}
 				}
 			}
-			else if(get.nameList(game.boss,"xjzh_boss_taernasha")){
+			else if(get.is.playerNames(game.boss,"xjzh_boss_taernasha")){
 				game.changeBossFellow("xjzh_boss_shachong");
 			}
 			"step 4"
@@ -386,7 +386,7 @@ const skills={
 		ai:{
 			order:8,
 			result:{
-				player(card,player,target){
+				player(player,target,card){
 					if(!player) return;
 					var ts=player.getEnemies().length;
 					var hs=player.countCards('h');
@@ -679,7 +679,7 @@ const skills={
 							}
 						break;
 						case "damage":
-							if(num>=2&&trigger.source==game.findPlayer(i=>get.nameList(i,'xjzh_boss_qier'))){
+							if(num>=2&&trigger.source==game.findPlayer(i=>get.is.playerNames(i,'xjzh_boss_qier'))){
 								trigger.num++;
 								game.log(player,"被齐尔领主感染，受到齐尔领主的伤害加一");
 							}
@@ -719,7 +719,7 @@ const skills={
 					order:8,
 					expose:0.3,
 					result:{
-						target(card,player,target){
+						target(player,target,card){
 							if(ui.selected.targets.length==0) return 1;
 							return -1;
 						}
@@ -1008,7 +1008,7 @@ const skills={
 		},
 		ai:{
 			result:{
-				target:function(card,player,target){
+				target:function(player,target,card){
 					if(!target) return;
 					return get.xjzhBUFFNum(target,"zhongdu");
 				},
@@ -1423,12 +1423,12 @@ const skills={
 		mod:{
 			globalFrom:function(from,to,distance){
 				let num=game.countPlayer(function(current){
-					return get.nameList(current).some(name=>name.includes("xjzh_boss_hj"));
+					return get.is.playerNames(current,"xjzh_boss_hj");
 				});
 				return distance-num;
 			},
 			playerEnabled:function(card,player,target){
-				if(get.tag(card,'damage')&&get.nameList(target).some(name=>name.includes("xjzh_boss_hj"))) return false;
+				if(get.tag(card,'damage')&&get.is.playerNames(current,"xjzh_boss_hj")) return false;
 			},
 		},
 		init:function(player){
@@ -1505,7 +1505,7 @@ const skills={
 						if(game.boss!=player) return false;
 					}
 					if(game.hasPlayer(function(current){
-						return get.nameList(current).some(name=>name.indexOf("xjzh_boss_hj")==0);
+						return get.is.playerNames(current,"xjzh_boss_hj");
 					})&&!player.hasSkill('xjzh_boss_qingling_temp')) return true;
 					return false;
 				},
@@ -1550,7 +1550,7 @@ const skills={
 		},
 		check:function(card){
 			if(game.hasPlayer(function(current){
-				return get.nameList(current,'xjzh_boss_hjguishi');
+				return get.is.playerNames(current,'xjzh_boss_hjguishi');
 			})) return get.color(card)=="black";
 			return 6-get.value(card);
 		},
@@ -1712,10 +1712,10 @@ const skills={
 		ai:{
 			order:8,
 			result:{
-				player:function(card,player,target){
+				player:function(player,target,card){
 					return -0.5;
 				},
-				target:function(card,player,target){
+				target:function(player,target,card){
 					return -1.5;
 				},
 			},
@@ -1908,10 +1908,10 @@ const skills={
 				ai:{
 					firedamage:true,
 					result:{
-						target:function(card,player,target){
+						target:function(player,target,card){
 							if(get.tag(card,'fireDamage')) return -2;
 						},
-						player:function(card,player,target){
+						player:function(player,target,card){
 							if(get.tag(card,'fireDamage')) return 2;
 						},
 					},

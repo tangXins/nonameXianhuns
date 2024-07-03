@@ -41,7 +41,7 @@ const characters = {
 		"name":"xjzhMp",
 		"maxMp":100,
 		"mp":100,
-		"huixin":1,
+		"huixin":0.5,
 		"reduce":0
 	}]],
 	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],[{

@@ -1,10 +1,7 @@
 import { lib,get,_status,ui,game,ai } from '../../noname.js';
-import { xjzhTitle,xjzhConfig,xjzhPackage,xjzhCardPack,introduces } from './ext/modules/index.js';
+import { xjzhConfig,xjzhPackage,xjzhCardPack,introduces } from './ext/modules/index.js';
 import xjzhCharacterInit from './ext/modules/character/index.js';
 import checkUpdates from './ext/modules/update/checkUpdate.js';
-lib.xjzhTitle=xjzhTitle;
-
-
 
 game.import("extension",function(lib,game,ui,get,ai,_status){
 	return {
@@ -769,56 +766,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 					game.xjzhBackground_Picture();
 				});
 			};
-			// ---------------------------------------增益技能------------------------------------------//
-			if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")!=='close'){
-				lib.skill._xjzh_zengyix={
-					trigger:{
-						global:["gameStart"],
-						player:["phaseZhunbeiBefore","enterGame"],
-					},
-					silent:true,
-					filter(event,player){
-						var list=[
-							"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
-						]
-						if(get.mode()=="boss"){
-							if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss))) return false;
-						}
-						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
-						for(var i of list){
-							if(player.skills.includes("xjzh_zengyi_"+i)) return false;
-						}
-						if(player.hasSkill("xjzh_zengyi_off")) return false;
-						if(!player.isUnderControl(true))  return false;
-						if(get.nameList(player,"xjzh_sanguo_zuoyou")) return false;
-						return true;
-					},
-					async content(event,trigger,player){
-						const list=[
-							"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
-						];
-						if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
-						switch(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")){
-							case "player":{
-								let skills=list.randomGet();
-								player.addSkill("xjzh_zengyi_off",false);
-								player.addSkill("xjzh_zengyi_"+skills);
-								game.log(player,'获得了增益技能<span style=\"color: red\">〖'+get.translation("xjzh_zengyi_"+skills)+'〗</span>');
-							}
-							break;
-							case "own":{
-								if(get.isXHwujiang(player)){
-									let skills=list.randomGet();
-									player.addSkill("xjzh_zengyi_off",false);
-									player.addSkill("xjzh_zengyi_"+skills);
-									game.log(player,'获得了增益技能<span style=\"color: red\">〖'+get.translation("xjzh_zengyi_"+skills)+'〗</span>');
-								}
-							}
-							break;
-						};
-					},
-				};
-			};
 			// ---------------------------------------定义函数------------------------------------------//
 
 			/**
@@ -887,31 +834,28 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				})?true:false;
 			};
 			/**
-			* nameList用于检查传入的参数中是否包含指定的玩家id。
-			* 如果未指定玩家名称，则返回所有玩家id的列表。
-			*
-			* @returns {Array|boolean} 如果未指定特定字符串，则返回玩家id列表；
-			* 如果指定了特定字符串，并且列表中存在该字符串，则返回true；否则返回false。
-			*/
-			get.nameList=function(...arg){
-				let player, str;
-
-				// 遍历函数接收的所有参数
-				for(let argument of arg) {
-					// 如果参数是玩家对象，则将其赋值给player变量
-					if (get.itemtype(argument) == "player") player = argument;
-					// 如果参数是字符串，则将其赋值给str变量
-					else if (typeof argument == "string") str = argument;
-				}
-
-				// 如果没有player或指定字符串，直接返回玩家名称列表
-				if(!player) return [];
-				// 将玩家的名称添加到列表中，如果存在多个名称
-				const names = ['name', 'name1', 'name2'].filter(prop => player[prop]).map(prop => player[prop]);
-				if (!str) return names;
-				// 如果指定了特定字符串，检查列表中是否包含该字符串
-				// 如果包含，则返回true；否则返回false
-				return names.some(name => name.startsWith(str));
+			 * 返回指定角色所有的id，用于统一双将和单将的检查
+			 *
+			 * @author tangXins
+			 * @param {Player} player
+			 * @returns {string[]}
+			 */
+			get.nameList=function(player){
+				return (!player || get.itemtype(player) != "player") ? [] : ["name", "name1", "name2"]
+					.filter(prop => player[prop])
+					.map(prop => player[prop])
+					.toUniqued();
+			};
+			/**
+			 * 检查指定玩家的名称的子串是否包含指定字符串
+			 *
+			 * @author tangXins
+			 * @param {Player} player
+			 * @param {string} name
+			 * @returns {boolean}
+			 */
+			get.is.playerNames=function(player, name) {
+				return get.nameList(player).some(namex => namex.startsWith(name));
 			};
 			//删除文件及文件夹
 			//为防止滥用，只支持操作本扩展目录
@@ -1868,28 +1812,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				}
 			};
 
-			//地下城与勇士角色库
-			lib.xjzh_dnf_character=[
-				"xjzh_dnf_jianshen",
-				"xjzh_dnf_shengqi",
-			],
-			//判断武将是否为地下城与勇士
-			get.dnfCharacter=function(player){
-				var list=lib.xjzh_dnf_character.slice(0);
-				var list2=[]
-				if(player.name) list2.push(player.name);
-				if(player.name1) list2.push(player.name1);
-				if(player.name2) list2.push(player.name2);
-				var bool=false;
-				for(var i=0;i<list2.length;i++){
-					if(list.some(current=>current.indexOf(i)==0)){
-						bool=true;
-						break;
-					}
-				}
-				if(bool) return true;
-				return false;
-			},
 			//检索卡牌
 			//代码借鉴自《金庸群侠传》
 			get.randomCard = function(name,create) {
@@ -2092,9 +2014,6 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 				if(z>y) z=y;
 				var list=[],list2=[];
 				for(var i=x;i<=y;i++) list.push(i);
-				/*list.sort((a,b)=>{
-					return a-b
-				});*/
 				for(var i=0;i<z;i++){
 					var num=list.randomGet();
 					list2.push(num);
@@ -2509,6 +2428,13 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 								//闪光
 								{ name: 'xjzh_skillEffect_whiteFlash', fileType:"json" },
 								{ name: 'xjzh_skillEffect_redFlash', fileType:"json" },
+								//能量盾
+								{ name: 'xjzh_skillEffect_yellowShield', fileType:"json" },
+								{ name: 'xjzh_skillEffect_yellowShield2', fileType:"json" },
+								//旋风
+								{ name: 'xjzh_skillEffect_xuanfeng', fileType:"json" },
+								//中毒
+								{ name: 'xjzh_skillEffect_methysis', fileType:"json" },
 
 							];
 							var fileList=fileInfoList.concat();
@@ -2538,16 +2464,16 @@ game.import("extension",function(lib,game,ui,get,ai,_status){
 
 						//林嘉笙〖甘霖〗
 						lib.animate.skill["xjzh_meiren_ganling"]=function(name){
-							game.xjzh_playEffect("xjzh_skillEffect_whiteFlash",this);
+							game.xjzh_playEffect("xjzh_skillEffect_yellowShield2",this);
 						};
 						//诸葛亮〖八阵〗
 						lib.animate.skill["xjzh_sanguo_bazhen_2"]=function(name){
 							game.xjzh_playEffect("xjzh_skillEffect_redFlash",this);
 						};
-						//黄忠〖烈弓〗
-						/*lib.animate.skill["xjzh_sanguo_liegong"]=function(name){
-							game.xjzh_playEffect('xjzh_skillEffect_gongjian',this);
-						};*/
+						//buff中毒
+						lib.animate.skill["xjzh_buff_zhongdu"]=function(name){
+							game.xjzh_playEffect("xjzh_skillEffect_methysis",this);
+						};
 					};
                 });
 

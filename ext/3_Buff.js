@@ -53,14 +53,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			silent:true,
 			priority:3,
 			init:function(player){
-			    if(get.nameList(player,"xjzh_poe_chuxing")){
+			    if(get.is.playerNames(player,"xjzh_poe_chuxing")){
 			        if(!player.storage.xjzh_buff_criticalstrike) player.storage.xjzh_buff_criticalstrike=0
 			        if(!player.storage.xjzh_buff_criticalstrikeDamage) player.storage.xjzh_buff_criticalstrikeDamage=2
 			        player.storage.xjzh_buff_criticalstrike=get.xjzhBUFFNum(player,"criticalstrike")*20;
 			    }
 			},
 			onremove:function(player){
-			    if(!get.nameList(player,"xjzh_poe_chuxing")){
+			    if(!get.is.playerNames(player,"xjzh_poe_chuxing")){
 			        if(player.storage.xjzh_buff_criticalstrike) delete player.storage.xjzh_buff_criticalstrike;
 			        if(player.storage.xjzh_buff_criticalstrikeDamage) delete player.storage.xjzh_buff_criticalstrikeDamage;
 			    }
@@ -95,7 +95,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				},
 				limit:function(){
 				    var player=_status.event.player;
-				    if(get.nameList(player,'xjzh_poe_chuxing')&&player.hasSkill('xjzh_poe_canbao')) return 5;
+				    if(get.is.playerNames(player,"xjzh_poe_chuxing")&&player.hasSkill('xjzh_poe_canbao')) return 5;
 				    return 3;
 				},
 			},
@@ -106,21 +106,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			marktext:`<img style=width:20px src=${lib.assetURL}extension/仙家之魂/image/buff/xjzh_icon_buff_zhongdu.png>`,
 			intro:{
 				name:"中毒",
-				content:"「<font color=yellow>毒素缠身</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>使用牌有30%几率失效且有几率受到1点无来源毒属性伤害，每层中毒使该几率提高10%",
+				content:"「<font color=yellow>毒素缠身</font>」<br><li>自然衰减：<b>是</b> 上限：3<br><li>使用牌有30%几率失效并受到1点无来源毒属性伤害，然后移除一层中毒；每层中毒使该几率提高10%",
 			},
 			trigger:{
 				player:["useCard"],
 			},
 			silent:true,
 			priority:3,
-			filter:function (event,player){
+			filter(event,player){
 				if(get.xjzhBUFFNum(player,"zhongdu")==0) return false;
 				return true;
 			},
-			content:function (){
-			    var num=get.xjzhBUFFNum(player,"zhongdu")*0.1;
-			    if(Math.random()<=0.3*(num+1)) trigger.cancel();
-			    if(Math.random()<=Math.random()) player.damage(1,'nocard','nosource','poison');
+			async content(event,trigger,player){
+			    let num=get.xjzhBUFFNum(player,"zhongdu")*0.1,bool=false;
+			    if(Math.random()<=0.3*(num+1)){
+					game.xjzh_playEffect("xjzh_skillEffect_methysis",player);
+					trigger.cancel(null,null,'notrigger');
+					player.damage(1,'nocard','nosource','poison');
+					player.changexjzhBUFF("zhongdu",-1);
+				}
 			},
 			xjzhBuffInfo:{
 				naturalLose:true,
@@ -129,8 +133,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					randomPower:3,
 				},
 				limit:function(){
-				    var player=_status.event.player;
-				    if(get.nameList(player,'xjzh_boss_duruier')) return 0;
+				    let player=get.player();
+				    if(get.is.playerNames(player,"xjzh_boss_duruier")) return 0;
 				    return 3;
 				},
 			}

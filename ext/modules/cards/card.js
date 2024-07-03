@@ -167,7 +167,7 @@ const cards={
             },
             order:0.2,
             result:{
-                target(target){
+                target(player,target,card){
                     if(!target) return;
                     if(target.hp>1){
                         if(target.hp==target.maxHp) return 0;

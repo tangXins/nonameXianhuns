@@ -57,7 +57,7 @@ const skills={
 					}
 					return -0.2;
 				},
-				player(card,player,target){
+				player(player,target,card){
 					var hs=player.getCards('h');
 					for(var i=0;i<hs.length;i++){
 						if(get.value(hs[i])<=6){
@@ -379,7 +379,7 @@ const skills={
 				ai:{
 					nodamage:true,
 					effect:{
-						target(card,player,target,current){
+						target(player,target,card){
 							if(get.tag(card,'damage')||get.tag(card,'loseHp')) return 'zeroplayertarget';
 						}
 					},

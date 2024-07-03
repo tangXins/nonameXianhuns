@@ -362,7 +362,7 @@ export const starsSkills={
 		},
 		ai:{
 			effect:{
-				target:function (card,player,target,current){
+				target:function (card,player,target){
 					if(get.tag(card,'thunderdamage')) return [1,2];
 				},
 			},
@@ -609,7 +609,7 @@ export const starsSkills={
 		},
 		ai:{
 			effect:{
-				target:function (card,player,target,current){
+				target:function (card,player,target){
 					if(get.tag(card,'thunderDamage')) return [0.3,0.6];
 					return [1,0];
 				},
@@ -1291,7 +1291,7 @@ export const starsSkills={
 			order:2,
 			expose:0.8,
 			result:{
-				player(card,player,target){
+				player(player,target,card){
 					return player.hp>2;
 				},
 			},
@@ -1330,6 +1330,19 @@ export const starsSkills={
 			cards.length?player.addToExpansion(cards.randomGets(get.rand(5,9)),player,'draw').gaintag.add('xjzh_zxzh_cangjian'):null;
 			player.disableEquip(1);
 			player.storage[skill]=[];
+		},
+		mod:{
+			attackFrom(player,target,range){
+				let num=0;
+				if(player.storage.xjzh_zxzh_cangjian&&player.storage.xjzh_zxzh_cangjian.length){
+					let storage=player.storage.xjzh_zxzh_cangjian;
+					storage.forEach(card=>{
+						let info=lib.card[card];
+						if(info.distance&&info.distance.attackFrom) num+=info.distance.attackFrom;
+					});
+				}
+				return range+num;
+			},
 		},
 		filter(event,player){
 			return player.hasExpansions('xjzh_zxzh_cangjian');

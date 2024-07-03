@@ -300,8 +300,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_fengbaopaoxiao"],
 			filter:"xjzh_diablo_yafeikela",
+			precede:["xjzh_qishu_wuyan"],
 			async init(player){
-                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.is.playerNames(player,"xjzh_diablo_yafeikela")) return;
 				let skills=player.getSkills(null,false,false).filter(function(skill){
 					let info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
@@ -349,8 +350,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_fenglangkx"],
 			filter:"xjzh_diablo_yafeikela",
+			unequip:["xjzh_qishu_waxilidedaogao"],
 			async init(player){
-                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.is.playerNames(player,"xjzh_diablo_yafeikela")) return;
 				let node;
 				if(player.name2&&player.name2=='xjzh_diablo_yafeikela'){
 					node=player.node.name2;
@@ -372,9 +374,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_waxilidedaogao"],
 			filter:"xjzh_diablo_yafeikela",
+			precede:["xjzh_qishu_fenglangkx"],
 			async init(player){
-                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
-
+                if(!get.is.playerNames(player,"xjzh_diablo_yafeikela")) return;
 				let skills=player.getSkills(null,false,false).filter(function(skill){
 					let info=lib.skill[skill];
 					if(lib.skill.global.includes(skill)) return false;
@@ -404,8 +406,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			conflict:["xjzh_qishu_wuyan"],
 			filter:"xjzh_diablo_yafeikela",
+			unequip:["xjzh_qishu_fengbaopaoxiao"],
 			async init(player){
-                if(!get.nameList(player,"xjzh_diablo_yafeikela")) return;
+                if(!get.is.playerNames(player,"xjzh_diablo_yafeikela")) return;
                 player.changexjzhmaxMp(25);
 				player.changexjzhMp(25);
 				let node;
@@ -447,7 +450,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			level:4,
 			filter:"xjzh_diablo_nataya",
 			async init(player){
-                if(!get.nameList(player,"xjzh_diablo_nataya")) return;
+                if(!get.is.playerNames(player,"xjzh_diablo_nataya")) return;
 				player.xjzhHuixin?player.xjzhHuixin+=0.35:player.xjzhHuixin=0.35;
             },
 			skill:{
@@ -1326,11 +1329,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		if(!info) return false;
 		if(info.conflict){
     		var conflict=info.conflict;
-    		var num=0;
-    		for(var i of conflict){
-    		    if(game.xjzh_hasEquiped(i,playerName)) num++;
-    		}
-    		if(num>0) return false;
+			if(conflict.some(item=>game.xjzh_hasEquiped(item,playerName))) return `此奇术要件与${conflict.map(item=>get.xjzh_qishuTranslate(item)).join('、')}冲突，不能装备。}`;
+		}
+		if(info.precede){
+			let precede=info.precede;
+			if(precede.some(item=>!game.xjzh_hasEquiped(item,playerName))) return `此奇术要件需要先装备${precede.map(item=>get.xjzh_qishuTranslate(item)).join('、')}才能装备。`;
 		}
 		var filter=info.filter;
 		if(typeof filter=='string') return playerName==filter;
@@ -1453,8 +1456,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	//装备奇术要件
 	game.xjzh_useEquip=function(name,playerName,nopop,hutong){
 		if(!name||!playerName) return;
-		if(!game.xjzh_canEquip(name,playerName)){
-			window.xjzhOpenLoading('该角色不满足装备条件');
+		if(!game.xjzh_canEquip(name,playerName)||typeof game.xjzh_canEquip(name,playerName)=="string"){
+			let text=game.xjzh_canEquip(name,playerName);
+			window.xjzhOpenLoading(typeof text=="string"?text:'该角色不满足装备条件');
 			return;
 		}
 		if(!lib.xjzh_qishuyaojians[name]) return;
@@ -1520,6 +1524,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				lib.config.xjzh_qishuyaojians.player[playerName]=[];
 			}
 			return;
+		}
+		var info=get.xjzh_equipInfo(name);
+		if(info&&info.unequip){
+			let unequip=info.unequip;
+			if(unequip.some(item=>game.xjzh_hasEquiped(item,playerName))){
+				window.xjzhOpenLoading(`此奇术要件需要先卸下${unequip.map(item=>get.xjzh_qishuTranslate(item)).join('、')}才能取消装备。`);
+				return;
+			}
 		}
 		if(!lib.config.xjzh_qishuyaojians.player[playerName]) return;
 		if(lib.config.xjzh_qishuyaojians.player[playerName].includes(name)){

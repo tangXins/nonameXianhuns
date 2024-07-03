@@ -1,0 +1,121 @@
+{
+    "skeleton": {
+        "hash": "oH5JLAm9soAfNXoFlJvr67pDSYQ",
+        "spine": "2.1.27",
+        "width": 197,
+        "height": 197,
+        "images": ""
+    },
+    "bones": [
+        {
+            "name": "root"
+        },
+        {
+            "name": "q",
+            "parent": "root"
+        },
+        {
+            "name": "q2",
+            "parent": "root"
+        }
+    ],
+    "slots": [
+        {
+            "name": "quan",
+            "bone": "q",
+            "attachment": "quan"
+        },
+        {
+            "name": "quan2",
+            "bone": "q2",
+            "attachment": "quan",
+            "blend": "additive"
+        }
+    ],
+    "skins": {
+        "default": {
+            "quan": {
+                "quan": {
+                    "scaleX": 1.97,
+                    "scaleY": 1.97,
+                    "width": 100,
+                    "height": 100
+                }
+            },
+            "quan2": {
+                "quan": {
+                    "scaleX": 1.97,
+                    "scaleY": 1.97,
+                    "width": 100,
+                    "height": 100
+                }
+            }
+        }
+    },
+    "animations": {
+        "animation": {
+            "slots": {
+                "quan": {
+                    "attachment": [
+                        {
+                            "time": 0,
+                            "name": "quan"
+                        }
+                    ],
+                    "color": [
+                        {
+                            "time": 0,
+                            "color": "ffffff96"
+                        },
+                        {
+                            "time": 1,
+                            "color": "ffffff00"
+                        },
+                        {
+                            "time": 2,
+                            "color": "ffffff96"
+                        }
+                    ]
+                },
+                "quan2": {
+                    "attachment": [
+                        {
+                            "time": 0,
+                            "name": "quan"
+                        }
+                    ],
+                    "color": [
+                        {
+                            "time": 0,
+                            "color": "ffffff00"
+                        },
+                        {
+                            "time": 1,
+                            "color": "ffffff76"
+                        },
+                        {
+                            "time": 2,
+                            "color": "ffffff00"
+                        }
+                    ]
+                }
+            },
+            "bones": {
+                "q2": {
+                    "scale": [
+                        {
+                            "time": 0,
+                            "x": 0.95,
+                            "y": 0.95
+                        },
+                        {
+                            "time": 2,
+                            "x": 1.25,
+                            "y": 1.25
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

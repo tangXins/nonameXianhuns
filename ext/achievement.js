@@ -2,7 +2,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     //部分代码借鉴自《玄武江湖》及《时空枢纽》
     //判断完成成就的角色是否是玩家且是否为成就需求角色
 	lib.element.player.isCharacter=function(name) {
-		return this.isUnderControl(true)&&get.nameList(this,name);
+		return this.isUnderControl(true)&&get.is.playerNames(this,name);
 	};
 	//每次载入游戏自动备份成就存档
 	lib.arenaReady.push(function(){
@@ -225,7 +225,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     lib.onover.push(function(ret){
         if(ret){
             //esp刘协“再兴炎汉”成就
-            if(get.mode()=="identity"&&game.me&&get.nameList(game.me,"xjzh_sanguo_espliuxie")){
+            if(get.mode()=="identity"&&game.me&&get.is.playerNames(game.me,"xjzh_sanguo_espliuxie")){
                 var history=game.me.getAllHistory('useSkill');
                 var obj=new Object(),list=["xjzh_sanguo_tiance","xjzh_sanguo_tianming","xjzh_sanguo_moubian","xjzh_sanguo_zhongxing"];
                 for(var i=0;i<history.length;i++){
@@ -242,19 +242,19 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 }
             }
             //神张角“驱雷掣电”成就
-            if(get.mode()=="boss"&&game.me&&game.me==game.boss&&get.nameList(game.me,"xjzh_boss_zhangjiao")){
+            if(get.mode()=="boss"&&game.me&&game.me==game.boss&&get.is.playerNames(game.me,"xjzh_boss_zhangjiao")){
                 if(!game.xjzhAchi.hasAchi('驱雷掣电','character')){
 					game.xjzhAchi.addProgress('驱雷掣电','character',1);
                 }
             }
             //“莉莉丝的梦魇”成就
-            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.nameList(game.boss,"xjzh_boss_lilisi")){
+            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.is.playerNames(game.boss,"xjzh_boss_lilisi")){
                 if(!game.xjzhAchi.hasAchi('莉莉丝的梦魇','special')){
 					game.xjzhAchi.addProgress('莉莉丝的梦魇','special',1);
                 }
             }
             //“净化恶念”成就
-            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.nameList(game.boss,"xjzh_boss_waershen")){
+            if(get.mode()=="boss"&&game.me&&game.me!=game.boss&&get.is.playerNames(game.boss,"xjzh_boss_waershen")){
                 if(!game.xjzhAchi.hasAchi('净化恶念','game')){
 					game.xjzhAchi.addProgress('净化恶念','game',1);
                 }
@@ -262,8 +262,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             //普通成就
             if(get.mode()=="identity"&&game.me&&!get.config('double_character')&&get.isXHwujiang(game.me)){
                 let name=get.nameList(game.me)[0];
-                if(!game.xjzhAchi.hasAchi(lib.xjzhTitle[name],'character')){
-					game.xjzhAchi.addProgress(lib.xjzhTitle[name],'character',1);
+                if(!game.xjzhAchi.hasAchi(xjzhTitle[name],'character')){
+					game.xjzhAchi.addProgress(xjzhTitle[name],'character',1);
                 }
             }
         }
@@ -319,7 +319,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			let {...characters5}=lib.characterPack.XWDM;
 			let xianhuns=Object.assign(characters,characters2,characters3,characters4,characters5);
 
-			console.log(xianhuns)
 
 			if(xianhuns){
 				var firstWinSet=function(name){
@@ -327,8 +326,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					if(lib.character[name][4].some(evt=>{
 						return !['forbidai','unseen'].includes(evt);
 					})){
-						lib.xjzh_achievement['character'][lib.xjzhTitle[name]]={
-							name:lib.xjzhTitle[name],
+						lib.xjzh_achievement['character'][xjzhTitle[name]]={
+							name:xjzhTitle[name],
 							info:"使用"+lib.translate[name]+"获得一场胜利。",
 							level:level,
 							design:"吃朵棉花糖",
@@ -338,7 +337,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				for(let name in xianhuns){
 				    let bossCharacterList=["xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_duruier","xjzh_boss_qier","xjzh_boss_bingchuanjushou","xjzh_boss_lilisi"];
 				    if(bossCharacterList.includes(name)) continue;
-					if(!lib.xjzhTitle[name]) continue;
+					if(!xjzhTitle[name]) continue;
 					if(!lib.translate[name]) continue;
 					firstWinSet(name);
 				}

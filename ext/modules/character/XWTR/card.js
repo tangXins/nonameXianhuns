@@ -10,7 +10,7 @@ const cards={
         toself:true,
         enable(event,player){
             if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
-            return get.nameList(player,"xjzh_xyj_sunwukong");
+            return get.is.playerNames(player,"xjzh_xyj_sunwukong");
         },
         selectTarget:-1,
         filterTarget(card,player,target){
@@ -42,7 +42,7 @@ const cards={
         toself:true,
         enable(event,player){
             if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
-            return get.nameList(player,"xjzh_xyj_sunwukong");
+            return get.is.playerNames(player,"xjzh_xyj_sunwukong");
         },
         selectTarget:-1,
         modTarget:true,
@@ -62,7 +62,7 @@ const cards={
                 value:9.2
             },
             result:{
-                target(card,player,target){
+                target(player,target,card){
                     let num=player.countCards("h",card=>{
                         return ["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_zhaoyaojing","xjzh_card_huoyundao","xjzh_card_dingshenzhou"].includes(get.name(card));
                     });
@@ -84,7 +84,7 @@ const cards={
         toself:true,
         enable(event,player){
             if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
-            return get.nameList(player,"xjzh_xyj_sunwukong");
+            return get.is.playerNames(player,"xjzh_xyj_sunwukong");
         },
         selectTarget:1,
         filterTarget(card,player,target){
@@ -139,7 +139,7 @@ const cards={
         toself:true,
         enable(event,player){
             if(!player.hasSkill("xjzh_xyj_tianhuo")) return false;
-            return get.nameList(player,"xjzh_xyj_sunwukong");
+            return get.is.playerNames(player,"xjzh_xyj_sunwukong");
         },
         selectTarget:1,
         filterTarget(card,player,target){

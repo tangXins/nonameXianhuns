@@ -142,13 +142,13 @@ export const xiyouSkills={
 		mod:{
 			ignoredHandcard(card,player){
 				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
-				if(!get.nameList(player,'xjzh_xyj_sunwukong')) return;
+				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;
 				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
 				if(cards.includes(card.name)) return true;
 			},
 			aiValue(player,card,num){
 				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
-				if(!get.nameList(player,'xjzh_xyj_sunwukong')) return;
+				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;
 				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
 				if(cards.includes(card.name)) return num+10;
 			},

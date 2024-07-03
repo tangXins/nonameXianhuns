@@ -12,7 +12,7 @@ const cards = {
         derivation:"xjzh_sanguo_guanlu",
         type:"trick",
         enable:function(event,player){
-            if(get.nameList(player,'xjzh_sanguo_guanlu')) return true;
+            if(get.is.playerNames(player,'xjzh_sanguo_guanlu')) return true;
             return false;
         },
         cardcolor:'red',
@@ -32,7 +32,7 @@ const cards = {
                 value:10
             },
             result:{
-                target:function(target,player){
+                target:function(player,target){
                     if(target.isMin()) return 0;
                     var att=get.attitude(player,target);
                     if(att>=2){
@@ -71,7 +71,7 @@ const cards = {
         derivation:"xjzh_sanguo_guanlu",
         type:"trick",
         enable:function(event,player){
-            if(get.nameList(player,'xjzh_sanguo_guanlu')) return true;
+            if(get.is.playerNames(player,'xjzh_sanguo_guanlu')) return true;
             return false;
         },
         cardcolor:'black',
@@ -103,7 +103,7 @@ const cards = {
         derivation:"xjzh_sanguo_guanlu",
         type:"trick",
         enable:function(event,player){
-            if(get.nameList(player,'xjzh_sanguo_guanlu')) return true;
+            if(get.is.playerNames(player,'xjzh_sanguo_guanlu')) return true;
             return false;
         },
         selectTarget:1,
@@ -157,7 +157,7 @@ const cards = {
         derivation:"xjzh_sanguo_guanlu",
         type:"trick",
         enable:function(event,player){
-            if(get.nameList(player,'xjzh_sanguo_guanlu')) return true;
+            if(get.is.playerNames(player,'xjzh_sanguo_guanlu')) return true;
             return false;
         },
         selectTarget:-1,

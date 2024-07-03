@@ -1,0 +1,62 @@
+
+xjzh123.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+skill002_hit_0000
+  rotate: true
+  xy: 1476, 58
+  size: 180, 202
+  orig: 180, 202
+  offset: 0, 0
+  index: -1
+skill002_hit_0001
+  rotate: true
+  xy: 1266, 56
+  size: 182, 208
+  orig: 182, 208
+  offset: 0, 0
+  index: -1
+skill002_hit_0002
+  rotate: false
+  xy: 868, 30
+  size: 196, 208
+  orig: 196, 208
+  offset: 0, 0
+  index: -1
+skill002_hit_0003
+  rotate: false
+  xy: 1066, 32
+  size: 198, 206
+  orig: 198, 206
+  offset: 0, 0
+  index: -1
+skill002_hit_0004
+  rotate: false
+  xy: 2, 2
+  size: 214, 236
+  orig: 214, 236
+  offset: 0, 0
+  index: -1
+skill002_hit_0005
+  rotate: false
+  xy: 218, 10
+  size: 218, 228
+  orig: 218, 228
+  offset: 0, 0
+  index: -1
+skill002_hit_0006
+  rotate: false
+  xy: 438, 20
+  size: 216, 218
+  orig: 216, 218
+  offset: 0, 0
+  index: -1
+skill002_hit_0007
+  rotate: false
+  xy: 656, 28
+  size: 210, 210
+  orig: 210, 210
+  offset: 0, 0
+  index: -1

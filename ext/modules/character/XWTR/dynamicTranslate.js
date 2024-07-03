@@ -13,9 +13,12 @@ const dynamicTranslates = {
 		}
 		return str+"<li>"+str2+"<li>"+str3;
 	},
+	"xjzh_diablo_shilue":function(player){
+		return `出牌阶段，你可以移去${Math.min(player.countMark("xjzh_diablo_lingshou"),get.xjzh_consumeMp(player))}个德鲁伊灵体贡品并将其转为魔力，若你本轮游戏未发动该技能，你获得30%灵力消耗减免。`;
+	},
 	"xjzh_diablo_leibao":function(player){
 		let huixin=`<a style='color:${game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor")?game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor"):"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;
-		return `风暴技能，出牌阶段，你可以消耗${Math.round(45*(1-player.xjzhReduce))}点灵力召唤一道闪电并指定一名其他角色，对其造成${lib.skill.xjzh_diablo_leibao.level}点雷属性伤害。<li>${huixin}：你有<span style="color: yellow;">${Math.round(0.35*(1+player.xjzhHuixin)*100)}%</span>几率因此技能造成伤害时令其获得一层感电`;
+		return `风暴技能，出牌阶段，你可以消耗${Math.round(45*(1-player.xjzhReduce))}点灵力召唤一道闪电并指定${lib.skill.xjzh_diablo_leibao.level}名其他角色，对其造成1点雷属性伤害。<li>${huixin}：你有<span style="color: yellow;">${Math.round(0.35*(1+player.xjzhHuixin)*100)}%</span>几率因此技能造成伤害时令其获得一层感电`;
 	},
 	"xjzh_diablo_kuanghou":function(player){
 		let huixin=`<a style='color:${game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor")?game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor"):"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;

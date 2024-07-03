@@ -65,7 +65,7 @@ export const wzrySkills={
 				mod:{
 					maxHandcard(player,num){
 						let target=game.findPlayer(function(current){
-							return get.nameList(current,"xjzh_wzry_duoliya")&&current.storage.xjzh_wzry_huange&&current.storage.xjzh_wzry_huange==player;
+							return get.is.playerNames(current,"xjzh_wzry_duoliya")&&current.storage.xjzh_wzry_huange&&current.storage.xjzh_wzry_huange==player;
 						});
 						if(!target) return num;
 						if(num>=target.getHandcardLimit()) return num;
@@ -442,7 +442,7 @@ export const wzrySkills={
 		ai:{
 			order:8,
 			result:{
-				player(card,player,target){
+				player(player,target,card){
 					if(!player) return;
 					let num=0
 					for(var i=0;i<game.players.length;i++){
@@ -557,7 +557,7 @@ export const wzrySkills={
 		ai:{
 			order:2,
 			result:{
-				player(card,player,target){
+				player(player,target,card){
 					var player=_status.event.player
 					if(!player.storage.xjzh_wzry_guichen||!player.storage.xjzh_wzry_guichen.length) return;
 					var num=1
@@ -642,7 +642,7 @@ export const wzrySkills={
 		audio:"ext:仙家之魂/audio/skill:4",
 		filter(event,player){
 			if(!["basic","trick"].includes(get.type(event.card))) return false;
-			if(player.getEquips(1)) return get.type(event.card)=="basic";
+			if(player.getEquips(1).length) return get.type(event.card)=="basic";
 			return get.type(event.card)=="trick"
 		},
 		async content(event,trigger,player){

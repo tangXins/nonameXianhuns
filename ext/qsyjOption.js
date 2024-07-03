@@ -438,7 +438,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
                 for(var i of doneAchievemen){
                     var name=i.split(",");
                     var info=game.xjzhAchi.info(name[1],name[0]);
-                    str+=`<br>&emsp;&emsp;${name[1]}：<br>&emsp;&emsp;&emsp;&emsp;碎片：${info.level*100}<br>&emsp;&emsp;&emsp;&emsp;精魄：${info.level}`;
+                    str+=`<br>&emsp;&emsp;${name[1]}：<br>&emsp;&emsp;&emsp;&emsp;碎片：${info.level*50}<br>&emsp;&emsp;&emsp;&emsp;精魄：${info.level}`;
                 }
             }
 

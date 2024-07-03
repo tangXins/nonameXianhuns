@@ -396,7 +396,7 @@ const skills={
 			respondSha:true,
 			respondShan:true,
 			effect:{
-				target:function (card,player,target,effect){
+				target:function (card,player,target){
 					if(get.tag(card,'respondShan')) return 0.7;
 					if(get.tag(card,'respondSha')) return 0.7;
 				},
@@ -2149,7 +2149,7 @@ const skills={
 				return player.hp<player.maxHp;
 			},
 			result:{
-				player(card,player,target){
+				player(player,target,card){
 					if(!player) return;
 					if(player.hp<player.maxHp) return 1;
 					return 0.6;

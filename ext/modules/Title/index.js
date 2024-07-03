@@ -1,4 +1,4 @@
-export const xjzhTitle={
+const xjzhTitle={
     //仙武三国
     "xjzh_sanguo_wenyang":"万将披靡",
     "xjzh_sanguo_espsunce":"江东小霸王",
@@ -108,3 +108,12 @@ export const xjzhTitle={
     "xjzh_huoying_zhishui":"瞬身止水",
 
 };
+
+Object.defineProperty(window, 'xjzhTitle', {
+    value: xjzhTitle,
+    enumerable: true, // 可以被枚举，默认为false
+    writable: true,   // 可以被修改，默认为false
+    configurable: true // 可以被删除或再次修改特性，默认为false
+});
+
+export { xjzhTitle };

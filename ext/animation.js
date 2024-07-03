@@ -1,6 +1,46 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	lib.xjzh_animations={
+	    "xjzh_skillEffect_methysis":{
+		    scale:0.5,
+			x:[1,0.5],
+			y:[1,0.3],
+		    height:null,
+		    width:null,
+		    angle:null,
+		    parent:null,
+		    follow:false,
+	    },
+	    "xjzh_skillEffect_xuanfeng":{
+		    scale:1,
+			x:[1,0.5],
+			y:[1,0.5],
+		    height:null,
+		    width:null,
+		    angle:null,
+		    parent:null,
+		    follow:false,
+	    },
+	    "xjzh_skillEffect_yellowShield2":{
+		    scale:0.7,
+			x:[1,0.5],
+			y:[1,0.5],
+		    height:null,
+		    width:null,
+		    angle:null,
+		    parent:null,
+		    follow:false,
+	    },
+	    "xjzh_skillEffect_yellowShield":{
+		    scale:1,
+			x:[1,0.5],
+			y:[1,0.5],
+		    height:null,
+		    width:null,
+		    angle:null,
+		    parent:null,
+		    follow:false,
+	    },
 	    "xjzh_skillEffect_baozha":{
 		    scale:0.4,
 			x:[1,0.5],
@@ -61,6 +101,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    parent:null,
 		    follow:false,
 	    },
-	    
+
 	};
 });

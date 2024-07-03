@@ -2,10 +2,42 @@ import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
 
 export const CHRskills={
     skill:{
+		//开局获得增益技能
+		"_xjzh_zengyi_addSkills":{
+			trigger:{
+				global:["gameStart"],
+				player:["phaseZhunbeiBefore","enterGame"],
+			},
+			silent:true,
+			filter(event,player){
+				if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")==='close') return false;
+				let list=[
+					"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+				];
+				if(get.mode()=="boss"){
+					if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss)[0])) return false;
+				}
+				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
+				if(list.some(skill=>player.hasSkill("xjzh_zengyi_"+skill))) return false;
+				if(player.hasSkill("xjzh_zengyi_off")) return false;
+				if(!player.isUnderControl(true))  return false;
+				if(get.is.playerNames(player,"xjzh_sanguo_zuoyou")) return false;
+				return true;
+			},
+			async content(event,trigger,player){
+				let list=[
+					"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+				];
+				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
+				let skill=list.randomGet();
+				player.addSkill("xjzh_zengyi_off",false);
+				game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")=="player"?player.addSkills("xjzh_zengyi_"+skill):get.isXHwujiang(player)?player.addSkills("xjzh_zengyi_"+skill):null;
+			},
+		},
 	    //获取角色初始法力值并显示
 	    "_xjzh_skill_showMpCount":{
 	        trigger:{
-	            global:["gameStart"],
+	            global:["gameStart","roundStart"],
 	            player:"enterGame",
 	        },
 	        silent:true,
@@ -21,7 +53,11 @@ export const CHRskills={
 					return str;
 				},
 			},
+			init(player,skill){
+				player.storage[skill]=false;
+			},
 	        filter(event,player){
+				if(player.storage._xjzh_skill_showMpCount==true) return false;
 				if(!get.isXHwujiang(player)) return false;
 				if(player.isOut()) return false;
 				let nameList=get.nameList(player),num=0;
@@ -53,7 +89,7 @@ export const CHRskills={
 						}
 					}
 				});
-				if(!player.node.xjzhmp){
+				//if(!player.node.xjzhmp){
 					await player.changexjzhmaxMp(object["maxMp"]);
 					await player.changexjzhMp(object["mp"]);
 					if(object.hasOwnProperty("huixin")){
@@ -64,10 +100,34 @@ export const CHRskills={
 						if(!player.xjzhReduce) player.xjzhReduce=object["reduce"]||0;
 						else player.xjzhReduce+=object["reduce"];
 					}
-				}
+				//}
 				player.markSkill(event.name);
+				player.addSkill("xjzh_skill_showMpCounts");
+				player.storage[event.name]=true;
 	        },
 	    },
+		"xjzh_skill_showMpCounts":{
+			trigger:{
+				player:"dieBegin",
+			},
+			locked:true,
+			unique:true,
+			silent:true,
+			onremove(player,skill){
+				if(player.node.xjzhmp){
+					player.xjzhremoveMp();
+					delete player.storage._xjzh_skill_showMpCount;
+				}
+			},
+			filter(event,player){
+				if(!player.node.xjzhmp) return false;
+				if(!player.storage._xjzh_skill_showMpCount) return false;
+				return true;
+			},
+			async content(event,trigger,player){
+				lib.skill[event.name].onremove(player);
+			},
+		},
 		// ---------------------------------------状态技能------------------------------------------//
 		"xjzh_intro_jufeng":{
 			trigger:{

@@ -11,35 +11,25 @@ const dynamicTranslates = {
 		str+="其他角色阵亡后，若你未因该技能获得至少2点的体力上限，你获得一点体力上限，然后依次获得技能〖极略〗、〖奇才〗，当你拥有以上两个技能时，你移除该技能。";
 		return str;
 	},*/
+	"xjzh_sanguo_caiqing":function(player){
+		return `出牌阶段开始时，你可以摸${lib.skill.xjzh_sanguo_caiqing.getDrawResult(player)}张牌。`;
+	},
 	"xjzh_sanguo_zhiheng":function(player){
-		let list=get.playerName(player).filter(name=>{
-			return ["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"].includes(name);
-		});
-		if(get.config('double_character')){
-			if(list.length>=2) return "限定技，当你濒死时，你将武将牌随机替换为“小乔”或“大乔”之一，并回复体力至体力上限。";
-			else{
-				if(get.playerName(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
-				else if(get.playerName(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
-			}
-		}else{
-			if(get.playerName(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
-			else if(get.playerName(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
-		}
-		return `出牌阶段限${player.getDamagedHp()+1}次，你可以弃置任意张牌并摸等量的牌，然后若你弃置的牌每多一种花色，你额外摸一张牌。`;
+		return `出牌阶段限${player.getDamagedHp(true)+1}次，你可以弃置任意张牌并摸等量的牌，然后若你弃置的牌每多一种花色，你额外摸一张牌。`;
 	},
 	"xjzh_sanguo_lixiang":function(player){
-		let list=get.playerName(player).filter(name=>{
+		let list=get.nameList(player).filter(name=>{
 			return ["xjzh_sanguo_daqiao","xjzh_sanguo_xiaoqiao"].includes(name);
 		});
 		if(get.config('double_character')){
 			if(list.length>=2) return "限定技，当你濒死时，你将武将牌随机替换为“小乔”或“大乔”之一，并回复体力至体力上限。";
 			else{
-				if(get.playerName(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
-				else if(get.playerName(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
+				if(get.is.playerNames(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
+				else if(get.is.playerNames(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
 			}
 		}else{
-			if(get.playerName(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
-			else if(get.playerName(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
+			if(get.is.playerNames(player,"xjzh_sanguo_daqiao")) return "限定技，当你濒死时，你将武将牌替换为“小乔”，并回复体力至体力上限。";
+			else if(get.is.playerNames(player,"xjzh_sanguo_xiaoqiao")) return "限定技，当你濒死时，你将武将牌替换为“大乔”，并回复体力至体力上限。";
 		}
 		return "此技能不可用";
 	},

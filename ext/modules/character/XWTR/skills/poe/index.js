@@ -155,9 +155,7 @@ export const poeSkills={
 		filter:function(event,player){
 			if(!lib.config.extension_仙家之魂_poelose) return false;
 			if(get.itemtype(player)!='player') return false;
-			if(!get.nameList(player).filter(name=>{
-				return name.indexOf("xjzh_poe")==0;
-			}).length) return false;
+			if(!get.is.playerNames(player,"xjzh_poe")) return false;
 			var skills=player.skills.slice(0);
 			var list=[]
 			for(var i=0;i<skills.length;i++){
@@ -1289,7 +1287,7 @@ export const poeSkills={
 		},
 		ai:{
 			effect:{
-				target:function (card,player,target,current){
+				target:function (card,player,target){
 					var num1=player.countMark("xjzh_poe_fuchou")*0.01
 					var num2=1-num1
 					if(get.tag(card,'damage')&&!get.nature(card)) return [num2,num1];
@@ -1642,7 +1640,7 @@ export const poeSkills={
 		},
 		ai:{
 			effect:{
-				target:function(card,player,target,current) {
+				target:function(card,player,target) {
 					if(!player.storage.xjzh_poe_huiliu) return;
 					if(get.tag(card,'damage')){
 						if(!game.hasNature(card,player.storage.xjzh_poe_huiliu)){
@@ -1755,7 +1753,7 @@ export const poeSkills={
 		ai:{
 			jueqing:true,
 			effect:{
-				player:function(card,player,target,current){
+				player:function(card,player,target){
 					if(get.tag(card,'damage')) return [1,-1];
 				},
 			},

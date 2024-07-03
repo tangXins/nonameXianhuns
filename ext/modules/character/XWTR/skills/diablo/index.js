@@ -791,10 +791,9 @@ export const diabloSkills={
 					break;
 				};
 			}
-			if(bool==true) return;
 
 			if(event.triggername=="damageAfter") player.addMark("xjzh_diablo_lingshou",get.rand(1,100));
-			else{
+			else if(!bool){
 				let list=lib.skill.xjzh_diablo_lingshou.lingshouList.slice(0),node,skills;
 
 				if(player.name2&&player.name2=="xjzh_diablo_yafeikela") node=player.node.name2;
@@ -844,120 +843,19 @@ export const diabloSkills={
 		enable:"phaseUse",
 		init(player,skill){
 			player.storage[skill]=false;
-			//player.addMark("xjzh_diablo_lingshou",1520);
 		},
 		filter(event,player){
 			if(get.xjzh_isMaxMp(player)) return false;
 			return player.countMark("xjzh_diablo_lingshou")>0;
 		},
-		getshilue(player,num){
+		group:"xjzh_diablo_shilue_round",
+		async content(event,trigger,player){
+			let num=Math.min(player.countMark("xjzh_diablo_lingshou"),get.xjzh_consumeMp(player));
 			player.removeMark("xjzh_diablo_lingshou",num);
 			player.changexjzhMp(num);
 			let numx=player.xjzhReduce;
 			numx>0.3?numx-=0.3:numx=0;
 			player.storage.xjzh_diablo_shilue=true;
-		},
-		group:"xjzh_diablo_shilue_round",
-		async content(event,trigger,player){
-			let num,num2=player.countMark("xjzh_diablo_lingshou");
-			if(event.isMine()){
-				// 创建输入框
-				let node = ui.create.div();
-				applyStylesToNode(node, 'input');
-				node.contentEditable = true;
-				node.innerText = `请输入有效的数字，至多${num2}`;
-				node.addEventListener('input', (event) => {
-					validateAndHandleInput(node, num2);
-				});
-
-				// 创建确定按钮
-				let button = ui.create.div('.menubutton.highlight.large', '确定');
-				applyStylesToNode(button, 'button');
-				button.addEventListener('click', (e) => {
-					handleButtonClick(node, num2);
-				});
-
-				// 将输入框和确定按钮添加到界面上
-				ui.window.appendChild(node);
-				ui.window.appendChild(button);
-
-				// 选中输入框清空文字
-				node.onfocus = () => {
-					node.innerText = '';
-				};
-
-				node.onkeydown = (e) => {
-					e.stopPropagation();
-					if (e.keyCode == 13) button.click();
-				};
-
-				_status.imchoosing = true;
-				game.pause();
-
-				function applyStylesToNode(node, type) {
-					switch (type) {
-						case 'input':
-							node.style.width = '400px';
-							node.style.height = '30px';
-							node.style.lineHeight = '30px';
-							node.style.fontFamily = 'xinwei';
-							node.style.fontSize = '30px';
-							node.style.padding = '10px';
-							node.style.left = 'calc(50% - 200px)';
-							node.style.top = 'calc(50% - 20px)';
-							node.style.whiteSpace = 'nowrap';
-							node.style.webkitUserSelect = 'text';
-							node.style.textAlign = 'center';
-							break;
-						case 'button':
-							node.style.width = '70px';
-							node.style.left = 'calc(50% - 35px)';
-							node.style.top = 'calc(50% + 60px)';
-							break;
-					}
-				}
-
-				function validateAndHandleInput(node, num2) {
-					const name = node.innerText.trim();
-					if (/^\d+$/.test(name) && Number(name) <= num2) {
-						// 正确的数字输入处理
-					} else {
-						node.innerText = `请输入有效的数字，至多${num2}`;
-					}
-				}
-
-				function handleButtonClick(node, num2) {
-					const name = node.innerText.trim();
-					try {
-						if (/^\d+$/.test(name) && Number(name) <= num2) {
-							ui.window.removeChild(node);
-							ui.window.removeChild(button);
-							game.resume();
-							num = Number(name);
-							lib.skill[event.name].getshilue(player, num);
-						} else {
-							alert(getAlertMessage(name, num2));
-						}
-					} catch (error) {
-						console.error("An error occurred:", error);
-					} finally {
-						node.innerText = `请输入有效的数字，至多${num2}`;
-					}
-				}
-
-				function getAlertMessage(name, num2) {
-					if (name.length == 0) {
-						return `请先输入一个有效的数字`;
-					} else if (!/^\d+$/.test(name)) {
-						return `${name}不是一个有效的数字`;
-					} else if (Number(name) > num2) {
-						return `${Number(name)}超过${num2}，请重新输入`;
-					}
-				}
-			}else{
-				num=get.rand(1,player.countMark("xjzh_diablo_lingshou"));
-				lib.skill[event.name].getshilue(player,num);
-			}
 		},
 		subSkill:{
 			"round":{
@@ -981,12 +879,13 @@ export const diabloSkills={
 		ai:{
 			order:0.2,
 			result:{
-				player:function(player,target){
-					if(player.countMark("xjzh_diablo_lingshou")>100){
-						if(player.xjzhMp<=player.xjzhmaxMp/2) return 10;
-						return 0.5;
-					}
-					return 0.1;
+				player(player,target){
+					let names=get.nameList(player),arr=["xjzh_qishu_wuyan","xjzh_qishu_fenglangkx"],bool=false;
+					names.forEach(name=>{
+						if(arr.some(item=>game.xjzh_hasEquiped(item,name))) bool=true;
+					});
+					if(bool) return get.xjzh_consumeMp(player);
+					return player.countMark("xjzh_diablo_lingshou")-100+get.xjzh_consumeMp(player);
 				},
 			},
 		},
@@ -996,22 +895,30 @@ export const diabloSkills={
 		level:1,
 		powerDrain:45,
 		xjzh_fengbaoSkill:true,
+		multitarget:true,
+		multiline:true,
 		filterTarget(card,player,target){
 			return target!=player;
+		},
+		selectTarget(){
+			let player=get.player(),level=lib.skill.xjzh_diablo_leibao.level;
+			return level==1?1:[1,level];
 		},
 		filter(event,player){
 			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce;
 			return player.xjzhMp>=powerDrain*(1-num);
 		},
 		async content(event,trigger,player){
-			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce,level=lib.skill.xjzh_diablo_leibao.level;
+			let powerDrain=lib.skill.xjzh_diablo_leibao.powerDrain,num=player.xjzhReduce;
 			let num2=Math.round(powerDrain*(1-num));
 			await player.changexjzhMp(-num2);
-			game.xjzh_playEffect('xjzh_skillEffect_leiji',target);
-			await target.damage(level,'nocard',player,'thunder');
-			if(Math.random()<=0.35*(1+player.xjzhHuixin)){
-				target.changexjzhBUFF('gandian',1);
-				game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(target)}获得一层感电`);
+			for(let target of event.targets){
+				await game.xjzh_playEffect('xjzh_skillEffect_leiji',target);
+				await target.damage(1,'nocard',player,'thunder');
+				if(Math.random()<=0.35*(1+player.xjzhHuixin)&&target.isAlive()){
+					target.changexjzhBUFF('gandian',1);
+					game.log(player,`因<span style="color: yellow;">〖${get.translation(event.name)}〗</span>触发了会心一击，${get.translation(target)}获得一层感电`);
+				}
 			}
 		},
 		ai:{
@@ -1037,8 +944,8 @@ export const diabloSkills={
 			return 0.5;
 		},
 		filter(event,player){
-			if(player.isHealthy()||get.xjzh_isMaxMp(player)) return false;
-			return true;
+			if(player.isDamaged()||!get.xjzh_isMaxMp(player)) return true;
+			return false;
 		},
 		async content(event,trigger,player){
 			let num=lib.skill.xjzh_diablo_leibao.level;
@@ -1202,8 +1109,8 @@ export const diabloSkills={
 				forced:true,
 				priority:1,
 				filter(event,player){
-					let cards=event.cards.slice(0);
-					return cards.some(item=>player.storage.xjzh_diablo_xianjing.includes(item));
+					if(!event.cards||!event.cards.length) return false;
+					return event.cards.some(item=>player.storage.xjzh_diablo_xianjing.includes(item));
 				},
 				async content(event,trigger,player){
 					if(trigger.player!=player) trigger.player.changexjzhBUFF('zhongdu',get.xjzhBUFFInfo("zhongdu",'limit'));
