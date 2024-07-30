@@ -7,26 +7,26 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	    }else{
 	        return;
 	    }
-	    let func=function(){
-    	    for(let i in characters){
-    		    if(!lib.character[i][4]) continue;
-    		    if(!lib.character[i][4].includes("qishuBoss")) continue;
+        let func=function(){
+            for(let i in characters){
+                if(!lib.character[i]) continue;
+                if(!lib.character[i].isQishuBoss) continue;
                 if(lib.character[i].isAiForbidden==true) continue;
                 lib.character[i].isBoss=false;
                 lib.character[i].isBossAllowed=false;
                 lib.character[i].isAiForbidden=true;
                 lib.character[i].isUnseen=true;
-    		}
-	    };
-	    let func2=function(name){
-    		if(!lib.character[name]) return;
-    		if(!lib.character[name][4]) return;
-    	    if(!lib.character[name][4].includes("qishuBoss")) return;
+            }
+        };
+        let func2=function(name){
+            if(!lib.character[name]) return;
+            if(!lib.character[name].isQishuBoss) return;
             lib.character[name].isBoss=false;
             lib.character[name].isBossAllowed=false;
             lib.character[name].isAiForbidden=true;
             lib.character[name].isUnseen=true;
-	    };
+        };
+
 	    if(!get.is.object(lib.config.xjzh_qishuyaojians.cailiao)||!characters||characters==undefined){
 	        func();
 	        return;
@@ -210,7 +210,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         	};
             //碎片获得
             var suipian=Math.floor(num2);
-            qishuReward["suipian"]+=qishumingyushi?suipian:suipian*2;
+            qishuReward["suipian"]+=qishumingyushi==true?suipian:suipian*2;
 
             //材料获得
             var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;

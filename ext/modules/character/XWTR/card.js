@@ -180,22 +180,6 @@ const cards={
             }
         },
     },
-    "xjzh_card_siwangbingzhu":{
-        audio:"ext:仙家之魂/audio/card/",
-        image:"ext:仙家之魂/image/cardpicture/xjzh_card_siwangbingzhu.png",
-        derivation:"xjzh_dnf_jianshen",
-        fullskin:true,
-        type:"equip",
-        subtype:"equip1",
-        subtype2:"xjzh_guangjian",
-        skills:["xjzh_card_siwangbingzhu_skill"],
-        distance:{attackFrom:-2},
-        ai:{
-            basic:{
-                equipValue:3
-            }
-        },
-    },
     "xjzh_card_mojianklls":{
         audio:"ext:仙家之魂/audio/card/",
         image:"ext:仙家之魂/image/cardpicture/xjzh_card_mojianklls.png",

@@ -1690,26 +1690,27 @@ const skills={
 	"xjzh_meiren_zhongqing":{
 		trigger:{
 			global:"gameStart",
+			player:"enterGame",
 		},
 		firstDo:true,
 		locked:true,
 		priority:100,
 		direct:true,
-		init:function(player){
-			player.storage.xjzh_meiren_zhongqing_target2=0
+		init(player,skill){
+			player.storage.xjzh_meiren_zhongqing=new Map(
+				[
+					["target",null],
+					["count",0],
+				]
+			);
 		},
 		group:["xjzh_meiren_zhongqing_target2"],
-		content:function(){
-			"step 0"
-			player.chooseTarget('钟情：选择一个目标令其成为你的钟情对象',true,function(card,player,target){
-				return player!=target;
-			}).set('ai',function(target){
-				return get.attitude(player,target)>0;
-			});
-			"step 1"
-			if(result.bool){
-				player.storage.xjzh_meiren_zhongqing=result.targets[0]
-				result.targets[0].addSkill("xjzh_meiren_zhongqing_target");
+		async content(event,trigger,player){
+			const targets=await player.chooseTarget('〖钟情〗：选择一个目标令其成为你的钟情对象',true,lib.filter.notMe).set('ai',target=>get.attitude(player,target)>0).forResultTargets();
+			if(targets){
+				let storage=player.storage.xjzh_meiren_zhongqing;
+				storage.set("target",targets[0]);
+				targets[0].addSkill("xjzh_meiren_zhongqing_target");
 			}
 		},
 		subSkill:{
@@ -1726,35 +1727,33 @@ const skills={
 				trigger:{
 					global:"useCardToPlayer",
 				},
-				filter:function(event,player){
-					var target2=game.filterPlayer(function(current){return current.hasSkill("xjzh_meiren_zhongqing_target")}).shift();
-					if(event.target.hasSkill('xjzh_meiren_zhongqing_target')&&event.player!=event.target) return true;
-					if(player!=event.player&&event.target==player&&target2.isAlive()) return true
+				filter(event,player){
+					let targets=game.findPlayer(current=>current.hasSkill("xjzh_meiren_zhongqing_target"));
+					if(!targets||targets.isDead()||player.isDead()) return false;
 					if(!event.isFirstTarget) return false;
+					if([player,targets].includes(event.player)) return false;
+					if(event.targets.some(item=>[targets,player].includes(item))) return true;
 					return false;
 				},
-				direct:true,
+				forced:true,
 				priority:10,
 				sub:true,
-				content:function(){
-					var evt=trigger.getParent()
-					var target2=game.filterPlayer(function(current){return current.hasSkill("xjzh_meiren_zhongqing_target")}).shift();
-					if(trigger.target==player&&target2.isAlive()){
-						evt.targets.add(target2);
-						player.line(target2,'green');
-						trigger.untrigger();
-						game.log(target2,"成为了",trigger.card,"的额外目标");
-					}
-					else if(trigger.target==target2){
+				async content(event,trigger,player){
+					let evt=trigger.getParent(),targets=game.findPlayer(current=>current.hasSkill("xjzh_meiren_zhongqing_target"));
+					if(evt.targets.includes(player)){
+						evt.targets.remove(player);
+						evt.targets.add(targets);
+						player.line(targets,'green');
+						game.log(trigger.card,"的目标改为了",targets);
+					}else{
+						evt.targets.remove(targets);
 						evt.targets.add(player);
-						player.line(player,'green');
-						trigger.untrigger();
-						game.log(player,"成为了",trigger.card,"的额外目标");
+						player.line(targets,'green');
+						game.log(trigger.card,"的目标改为了",player);
 					}
-					player.draw();
-					target2.draw();
-					if(!player.storage.xjzh_meiren_zhongqing_target2) player.storage.xjzh_meiren_zhongqing_target2=0
-					player.storage.xjzh_meiren_zhongqing_target2++
+					await game.asyncDraw([player,targets],1);
+					let storage=player.storage.xjzh_meiren_zhongqing;
+					storage.set("count",storage.get("count")+1);
 				},
 			},
 		},
@@ -1763,25 +1762,24 @@ const skills={
 		trigger:{
 			target:"useCardToTargeted",
 		},
-		locked:true,
-		priority:66,
-		prompt:function(event,player){
-			return ""+get.translation(player)+"成为"+get.translation(event.player)+"的目标，是否发动〖移情〗将目标转移给上家或下家？";
+		frequent:true,
+		priority:3,
+		prompt(event,player){
+			return `〖移情〗：${get.translation(player)}成为${get.translation(event.player)}的目标，是否判定将目标转移给上家或下家？`;
 		},
-		group:["xjzh_meiren_yiqing_draw"],
-		filter:function (event,player){
-			if(event.player!=player&&event.player.sex=='female'&&!get.tag(event.card,'damage')&&event.targets.length==1) return true;
-			if(event.player.sex=='male'&&get.tag(event.card,'damage')&&event.targets.length==1) return true;
+		filter(event,player){
+			let evt=event.getParent();
+			if(event.targets>1||evt.targets>1) return false;
+			if(event.player==player) return false;
+			if(event.player.hasSex('female')&&!get.tag(event.card,'damage')) return true;
+			if(event.player.hasSex('male')&&get.tag(event.card,'damage')) return true;
 			return false;
 		},
-		content:function (){
-			'step 0'
-			var tt=player;
-			var tc=trigger.card;
-			var heartEffect=get.effect(tt.next,tc,player,player)-get.effect(tt,tc,player,player);
-			var spadeEffect=get.effect(tt.previous,tc,player,player)-get.effect(tt,tc,player,player);
-			player.judge(function(card){
-				var suit=get.suit(card,player);
+		async content(event,trigger,player){
+			let heartEffect=get.effect(player.getNext(),trigger.card,player,player)-get.effect(player,trigger.card,player,player);
+			let spadeEffect=get.effect(player.getPrevious(),trigger.card,player,player)-get.effect(player,trigger.card,player,player);
+			const [judge,suit]=await player.judge(card=>{
+				let suit=get.suit(card,player);
 				if(suit=='spade'){
 					return spadeEffect;
 				}
@@ -1789,56 +1787,33 @@ const skills={
 					return heartEffect;
 				}
 				return 0;
-			},
-			'移情').set('judge2',function(card){
-				var suit=get.suit(card,player);
+			},'〖移情〗').set('judge2',card=>{
+				let suit=get.suit(card,player);
 				return ['spade','heart'].includes(suit);
-			});
-			'step 1'
-			if(result){
-				var evt=trigger.getParent();
-				if(result.suit=='heart'){
-					evt.triggeredTargets1.remove(player);
-					evt.targets.remove(player);
-					evt.targets.add(player.next);
-					player.line(player.next,'green');
-					trigger.untrigger();
-					game.log(trigger.player,"使用的",trigger.card,"的目标被转移给了",player.next,"。");
-				}
-				else if(result.suit=='spade'){
-					evt.triggeredTargets1.remove(player);
-					evt.targets.remove(player);
-					evt.targets.add(player.previous);
-					player.line(player.previous,'green');
-					trigger.untrigger();
-					game.log(trigger.player,"使用的",trigger.card,"的目标被转移给了",player.previous,"。");
+			}).forResult("judge","suit");
+
+			if(["heart","spade"].includes(suit)){
+				player.draw();
+				let evt=trigger.getParent();
+				switch(suit){
+					case 'heart':{
+						evt.triggeredTargets1.remove(player);
+						evt.targets.remove(player);
+						evt.targets.add(player.getNext());
+						player.line(player.getNext(),'green');
+						game.log(trigger.player,"使用的",trigger.card,"的目标被转移给了",player.getNext(),"。");
+					};
+					break;
+					case 'spade':{
+						evt.triggeredTargets1.remove(player);
+						evt.targets.remove(player);
+						evt.targets.add(player.getPrevious());
+						player.line(player.getPrevious(),'green');
+						game.log(trigger.player,"使用的",trigger.card,"的目标被转移给了",player.getPrevious(),"。");
+					};
+					break;
 				}
 			}
-		},
-		subSkill:{
-			"draw":{
-				trigger:{
-					target:"useCardToTargeted",
-					player:"useCardToPlayered",
-				},
-				priority:-1,
-				forced:true,
-				sub:true,
-				filter:function (event,player){
-					var previous=player.getPrevious();
-					var next=player.getNext();
-					if(event.target==player){
-						return event.player==previous||event.player==next;
-					}
-					if(event.player==player){
-						return event.target==previous||event.target==next;
-					}
-					return false;
-				},
-				content:function (){
-					player.draw();
-				},
-			},
 		},
 	},
 	"xjzh_meiren_shangqing":{
@@ -1847,7 +1822,7 @@ const skills={
 		juexingji:true,
 		unique:true,
 		firstDo:true,
-		priority:66,
+		priority:6,
 		mark:true,
 		marktext:"伤",
 		skillAnimation:true,
@@ -1855,52 +1830,47 @@ const skills={
 		animationStr:"伤魂情离",
 		intro:{
 			name:"伤情",
-			mark:function(dialog,storage,player){
-				var str=""
-				var storage=player.storage.xjzh_meiren_zhongqing_target2
-				str+="已发动〖钟情〗："+get.translation(storage)+"次";
-				return str;
+			mark(dialog,storage,player){
+				storage=player.storage.xjzh_meiren_zhongqing;
+				if(!storage) return;
+				return "已发动〖钟情〗："+storage.get("count")+"次";
 			},
-			markcount:function(storage,player){
-				return player.storage.xjzh_meiren_zhongqing_target2;
+			markcount(storage,player){
+				storage=player.storage.xjzh_meiren_zhongqing;
+				return storage.get("count");
 			},
 		},
 		trigger:{
 			player:"phaseBefore",
 		},
-		filter:function(event,player){
-			if(player.storage.xjzh_meiren_zhongqing_target2<6) return false;
-			return !player.storage.xjzh_meiren_shangqing;
+		filter(event,player){
+			let storage=player.storage.xjzh_meiren_zhongqing;
+			if(storage.get("count")<6) return false;
+			if(player.storage.xjzh_meiren_shangqing) return false;
+			return true;
+		},
+		init(player,skill){
+			player.storage.xjzh_meiren_shangqing=false;
 		},
 		derivation:["xjzh_meiren_moqing"],
-		content:function(){
-			"step 0"
-			player.awakenSkill('xjzh_meiren_shangqing');
-			player.storage.xjzh_meiren_shangqing=true;
-			"step 1"
-			var target2=game.filterPlayer(function(current){return current.hasSkill("xjzh_meiren_zhongqing_target")}).shift();
-			target2.removeSkill("xjzh_meiren_zhongqing_target");
-			delete player.storage.xjzh_meiren_zhongqing
-			player.removeSkill('xjzh_meiren_zhongqing');
-			player.addSkillLog('xjzh_meiren_moqing');
-			"step 2"
-			var list=['shangqing2','shangqing3']
-			for(var i=0;i<list.length;i++){
-				player.clearMark("xjzh_meiren_"+list[i]);
-			}
-			"step 3"
-			player.chooseTarget('伤情：选择一个目标与其交换体力上限与体力值',function(card,player,target){
+		async content(event,trigger,player){
+			player.awakenSkill(event.name);
+			player.storage[event.name]=true;
+
+			let target=game.findPlayer(current=>current.hasSkill("xjzh_meiren_zhongqing_target"));
+			target.removeSkill("xjzh_meiren_zhongqing_target");
+			delete player.storage.xjzh_meiren_zhongqing;
+			player.changeSkills(['xjzh_meiren_moqing','xjzh_meiren_zhongqing']);
+
+			const targets=await player.chooseTarget('〖伤情〗：选择一个目标与其交换体力上限与体力值',(card,player,target)=>{
 				return player!=target&&(target.hp!=player.hp||target.maxHp!=player.maxHp);
-			}).set('ai',function(target){
-				var att=get.attitude(player,target);
-				if(att>0) return target.hp<player||target.maxHp<player;
-				if(att<0) return target.hp>player||target.maxHp>player;
-				return att<0;
-			});
-			"step 4"
-			if(result.bool){
-				player.swapMaxHp(result.targets[0]);
-			}
+			}).set('ai',target=>{
+				let att=get.attitude(player,target);
+				if(att>0) return target.getHp(true)<player.getHp(true)||target.maxHp<player.maxHp;
+				if(att<0) return target.getHp(true)>player.getHp(true)||target.maxHp>player.maxHp;
+				return 0;
+			}).forResultTargets();
+			if(targets) player.swapMaxHp(targets[0],true);
 		},
 	},
 	"xjzh_meiren_moqing":{
@@ -1910,17 +1880,15 @@ const skills={
 		frequent:true,
 		priority:12,
 		filter(event,player){
-			return player.isAlive();
+			return !player.isDying();
 		},
 		check(){return 1;},
 		mod:{
-			targetEnabled(card,player,target,now){
+			targetEnabled(card,player,target){
 				if(get.tag('multitarget',card)) return false;
-				if(get.info(card).allowMultiple==false) return false;
 			},
 		},
 		async content(event,trigger,player){
-
 			const targets=await player.chooseTarget("〖默情〗:请选择一个目标与其交换体力值",(caed,target,player)=>{
 				return target!=player&&target.getHp(true)!=player.getHp(true);
 			}).set('ai',target=>{
@@ -2145,7 +2113,7 @@ const skills={
 			player.update();
 		},
 		ai:{
-			order(){
+			order(item,player){
 				return player.hp<player.maxHp;
 			},
 			result:{

@@ -1,74 +1,318 @@
+import { lib, game, ui, get, ai, _status } from "../../../../../../noname.js";
+
 const characters = {
 	//众星之魂
-	"xjzh_zxzh_jiangningzhi":["female","qun",3,["xjzh_zxzh_dianling","xjzh_zxzh_tusu"],[]],
-	"xjzh_zxzh_linmo":["male","qun",3,["xjzh_zxzh_moyu","xjzh_zxzh_zhenwen","xjzh_zxzh_jinyan"],[]],
-	"xjzh_zxzh_yumuren":["male","qun",4,["xjzh_zxzh_shiqiao","xjzh_zxzh_baoxin"],[]],
-	"xjzh_zxzh_linlingshiyu":["double","qun",3,["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_jiezhen"],[]],
-	"xjzh_zxzh_yuanyuan":["female","qun",4,["xjzh_zxzh_renxin","xjzh_zxzh_xianghun","xjzh_zxzh_xunqing"],[]],
-	"xjzh_zxzh_mufeng":["male","qun",4,["xjzh_zxzh_yufeng","xjzh_zxzh_fengzhen","xjzh_zxzh_zonghuo"],[]],
-	"xjzh_zxzh_moqinwu":["female","qun",3,["xjzh_zxzh_shoutao","xjzh_zxzh_taoyuan","xjzh_zxzh_qiwu"],[]],
-	"xjzh_zxzh_moqinyan":["male","qun",3,["xjzh_zxzh_cangjian","xjzh_zxzh_jiantai","xjzh_zxzh_yujian"],[]],
-	"xjzh_zxzh_linziyan":["male","qun",4,["xjzh_zxzh_leifax","xjzh_zxzh_leiyu","xjzh_zxzh_tianxin"],[]],
+	"xjzh_zxzh_jiangningzhi":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_zxzh_dianling","xjzh_zxzh_tusu"],
+		names:"姜|凝脂",
+	},
+	"xjzh_zxzh_linmo":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_zxzh_moyu","xjzh_zxzh_zhenwen","xjzh_zxzh_jinyan"],
+		names:"林|默",
+	},
+	"xjzh_zxzh_yumuren":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_zxzh_shiqiao","xjzh_zxzh_baoxin"],
+		names:"余|木人",
+	},
+	"xjzh_zxzh_linlingshiyu":{
+		sex:"double",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_zxzh_leifa","xjzh_zxzh_jianxin","xjzh_zxzh_jiezhen"],
+		names:"林|凌-林|诗雨",
+	},
+	"xjzh_zxzh_yuanyuan":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_zxzh_renxin","xjzh_zxzh_xianghun","xjzh_zxzh_xunqing"],
+		names:"冯|媛媛",
+	},
+	"xjzh_zxzh_mufeng":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_zxzh_yufeng","xjzh_zxzh_fengzhen","xjzh_zxzh_zonghuo"],
+		names:"沐|风",
+	},
+	"xjzh_zxzh_moqinwu":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_zxzh_shoutao","xjzh_zxzh_taoyuan","xjzh_zxzh_qiwu"],
+		names:"莫|轻舞",
+	},
+	"xjzh_zxzh_moqinyan":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_zxzh_cangjian","xjzh_zxzh_jiantai","xjzh_zxzh_yujian"],
+		names:"莫|轻言",
+	},
+	"xjzh_zxzh_linziyan":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_zxzh_leifax","xjzh_zxzh_leiyu","xjzh_zxzh_tianxin"],
+		names:"莫|轻言",
+	},
 
 	//流放之路
 	//女巫
-	"xjzh_poe_nvwu":["female","qun",3,["xjzh_poe_choice2","xjzh_poe_huoqiu","xjzh_poe_xuruo"],[]],
-	"xjzh_poe_yuansushi":["female","qun",3,["xjzh_poe_choice","xjzh_poe_huiliu","xjzh_poe_guangta","xjzh_poe_sangzhong","xjzh_poe_suxing","xjzh_poe_bilei","xjzh_poe_qinhe"],["unseen","forbidai"]],
+	"xjzh_poe_nvwu":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice2","xjzh_poe_huoqiu","xjzh_poe_mishu"],
+		names:"null|null",
+	},
+	"xjzh_poe_yuansushi":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice","xjzh_poe_huiliu","xjzh_poe_guangta","xjzh_poe_sangzhong","xjzh_poe_suxing","xjzh_poe_bilei","xjzh_poe_qinhe"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
 
 	//决斗者
-	"xjzh_poe_juedouzhe":["male","qun",3,["xjzh_poe_choice2","xjzh_poe_jianfeng","xjzh_poe_sidou","xjzh_poe_tiaozhan"],[]],
-	"xjzh_poe_chuxing":["male","qun",3,["xjzh_poe_choice","xjzh_poe_zhenya","xjzh_poe_zaixing","xjzh_poe_lengxue","xjzh_poe_shixue","xjzh_poe_canbao","xjzh_poe_yingxiang","xjzh_poe_yingxing"],["unseen","forbidai"]],
-	"xjzh_poe_weishi":["male","qun",3,["xjzh_poe_choice","xjzh_poe_jingji","xjzh_poe_zhuzao","xjzh_poe_fuchou","xjzh_poe_doushi","xjzh_poe_xueyan","xjzh_poe_baipiao"],["unseen","forbidai"]],
+	"xjzh_poe_juedouzhe":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice2","xjzh_poe_jianfeng","xjzh_poe_sidou","xjzh_poe_tiaozhan"],
+		names:"null|null",
+	},
+	"xjzh_poe_chuxing":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice","xjzh_poe_zhenya","xjzh_poe_zaixing","xjzh_poe_lengxue","xjzh_poe_shixue","xjzh_poe_canbao","xjzh_poe_yingxiang","xjzh_poe_yingxing"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
+	"xjzh_poe_weishi":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice","xjzh_poe_jingji","xjzh_poe_zhuzao","xjzh_poe_fuchou","xjzh_poe_doushi","xjzh_poe_xueyan","xjzh_poe_baipiao"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
 
 	//游侠
-	"xjzh_poe_youxia":["female","qun",3,["xjzh_poe_choice2","xjzh_poe_bingjian","xjzh_poe_dianjian"],[]],
-	"xjzh_poe_ruiyan":["female","qun",3,["xjzh_poe_choice","xjzh_poe_fenlie","xjzh_poe_tanshe","xjzh_poe_juji","xjzh_poe_jufeng","xjzh_poe_danmu"],["unseen","forbidai"]],
+	"xjzh_poe_juedouzhe":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice2","xjzh_poe_bingjian","xjzh_poe_dianjian"],
+		names:"null|null",
+	},
+	"xjzh_poe_ruiyan":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_choice","xjzh_poe_fenlie","xjzh_poe_tanshe","xjzh_poe_juji","xjzh_poe_jufeng","xjzh_poe_danmu"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
 
 	//贵族
-	"xjzh_poe_guizu":["female","qun",3,["xjzh_poe_shenghua"],[]],
+	"xjzh_poe_guizu":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_poe_shenghua"],
+		names:"null|null",
+	},
 
 	//王者荣耀
-	"xjzh_wzry_libai":["male","qun",3,["xjzh_wzry_xiaxing","xjzh_wzry_jinjiu","xjzh_wzry_jiange"],[]],
-	"xjzh_wzry_yao":["male","qun",2,["xjzh_wzry_xingchen","xjzh_wzry_liekong","xjzh_wzry_guichen"],[]],
-	"xjzh_wzry_ganjiangmoye":["double","qun",3,["xjzh_wzry_jianzhong","xjzh_wzry_cuijian","xjzh_wzry_jianlai"],[]],
-	"xjzh_wzry_haiyue":["female","qun",3,["xjzh_wzry_bieyue","xjzh_wzry_shunhua","xjzh_wzry_liuguang","xjzh_wzry_huanhai"],[]],
-	"xjzh_wzry_huamulan":["female","qun",4,["xjzh_wzry_xunshou","xjzh_wzry_konglie","xjzh_wzry_daofeng"],[]],
-	"xjzh_wzry_duoliya":["female","qun",4,["xjzh_wzry_huange","xjzh_wzry_zhulang","xjzh_wzry_tiannai"],[]],
+	"xjzh_wzry_libai":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_wzry_xiaxing","xjzh_wzry_jinjiu","xjzh_wzry_jiange"],
+		names:"李|白",
+	},
+	"xjzh_wzry_yao":{
+		sex:"male",
+		group:"qun",
+		hp:2,
+		skills:["xjzh_wzry_xingchen","xjzh_wzry_liekong","xjzh_wzry_guichen"],
+		names:"东方|曜",
+	},
+	"xjzh_wzry_ganjiangmoye":{
+		sex:"double",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_wzry_jianzhong","xjzh_wzry_cuijian","xjzh_wzry_jianlai"],
+		names:"null|null",
+	},
+	"xjzh_wzry_haiyue":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_wzry_bieyue","xjzh_wzry_shunhua","xjzh_wzry_liuguang","xjzh_wzry_huanhai"],
+		names:"null|null",
+	},
+	"xjzh_wzry_huamulan":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_wzry_xunshou","xjzh_wzry_konglie","xjzh_wzry_daofeng"],
+		names:"花|木兰",
+	},
+	"xjzh_wzry_duoliya":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_wzry_huange","xjzh_wzry_zhulang","xjzh_wzry_tiannai"],
+		names:"null|null",
+	},
 
 	//暗黑破坏神
-	"xjzh_diablo_lamasi":["male","qun",3,["xjzh_diablo_hunhuo"],[]],
-	"xjzh_diablo_nataya":["female","qun",4,["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],[],[{
-		"name":"xjzhMp",
-		"maxMp":100,
-		"mp":100,
-		"huixin":0.5,
-		"reduce":0
-	}]],
-	"xjzh_diablo_kelike":["female","qun",4,[],["unseen","forbidai"],[{
-		"name":"xjzhMp",
-		"maxMp":100,
-		"mp":0,
-		"huixin":0.1,
-		"reduce":0
-	}]],
-	"xjzh_diablo_moruina":["female","qun",4,["xjzh_diablo_luanshe","xjzh_diablo_jingshe","xjzh_diablo_guanzhu"],[]],
-	"xjzh_diablo_kaxia":["female","qun",4,["xjzh_diablo_sushe","xjzh_diablo_yingbi","xjzh_diablo_jianyu"],[]],
-	"xjzh_diablo_yafeikela":["male","qun",4,["xjzh_diablo_lingshou","xjzh_diablo_shilue"],[],[{
-		"name":"xjzhMp",
-		"maxMp":100,
-		"mp":100,
-		"huixin":0.2,
-		"reduce":0.3
-	}]],
-	"xjzh_diablo_xiong":["male","qun",4,["xjzh_diablo_zhongou","xjzh_diablo_fensui"],["unseen","forbidai"]],
-	"xjzh_diablo_lang":["male","qun",4,["xjzh_diablo_leibao","xjzh_diablo_kuanghou"],["unseen","forbidai"]],
-	"xjzh_diablo_lilisi":["female","qun",3,["xjzh_boss_lianji","xjzh_boss_qiangji"],["unseen","forbidai"]],
+	"xjzh_diablo_lamasi":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_diablo_hunhuo"],
+		names:"null|null",
+	},
+	"xjzh_diablo_moruina":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_luanshe","xjzh_diablo_jingshe","xjzh_diablo_guanzhu"],
+		names:"null|null",
+	},
+	"xjzh_diablo_kaxia":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_sushe","xjzh_diablo_yingbi","xjzh_diablo_jianyu"],
+		names:"null|null",
+	},
+	"xjzh_diablo_nataya":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_duguan","xjzh_diablo_xianjing","xjzh_diablo_baolu"],
+		names:"null|null",
+		xjzhMp:{
+			"maxMp":100,
+			"mp":100,
+			"huixin":0.5,
+			"reduce":0
+		},
+	},
+	"xjzh_diablo_kelike":{
+		sex:"female",
+		group:"qun",
+		hp:4,
+		skills:[],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+		xjzhMp:{
+			"maxMp":100,
+			"mp":0,
+			"huixin":0.1,
+			"reduce":0
+		},
+	},
+	"xjzh_diablo_yafeikela":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_lingshou","xjzh_diablo_shilue"],
+		names:"null|null",
+		xjzhMp:{
+			"maxMp":100,
+			"mp":100,
+			"huixin":0.2,
+			"reduce":0.3
+		},
+	},
+	"xjzh_diablo_xiong":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_zhongou","xjzh_diablo_fensui"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
+	"xjzh_diablo_lang":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_diablo_leibao","xjzh_diablo_kuanghou"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
+	"xjzh_diablo_lilisi":{
+		sex:"female",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_boss_lianji","xjzh_boss_qiangji"],
+		names:"null|null",
+		isUnseen:true,
+		isAiForbidden:true,
+	},
 
 	//地下城与勇士
-	"xjzh_dnf_suodeluosi":["male","qun",3,["xjzh_dnf_jianshenx","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],[],[]],
+	"xjzh_dnf_suodeluosi":{
+		sex:"male",
+		group:"qun",
+		hp:3,
+		skills:["xjzh_dnf_jianshen","xjzh_dnf_aoyi","xjzh_dnf_jianyi"],
+		names:"null|null",
+	},
 
 	//西游释厄传
-	"xjzh_xyj_sunwukong":["male","qun",4,["xjzh_xyj_tianhuo","xjzh_xyj_dongcha","xjzh_xyj_ruyi"],[],[]],
+	"xjzh_xyj_sunwukong":{
+		sex:"male",
+		group:"qun",
+		hp:4,
+		skills:["xjzh_xyj_tianhuo","xjzh_xyj_dongcha","xjzh_xyj_ruyi"],
+		names:"孙|悟空",
+	},
 
 };
+
+for(let i in characters){
+	if(!characters[i].trashBin) characters[i].trashBin=[];
+	let array=["ext:仙家之魂/skin/yuanhua/"+i+".jpg","xjzh_die_audio"];
+	if(lib.config.extension_仙家之魂_xjzh_lutoupifu) array.splice(0,1,"ext:仙家之魂/skin/lutou/"+i+".jpg");
+	characters[i].trashBin.addArray(array);
+
+	if(!characters[i].dieAudios) characters[i].dieAudios=[];
+	characters[i].dieAudios.add("ext:仙家之魂/audio/die/"+i+".mp3");
+
+
+	if(game.getExtensionConfig("仙家之魂","xjzhAchiStorage")&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character&&game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character.length){
+		for(let name of game.getExtensionConfig("仙家之魂","xjzhAchiStorage").character){
+			if(!characters[name]) console.log('未在仙武同人武将包找到该武将');
+			else{
+				characters[name].isAiForbidden=false;
+				characters[name].isUnseen=false;
+			}
+		}
+	}
+}
+
 export default characters;

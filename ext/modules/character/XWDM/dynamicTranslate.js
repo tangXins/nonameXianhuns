@@ -14,6 +14,10 @@ const dynamicTranslates = {
 		}
 		return str0+str1+"<br><li>"+str2+"<br><li>"+str3;
 	},
+	"xjzh_huoying_dunshu":function(player){
+		let num=player.getHistory("sourceDamage").length||0;
+		return `<b><font color=orange>〖阳遁术〗</font><b>你的回合外，你防止所有伤害和体力流失然后摸等量牌，然后你可以令等量名角色各回复一点体力，你无法被翻面、横置，且判定效果反转;<br><b><font color=orange>〖阴遁术〗</font><b>你的回合内，场上其他角色所有技能失效，你使用牌无次数限制且你造成的伤害+${num}。`;
+	},
 
 };
 export default dynamicTranslates;

@@ -185,129 +185,6 @@ const cards={
     },
     //--------------------延时锦囊牌----------------
     //--------------------非延时锦囊牌-------------
-    "xjzh_card_lianqidan":{
-        audio:"ext:仙家之魂/audio/card/",
-        image:"ext:仙家之魂/image/cardpicture/xjzh_card_lianqidan.png",
-        fullskin:true,
-        type:'xjzh_danyao',
-        enable:true,
-        toself:true,
-        modTarget:true,
-        vanish:true,
-        filterTarget:function(card,player,target){
-            return target==player
-        },
-        /*onLose:function(){
-        card.fix();
-        card.remove();
-        card.destroyed=true;
-        game.log(card,'被销毁了');
-        },*/
-        loseDelay:false,
-        selectTarget:-1,
-        content:function(){
-            "step 0"
-            if(!get.is.ordinaryCard(card)){
-                game.log(card,"不为实体牌，本次使用不生效");
-                event.finish();
-                return;
-            }
-            "step 1"
-            draw=false;
-            lose=false;
-            var list=player.getSkills(null,false,false).filter(function(skill){
-                var info=lib.skill[skill];
-                if(lib.skill.global.includes(skill)) return false;
-                if(skill.indexOf('jycw')!=-1) return false;
-                return info&&info.usable&&typeof info.usable=='number';
-            });
-            if(list.length){
-                if(list.length==1) event._result={control:list[0]};
-                else player.chooseControl(list).set('prompt','【练气丹】：令一个技能使用次数+1').set('ai',function(){
-                    return get.max(list,get.skillRank,'item');
-                });
-            }
-            else{
-                draw=true;
-            }
-            "step 2"
-            if(result&&result.control){
-                var skills=result.control
-                var info=lib.skill[skills];
-                var num=info.usable
-                info.usable=num+1;
-                /*var str=lib.translate[skills+"_info"]
-                var str2=get.cnNumber(num+1);
-                var int="限"+get.cnNumber(num)+"次"
-                if(str.indexOf(int)!=-1){
-                    var str3=str.replace(int,"限"+str2+"次");
-                }
-                var str3=/限一次/ig
-                var str4=str.replace(str3,"限"+str2+"次");
-                if(str3&&str3.length) lib.translate[skills+"_info"]=str3
-                lib.dynamicTranslate[skills]=function(player){
-                    return str3;
-                };*/
-            }
-            "step 3"
-            var list=player.getSkills(null,false,false).filter(function(skill){
-                var info=lib.skill[skill];
-                return info&&info.limited&&player.awakenedSkills.includes(skill);
-            });
-            if(list.length){
-                var link=list.randomGet();
-                player.restoreSkill(link);
-                draw=false;
-                lose=true;
-            }
-            "step 4"
-            if(draw){
-                player.draw(2);
-            }
-            else{
-                if(lose){
-                    player.loseMaxHp();
-                    game.log(player,"失去了一点体力上限");
-                }
-            }
-            "step 5"
-            if(game.xjzhAchi.hasAchi('重金属中毒者','special')){
-                if(player.isUnderControl(true)&&game.me==player){
-                    player.chooseDrawRecover(true,"【练气丹】：请选择摸一张牌或回复一点体力");
-                    if(Math.random()) player.directgain(game.createCard(card),null,'xjzh_card_lianqidan');
-                }
-            }
-            "step 6"
-            game.cardsGotoSpecial(card);
-            game.log(card,'被销毁了');
-        },
-        ai:{
-            basic:{
-                order:10,
-                useful:4.5,
-                value:6.5,
-            },
-            result:{
-                player:function(card,player,target){
-                    var list=player.getSkills(null,false,false).filter(function(skill){
-                        var info=lib.skill[skill];
-                        return info&&info.usable&&typeof info.usable=='number';
-                    });
-                    var list2=player.getSkills(null,false,false).filter(function(skill){
-                        var info=lib.skill[skill];
-                        return info&&info.limited&&player.awakenedSkills.includes(skill);
-                    });
-                    if(list.length>0) return 5;
-                    if(list2.length>0) return 5;
-                    if(player.maxHp==1) return -10;
-                    return 1;
-                },
-            },
-            tag:{
-                draw:2,
-            },
-        },
-    },
     "xjzh_card_cuimaidan":{
         audio:"ext:仙家之魂/audio/card/",
         image:"ext:仙家之魂/image/cardpicture/xjzh_card_cuimaidan.png",
@@ -317,56 +194,40 @@ const cards={
         modTarget:true,
         vanish:true,
         range:{global:1},
-        filterTarget:function(card,player,target){
+        filterTarget(card,player,target){
             return target!=player;
         },
         loseDelay:false,
         selectTarget:1,
-        content:function(){
-            "step 0"
-            var list=target.getSkills(null,false,false).filter(function(skill){
-                var info=lib.skill[skill];
+        async content(event,trigger,player){
+            let target=event.targets[0],list=target.getSkills(null,false,false).filter(skill=>{
+                let info=get.info(skill);
                 return info&&!info.equipSkill&&!info.cardSkill&&!info.sub&&lib.translate[skill]&&lib.translate[skill+"_info"]&&!info.xjzh_qishuSkill;
-            });
+            }),dialog;
             if(list.length){
                 if(event.isMine()){
-                    var dialog=ui.create.dialog('forcebutton','hidden');
+                    dialog=ui.create.dialog('forcebutton','hidden');
                     dialog.add('请选择移除一项技能');
-                    for(i=0;i<list.length;i++){
+                    for(let i=0;i<list.length;i++){
                         if(lib.translate[list[i]+'_info']){
-                            var translation=get.translation(list[i]);
+                            let translation=get.translation(list[i]);
                             if(translation[0]=='新'&&translation.length==3){
                                 translation=translation.slice(1,3);
                             }
                             else{
                                 translation=translation.slice(0,2);
                             }
-                            var item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">【'+translation+'】</div><div>'+lib.translate[list[i]+'_info']+'</div></div>');
+                            let item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">【'+translation+'】</div><div>'+lib.translate[list[i]+'_info']+'</div></div>');
                             item.firstChild.link=list[i];
                         }
                     }
                 }
-                target.chooseControl(list,'cancel2').set('prompt','【摧脉丹】：请选择移除一个技能').set('ai',function(player,target){
+                const control=await target.chooseControl(list,'cancel2').set('prompt','【摧脉丹】：请选择移除一个技能').set('ai',()=>{
                     if(target.hp>=Math.floor(target.maxHp/2)) return 'cancel2';
                     return get.min(list,get.skillRank,'item');
-                }).set('dialog',dialog);
+                }).set('dialog',dialog).forResultControl();
+                if(control) control=="cancel2"?target.loseHp():target.removeSkills(control);
             }
-            else{
-                target.loseHp();
-                event.finish();
-            }
-            "step 1"
-            if(result.control!="cancel2"){
-                var skills=result.control
-                target.removeSkill(skills);
-                game.log(target,"移除了技能","#y","〖"+get.translation(skills)+"〗");
-            }else{
-                target.loseHp();
-                event.finish();
-            }
-            "step 2"
-            game.cardsGotoSpecial(cards);
-            game.log(cards,'被销毁了');
         },
         ai:{
             basic:{
@@ -375,11 +236,11 @@ const cards={
                 value:[6.5,4.5,1],
             },
             result:{
-                target:function(player,target){
+                target(player,target){
                     if(target.hasSkill("xjzh_qishu_materialRemove")) return 10;
                     var list=target.getSkills(null,false,false).filter(function(skill){
-                        var info=lib.skill[skill];
-                        return info&&!info.sub&&lib.translate[skill]&&lib.translate[skill+"_info"];
+                        let info=get.info(skill);
+                        return info&&!info.equipSkill&&!info.cardSkill&&!info.sub&&lib.translate[skill]&&lib.translate[skill+"_info"]&&!info.xjzh_qishuSkill;
                     });
                     if(list.length>0) return -5;
                     return -1;
@@ -703,135 +564,6 @@ const cards={
             equipValue:3.5,
             basic:{
                 equipValue:3.5
-            },
-        },
-    },
-    //谐角之冠
-    "xjzh_card_xiejiaozhiguan":{
-        audio:"ext:仙家之魂/skillaudio/equip/",
-        image:"ext:仙家之魂/image/cardpicture/xjzh_card_xiejiaozhiguan.png",
-        fullskin:true,
-        type:'equip',
-        subtype:'equip5',
-        forceDie:true,
-        clearLose:true,
-        equipDelay:false,
-        skills:["xjzh_card_xiejiaozhiguan_skill"],
-        onEquip:function(){
-            var player=_status.event.player;
-            var ecard=player.getEquip(5);
-            var origin_name=ecard.name;
-            player.storage.xjzh_card_xiejiaozhiguan_skill=[];
-
-            var name=ecard.name+'xiejiaozhiguan';
-            lib.card[name]=get.copy(get.info(ecard));
-            lib.translate[name+'_info']="你所有限制回合发动次数的主动技能+2次发动次数。<br><br>受【谐角之冠】影响的技能：";
-
-            var list=player.getSkills(null,false,false).filter(function(skill){
-                var info=lib.skill[skill];
-                return info&&!info.equipSkill&&!info.cardSkill&&!lib.skill.global.includes(skill)&&info.usable&&typeof info.usable=='number';
-            });
-            if(!list.length) return;
-            var list2=[];
-            for(var i=0;i<list.length;i++){
-                var info=lib.skill[list[i]];
-                if(!info.enable||info.enable!="phaseUse") continue;
-                var num=info.usable
-                info.usable=num+2;
-                list2.push(list[i]);
-                lib.translate[name+'_info']+="<br><span style=\"color: yellow\">【"+get.translation(list[i])+"】+：2</span>";
-            }
-
-            /*player.addSkill("xjzh_tongyong_baiban");
-            player.storage['xjzh_tongyong_baiban'].push(list2);*/
-
-            player.storage.xjzh_card_xiejiaozhiguan_skill=list2.slice(0);
-
-            lib.translate[name]=lib.translate[ecard.name];
-
-            ecard.name=name;
-            ecard.origin_name=origin_name;
-        },
-        onLose:function(){
-            var player=_status.event.player;
-            var list=player.getSkills(null,false,false).filter(function(skill){
-                var info=lib.skill[skill];
-                return info&&info.usable&&typeof info.usable=='number';
-            });
-
-            if(!list.length) return;
-
-            for(var i=0;i<list.length;i++){
-                var info=lib.skill[list[i]];
-                if(!info.enable||info.enable!="phaseUse") continue;
-                if(player.storage.xjzh_card_xiejiaozhiguan_skill&&!player.storage.xjzh_card_xiejiaozhiguan_skill.includes(list[i])) continue;
-                var num=info.usable
-                info.usable=num-=2;
-            }
-
-            if(player.storage.xjzh_card_xiejiaozhiguan_skill) delete player.storage.xjzh_card_xiejiaozhiguan_skill;
-        },
-        ai:{
-            order:6,
-            useful:2.5,
-            value:function(card,player,index,method){
-                var list=player.getSkills(null,false,false).filter(function(skill){
-                    var info=lib.skill[skill];
-                    return info&&info.usable&&typeof info.usable=='number';
-                });
-                if(!list.length) return;
-                var num=0;
-                var num2=0;
-                for(var i=0;i<list.length;i++){
-                    var info=lib.skill[list[i]];
-                    if(!info.enable||info.enable!="phaseUse"){
-                        num+=get.skillRank(list[i],"in",true);
-                    }else{
-                        num2+get.skillRank(list[i],"out",true);
-                    }
-                }
-                return num-num2;
-            },
-            equipValue:function(card,player){
-                var list=player.getSkills(null,false,false).filter(function(skill){
-                    var info=lib.skill[skill];
-                    return info&&info.usable&&typeof info.usable=='number';
-                });
-                if(!list.length) return;
-                var num=0;
-                var num2=0;
-                for(var i=0;i<list.length;i++){
-                    var info=lib.skill[list[i]];
-                    if(!info.enable||info.enable!="phaseUse"){
-                        num+=get.skillRank(list[i],"in",true);
-                    }else{
-                        num2+get.skillRank(list[i],"out",true);
-                    }
-                }
-                return num-num2;
-            },
-            basic:{
-                equipValue:3.5
-            },
-            result:{
-                player:function(player,target){
-                    var list=player.getSkills(null,false,false).filter(function(skill){
-                        var info=lib.skill[skill];
-                        return info&&info.usable&&typeof info.usable=='number';
-                    });
-                    if(!list.length) return;
-                    var num=0;
-                    var num2=0;
-                    for(var i=0;i<list.length;i++){
-                        var info=lib.skill[list[i]];
-                        if(!info.enable||info.enable!="phaseUse"){
-                            num+=get.skillRank(list[i],"in",true);
-                        }else{
-                            num2+get.skillRank(list[i],"out",true);
-                        }
-                    }
-                    return num-num2;
-                },
             },
         },
     },

@@ -1,7 +1,7 @@
 import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
 import updateOnlines from '../update/updateOnline.js';
 
-export const xjzhConfig={
+export const config={
     /*"xjzh_helpx":{
         name:'<div class="hth_menu">▶扩展介绍</div>',
         clear:true,

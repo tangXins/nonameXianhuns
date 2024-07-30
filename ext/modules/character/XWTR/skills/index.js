@@ -1,6 +1,6 @@
-export { starsSkills } from './zxzh/index.js';
-export { poeSkills } from './poe/index.js';
-export { wzrySkills } from './wzry/index.js';
-export { diabloSkills } from './diablo/index.js';
-export { dnfSkills } from './dnf/index.js';
-export { xiyouSkills } from './xiyou/index.js';
+export { starsSkills } from './zxzh.js';
+export { poeSkills } from './poe.js';
+export { wzrySkills } from './wzry.js';
+export { diabloSkills } from './diablo.js';
+export { dnfSkills } from './dnf.js';
+export { xiyouSkills } from './xiyou.js';

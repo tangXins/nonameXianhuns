@@ -506,7 +506,7 @@ export const diabloSkills={
 		priority:-3,
 		filter:function(event,player){
 			if(event.getParent('xjzh_diablo_luanshe').name!="xjzh_diablo_luanshe") return false;
-			return !event.cancelled||event.num>0
+			return event.num>0;
 		},
 		content:function(){
 			"step 0"
@@ -709,7 +709,7 @@ export const diabloSkills={
 				priority:6,
 				filter:function(event,player){
 					if(event.source==player&&event.player==player) return false;
-					return !event.numFixed&&!event.cancelled;
+					return !event.numFixed;
 				},
 				mark:true,
 				marktext:"隐",

@@ -143,6 +143,76 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	];
 	//奇术要件列表
 	lib.xjzh_qishuyaojians={
+	    "xjzh_qishu_junmao":{
+	        translate:"谐角之冠",
+			translate_info:"你所有限制回合发动次数的主动技能+2次发动次数。",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“这个头饰曾经是一个伪装成宫廷法师的刺客佩戴的。她的背叛行径虽然最终暴露，但在那之前，她已经成功用魔法诅咒了国王和他的整个家族。” - 《阿斯顿家族的陨落》</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*4}碎片`,
+			noTranslate:false,
+			level:4,
+			async init(player){
+				let list=player.getSkills(null,false,false).filter(function(skill){
+					let info=lib.skill[skill];
+					return info&&!info.equipSkill&&!info.cardSkill&&!lib.skill.global.includes(skill)&&info.usable&&typeof info.usable=='number';
+				});
+				if(!list.length) return;
+				for await(let skill of list){
+					let info=get.info(skill);
+					if(!info.enable||info.enable!="phaseUse") continue;
+					let newSkill=skill+"_xiejiaozhiguan";
+					if(!lib.skill[newSkill]){
+						lib.skill[newSkill]=lib.skill[skill];
+						lib.skill[newSkill].usable=info.usable+2;
+						lib.translate[newSkill]=get.translation(skill);
+						let text=get.translation(skill+"_info");
+						lib.translate[newSkill+"_info"]=game.xjzh_updateText(text,2);
+						if (lib.dynamicTranslate[skill]) {
+							const translates = lib.dynamicTranslate[skill];
+							lib.dynamicTranslate[newSkill] = function(player) {
+								return game.xjzh_updateText(translates.apply(null, arguments), 2);
+							};
+						}
+					}
+					player.changeSkills([newSkill],[skill]);
+				}
+		    },
+			skill:{
+				trigger:{
+	    	        player:"changeSkillsAfter",
+	    	    },
+				direct:true,
+				locked:true,
+				charlotte:true,
+				superChocolate:true,
+				priority:10,
+				filter(event,player){
+					return event.addSkill&&event.addSkill.length;
+				},
+				async content(event,trigger,player){
+					let skills=trigger.addSkill;
+					for await(let skill of skills){
+						let info=get.info(skill);
+						if(!info.enable||info.enable!="phaseUse") continue;
+						let newSkill=skill+"_xiejiaozhiguan";
+						if(!lib.skill[newSkill]){
+							lib.skill[newSkill]=lib.skill[skill];
+							lib.skill[newSkill].usable=info.usable+2;
+							lib.translate[newSkill]=get.translation(skill);
+							let text=get.translation(skill+"_info");
+							lib.translate[newSkill+"_info"]=game.xjzh_updateText(text,2);
+							if (lib.dynamicTranslate[skill]) {
+								const translates = lib.dynamicTranslate[skill];
+								lib.dynamicTranslate[newSkill] = function(player) {
+									return game.xjzh_updateText(translates.apply(null, arguments), 2);
+								};
+							}
+						}
+						player.removeSkill(skill);
+						player.addSkill(newSkill);
+					}
+				},
+			},
+		},
 	    "xjzh_qishu_tongkuhushou":{
 	        translate:"痛苦吞食者",
 		    translate_info:"你使用基本牌造成伤害令其获得等量个“痛”标记；你使用牌对标记的目标造成伤害时，令场上所有被标记的角色受到额外x点伤害，每因此造成一点伤害，你摸一张牌（x为其拥有的标记数量）。",

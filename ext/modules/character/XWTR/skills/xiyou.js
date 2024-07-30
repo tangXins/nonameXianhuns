@@ -110,7 +110,7 @@ export const xiyouSkills={
 		locked:true,
 		priority:1,
 		filter(event,player){
-			return !event.numFixed&&!event.cancelled
+			return !event.numFixed;
 		},
 		async content(event,trigger,player){
 			trigger.num+=2;

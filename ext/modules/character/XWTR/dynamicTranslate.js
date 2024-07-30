@@ -39,7 +39,7 @@ const dynamicTranslates = {
 	"xjzh_diablo_xianjing":function(player){
 		let huixin=`<a style='color:${game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor")?game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor"):"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;
 		let cards=Array.from(ui.cardPile.childNodes).filter(card=>!player.storage.xjzh_diablo_xianjing.includes(card));
-		return `出牌阶段限一次，你可以观看牌堆随机${Math.ceil(cards.length/100)}张牌，并将其标记为“剧毒陷阱”，然后将这张牌洗入牌堆随机位置，当其他角色获得此牌时，其获得最大层数中毒。<li>${huixin}：其他角色获得此牌时，你有<span style="color: yellow;">${Math.round(0.2*(1+player.xjzhHuixin)*100)}%</span>几率摸2张牌并获得此牌；你有30%几率回复25点魔力。`;
+		return `出牌阶段限一次，你可以观看牌堆随机${Math.ceil(cards.length/100)}张牌，并将其标记为“剧毒陷阱”，然后将这些牌洗入牌堆随机位置，当其他角色获得此牌时，其获得最大层数中毒。<li>${huixin}：其他角色获得此牌时，你有<span style="color: yellow;">${Math.round(0.2*(1+player.xjzhHuixin)*100)}%</span>几率摸2张牌并获得此牌；你有30%几率回复25点魔力。`;
 	},
 	"xjzh_diablo_baolu":function(player){
 		let huixin=`<a style='color:${game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor")?game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor"):"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;

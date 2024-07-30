@@ -1,6 +1,6 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
 import { xjzh_updateURLS } from './updateURLS.js';
-import { xjzhUpdateLog } from './index.js';
+import { updateLog } from './index.js';
 
 const updateOnlines={
     //在线更新
@@ -686,9 +686,9 @@ const updateOnlines={
                 };
 
                 game.xjzhGetUpdateFiles().then(({ update, source_list: updates }) => {
-                    if (!lib.extensionPack.仙家之魂.version) lib.extensionPack.仙家之魂.version = xjzhUpdateLog.version;
+                    if (!lib.extensionPack.仙家之魂.version) lib.extensionPack.仙家之魂.version = updateLog.version;
                     //要更新的版本和现有的版本一致
-                    if (update.version == xjzhUpdateLog.version) {
+                    if (update.version == updateLog.version) {
                         if (!confirm('当前版本已经是最新，是否覆盖更新？')) {
                             game.Updating = false;
                             button.innerHTML = '检查扩展更新';
@@ -876,10 +876,10 @@ const updateOnlines={
 
                     let str = '有新版本' + update.version + '可用，是否下载？';
                     if (navigator.notification && navigator.notification.confirm) {
-                        let str2 = xjzhUpdateLog.changeLog[0];
-                        for (let i = 1; i < xjzhUpdateLog.changeLog.length; i++) {
-                            if (xjzhUpdateLog.changeLog[i].indexOf('://') == -1) {
-                                str2 += '；' + xjzhUpdateLog.changeLog[i];
+                        let str2 = updateLog.changeLog[0];
+                        for (let i = 1; i < updateLog.changeLog.length; i++) {
+                            if (updateLog.changeLog[i].indexOf('://') == -1) {
+                                str2 += '；' + updateLog.changeLog[i];
                             }
                         }
                         navigator.notification.confirm(

@@ -1,6 +1,6 @@
 import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
 
-export const CHRskills={
+export const skills={
     skill:{
 		//开局获得增益技能
 		"_xjzh_zengyi_addSkills":{
@@ -12,7 +12,7 @@ export const CHRskills={
 			filter(event,player){
 				if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")==='close') return false;
 				let list=[
-					"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+					"liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 				];
 				if(get.mode()=="boss"){
 					if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss)[0])) return false;
@@ -26,7 +26,7 @@ export const CHRskills={
 			},
 			async content(event,trigger,player){
 				let list=[
-					"pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+					"liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 				];
 				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 				let skill=list.randomGet();
@@ -63,31 +63,14 @@ export const CHRskills={
 				let nameList=get.nameList(player),num=0;
 				if(!Array.isArray(nameList)||!nameList.length) return false;
 				nameList.forEach(item=>{
-					if(lib.character[item][5]&&lib.character[item][5].length){
-						let names=lib.character[item][5];
-						if(Array.isArray(names)&&names.length){
-							let object=names.filter(index=>{
-								if(get.is.object(index)&&index.name=='xjzhMp') return true;
-								return false;
-							});
-							if(object.length>0) num++;
-						}
-					};
+					if(lib.character[item].xjzhMp&&get.is.object(lib.character[item].xjzhMp)) num++;
 				});
 				return num>0;
 	        },
 	        async content(event,trigger,player){
 				let nameList=get.nameList(player),object;
 				nameList.forEach(item=>{
-					if(lib.character[item][5]&&lib.character[item][5].length){
-						let names=lib.character[item][5];
-						if(Array.isArray(names)&&names.length){
-							object=names.find(index=>{
-								if(get.is.object(index)&&index.name=='xjzhMp') return true;
-								return false;
-							});
-						}
-					}
+					if(lib.character[item].xjzhMp&&get.is.object(lib.character[item].xjzhMp)) object=lib.character[item].xjzhMp;
 				});
 				//if(!player.node.xjzhmp){
 					await player.changexjzhmaxMp(object["maxMp"]);
@@ -187,8 +170,47 @@ export const CHRskills={
 			superCharlotte:true,
 			unique:true,
 			sub:true,
-			onremove:function(player){
+			onremove(player){
 				player.addSkill("xjzh_zengyi_off");
+			},
+		},
+		"xjzh_zengyi_liuzhuan":{
+			trigger:{
+				global:["loseAfter","changeSkillsAfter"],
+			},
+			forced:true,
+			locked:true,
+			unique:true,
+			mark:true,
+			marktext:"流",
+			intro:{
+			    name:"流转",
+			    content:"锁定技，当其他角色弃置牌或失去技能后，你获得之。",
+			},
+			filter(event,player,name){
+				if(event.player==player) return false;
+				if(name=="loseAfter"){
+					if(event.type!="discard"||event.getlx===false) return false;
+					let cards=event.cards.slice(0);
+					let evt=event.getl(player);
+					if(evt&&evt.cards) cards.removeArray(evt.cards);
+					for(let card of cards){
+						if(card.original!="j"&&get.position(card,true)=="d") return true;
+					}
+				}
+                return event.removeSkill.length;
+            },
+			async content(event,trigger,player){
+				let name=event.triggername;
+				if(name=="changeSkillsAfter") player.addSkills(trigger.removeSkill);
+				else{
+					let cards=trigger.cards.slice(0),evt=trigger.getl(player);
+                	if(evt&&evt.cards) cards.removeArray(evt.cards);
+					let gainCards=cards.filter(card=>{
+						return card.original!="j"&&get.position(card,true)=="d";
+					});
+					if(gainCards.length) player.gain(gainCards,"gain2","log");
+                }
 			},
 		},
 		"xjzh_zengyi_pianxian":{
@@ -203,7 +225,7 @@ export const CHRskills={
 			marktext:"翩",
 			intro:{
 			    name:"翩跹",
-			    content:"你“每回合限x次”和“出牌阶段限x次”的技能无次数限制",
+			    content:"锁定技，你“每回合限x次”和“出牌阶段限x次”的技能无次数限制",
 			},
 			async getSKillReslut(player){
 				let skills=player.getSkills(null,false,false).filter(skill=>{
@@ -273,7 +295,7 @@ export const CHRskills={
 			marktext:"倒",
 			intro:{
 			    name:"倒戈",
-			    content:"当你即将阵亡时，若你的身份为忠臣/反贼且体力上限大于1，你失去一半的体力上限(向下取整)，将身份改为反贼/忠臣，然后终止阵亡结算并回复体力至体力上限，然后若此时满足你所在阵营的胜利条件，你获得胜利。",
+			    content:"锁定技，当你即将阵亡时，若你的身份为忠臣/反贼且体力上限大于1，你失去一半的体力上限(向下取整)，将身份改为反贼/忠臣，然后终止阵亡结算并回复体力至体力上限，然后若此时满足你所在阵营的胜利条件，你获得胜利。",
 			},
 			filter(event,player){
 			    return player.maxHp>1&&["zhong","fan"].includes(player.identity);
@@ -314,7 +336,7 @@ export const CHRskills={
 			marktext:"重",
 			intro:{
 				name:"重塑",
-				translations:"游戏开始时，你可以自定义你的回合",
+				translations:"锁定技，游戏开始时，你自定义你的回合。",
 				content(storage,player){
 				    if(!player.storage.xjzh_zengyi_chongsu) return "游戏开始时，你可以自定义你的回合。";
 			        let phase={
@@ -436,7 +458,7 @@ export const CHRskills={
 			marktext:"瞬",
 			intro:{
 				name:"瞬影",
-				content:"每轮游戏开始前，你执行一个额外的回合，其他角色于此回合内非锁定技无效",
+				content:"锁定技，每轮游戏开始前，你执行一个额外的回合，其他角色于此回合内非锁定技无效",
 			},
 			async content(event,trigger,player){
 			    player.addTempSkill("xjzh_zengyi_shunying_off");
@@ -459,7 +481,7 @@ export const CHRskills={
 			marktext:"风",
 			intro:{
 				name:"风月",
-				content:"回合开始时，你随机获得一个女性角色的技能",
+				content:"锁定技，回合开始时，你随机获得一个女性角色的技能。",
 			},
 			async content(event,trigger,player){
 			    let characterlist=game.xjzh_wujiangpai(null,null,false).filter(name=>{
@@ -480,7 +502,6 @@ export const CHRskills={
 		"xjzh_zengyi_hunqian":{
 		    enable:"phaseUse",
 		    popup:false,
-			locked:true,
 			unique:true,
 			mark:true,
 			marktext:"魂",
@@ -553,7 +574,6 @@ export const CHRskills={
 			    player:"damageAfter",
 			},
 		    popup:false,
-			locked:true,
 			unique:true,
 			mark:true,
 			marktext:"梦",
@@ -616,14 +636,13 @@ export const CHRskills={
 			    player:"phaseBefore",
 			},
 			direct:true,
-			locked:true,
 			priority:9,
 			unique:true,
 			mark:true,
 			marktext:"破",
 			intro:{
 				name:"破晓",
-				content:"回合开始时，你重置已发动的限定技",
+				content:"锁定技，回合开始时，你重置已发动的限定技",
 			},
 			filter(event,player){
 			    let list=player.getSkills(null,false,false).filter(function(skill){
@@ -653,20 +672,19 @@ export const CHRskills={
 			    global:"gameStart",
 			},
 			direct:true,
-			locked:true,
 			priority:9,
 			unique:true,
 			mark:true,
 			marktext:"双",
 			intro:{
 				name:"双生",
-				content:"游戏开始时，你选择并获得至多两个其他增益技能",
+				content:"锁定技，游戏开始时，你选择并获得至多两个其他增益技能",
 			},
 			async content(event,trigger,player){
 			    let list=[
-			        "pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+			        "liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 			    ]
-			    if(get.mode()=="identity") list.push("daoge");
+			    if(get.mode()=="identity") list.addArray(["zhuanpo","daoge"]);
                 let skills=[]
                 for(let skill of list){
                     skills.push("xjzh_zengyi_"+skill);
@@ -704,7 +722,6 @@ export const CHRskills={
 		},
 		"xjzh_zengyi_xuanbian":{
 			direct:true,
-			locked:true,
 			priority:9,
 			unique:true,
 			mark:true,
@@ -761,7 +778,7 @@ export const CHRskills={
 			marktext:"墨",
 			intro:{
 				name:"墨染",
-				content:"使用黑色牌无法被其他角色响应",
+				content:"锁定技，你使用黑色牌无法被其他角色响应。",
 			},
 			trigger:{
 			    player:"useCardToPlayered",
@@ -786,7 +803,7 @@ export const CHRskills={
 			marktext:"升",
 			intro:{
 				name:"升华",
-				content:"造成属性伤害+1",
+				content:"锁定技，你造成属性伤害+1。",
 			},
 			trigger:{
 			    source:"damageBegin1",
@@ -796,7 +813,7 @@ export const CHRskills={
 			},
 			async content(event,trigger,player){
 				player.logSkill("xjzh_zengyi_shenghua",player);
-			    trigger.num++
+			    trigger.num++;
 			},
 		},
 		"xjzh_zengyi_chaoti":{
@@ -804,7 +821,7 @@ export const CHRskills={
 			marktext:"超",
 			intro:{
 				name:"超体",
-				content:"使用牌无距离和次数限制",
+				content:"锁定技，你使用牌无距离和次数限制。",
 			},
 		    mod:{
 			    cardUsable(card,player,num){
@@ -850,7 +867,7 @@ export const CHRskills={
 			marktext:"惊",
 			intro:{
 				name:"惊鸿",
-				content:"跳过弃牌阶段和判定阶段",
+				content:"锁定技，你跳过弃牌阶段和判定阶段。",
 			},
 			async content(event,trigger,player){
 				player.logSkill("xjzh_zengyi_jinghong",player);
@@ -869,7 +886,7 @@ export const CHRskills={
 			marktext:"蛇",
 			intro:{
 				name:"蛇幡",
-				content:"你成为杀的目标后你与友方各摸一张牌",
+				content:"锁定技，你成为杀的目标后你与友方各摸一张牌。",
 			},
 			filter(event,player){
 				return event.card.name=="sha";
@@ -902,7 +919,7 @@ export const CHRskills={
 			marktext:"龙",
 			intro:{
 				name:"龙飞",
-				content:"你与友方摸牌阶段摸牌数量+2",
+				content:"锁定技，你与友方摸牌阶段摸牌数量+2。",
 			},
 			filter(event,player){
 				return player.getFriends(true).includes(event.player);
@@ -924,7 +941,7 @@ export const CHRskills={
 			marktext:"云",
 			intro:{
 				name:"云垂",
-				content:"你成为杀的目标时令所有敌方角色弃置一张牌",
+				content:"锁定技，你成为杀的目标时令所有敌方角色弃置一张牌。",
 			},
 			filter(event,player){
 				return event.card.name=="sha";
@@ -958,7 +975,7 @@ export const CHRskills={
 			marktext:"风",
 			intro:{
 				name:"风扬",
-				content:"你与友方成为锦囊牌的目标后摸一张牌",
+				content:"锁定技，你与友方成为锦囊牌的目标后摸一张牌。",
 			},
 			filter(event,player){
 				if(get.type(event.card,"trick")!="trick") return false;
@@ -987,7 +1004,7 @@ export const CHRskills={
 			marktext:"地",
 			intro:{
 				name:"地载",
-				content:"你与友方回合结束时摸两张牌",
+				content:"锁定技，你与友方回合结束时摸两张牌。",
 			},
 			filter(event,player){
 				return player.getFriends(true).includes(event.player);
@@ -1009,7 +1026,7 @@ export const CHRskills={
 			marktext:"天",
 			intro:{
 				name:"天覆",
-				content:"你与友方造成伤害+1",
+				content:"锁定技，你与友方造成伤害+1。",
 			},
 			filter(event,player){
 				if(event.numFixed||event.cancelled) return false;
@@ -1035,7 +1052,7 @@ export const CHRskills={
 			marktext:"火",
 			intro:{
 				name:"劫火",
-				content:"回合结束时随机对场上体力最多的一名敌方造成一点火焰伤害",
+				content:"锁定技，你的回合结束时，你随机对场上体力最多的一名敌方造成一点火焰伤害。",
 			},
 			async content(event,trigger,player){
 				let list=player.getEnemies().sortBySeat().filter(target=>target.isMaxHp());
@@ -1057,7 +1074,7 @@ export const CHRskills={
 			marktext:"冰",
 			intro:{
 				name:"玄冰",
-				content:"回合开始时令一名随机敌方角色弃置两张牌",
+				content:"锁定技，回合开始时令一名随机敌方角色弃置两张牌。",
 			},
 			async content(event,trigger,player){
 				let list=player.getEnemies().sortBySeat().filter(target=>target.countCards("he"));
@@ -1072,7 +1089,6 @@ export const CHRskills={
 				player:['phaseEnd','phaseBegin'],
 			},
 			direct:true,
-			locked:true,
 			priority:9,
 			unique:true,
 			mark:true,
@@ -1101,7 +1117,7 @@ export const CHRskills={
 			marktext:"雷",
 			intro:{
 				name:"惊雷",
-				content:"回合结束时随机对场上体力最少的一名敌方造成一点雷电伤害",
+				content:"锁定技，回合结束时随机对场上体力最少的一名敌方造成一点雷属性伤害。",
 			},
 			async content(event,trigger,player){
 				let list=player.getEnemies().sortBySeat().filter(target=>target.isMinHp());
@@ -1123,7 +1139,7 @@ export const CHRskills={
 			marktext:"石",
 			intro:{
 				name:"裂石",
-				content:"回合开始时令一名敌方角色弃置所有装备牌",
+				content:"锁定技，回合开始时令一名敌方角色弃置所有装备牌。",
 			},
 			async content(event,trigger,player){
 				let list=player.getEnemies().sortBySeat().filter(target=>target.countCards('e'));
@@ -1150,7 +1166,7 @@ export const CHRskills={
 			marktext:"灵",
 			intro:{
 				name:"灵虚",
-				content:"回合结束时随机令场上体力最少的一名友方回复一点体力",
+				content:"锁定技，回合结束时随机令场上体力最少的一名友方回复一点体力。",
 			},
 			async content(event,trigger,player){
 				let list=player.getFriends(true).sortBySeat().filter(target=>target.isMinHp());
@@ -1172,7 +1188,7 @@ export const CHRskills={
 			marktext:"炼",
 			intro:{
 				name:"炼狱",
-				content:"回合结束时场上所有敌方失去一点体力",
+				content:"锁定技，你的回合结束时令场上所有敌方角色失去一点体力。",
 			},
 			async content(event,trigger,player){
 				let list=player.getEnemies().sortBySeat();
@@ -1194,7 +1210,7 @@ export const CHRskills={
 			marktext:"梁",
 			intro:{
 				name:"绕梁",
-				content:"你与友方无法被翻面",
+				content:"锁定技，你与友方无法被翻面。",
 			},
 			filter(event,player){
 				return player.getFriends(true).includes(event.player);
@@ -1221,7 +1237,7 @@ export const CHRskills={
 			marktext:"地",
 			intro:{
 				name:"地缚",
-				content:"你的下家敌方角色非锁定技失效",
+				content:"锁定技，你的下家敌方角色非锁定技失效。",
 			},
 			filter(event,player){
 				var next=player.getNext();
@@ -1252,7 +1268,7 @@ export const CHRskills={
 			marktext:"天",
 			intro:{
 				name:"天择",
-				content:"你的上家敌方角色非锁定技失效",
+				content:"锁定技，你的上家敌方角色非锁定技失效。",
 			},
 			filter(event,player){
 				var previous=player.getPrevious();
@@ -1282,7 +1298,7 @@ export const CHRskills={
 			marktext:"义",
 			intro:{
 				name:"仗义",
-				content:"你的回合开始时，弃置所有友方角色判定区的牌",
+				content:"锁定技，你的回合开始时，弃置所有友方角色判定区的牌。",
 			},
 			async content(event,trigger,player){
 				let list=player.getFriends(true).sortBySeat().filter(target=>target.countCards('j'));
@@ -1305,7 +1321,7 @@ export const CHRskills={
 			marktext:"吞",
 			intro:{
 				name:"吞噬",
-				content:"其他角色死亡后，你获得其所有技能",
+				content:"锁定技，其他角色死亡后，你获得其所有技能。",
 			},
 			filter(event,player){
 				return event.player!=player;
@@ -1363,6 +1379,7 @@ export const CHRskills={
 
 	},
 	translate:{
+		"xjzh_zengyi_liuzhuan":"流转",
 		"xjzh_zengyi_pianxian":"翩跹",
 	    "xjzh_zengyi_zhuanpo":"转魄",
 		"xjzh_zengyi_daoge":"倒戈",

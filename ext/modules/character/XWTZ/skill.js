@@ -652,7 +652,7 @@ const skills={
 			else player.removeSkill("fengyin",true);
 		},
 		filter(event,player){
-			return !event.numFixed&&!event.cancelled;
+			return !event.numFixed;
 		},
 		async content(event,trigger,player){
 			trigger.player.addMark("xjzh_boss_ganran",1);
@@ -1863,7 +1863,7 @@ const skills={
 		locked:true,
 		group:"xjzh_boss_fuhuo_phase",
 		filter:function(event,player){
-			return !event.cancelled;
+			return !player.skipList.includes("phaseDraw");
 		},
 		content:function(){
 			"step 0"
@@ -1893,7 +1893,7 @@ const skills={
 				},
 				filter:function(event,player){
 					if(!game.hasNature(event)||game.hasNature(trigger,'fire')) return false;
-					return !event.cancelled;
+					return !event.numFixed;
 				},
 				content:function(){
 					"step 0"
@@ -1950,7 +1950,7 @@ const skills={
 			if(cards.length) player.loseToDiscardpile(cards);
 		},
 		filter:function(event,player){
-			return !event.cancelled;
+			return !player.skipList.includes("phaseUse");
 		},
 		content:function(){
 			"step 0"
@@ -2135,7 +2135,7 @@ const skills={
 				if(list.length) return event.player!=player;
 				return false;
 			}
-			return !event.numFixed&&!event.cancelled;
+			return !event.numFixed;
 		},
 		async content(event,trigger,player){
 			let name=trigger.name;

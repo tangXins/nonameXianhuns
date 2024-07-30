@@ -10,18 +10,14 @@ const lists=[
     ["club",5,"xjzh_card_zhishijingsai"],//知识竞赛
 
     //非延时锦囊牌
-    ["heart",13,"xjzh_card_lianqidan"],//练气丹
-    ["club",10,"xjzh_card_cuimaidan"],//摧脉丹
     ["spade",10,"xjzh_card_cuimaidan"],//摧脉丹
     ["club",8,"xjzh_card_cuimaidan"],//摧脉丹
-    ["spade",8,"xjzh_card_cuimaidan"],//摧脉丹
 
     //装备牌
     //武器
     ["heart",6,"xjzh_card_shuangran"],//霜燃
     ["heart",4,"xjzh_card_shuangran"],//霜燃
     //防具
-    ["heart",1,"xjzh_card_xiejiaozhiguan"],//谐角之冠
     ["spade",3,"xjzh_card_wuxian"],//无限
     ["club",6,"xjzh_card_wuxian"],//无限
     ["diamond",10,"xjzh_card_rongyankaijia"],//熔岩铠甲

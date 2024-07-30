@@ -52,13 +52,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		special:{
 	        //特殊成就
 	        //一般是为了解锁某些全局奖励完成的特定成就
-			"重金属中毒者":{
-				level:3,
-				info:"累计使用100张【练气丹】",
-				extra:"奖励：使用【练气丹】可选择摸一张牌或回复一点体力且有几率获得一张【练气丹】",
-				progress:100,
-				design:"吃朵棉花糖",
-			},
 			"刽子手":{
 				level:3,
 				info:"使用决斗者触发技能〖剑风〗击败60名武将",
@@ -104,11 +97,6 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		    "百鸟朝凰":{
 		        info:"〖朝凰〗效果持续到下个回合结束",
 		        level:1,
-		        award:true,
-		    },
-		    "重金属中毒者":{
-		        info:"使用【练气丹】可选择摸一张牌或回复一点体力且有几率获得一张【练气丹】",
-		        level:3,
 		        award:true,
 		    },
 			"刽子手":{
@@ -2151,6 +2139,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				"xjzh_qishu_jiandun",
 				//等阶4
 				"xjzh_qishu_suoding",
+				"xjzh_qishu_junmao",
 				"xjzh_qishu_tongkuhushou",
 				'xjzh_qishu_titoushi',
 				'xjzh_qishu_wuyan',
@@ -2847,24 +2836,5 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         return str;
     };
 	//成就计量技能
-
-	lib.skill['_xjzh_achi_重金属中毒者']={
-		trigger:{player:"useCard"},
-		firstDo:true,
-		priority:6.2,
-		forced:true,
-		popup:false,
-		filter:function(event,player){
-			if(!player.isUnderControl(true)) return false;
-			if(game.me!=player) return false;
-			if(!event.cards||!event.cards.length) return false;
-			if(event.card.name!="xjzh_card_lianqidan") return false;
-			if(game.xjzhAchi.hasAchi('重金属中毒者','special')) return false;
-			return true;
-		},
-		content:function (){
-			game.xjzhAchi.addProgress('重金属中毒者','special',1);
-		},
-	};
 
 });

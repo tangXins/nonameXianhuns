@@ -4,16 +4,11 @@ const translates = {
     //卡牌
     "xjzh_card_zhishijingsai":"知识竞赛",
     "xjzh_card_zhishijingsai_info":"出牌阶段对自己使用，你从题库中随机抽取5道题，进行一次知识竞赛，按照你答对的题目数量获得奖惩：<li>答对0道，受到一点无来源伤害并弃置一张牌。<li>答对1道，弃置一张牌。<li>答对2道，摸一张牌。<li>答对3道，摸两张牌。<li>答对4道，摸三张牌并回复一点体力。<li>答对5道，摸三张牌并回复一点体力，然后补全装备栏。",
-    "xjzh_card_xiejiaozhiguan":"谐角之冠",
-    "xjzh_card_xiejiaozhiguan_info":"你所有限制回合发动次数的主动技能+2次发动次数。",
-    "xjzh_card_xiejiaozhiguan_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“这个头饰曾经是一个伪装成宫廷法师的刺客佩戴的。她的背叛行径虽然最终暴露，但在那之前，她已经成功用魔法诅咒了国王和他的整个家族。” - 《阿斯顿家族的陨落》</font></span>",
     "xjzh_card_shuangran":"霜燃",
     "xjzh_card_shuangran_info":"当你装备此牌时：<li>获得3%-8%暴击几率;<li>造成伤害有5%几率回复1-3点体力;<li>造成伤害有15%-25%几率令其获得1-3层易伤;<li>造成伤害5%-15%几率令其获得1-3层燃烧",
     "xjzh_card_shuangran_append":"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>如此的冰冷，触碰的瞬间几乎冻结了心跳、刺痛了灵魂。</font></span>",
     "xjzh_card_mingyunyingbi":"命运硬币",
     "xjzh_card_mingyunyingbi_info":"出牌阶段对自己使用，你有50%几率回复体力值至体力上限，有50%几率受到x点雷电伤害（x为你的体力值减1）",
-    "xjzh_card_lianqidan":"练气丹",
-    "xjzh_card_lianqidan_info":"出牌阶段对自己使用，令一个限制次数的技能使用次数永久+1以及重置武将牌上随机一个限定技，否则你摸两张牌，若你重置了限定技，你失去一点体力上限，使用后销毁",
     "xjzh_card_cuimaidan":"摧脉丹",
     "xjzh_card_cuimaidan_info":"出牌阶段对距离为1的其他角色使用，令其选择移除一项技能或流失一点体力",
     "xjzh_card_numa":"驽马",
@@ -51,8 +46,6 @@ const translates = {
     "xjzh_card_wuxian_skill_liuguang":"流光",
     "xjzh_card_wuxian_skill_liuguang_info":"你成为非[伤害]卡牌目标有30%-50%几率随机弃置一张牌",
     "xjzh_card_rongyankaijia_skill":"熔岩铠甲",
-    "xjzh_card_rongyankaijia_skill2":"熔岩铠甲",
-    "xjzh_card_xiejiaozhiguan_skill":"谐角之冠",
 
 };
 

@@ -19,7 +19,7 @@ const translates = {
 	"xjzh_huoying_kaigua":"开挂",
 	"xjzh_huoying_kaigua_info":"<b><font color=orange>〖开挂封号〗</font><b>觉醒技，当你濒死时，你使用自己的外挂并进入〖六道模式〗<br><br><b><font color=orange>〖六道模式〗</font><b>你将你的的体力上限改为为3并回复体力至体力上限，然后重置武将牌和判定区，技能结算后，你失去技能〖分身〗、〖嘴遁〗、〖开挂〗，获得技能〖螺旋手里剑〗、〖阴阳遁术〗、〖多重·影分身之术〗。",
 	"xjzh_huoying_dunshu":"遁术",
-	"xjzh_huoying_dunshu_info":"<li><b><font color=orange>〖阳遁术〗</font><b>：你的回合外，你防止所有伤害和体力流失然后摸等量牌，然后你可以令等量名角色各回复一点体力，你无视负面效果<li><b><font color=orange>〖阴遁术〗</font><b>：你的回合内，场上其他角色所有技能失效，你使用牌无次数限制且你造成的伤害+x(x为你本回合造成伤害的次数)",
+	"xjzh_huoying_dunshu_info":"<b><font color=orange>〖阳遁术〗</font><b>你的回合外，你防止所有伤害和体力流失然后摸等量牌，然后你可以令等量名角色各回复一点体力，你无法被翻面、横置，且判定效果反转；<br><b><font color=orange>〖阴遁术〗</font><b>你的回合内，场上其他角色所有技能失效，你使用牌无次数限制且你造成的伤害+x(x为你本回合造成伤害的次数)。",
 	"xjzh_huoying_liudaofenshen":"分身",
 	"xjzh_huoying_liudaofenshen_info":"<b><font color=orange>〖多重·影分身之术〗</font><b>结束阶段，你可以失去一点体力并召唤一个分身代替你的本体存于场上直到其阵亡或你的回合开始，你的本体获得分身的所有手牌（该分身拥有3点体力、3张手牌和技能〖遁术〗）",
 	"xjzh_huoying_liudaofenshen2":"分身",

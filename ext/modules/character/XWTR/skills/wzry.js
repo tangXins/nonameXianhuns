@@ -85,7 +85,7 @@ export const wzrySkills={
 		audio:"ext:仙家之魂/audio/skill:5",
 		filter(event,player){
 			if(event.getParent("xjzh_wzry_zhulang").name=="xjzh_wzry_zhulang") return false;
-			return player.storage.xjzh_wzry_huange&&!event.numFixed&&!event.cancelled;
+			return player.storage.xjzh_wzry_huange&&!event.numFixed;
 		},
 		async content(event,trigger,player){
 			const evt=await player.draw(trigger.num);
@@ -616,7 +616,7 @@ export const wzrySkills={
 			return event.num||1;
 		},
 		filter(event,player,name){
-			if(name=="damageBegin1") return !event.numFixed&&!event.cancelled;
+			if(name=="damageBegin1") return !event.numFixed;
 			return player.getExpansions('xjzh_wzry_jianzhong').length<player.storage.xjzh_wzry_jianzhong;
 		},
 		async content(event,trigger,player){
@@ -720,7 +720,7 @@ export const wzrySkills={
 				return player.needsToDiscard();
 			}
 			if(event.name=='phaseDraw'){
-				return !event.cancelled&&!event.skiped;
+				return !player.skipList.includes("phaseDraw");
 			}
 			if(event.name=='turnOver'){
 				if(player.isTurnedOver()) return false;

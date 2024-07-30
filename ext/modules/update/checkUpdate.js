@@ -1,5 +1,5 @@
 import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
-import { xjzhUpdateLog } from '../index.js';
+import { updateLog } from '../index.js';
 
 class updates {
     checkVersion(version1="0.0.0",version2="0.0.0"){
@@ -30,8 +30,8 @@ class updates {
 
     checkUpdate(){
         if(lib.version&&typeof lib.version=="string"){
-            if(this.checkVersion(lib.version,xjzhUpdateLog.onlyVersion)<0){
-                alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本${xjzhUpdateLog.onlyVersion}，可能会引起报错，已为你关闭本扩展`);
+            if(this.checkVersion(lib.version,updateLog.onlyVersion)<0){
+                alert(`当前无名杀版本${lib.version}低于【仙家之魂】支持无名杀版本${updateLog.onlyVersion}，可能会引起报错，已为你关闭本扩展`);
                 game.saveExtensionConfig("仙家之魂","enable",false);
                 game.reload();
             }
@@ -40,8 +40,8 @@ class updates {
 
     showUpdateLog(){
         try{
-            let update=xjzhUpdateLog;
-            lib.extensionPack['仙家之魂'].version=xjzhUpdateLog.version;
+            let update=updateLog;
+            lib.extensionPack['仙家之魂'].version=updateLog.version;
             let gengxing=update[update.version];
             if(lib.extensionPack['仙家之魂']&&lib.extensionPack['仙家之魂'].version!=game.getExtensionConfig("仙家之魂","changelog")){
                 game.saveExtensionConfig("仙家之魂","changelog",lib.extensionPack['仙家之魂'].version);

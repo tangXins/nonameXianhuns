@@ -215,106 +215,6 @@ export const poeSkills={
 		},
 	},
 	//游侠
-	/*"xjzh_poe_bingjian":{
-		mod:{
-			aiOrder:function(player,card,num){
-				var name=get.name(card);
-				if(name!="sha"&&name!="jiu") return num+4;
-				return num;
-			},
-		},
-		usable:1,
-		locked:true,
-		poelose:true,
-		charlotte:true,
-		xjzh_xinghunSkill:true,
-		nogainsSkill:true,
-		enable:"phaseUse",
-		audio:"ext:仙家之魂/audio/skill:2",
-		filterCard:function(card){
-			return get.tag(card,'damage');
-		},
-		complexCard:true,
-		selectCard:function(){
-			var player=_status.event.player;
-			var num=player.countCards('h',function(card){
-				return get.tag(card,'damage');
-			});
-			//if(player==game.me) return -1;
-			return num;
-		},
-		filterTarget:function(card,player,target){
-			return target!=player;
-		},
-		position:'h',
-		multitarget:true,
-		multiline:true,
-		filter:function(event,player){
-			var hs=player.getCards('h');
-			if(!hs.length) return false;
-			for(var i=0;i<hs.length;i++){
-				var mod2=game.checkMod(hs[i],player,'unchanged','cardEnabled2',player);
-				if(mod2===false) return false;
-			};
-			return true;
-		},
-		content:function(){
-			"step 0"
-			event.num=0
-			"step 1"
-			event.shanRequired=cards.length
-			"step 2"
-			var next=targets[event.num].chooseToUse('请使用一张闪');
-			next.set('type','respondShan');
-			next.set('filterCard',function(card,player){
-				if(get.name(card)!='shan') return false;
-				return lib.filter.cardEnabled(card,player,'forceEnable');
-			});
-			if(event.shanRequired>1){
-				next.set('prompt2','（共需使用'+event.shanRequired+'张闪）');
-			}
-			next.set('ai1',function(card){
-				var target=_status.event.player;
-				var evt=_status.event.getParent();
-				var bool=true;
-				if(_status.event.shanRequired>1&&!get.is.object(card)&&target.countCards('h','shan')<_status.event.shanRequired){
-					bool=false;
-				}
-				else if(target.hasSkillTag('useShan')){
-					bool=true;
-				}
-				else if(target.hasSkillTag('noShan')){
-					bool=false;
-				}
-				else if(get.damageEffect(target,evt.player,target,evt.card.nature)>=0) bool=false;
-				if(bool){
-					return get.order(card);
-				}
-				return 0;
-			})
-			.set('shanRequired',event.shanRequired);
-			next.set('respondTo',[player,card]);
-			"step 3"
-			if(result.bool){
-				event.shanRequired-=1;
-				if(event.shanRequired>0){
-					event.goto(2);
-				}
-			}else{
-				targets[event.num].damage(event.shanRequired,player,"ice",'nocard');
-				if(Math.random()<=Math.random()) targets[event.num].changexjzhBUFF('binghuan',2);
-				event.num++
-				if(event.num<targets.length-1) event.goto(2);
-			}
-		},
-		prompt:"你可以将所有手牌（至少一张）当一张【冰杀】使用",
-		ai:{
-			order:8,
-			result:{
-				target:-1,
-			},
-		},
-	},*/
 	"xjzh_poe_bingjian":{
 		mod:{
 			aiOrder:function(player,card,num){
@@ -976,7 +876,7 @@ export const poeSkills={
 			source:"damageAfter",
 		},
 		filter:function(event,player){
-			return !event.cancelled||event.num>0
+			return !event.numFixed;
 		},
 		content:function(){
 			"step 0"
@@ -1517,58 +1417,49 @@ export const poeSkills={
 			}
 		},
 	},
-	"xjzh_poe_xuruo":{
+	"xjzh_poe_mishu":{
 		trigger:{
-			global:"drawAfter",
+			target:"useCardToTargeted",
+			player:"useCardToPlayered",
 		},
 		forced:true,
+		locked:true,
 		priority:12,
 		locked:true,
 		poelose:true,
 		nogainsSkill:true,
 		charlotte:true,
 		xjzh_xinghunSkill:true,
-		locked:true,
-		group:"xjzh_poe_xuruo_damage",
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
-			if(event.player==player) return false;
-			if(event.player.countCards('h')<=player.countCards('h')) return false;
-			return !event.cancelled;
+		filter(event,player){
+			if(event.target==player){
+				if(event.player==player) return false;
+				return player.countCards('h')<event.player.countCards('h');
+			}
+			if(event.target!=player) return event.target.countCards('h')>player.countCards('h');
+			return false;
 		},
-		content:function(){
-			var num=player.countCards('h');
-			var num2=trigger.player.countCards('h');
-			var hs=Math.floor((num2-num)/2);
-			player.randomGain(trigger.player,hs);
-		},
-		subSkill:{
-			"damage":{
-				trigger:{
-					global:"damageBefore",
-				},
-				direct:true,
-				priority:Infinity,
-				sub:true,
-				filter:function(event,player){
-					if(event.player!=player) return false;
-					if(!event.source) return false;
-					if(event.source.countCards('h')>=player.countCards('h')) return false;
-					return !event.cancelled;
-				},
-				audio:"ext:仙家之魂/audio/skill:2",
-				content:function(){
-					trigger.num=1;
-				}
-			},
+		async content(event,trigger,player){
+			let targetx=trigger.target==player?trigger.player:trigger.target;
+			player.drawTo(targetx.countCards('h'));
+			const targets=await player.chooseTarget(get.prompt2('xjzh_poe_mishu'),(card,player,target)=>{
+				return target!=player&&target!=targetx;
+			}).set("ai",(card,player,target)=>{
+				if(get.tag(card,'damage')) return get.damageEffect(target,player,player);
+				return get.attitude(player,target);
+			}).forResultTargets();
+			if(targets){
+				trigger.targets.addArray(targets);
+				game.log(`${targets}成为了${get.translation(trigger.card)}的额外目标`);
+			}
 		},
 	},
 	//元素使
 	"xjzh_poe_huiliu":{
 		trigger:{
-			global:"phaseZhunbeiBegin",
+			global:["phaseZhunbeiBegin","damageBegin"],
 		},
-		direct:true,
+		forced:true,
 		priority:12,
 		locked:true,
 		poelose:true,
@@ -1579,73 +1470,54 @@ export const poeSkills={
 		marktext:"汇",
 		intro:{
 			name:"元素汇流",
-			content:function(storage,player){
-				if(!player.storage.xjzh_poe_huiliu) return "没有元素汇流";
-				var storage=player.storage.xjzh_poe_huiliu
-				var str="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-				var str2="";
-				if(storage=="fire") str2+="火焰";
-				if(storage=="ice") str2+="冰霜";
-				if(storage=="thunder") str2+="闪电";
-				if(storage=="poison") str2+="猛毒";
-				str+=str2+"汇流<br><br>";
-				str+="<li>你造成伤害视为"+str2+"伤害<br><li>你防止非"+str2+"属性伤害";
-				return str;
+			content(storage,player){
+				if(!storage) return "没有元素汇流";
+				let nature=lib.skill.xjzh_poe_huiliu.natureList(storage);
+				let str=`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${nature}汇流<br><br>`;
+				let str2=`<li>你造成伤害视为${nature}伤害<br><li>你防止非${nature}属性伤害`;
+				return str+str2;
 			},
 		},
 		audio:"ext:仙家之魂/audio/skill:2",
-		group:["xjzh_poe_huiliu_damage"],
-		skillList:['fire','thunder','ice','poison'],
-		content:function(){
-			//if(player.storage.xjzh_poe_huiliu) delete player.storage.xjzh_poe_huiliu;
-			var list=lib.skill.xjzh_poe_huiliu.skillList.slice(0);
-			if(player.storage.xjzh_poe_huiliu) list.remove(player.storage.xjzh_poe_huiliu);
-			var skillx=list.randomGet();
-			var str="";
-			if(skillx=="fire") str+="火焰";
-			if(skillx=="ice") str+="冰霜";
-			if(skillx=="thunder") str+="闪电";
-			if(skillx=="poison") str+="猛毒";
-			str+="汇流";
-			player.popup(str)
-			player.$fullscreenpop(str,skillx);
-			player.storage.xjzh_poe_huiliu=skillx;
+		natureList(nature){
+			let object={
+				"fire":"火焰",
+				"thunder":"闪电",
+				"ice":"冰霜",
+				"poison":"猛毒",
+			};
+			if(!nature) return Object.keys(object);
+			return object[nature];
 		},
-		subSkill:{
-			"damage":{
-				trigger:{
-					global:"damageBegin",
-				},
-				forced:true,
-				sub:true,
-				priority:-10,
-				audio:"xjzh_poe_huiliu",
-				filter:function(event,player){
-					var storage=player.storage.xjzh_poe_huiliu
-					if(event.player==player){
-						return event.nature!=storage;
-					}
-					return true;
-				},
-				content:function(){
-					var storage=player.storage.xjzh_poe_huiliu
-					if(trigger.source==player){
-						game.setNature(trigger,storage,false)
-					}
-					if(trigger.player==player){
-						if(trigger.nature!=storage) trigger.changeToZero();
-					}
-				},
-			},
+		init(player,skill){
+			if(!player.storage[skill]) player.storage[skill]=null;
+		},
+		filter(event,player,name){
+			if(name=="phaseZhunbeiBegin") return true;
+			if(name=="damageBegin"){
+				let storage=player.storage.xjzh_poe_huiliu;
+				return !game.hasNature(event,storage);
+			}
+			return false;
+		},
+		async content(event,trigger,player){
+			let natureList=lib.skill[event.name].natureList,storage=player.storage[event.name];
+			if(event.triggername=="phaseZhunbeiBegin"){
+				let list=natureList().filter(item=>item!=storage);
+				let nature=list.randomGet(),str=`${natureList(nature)}汇流`;
+				player.popup(str);
+				player.$fullscreenpop(str,nature);
+				player.storage[event.name]=nature;
+			}else{
+				trigger.player==player?trigger.changeToZero():game.setNature(trigger,storage,false);
+			}
 		},
 		ai:{
 			effect:{
-				target:function(card,player,target) {
+				target(card,player,target) {
 					if(!player.storage.xjzh_poe_huiliu) return;
 					if(get.tag(card,'damage')){
-						if(!game.hasNature(card,player.storage.xjzh_poe_huiliu)){
-							return [0,0];
-						}
+						if(!game.hasNature(card,player.storage.xjzh_poe_huiliu)) return [0,0];
 						return [1,0];
 					}
 				}
@@ -1662,48 +1534,30 @@ export const poeSkills={
 		charlotte:true,
 		xjzh_xinghunSkill:true,
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
-			if(!game.hasNature(event)) return false;
-			if(event.getParent("xjzh_poe_guangta").name=="xjzh_poe_guangta") return false;
-			return event.num>0;
+		filter(event,player){
+			console.log(event)
+			if(event.getParent().name=="xjzh_poe_guangta") return false;
+			return !event.numFixed;
 		},
-		prompt:function(event,player){
-			return "〖光塔〗：选择你上家/下家一名角色令其受到"+get.translation(event.num)+"点"+get.translation(event.nature)+"属性伤害";
+		prompt(event,player){
+			return `〖光塔〗：选择你上家/下家一名角色对其造成${get.translation(event.num)}点${game.hasNature(event)?`${get.translation(event.nature)}属性`:""}伤害`;
 		},
-		check:function(event,player){
-			var targets=[player.getPrevious(),player.getNext()]
-			var num=0
-			for(var i of targets){
-				var att=get.attitude(player,i);
-				if(att<=0) num++
-			}
-			return num;
+		check(event,player){
+			let targets=[player.getPrevious(),player.getNext()];
+			return targets.some(target=>get.attitude(player,target)<=0);
 		},
-		content:function(){
-			"step 0"
-			player.chooseTarget("〖光塔〗：选择你上家/下家一名角色令其受到"+get.translation(event.num)+"点"+get.translation(event.nature)+"属性伤害",true,function(card,player,target){
-				var player=_status.event.player;
+		async content(event,trigger,player){
+			const targets=await player.chooseTarget( `〖光塔〗：选择你上家/下家一名角色对其造成${get.translation(event.num)}点${game.hasNature(event)?`${get.translation(event.nature)}属性`:""}伤害`,(card,player,target)=>{
 				return [player.getPrevious(),player.getNext()].includes(target);
-			}).set('ai',function(target){
-				var trigger=_status.event.getTrigger();
-				return get.damageEffect(target,trigger.nature,player,player);
-			});
-			"step 1"
-			if(result.bool){
-				var target=result.targets[0]
-				target.damage(trigger.num,trigger.nature,player,"nocard");
-				var nature=trigger.nature
-				switch(nature){
-					case 'fire':
-					target.changexjzhBUFF('gandian',1);
-					break;
-					case 'ice':
-					target.changexjzhBUFF('ranshao',1);
-					break;
-					case 'thunder':
-					target.changexjzhBUFF('bingdong',1);
-					break;
-				}
+			}).set('ai',target=>{
+				let trigger=_status.event.getTrigger();
+				return get.damageEffect(target,player,player,trigger.nature);
+			}).forResultTargets();
+			if(targets){
+				targets[0].damage(trigger.num,trigger.nature,player,"nocard");
+				if(game.hasNature(trigger,"fire")) targets[0].changexjzhBUFF('gandian',1);
+				else if(game.hasNature(trigger,"ice")) targets[0].changexjzhBUFF('ranshao',1);
+				else if(game.hasNature(trigger,"thunder")) targets[0].changexjzhBUFF('bingdong',1);
 			}
 		},
 	},
@@ -1719,15 +1573,24 @@ export const poeSkills={
 		charlotte:true,
 		xjzh_xinghunSkill:true,
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
-			var history=player.getAllHistory('lose');
-			return history.length%3==0;
+		mod:{
+			targetInRange(card,player,target){
+				if(!card.cards) return;
+				if(card.name=="sha"||card.name=="jiu"){
+					for(let i of card.cards){
+						if(i.hasGaintag("xjzh_poe_sangzhong")) return true;
+					}
+				}
+			},
 		},
-		content:function(){
-			"step 0"
-			player.draw(2);
-			"step 1"
-			player.addGaintag(result,'xjzh_poe_sangzhong');
+		filter(event,player){
+			let history=player.getAllHistory('lose');
+			return history.length&&history.length%2==0;
+		},
+		async content(event,trigger,player){
+			let evt=await player.draw();
+			let cards=evt.result;
+			player.addGaintag(cards,'xjzh_poe_sangzhong');
 		},
 	},
 	"xjzh_poe_suxing":{
@@ -1742,40 +1605,42 @@ export const poeSkills={
 		charlotte:true,
 		xjzh_xinghunSkill:true,
 		audio:"ext:仙家之魂/audio/skill:2",
-		filter:function(event,player){
-			if(!event.source||event.source!=player) return false;
-			return game.hasNature(event);
+		filter(event,player){
+			if(!game.hasNature(event)) return false;
+			return event.source==player
 		},
-		content:function(){
-			var num=trigger.num==0?1:trigger.num
+		mod:{
+			selectTarget(card,player,range){
+				if(get.natureList(card,player).length){
+					if(range[1]==-1) return;
+					range[1]++;
+				}
+			},
+			cardUsable(card,player,num){
+				let history=player.getHistory('useCard',evt=>{
+					return evt&&evt.card.name=="sha"&&!get.natureList(evt.card,player).length;
+				});
+				if(!history.length) return true;
+				if(get.natureList(card,player).length) return true;
+				return num;
+			},
+		},
+		async content(event,trigger,player){
+			let num=trigger.num==0?1:trigger.num
 			trigger.player.damage(num,trigger.source,'nocard')._triggered=null;
 		},
 		ai:{
 			jueqing:true,
 			effect:{
-				player:function(card,player,target){
+				player(card,player,target){
 					if(get.tag(card,'damage')) return [1,-1];
 				},
 			},
 		},
 	},
 	"xjzh_poe_bilei":{
-		initHujia:function(player){
-			player.changeHujia(20);
-			player.update();
-		},
-		audio:"ext:仙家之魂/audio/skill:2",
-		init:function(player){
-			lib.skill.xjzh_poe_bilei.initHujia(player);
-		},
-		onremove:function(player,skill){
-			if(player.hujia>0) player.changeHujia(-player.hujia);
-		},
 		trigger:{
 			player:"changeHujiaAfter",
-		},
-		filter:function(event,player){
-			return player.hujia<=0;
 		},
 		forced:true,
 		locked:true,
@@ -1784,92 +1649,75 @@ export const poeSkills={
 		nogainsSkill:true,
 		charlotte:true,
 		xjzh_xinghunSkill:true,
-		content:function(){
-			"step 0"
-			player.damage(player.maxHp*3,'nocard','notrigger','nosource');
-			"step 1"
-			if(player.isAlive()){
-				lib.skill.xjzh_poe_bilei.initHujia(player);
-			}else{
-				event.finish();
-				return;
-			}
-			"step 2"
-			event.num=player.getAllHistory('damage').length;
-			"step 3"
-			event.nature=['fire','thunder','kami','ice','stab','poison'].randomGet();
-			player.chooseTarget("〖光塔〗：选择你上家/下家一名角色令其受到"+get.translation(event.num)+"点"+get.translation(event.nature)+"属性伤害",true,function(card,player,target){
-				return player!=target;
-			}).set('ai',function(target){
-				var trigger=_status.event.getTrigger();
-				return get.damageEffect(target,nature,player,player);
-			}).set('nature',event.nature);
-			"step 4"
-			if(result.bool){
-				event.target=result.targets[0]
-				event.list=[]
-				for(var i=1;i<=event.num;i++){
-					event.list.push(i);
-				}
-				player.chooseControl(event.list).set('ai',function(){
-					return Math.random();
-				}).set('prompt','〖壁垒〗：请选择对'+get.translation(event.target)+'造成'+get.translation(event.nature)+'属性伤害的点数');
-			}else{
-				event.finish();
-				return;
-			}
-			"step 5"
-			if(result.control){
-				var num=result.control
-				event.target.damage(num,event.nature,player,'nocard','notrigger');
-				event.num-=num
-				if(event.num>0) event.goto(3);
+		initHujia(player){
+			player.changeHujia(20);
+			player.update();
+		},
+		audio:"ext:仙家之魂/audio/skill:2",
+		init(player){
+			lib.skill.xjzh_poe_bilei.initHujia(player);
+		},
+		onremove(player,skill){
+			if(player.hujia>0) player.changeHujia(-player.hujia);
+		},
+		filter(event,player){
+			return player.hujia<=0;
+		},
+		async content(event,trigger,player){
+			await player.damage(player.maxHp*3,'nocard','notrigger','nosource');
+			if(player.isDead()) return;
+			await lib.skill.xjzh_poe_bilei.initHujia(player);
+			let num=player.getAllHistory('damage').length,natures=['fire','thunder','kami','ice','stab','poison'];
+			while(num>0){
+				let nature=natures.randomGet();
+				const targets=await player.chooseTarget(`〖壁垒〗：对一名其他角色造成至多${num}点${get.translation(nature)}属性伤害`,true,lib.filter.notMe).set('ai',target=>{
+					let trigger=_status.event.getTrigger();
+					return get.damageEffect(target,player,player,nature);
+				}).set('nature',nature).forResultTargets();
+				if(targets){
+					let numbers=[];
+					for(let i=1;i<=num;i++){
+						numbers.push([i,i.toString()]);
+					};
+					let dialog=[`〖壁垒〗：选择对${get.translation(targets[0])}造成伤害的点数`,[numbers,'tdnodes']];
+					const links=await player.chooseButton(dialog).forResultLinks();
+					if(links){
+						let dameageNum=links[0];
+						targets[0].damage(dameageNum,nature,player,'nocard','notrigger');
+						num-=dameageNum;
+					}else num--;
+				}else break;
 			}
 		},
 	},
 	"xjzh_poe_qinhe":{
 		enable:"phaseUse",
+		usable:1,
 		poelose:true,
 		nogainsSkill:true,
 		charlotte:true,
 		xjzh_xinghunSkill:true,
-		filterTarget:function(card,player,target){
+		filterTarget(card,player,target){
 			return target.countCards('h');
 		},
 		selectTarget:1,
 		audio:"ext:仙家之魂/audio/skill:2",
-		content:function(){
-			"step 0"
-			var cards=target.getCards('h');
-			target.showCards(cards);
-			event.num=0
-			event.num2=0
-			for(var i=0;i<cards.length;i++){
-				if(get.suit(cards[i]=="heart")){
-					event.num++
-				}
-				else if(get.suit(cards[i]=="spade")){
-					event.num2++
-				}
-			}
-			"step 1"
-			while(event.num>0){
-				if(target.isDamaged()) target.useCard({name:'tao'},target,false);
-				event.num-=1
-			}
-			while(event.num2>0){
-				target.useCard({name:'jiu'},target,false);
-				event.num2-=1
+		async content(event,trigger,player){
+			let target=event.targets[0],cards=target.getCards('h');
+			let cardsList=cards.filter(card=>["heart","spade"].includes(get.suit(card)));
+			while(cardsList.length){
+				let card=cardsList.shift(),suits=get.suit(card);
+				player.gain(card,target,'giveAuto')._triggered=null;
+				suits=="heart"?target.useCard({name:'tao'},target,false):target.useCard({name:'jiu'},target,false);
 			}
 		},
 		ai:{
 			order:8,
 			result:{
-				target:function(player,target){
+				player:1,
+				target(player,target){
 					if(!target) return;
-					var hs=target.countCards('h');
-					var hp=target.getDamagedHp();
-					var att=get.attitude(player,target);
+					let hs=target.countCards('h'),hp=target.getDamagedHp(),att=get.attitude(player,target);
 					if(att>0) return hs-hp;
 					return hp-hs;
 				},
