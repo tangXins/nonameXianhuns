@@ -67,6 +67,7 @@ export async function precontent(xjzh){
 				try{
 					//成就初始化
 					game.xjzhAchi.init();
+
 					if(!game.getExtensionConfig("仙家之魂","xjzh_importCalculateScore")&&typeof game.xjzhAchi.calculateScore()=="number"){
 						let num=game.xjzhAchi.calculateScore();
 						game.xjzh_changeTokens(num);
@@ -130,7 +131,7 @@ export async function precontent(xjzh){
 					}
 				}
 				catch(e){
-					console.log("错误：成就初始化失败");
+					console.log(e+"错误：成就初始化失败");
 				}
 			});
 		},function(){

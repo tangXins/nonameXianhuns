@@ -330,6 +330,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					firstWinSet(name);
 				}
 			}
+
 			if(!lib.config.xjzhAchiNew){
 				this.reset();
 				game.saveConfig('xjzhAchiNew',true);

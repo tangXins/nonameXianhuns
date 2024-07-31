@@ -2,6 +2,7 @@
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
     //部分代码借鉴自《时空枢纽》
 	//保存存档到本地
+
 	game.xjzhQishu_saveConfig=function(){
 	    "step 0"
 	    game.saveConfig('xjzh_qishuyaojians',lib.config.xjzh_qishuyaojians);

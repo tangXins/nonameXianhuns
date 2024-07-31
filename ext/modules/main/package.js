@@ -1,7 +1,7 @@
-import { lib, get, _status, ui, game, ai } from '../../../../../noname.js';
+import { lib, get, _status, ui, game, ai, rootURL } from '../../../../../noname.js';
 import { skills } from '../index.js';
 
-let jsonInfo=await lib.init.promises.json(`${lib.assetURL}/extension/仙家之魂/info.json`);
+let jsonInfo=await lib.init.promises.json(`${rootURL}/extension/仙家之魂/info.json`);
 
 export const packages={
 

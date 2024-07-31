@@ -2,8 +2,6 @@ import { lib,get,_status,ui,game,ai } from '../../noname.js';
 import { basic,content,precontent,config,help,packages } from './ext/modules/index.js';
 import checkUpdates from './ext/modules/update/checkUpdate.js';
 
-
-
 export let type = 'extension';
 
 export default async function(){

@@ -1,30 +1,19 @@
-import { lib,get,_status,ui,game,ai } from '../../../../../noname.js';
+import { lib,get,_status,ui,game,ai,rootURL } from '../../../../../noname.js';
 
-let jsonInfo=await lib.init.promises.json(`${lib.assetURL}/extension/仙家之魂/info.json`);
+let jsonInfo=await lib.init.promises.json(`${rootURL}/extension/仙家之魂/info.json`);
 
 export const updateLog={
     version:`${jsonInfo.version}`,
 	onlyVersion:`${jsonInfo.onlyVersion}`,
-	'3.07292':{
+	'3.07301':{
         changeLog:[
 			"限制扩展最低支持本体版本1.10.14",
-			"移除界黄忠",
-			"移除界荀攸",
-			"重做关羽",
-			"修复陆逊〖武略〗报错及技能无法发动",
-			"修复索德罗斯〖剑神〗，切换/失去装备区武器牌未获得附近角色的一张牌",
-			"修复索德罗斯〖剑神〗，索德罗斯也无法使用描述/牌名含的“剑”牌",
-			"调整黄忠〖烈弓〗，移除♠【杀】的无视防具效果",
-			"调整黄忠〖铸箭〗，具体看技能介绍",
-			"调整陆逊〖武略〗，移除【火攻】额外选择一个目标",
-			"调整索德罗斯〖剑神〗，巨剑不再防止所有伤害，改为仅防止无属性伤害",
-			"调整黄丹雪〖默情〗，“指定全部目标的卡牌”现在仅包含tag为“multitarget”的卡牌",
-			"调整黄丹雪〖移情〗，移除了指定上家或下家为目标时的摸牌",
-			"调整黄丹雪〖移情〗，新增了判定成功时摸一张牌",
+			"修复导入扩展之后列表没有“仙家之魂”",
+			"修复新版本导入json文件路径更改导致的开屏报错",
 		    "修复许多bug",
 	    	"优化许多细节",
         ],
-	    players:["xjzh_sanguo_huangzhong","xjzh_sanguo_guanyu","xjzh_sanguo_xunyou"],
+	    players:[],
 		cards:[],
     },
 	'3.07171':{

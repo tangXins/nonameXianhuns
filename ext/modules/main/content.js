@@ -4,6 +4,18 @@ import { introduces } from '../index.js';
 export async function content(config,pack){
 	if(!config.enable) return false;
 
+	//重置材料
+	try{
+		if(!game.getExtensionConfig("仙家之魂","xjzh_qishuReset")){
+			game.xjzh_resetCailiao();
+			game.saveExtensionConfig("仙家之魂","xjzh_qishuReset",true);
+			alert("奇术要件系统已更新，已为你重置材料背包");
+			game.reload();
+		}
+	}catch(e){
+		console.log(e);
+	};
+
 
 	//监听《金庸群侠传》的换UI，以同步替换字体颜色
 	const method = lib.announce.subscribe("jy_changeJuesePageColor", (e) => {
@@ -39,18 +51,6 @@ export async function content(config,pack){
 				game.saveConfig('cards',lib.config.cards.concat('xjzh_Card'));
 			}
 			game.saveExtensionConfig("仙家之魂","xjzh_enableCharacters",true);
-			game.reload();
-		}
-	}catch(e){
-		console.log(e);
-	};
-
-	//重置材料
-	try{
-		if(!game.getExtensionConfig("仙家之魂","xjzh_qishuReset")){
-			game.xjzh_resetCailiao();
-			game.saveExtensionConfig("仙家之魂","xjzh_qishuReset",true);
-			alert("奇术要件系统已更新，已为你重置材料背包");
 			game.reload();
 		}
 	}catch(e){
