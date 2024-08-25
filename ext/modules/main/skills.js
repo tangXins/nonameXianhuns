@@ -12,7 +12,7 @@ export const skills={
 			filter(event,player){
 				if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")==='close') return false;
 				let list=[
-					"liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+					"weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 				];
 				if(get.mode()=="boss"){
 					if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss)[0])) return false;
@@ -26,7 +26,7 @@ export const skills={
 			},
 			async content(event,trigger,player){
 				let list=[
-					"liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+					"weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 				];
 				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
 				let skill=list.randomGet();
@@ -62,16 +62,21 @@ export const skills={
 				if(player.isOut()) return false;
 				let nameList=get.nameList(player),num=0;
 				if(!Array.isArray(nameList)||!nameList.length) return false;
-				nameList.forEach(item=>{
-					if(lib.character[item].xjzhMp&&get.is.object(lib.character[item].xjzhMp)) num++;
-				});
+				for(let name of nameList){
+					if(!lib.character[name]) continue;
+					if(lib.character[name].xjzhMp&&get.is.object(lib.character[name].xjzhMp)) num++;
+				}
 				return num>0;
 	        },
 	        async content(event,trigger,player){
 				let nameList=get.nameList(player),object;
-				nameList.forEach(item=>{
-					if(lib.character[item].xjzhMp&&get.is.object(lib.character[item].xjzhMp)) object=lib.character[item].xjzhMp;
-				});
+				for(let name of nameList){
+					if(!lib.character[name]) continue;
+					if(lib.character[name].xjzhMp&&get.is.object(lib.character[name].xjzhMp)){
+						object=lib.character[name].xjzhMp;
+						break;
+					}
+				}
 				//if(!player.node.xjzhmp){
 					await player.changexjzhmaxMp(object["maxMp"]);
 					await player.changexjzhMp(object["mp"]);
@@ -174,6 +179,33 @@ export const skills={
 				player.addSkill("xjzh_zengyi_off");
 			},
 		},
+		"xjzh_zengyi_weisong":{
+			trigger:{
+				global:["phaseZhunbeiBegin"],
+			},
+			unique:true,
+			mark:true,
+			marktext:"威",
+			intro:{
+			    name:"威讼",
+			    content:"其他角色的准备阶段，你可以令其进行一次判定，若为♠，其跳过出牌阶段。",
+			},
+			check(event,player){return -get.attitude(player,event.player);},
+			filter(event,player){
+				return event.player!=player;
+			},
+			async content(event,trigger,player){
+				const judgeEvent=await player.judge(card=>{
+					if(get.suit(card)=='heart') return -2;
+					if(get.suit(card)=='spade') return 2;
+					return -1;
+				});
+				judgeEvent.judge2=result=>result.bool;
+				const {result:{judge}}=judgeEvent;
+				if(judge<0) return;
+				trigger.player.skip("phaseUse");
+			},
+		},
 		"xjzh_zengyi_liuzhuan":{
 			trigger:{
 				global:["loseAfter","changeSkillsAfter"],
@@ -215,8 +247,7 @@ export const skills={
 		},
 		"xjzh_zengyi_pianxian":{
 		    trigger:{
-		        global:"gameStart",
-		        player:["changeSkillsAfter","enterGame"],
+		        player: ["useSkillAfter","logSkill"],
 		    },
 			forced:true,
 			locked:true,
@@ -227,25 +258,32 @@ export const skills={
 			    name:"翩跹",
 			    content:"锁定技，你“每回合限x次”和“出牌阶段限x次”的技能无次数限制",
 			},
-			async getSKillReslut(player){
+			filter(event,player){
+				let skill=event.skill||event.sourceSkill;
+				if(skill.startsWith("xjzh_zengyi_pianxian")) return false;
 				let skills=player.getSkills(null,false,false).filter(skill=>{
-					let info=get.info(skill);
+					let info=get.info(skill),str=get.skillInfoTranslation(skill,player);
+					if(!info||!info.usable) return false;
+					if(typeof info.usable!='number') return false;
 					if(lib.skill.global.includes(skill)) return false;
-					if(skill.indexOf('jycw')!=-1) return false;
-					return info&&info.usable&&typeof info.usable=='number';
+					if(skill.startsWith('jycw')) return false;
+					return ["出牌阶段限","每回合限"].some(item=>str.includes(item));
 				});
-				if(skills.length){
-					for await(let skill of skills){
-						let info=get.info(skill);
-						delete info.usable;
-					}
-				}
-			},
-			init(player,skill){
-				lib.skill[skill].getSKillReslut(player);
+				return skills.length;
 			},
 			async content(event,trigger,player){
-				lib.skill["xjzh_zengyi_pianxian"].getSKillReslut(player);
+				let skills=player.getSkills(null,false,false).filter(skill=>{
+					let info=get.info(skill),str=get.skillInfoTranslation(skill,player);
+					if(!info||!info.usable) return false;
+					if(typeof info.usable!='number') return false;
+					if(lib.skill.global.includes(skill)) return false;
+					if(skill.startsWith('jycw')) return false;
+					return ["出牌阶段限","每回合限"].some(item=>str.includes(item));
+				});
+				for await(let skill of skills){
+					let expandSkills=game.expandSkills([skill]);
+					expandSkills.forEach(item=>player.getStat('skill')[item]=0);
+				}
 			},
 		},
 		"xjzh_zengyi_zhuanpo":{
@@ -336,7 +374,7 @@ export const skills={
 			marktext:"重",
 			intro:{
 				name:"重塑",
-				translations:"锁定技，游戏开始时，你自定义你的回合。",
+				translations:"锁定技，游戏开始时/你获得该技能时，你自定义你的回合。",
 				content(storage,player){
 				    if(!player.storage.xjzh_zengyi_chongsu) return "游戏开始时，你可以自定义你的回合。";
 			        let phase={
@@ -682,7 +720,7 @@ export const skills={
 			},
 			async content(event,trigger,player){
 			    let list=[
-			        "liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+			        "weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
 			    ]
 			    if(get.mode()=="identity") list.addArray(["zhuanpo","daoge"]);
                 let skills=[]
@@ -728,45 +766,82 @@ export const skills={
 			marktext:"玄",
 			intro:{
 				name:"玄变",
-				content:"你获得该技能时，你可以将牌堆牌名相同的一种牌替换为另一种",
+				content:"你获得该技能时，你可以将牌堆牌名相同的一种非装备牌替换为另一种",
 			},
 			init(player){
-		        var next=game.createEvent('xjzh_zengyi_xuanbian_add',false);
+		        let next=game.createEvent('xjzh_zengyi_xuanbian_add',false);
 		        next.player=player;
 		        next.setContent(lib.skill.xjzh_zengyi_xuanbian.contentList);
 			},
-			contentList(){
-			    "step 0"
-			    var list=[];
-			    for(var i=0;i<lib.inpile.length;i++){
-	                var name=lib.inpile[i];
-	                var type=get.type(name);
-	                if(type!="xjzh_danyao"&&type!="equip") list.push(name);
-	            }
+			async contentList(event,trigger,player){
+			    let list=[];
+				for await(let name of lib.inpile){
+					let type=get.type(name);
+					if(type!="xjzh_danyao"&&type!="equip") list.push(name);
+				}
 	    	    if(!list.length) return;
-	    	    var next=player.chooseButton(['〖玄变〗：选择至多牌名不一致的牌，先选的牌被替换',[list,'vcard']])
-	    	    next.set('ai',function(button){
-			        var card={name:button.link[2]};
+	    	    const links=await player.chooseButton(['〖玄变〗：选择至多牌名不一致的牌，先选的牌被替换',[list,'vcard']])
+	    	    .set('ai',button=>{
+			        let card={name:button.link[2]};
 			        return 12-get.value(card);
-	    	    });
-	    	    next.set('complexSelect',true);
-	    	    next.set('selectButton',[2,2]);
-                next.set('filterButton',function(button){
+	    	    })
+	    	    .set('complexSelect',true)
+	    	    .set('selectButton',[2,2])
+                .set('filterButton',button=>{
                     if(!ui.selected.buttons.length) return true;
-                    var selected=ui.selected.buttons;
-                    for(var i of selected){
+                    let selected=ui.selected.buttons;
+                    for(let i of selected){
                         if(button.link[2]==i.link[2]) return false;
                     };
                     return true;
-                });
-                "step 1"
-                if(result.links){
-                    var card=result.links[0][2];
-                    var card2=result.links[1][2];
-                    game.xjzh_replaceCard(card,card2);
+                })
+				.forResultLinks();
+                if(links){
+                    let name=links[0][2],name2=links[1][2];
+					lib.skill.xjzh_zengyi_xuanbian.replaceCard(name,name2);
 				    player.logSkill("xjzh_zengyi_xuanbian");
-                    game.log(player,"将牌堆所有的","#y〖"+get.translation(result.links[0][2])+"〗","替换为了","#y〖"+get.translation(result.links[1][2])+"〗");
+					lib.inpile.remove(name);
+                    game.log(player,"将牌堆所有的","#y〖"+get.translation(links[0][2])+"〗","替换为了","#y〖"+get.translation(links[1][2])+"〗");
                 }
+			},
+			async replaceCard(oldCard,newCard){
+				let oldCardList=[],newCardList=[];
+				//先替换牌堆的牌
+				let cards=Array.from(ui.cardPile.childNodes);
+				for(let card of cards){
+					if(get.name(card)==oldCard){
+						oldCardList.push(card);
+						newCardList.push(game.createCard2(newCard,get.suit(card),get.number(card)));
+					}
+				}
+				//将弃牌堆的牌替换
+				cards=Array.from(ui.discardPile.childNodes);
+				for(let card of cards){
+					if(get.name(card)==oldCard){
+						oldCardList.push(card);
+						newCardList.push(game.createCard2(newCard,get.suit(card),get.number(card)));
+					}
+				}
+				//将玩家的牌替换
+				let targets=game.filterPlayer(current=>{
+					return current.countCards('hej',card=>{
+						return get.name(card)==oldCard;
+					});
+				});
+				if(targets.length){
+					while(targets.length){
+						let target=targets.shift();
+						cards=target.getCards('hej',card=>get.name(card)==oldCard);
+						for(let card of cards){
+							target.lose(card,ui.special)._triggered=null;
+							target.gain(game.createCard2(newCard,get.suit(card),get.number(card)))._triggered=null;
+						}
+					}
+				}
+				game.cardsGotoSpecial(oldCardList);
+				game.cardsGotoPile(newCardList);
+				game.washCard();
+				if(game.shuffleNumber) game.shuffleNumber--;
 			},
 		},
 		"xjzh_zengyi_moran":{
@@ -1379,6 +1454,7 @@ export const skills={
 
 	},
 	translate:{
+		"xjzh_zengyi_weisong":"威讼",
 		"xjzh_zengyi_liuzhuan":"流转",
 		"xjzh_zengyi_pianxian":"翩跹",
 	    "xjzh_zengyi_zhuanpo":"转魄",

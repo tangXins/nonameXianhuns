@@ -62,6 +62,16 @@ const dynamicTranslates = {
 		let num=player.storage.xjzh_zxzh_cangjian?player.storage.xjzh_zxzh_cangjian.length:0;
 		return `锁定技，当你受到/造成伤害后，你可以展示牌堆顶${num?num+1:1}张牌，并获得其中所有的武器牌称为“剑胎”，若没有武器牌，则改为获得所有的装备牌；“剑胎”不计入手牌上限。`;
 	},
+	"xjzh_diablo_yingbi":function(player){
+		let num=game.countPlayer(current=>current.inRangeOf(player));
+		return `出牌阶段限一次，你可以移除所有控制效果并令你攻击范围内的所有角色获得易伤，然后摸${num}张牌。`;
+	},
+	"xjzh_diablo_jianyu":function(player){
+		let storage=player.storage.xjzh_diablo_jianyu,names=get.nameList(player),bool=false;
+		if(names.some(name=>game.xjzh_hasEquiped("xjzh_qishu_hakankouyu",name))) bool=true;
+		let str=`"<br><br><span style=\"color:#F3D22B\">剩余冷却时间：${storage?Math.floor(storage.get("cooldown")/1000):0}秒。</span>`
+		return `出牌阶段，你可以视为使用一张【万箭齐发】,冷却时间${bool?120*(1-0.425):120}秒。${storage?str:""}`;
+	},
 
 };
 export default dynamicTranslates;

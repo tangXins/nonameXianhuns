@@ -1428,7 +1428,7 @@ const skills={
 				return distance-num;
 			},
 			playerEnabled:function(card,player,target){
-				if(get.tag(card,'damage')&&get.is.playerNames(current,"xjzh_boss_hj")) return false;
+				if(get.tag(card,'damage')&&get.is.playerNames(target,"xjzh_boss_hj")) return false;
 			},
 		},
 		init:function(player){

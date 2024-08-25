@@ -144,11 +144,290 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 	];
 	//奇术要件列表
 	lib.xjzh_qishuyaojians={
+	    "xjzh_qishu_hakankouyu":{
+	        translate:"哈坎的口谕",
+		    translate_info:"<li>〖箭雨〗获得42.5%冷却时间缩减；<br>〖箭雨〗有30%几率释放两次；<li>你的〖箭雨〗造成火/毒/冰/雷属性伤害；<li>每使用2张牌，你的〖箭雨〗减少2秒冷却时间。",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>——“封锁卡尔蒂姆大门。让它引以为傲的高墙提供密不透风的防御。凯基斯坦其他地区可能会遭受这场瘟疫，但我的城市和我的人民不会。” - 哈坎二世的布告</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：卡夏`,
+			noTranslate:false,
+			level:4,
+			filter:"xjzh_diablo_kaxia",
+			skill:{
+				trigger:{
+					source:"damageBegin",
+					player:"useCardAfter",
+				},
+				direct:true,
+				priority:10,
+				sub:true,
+				filter(event,player){
+					let evt=event.getParent(3),name=event.name;
+					if(name=="useCard"){
+						let history=player.getAllHistory("useCard",evt=>{
+							return evt&&evt.getParent().name!="xjzh_diablo_jianyu";
+						});
+						if(!player.storage.xjzh_diablo_jianyu) return false;
+						if(event.getParent().name=="xjzh_diablo_jianyu") return false;
+						return history.length%2==0;
+					}
+					return evt.name=="xjzh_diablo_jianyu";
+				},
+				async content(event,trigger,player){
+					let name=trigger.name;
+					if(name=="damage") game.setNature(trigger,["poison","fire","ice","thunder"],true);
+					else{
+						let storage=player.storage.xjzh_diablo_jianyu,remainderTime=storage.get("remainderTime");
+						if(remainderTime>2){
+							clearInterval(xjzh_diablo_jianyuTimer);
+
+							let xjzh_diablo_jianyuTimer,cooldown=storage.get("cooldown"),elapsedTime=0,startTime=new Date().getTime();
+
+							xjzh_diablo_jianyuTimer=setInterval(()=>{
+								elapsedTime+=100;
+
+								let remainingTime=cooldown-elapsedTime,endTime=new Date().getTime(),remainderTime=endTime-startTime;
+
+								player.storage.xjzh_diablo_jianyu=new Map(
+									[
+										["cooldown",remainingTime],
+										["remainder",remainderTime],
+									]
+								);
+
+								if(remainingTime<=0){
+									clearInterval(xjzh_diablo_jianyuTimer);
+									delete player.storage.xjzh_diablo_jianyu;
+								}
+							},100);
+						}
+
+					}
+				},
+	   		},
+		},
+	    "xjzh_qishu_wuyexinjie":{
+	        translate:"无夜星空之戒",
+		    translate_info:"你每使用2张牌，你摸1张牌，并使你本回合造成伤害+1（至多+2）;你的会心几率+10%。",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>——“不要让你的热情全都变成了执着。心中的热忱之火固然不能熄灭，但若是为了讨好一个无情的世界而将自己燃烧殆尽，那就是疯了。” - 塞利格大师的遗言</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：230碎片`,
+			noTranslate:false,
+			level:4,
+			async init(player){
+				player.xjzhHuixin?player.xjzhHuixin+=0.1:player.xjzhHuixin=0.2;
+		    },
+			skill:{
+				trigger:{
+	    	        player:"useCardAfter",
+					source:"damageBegin",
+	    	    },
+    		    direct:true,
+    			priority:10,
+    		    lastDo:true,
+	   		    filter(event,player){
+					let name=event.name,history=player.getHistory('useCard');
+					if(name=='damage'){
+						return history.length>=2;
+					}
+					return history.length%2==0;
+	    	    },
+	    	    async content(event,trigger,player){
+					let name=trigger.name,history=player.getHistory('useCard');
+					if(name=='useCard') player.draw();
+					else{
+						trigger.num+=Math.min(Math.floor(history.length/2),2)
+					}
+	   		    },
+	   		},
+		},
+	    "xjzh_qishu_rongjiezhixin":{
+	        translate:"塞利格的溶解之心",
+		    translate_info:"<li>当你受到伤害时，你可以弃置x+1张牌防止之；<li>你的手牌上限+y，你摸牌时，你额外摸y张牌（x为你受到的伤害值，y为你的体力值）",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>——“不要让你的热情全都变成了执着。心中的热忱之火固然不能熄灭，但若是为了讨好一个无情的世界而将自己燃烧殆尽，那就是疯了。” - 塞利格大师的遗言</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：230碎片`,
+			noTranslate:false,
+			level:4,
+			dynamicTranslate(player){
+				return `<li>当你受到伤害时，你可以弃置x+1张牌防止之；<li>你的手牌上限+${player.getHp(true)}，你摸牌时，你额外摸${player.getHp(true)}张牌（x为你受到的伤害值）`;
+			},
+			skill:{
+				trigger:{
+	    	        player:["damageBegin","drawBegin"],
+	    	    },
+    		    direct:true,
+    			priority:10,
+    		    lastDo:true,
+				mod:{
+					maxHandcardBase(player,num){
+						return num+player.getHp(true);
+					},
+				},
+	   		    filter(event,player){
+					let name=event.name;
+					if(name=='damage'){
+						if(player.countCards('hes')<event.num+1) return false;
+						return !event.numFixed;
+					}
+					return true;
+	    	    },
+	    	    async content(event,trigger,player){
+					let name=trigger.name;
+					if(name=='damage'){
+						const bool=await player.chooseToDiscard("hes",`〖塞利格的溶解之心〗:弃置${trigger.num+1}张牌防止之`,trigger.num+1).set("ai",card=>{
+							if (_status.event.goon) return 12-get.value(card);
+							return 0;
+						}).set(
+							"goon",(()=>{
+								if(get.damageEffect(player,trigger.source,player)>0) return true;
+								return false;
+							})()
+						).forResultBool();
+						if(bool) trigger.changeToZero();
+					}else{
+						trigger.num+=player.getHp(true);
+					}
+	   		    },
+	   		},
+		},
+	    "xjzh_qishu_lietiangong":{
+	        translate:"猎天弓",
+		    translate_info:"<li>替换莫瑞娜的技能〖乱射〗；<li>〖乱射〗使用的牌额外结算一次，且因〖乱射〗造成伤害令目标获得“目盲”",
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>——“莫瑞娜拿起她的弓，瞄准了太阳。阳光灼伤了她的双眼，但箭矢依然没有落空。受伤的太阳隐藏了起来，从而带来了第一个夜晚。” - 《猎天传奇》</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：莫瑞娜`,
+			noTranslate:false,
+			level:4,
+			filter:"xjzh_diablo_moruina",
+			replaceSkill:{
+				"xjzh_diablo_luanshe":{
+					trigger:{
+						player:"useCard2",
+					},
+					forced:true,
+					locked:true,
+					priority:3,
+					filter(event,player){
+						if(!event.cards||!event.cards.length) return false;
+						if(get.name(event.cards[0],player)!="sha") return false;
+						return game.hasPlayer(current=>current!=event.targets[0]&&current!=player);
+					},
+					/*mod:{
+						targetInRange(card,player,target){
+							if(get.name(card,player)=="sha") return true;
+						},
+						playerEnabled(card,player,target){
+							if(get.name(card,player)!="sha") return;
+							let info=get.info(card);
+							if(info.selectTarget&&info.selectTarget!==-1) return true;
+						},
+					},*/
+					async content(event,trigger,player){
+						trigger.set("xjzh_diablo_luanshe",true);
+						let targets=game.filterPlayer(current=>current!=trigger.targets[0]&&current!=player),num=get.rand(1,Math.min(3,targets.length))
+						targets=targets.randomGets(num);
+
+						for(let target of targets){
+							let obj=lib.skill.xjzh_diablo_luanshe.seatNum(player,target);
+							game.xjzh_playEffect('xjzh_skillEffect_gongjian',player,obj);
+						};
+						trigger.targets.addArray(targets);
+						game.log(targets,"成为此【杀】的额外目标");
+
+						trigger.effectCount++;
+
+						game.log(player,"的技能〖乱射〗额外结算一次");
+					},
+					ai:{
+						order:8,
+						result:{
+							player(player,target,card){
+								if(get.name(card,player)!="sha") return;
+								let targets=game.filterPlayer(current=>current!=target&&current!=player),num=0
+								for(let name of targets){
+									if(player.isFriendsOf(name)) num++;
+								}
+								if(num>targets-num) return 0.2;
+								return 1.5;
+							},
+						},
+					},
+				},
+			},
+			replaceSkillInfo:{
+				'xjzh_diablo_luanshe_info':'锁定技，当你使用【杀】指定目标时，此【杀】增加1-3个且不为你和初始目标的随机额外目标。',
+			},
+			skill:{
+				trigger:{
+	    	        source:"damageAfter",
+	    	    },
+    		    direct:true,
+    			priority:10,
+    		    lastDo:true,
+	   		    filter(event,player){
+					let evt=event.getParent(2);
+					if(evt&&!evt.xjzh_diablo_luanshe) return false;
+	    		    return !event.numFixed;
+	    	    },
+	    	    async content(event,trigger,player){
+					trigger.player.changexjzhBUFF('mumang',1);
+	   		    },
+	   		},
+		},
+	    "xjzh_qishu_mingyunzhiquan":{
+	        translate:"命运之拳",
+			translate_info:"<li>你的会心几率+(0.1-77.7)%；<li>你造成伤害有几率+(1-3)；<br><br><li>会心：当你对其他角色造成伤害后，你有(0.1-51.8)%几率令其获得随机一层减益buff。",
+			dynamicTranslate(player){
+				let storage=player.storage.xjzh_qishu_mingyunzhiquan;
+				return `<li>你的会心几率+${(storage.get("huixin")/10).toFixed(2).replace(/\.00$/, '')}%；<li>你造成伤害有${(storage.get("damage")[0]*100).toFixed(2).replace(/\.00$/, '')}%几率+${storage.get("damage")[1]}；<br><br><li>会心：当你对其他角色造成伤害后，你有${(storage.get("buff")/10).toFixed(2).replace(/\.00$/, '')}%几率令其获得随机一层减益buff。`;
+
+			},
+			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“你会让恐惧欺骗你一生，还是会不惜一切代价去领悟真谛？毕竟，死亡只不过是我们用来交换生命的钱币。” - 祖尔克</font></span>",
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：230碎片`,
+			noTranslate:false,
+			level:4,
+			async init(player){
+				let storage=new Map(
+					[
+						["huixin",get.rand(100,777)],
+						["damage",[Math.random(),get.rand(1,3)]],
+						["buff",get.rand(100,518)]
+					]
+				);
+				player.xjzhHuixin?player.xjzhHuixin+=storage.get("huixin")/1000:player.xjzhHuixin=0.1+storage.get("huixin")/1000;
+				player.storage.xjzh_qishu_mingyunzhiquan=storage;
+		    },
+			skill:{
+				trigger:{
+	    	        source:"damageBegin1",
+	    	    },
+				forced:true,
+				locked:true,
+				charlotte:true,
+				superChocolate:true,
+				priority:10,
+				filter(event,player){
+					return !event.numFixed;
+				},
+				async content(event,trigger,player){
+					let storage=player.storage.xjzh_qishu_mingyunzhiquan;
+					if(Math.random()<storage.get("damage")[0]) trigger.num+=storage.get("damage")[1];
+					if(Math.random()<storage.get("buff")/1000*(1+player.xjzhHuixin)){
+						player.when({source: "damageAfter"})
+						.assign({
+							firstDo:true,
+						})
+						.then(()=>{
+							let deBuff=lib.xjzh_Debuff.randomGet();
+							trigger.player.changexjzhBUFF(deBuff,1);
+							game.log(player,`因<span style="color: yellow;">〖命运之拳〗</span>触发了会心一击，${get.translation(trigger.player)}获得1层${get.xjzhBUFFtranslate(deBuff)}`);
+						});
+					}
+				},
+			},
+		},
 	    "xjzh_qishu_junmao":{
 	        translate:"谐角之冠",
 			translate_info:"你所有限制回合发动次数的主动技能+2次发动次数。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“这个头饰曾经是一个伪装成宫廷法师的刺客佩戴的。她的背叛行径虽然最终暴露，但在那之前，她已经成功用魔法诅咒了国王和他的整个家族。” - 《阿斯顿家族的陨落》</font></span>",
-			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*4}碎片`,
+			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：230碎片`,
 			noTranslate:false,
 			level:4,
 			async init(player){
@@ -187,6 +466,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				superChocolate:true,
 				priority:10,
 				filter(event,player){
+					const evt=event.getParent();
+					if(evt&&evt.name=="xjzh_qishu_junmao") return false;
 					return event.addSkill&&event.addSkill.length;
 				},
 				async content(event,trigger,player){
@@ -208,15 +489,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 								};
 							}
 						}
-						player.removeSkill(skill);
-						player.addSkill(newSkill);
+						player.changeSkills([newSkill],[skill]);
 					}
 				},
 			},
 		},
 	    "xjzh_qishu_tongkuhushou":{
 	        translate:"痛苦吞食者",
-		    translate_info:"你使用基本牌造成伤害令其获得等量个“痛”标记；你使用牌对标记的目标造成伤害时，令场上所有被标记的角色受到额外x点伤害，每因此造成一点伤害，你摸一张牌（x为其拥有的标记数量）。",
+		    translate_info:"<li>你使用基本牌造成伤害令其获得等量个“痛”标记；<li>你使用牌对标记的目标造成伤害时，令场上所有被标记的角色受到额外x点伤害，每因此造成一点伤害，你摸一张牌（x为其拥有的标记数量）。",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>这副手套以督瑞尔的甲壳碎片制成, 戴着它或被它击中都会导致剧痛, 如同将手插入千万片碎玻璃一样。</font></span>",
 			extra:"等阶：4<br><>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：5%<br><br>兑换所需：230碎片",
 			noTranslate:false,
@@ -470,7 +750,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		},
 		"xjzh_qishu_fenglangkx":{
 		    translate:"疯狼的狂喜",
-			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你的灵力上限+25。<li>会心：你释放狼人技能时有25%几率获得20点灵力，",
+			translate_info:"禁用你的技能〖灵兽〗，你锁定形态为狼形态，你的灵力上限+25。<br><br><li>会心：你释放狼人技能时有25%几率获得20点灵力，",
 			append_info:"<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>“他不是诅咒的受害者 - 这都是他自找的。就算他的皮肤裂开，骨骼碎裂，他的笑声也从未停止。” - 疯狂贵族的故事</font></span>",
 			extra:`等阶：4<br><br>获取：抽奖、兑换、对局<br><br>抽奖概率：5%<br><br>兑换所需：${230*5}碎片<br><br>专属角色：亚非克拉<br><br>冲突装备：无餍之怒`,
 			noTranslate:false,
@@ -505,7 +785,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 					let info=get.info(skills);
 					if(lib.skill.global.includes(event.skill)) return false;
 					if(info&&!info.xjzh_langrenSkill) return false;
-					return Math.random()<=0.25*player.xjzhHuixin;
+					return Math.random()<=0.25*(1+player.xjzhHuixin);
 				},
 				async content(event,trigger,player){
 					player.changexjzhMp(20);
@@ -1190,10 +1470,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 		init:function(player){
 			游戏开始时的执行内容，主要为对角色体力值等参数的调整，参数player为角色
 		},
+		conflict:[], 冲突的奇术要件，数组形式，其中参数‘name’为奇术要件id，可以以数组或字符串形式直接写奇术要件id
+		filter:"", 专属于某个武将，数组形式，其中参数‘name’为奇术要件id，可以以数组或字符串形式直接写奇术要件id
+		precede:[], 前置奇术要件，数组形式，其中参数‘name’为奇术要件id，可以以数组或字符串形式直接写奇术要件id
 		replaceSkill:{
 			'被替换的技能id':{
 				替换后的技能内容
 			}  替换后的技能id为被替换的技能id+'_changed'
+
 			'被替换的技能id':'替换后的技能id'  如果这样写，请在extension.js中提前写好对应技能的代码及翻译
 		},  装备的角色被替换掉的技能，可以有多个
 		replaceSkillInfo:{
@@ -1810,18 +2094,25 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 							}
 							if(item.skillInfo){
 							    lib.translate[newSkill+'_info']=item.skillInfo;
-							    if(item.append_info) lib.translate[newSkill+'_append_info']=item.append_info;
+							    if(item.append_info) lib.translate[newSkill+'_append']=item.append_info;
 							}else{
 							    if(!item.noTranslate){
 							        lib.translate[newSkill+'_info']=item.translate_info;
-							        if(item.append_info) lib.translate[newSkill+'_append_info']=item.append_info;
+							        if(item.append_info) lib.translate[newSkill+'_append']=item.append_info;
 							    }
+							}
+							if(item.dynamicTranslate){
+								lib.translate[newSkill+"_info"]=item.dynamicTranslate(player);
 							}
 							let str=lib.translate[newSkill+"_info"],colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
 							if(str){
 								if(str.includes("控制")){
 									let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
 									str=str.replace(/控制/g,str2);
+								};
+								if(str.includes("会心")){
+									let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_huixin');\">会心</a>`;
+									str=str.replace(/会心/g,str2);
 								};
 								lib.translate[newSkill+"_info"]=str;
 							}

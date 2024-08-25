@@ -97,7 +97,7 @@ export async function content(config,pack){
 		let colorx=game.getExtensionConfig("金庸群侠传","jy_changeJuesePageUIColor");
 		for await(let name of obj){
 			if(lib.translate[name+"_info"]&&lib.translate[name+"_info"].length>0){
-				let str = lib.translate[name+ "_info"]
+				let str = get.skillInfoTranslation(name,null);
 
 				if(str.includes("控制")){
 					let str2=`<a style='color:${colorx?colorx:"#c06d3b"}' href=\"javascript:game.xjzh_openDialog('xjzh_intro_kongzhi');\">控制</a>`;
@@ -857,7 +857,7 @@ export async function content(config,pack){
 		return text.replace(pattern, function(match) {
 			// 提取数字部分，可能是阿拉伯数字或中文数字
 			const numberPart = match.replace(/限|次/g, '');
-			// 尝试转换为阿拉伯数字并加2，如果是非数字字符则直接报错处理
+			// 尝试转换为阿拉伯数字并加num，如果是非数字字符则直接报错处理
 			try {
 				const arabicNumber = numberPart.match(/\d+/) ? parseInt(numberPart) : get.chineseToArabic(numberPart);
 				return `限${arabicNumber + num}次`;
@@ -907,20 +907,12 @@ export async function content(config,pack){
 	*
 	* @returns {boolean} 如果玩家是仙家之魂武将，则返回true；否则返回false。
 	*/
-	get.isXHwujiang=function(...arg){
+	get.isXHwujiang=function(player){
 		// 初始化变量，用于存储玩家对象和玩家名称列表
-		let player, str, list = [];
-
-		// 遍历函数的所有参数，寻找玩家对象
-		// 遍历函数接收的所有参数
-		for(let argument of arg) {
-			// 如果参数是玩家对象，则将其赋值给player变量
-			if (get.itemtype(argument) == "player") player = argument;
+		let type, str, list = [];
+		if (typeof player == "undefined" || ((type = typeof player), type != "object") || ((type = get.itemtype(player)), type != "player")) {
+			throw new Error(`函数接受了一个不是Player的东西: ${type}: ${player}`);
 		}
-
-		// 如果没有找到玩家对象，则返回false
-		if(!player) return false;
-
 		// 获取玩家对象的名字列表
 		let names=get.nameList(player);
 		// 如果玩家名字列表为空或不是数组，则返回false
@@ -929,7 +921,7 @@ export async function content(config,pack){
 		// 检查玩家名字列表中是否有名字满足特定条件（即对应的角色有特定的死亡音频标识）
 		return names.some(item=>{
 			if(!lib.character[item]) return false;
-			if(!lib.character[item][4]) return false;
+			if(!lib.character[item][4]||!lib.character[item].trashBin) return false;
 			return lib.character[item][4].includes('xjzh_die_audio')||lib.character[item].trashBin.includes('xjzh_die_audio');
 		})?true:false;
 	};
@@ -1400,8 +1392,7 @@ export async function content(config,pack){
 				list.remove(players[i].name2);
 			}
 		}
-		if(!num) return list;
-		return list.randomGets(num);
+		return typeof num=="number"?list.randomGets(num):list;
 	};
 	//挑战模式切换随从
 	game.changeBossFellow=function(name,player){
@@ -1434,47 +1425,6 @@ export async function content(config,pack){
 		fellow.setIdentity('zhong');
 		game.addVideo('setIdentity',fellow,'zhong');
 		return fellow;
-	};
-	//替换牌堆的牌为另一种牌
-	game.xjzh_replaceCard=function(oldCard,newCard){
-		//先替换牌堆的牌
-		var cards=Array.from(ui.cardPile.childNodes);
-		for(var i=0;i<cards.length;i++){
-			var card=cards[i];
-			if(card.name==oldCard){
-				game.cardsGotoSpecial(card);
-				ui.cardPile.insertBefore(game.createCard2(newCard,get.suit(card),get.number(card)),ui.cardPile.childNodes[i]);
-			}
-		}
-		//将玩家的牌替换
-		var targets=game.filterPlayer(function(current){
-			return current.countCards('hej',function(cardx){
-				return cardx.name==oldCard;
-			});
-		});
-		if(targets.length){
-			for(var player of targets){
-				var cards3=player.getCards('hej',function(cardx){
-					return cardx.name==oldCard;
-				});
-				var list=[]
-				for(var i of cards3){
-					var cardx=game.createCard2(newCard,get.suit(i),get.number(i));
-					list.push(cardx);
-				}
-				player.discard(cards3)._triggered=null;
-				player.gain(list,'giveAuto',false)._triggered=null;
-			}
-		}
-		//将弃牌堆的牌替换
-		var cards2=Array.from(ui.discardPile.childNodes);
-		for(var i=0;i<cards2.length;i++){
-			var card=cards2[i];
-			if(card.name==oldCard){
-				game.cardsGotoSpecial(card);
-				game.cardsDiscard(game.createCard2(newCard,get.suit(card),get.number(card)))
-			}
-		}
 	};
 	//暴击相关函数，参数分别为造成暴击的角色、暴击前的伤害数值、暴击伤害加成、暴击伤害额外加成、是否不受暴击几率影响
 	game.xjzh_Criticalstrike=function(player,num,num2,num3,arg){

@@ -146,6 +146,24 @@ export const xiyouSkills={
 				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
 				if(cards.includes(card.name)) return true;
 			},
+			canBeGained(card,player,target,name){
+				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
+				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;
+				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
+				if(cards.includes(card.name)) return false;
+			},
+			canBeDiscarded(card,player,target,name){
+				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
+				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;
+				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
+				if(cards.includes(card.name)) return false;
+			},
+			cardDiscardable(card,player,name){
+				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
+				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;
+				let cards=["xjzh_card_tianganghuo","xjzh_card_hunyuandan","xjzh_card_huoyundao","xjzh_card_dingshenzhou","xjzh_card_zhaoyaojing"];
+				if(cards.includes(card.name)) return false;
+			},
 			aiValue(player,card,num){
 				if(!player.hasSkill("xjzh_xyj_ruyi")) return;
 				if(!get.is.playerNames(player,'xjzh_xyj_sunwukong')) return;

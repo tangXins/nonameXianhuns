@@ -362,22 +362,19 @@ export const diabloSkills={
 		},
 	},
 	"xjzh_diablo_luanshe":{
-		enable:"phaseUse",
-		position:"h",
-		usable:1,
-		filter:function(event,player){
-			if(!player.countCards('h',function(card){
-				return get.tag(card,'damage');
-			})) return false;
-			return game.hasPlayer(function(current){
-				return current.inRangeOf(player);
-			});
+		trigger:{
+			player:"useCard2",
 		},
-		filterCard:function(card,player,target){
-			return get.tag(card,'damage');
+		forced:true,
+		locked:true,
+		priority:3,
+		filter(event,player){
+			if(!event.cards||!event.cards.length) return false;
+			if(get.name(event.cards[0],player)!="sha") return false;
+			return game.hasPlayer(current=>player.canUse("sha",current)&&current!=event.targets[0]&&current!=player);
 		},
-		seatNum:function(player,target){
-			var obj={
+		seatNum(player,target){
+			let obj={
 				scale:0.9,
 				x:[1,0.5],
 				y:[1,0.25],
@@ -386,8 +383,7 @@ export const diabloSkills={
 				angle:null,
 				parent:player,
 				follow:false,
-			};
-			var num=target.getState().position;
+			},num=target.getState().position;
 			switch(num){
 				case 1:
 					obj.scale=0.4;
@@ -419,77 +415,39 @@ export const diabloSkills={
 				break;
 			};
 			return obj;
-
 		},
-		contentBefore:function(){
-			"step 0"
-			player.chooseBool("〖乱射〗：是否装备【猎天弓】").set('ai',function(){
-				return Math.random();
-			});
-			"step 1"
-			if(result.bool){
-				var card=game.createCard("xjzh_card_lietiangong");
-				player.equip(card);
-			}
-		},
-		content:function(){
-			"step 0"
-			event.num=0;
-			"step 1"
-			var targets=game.filterPlayer(function(current){
-				return current.inRangeOf(player);
-			});
-			var num=get.rand(1,Math.min(3,targets.length));
-			var targets=targets.slice(0).randomGets(num);
-			event.targets=targets.slice(0);
+		async content(event,trigger,player){
+			let targets=game.filterPlayer(current=>player.canUse("sha",current)&&current!=trigger.targets[0]&&current!=player),num=get.rand(1,Math.min(3,targets.length))
+			targets=targets.randomGets(num);
 
-			for(var target of event.targets){
-				var obj=lib.skill.xjzh_diablo_luanshe.seatNum(player,target);
+			for(let target of targets){
+				let obj=lib.skill.xjzh_diablo_luanshe.seatNum(player,target);
 				game.xjzh_playEffect('xjzh_skillEffect_gongjian',player,obj);
 			};
-			player.useCard(cards[0],targets,false).set('addCount',false).set('oncard',function(card,player){
-				var that=this;
-				if(!that.baseDamage) that.baseDamage=1;
-				if(targets.length>=3&&player.getCards('e',function(cardx){
-					return card.name=="xjzh_card_lietiangong";
-				})){
-					that.baseDamage*=2;
-				}
-			}).set('targets',targets);
-			"step 2"
-			if(player.getStat('damage')){
-				var history=player.getHistory('sourceDamage',function(evt){
-					return evt.getParent('xjzh_diablo_luanshe').name=="xjzh_diablo_luanshe";
-				});
-				for(var i=0;i<history.length;i++){
-					var target=history[i].player;
-					target.changexjzhBUFF('mumang',1);
-					history.splice(i,1);
-				}
-			}
-			"step 3"
-			if(event.targets){
-				event.num++
-				if(event.targets.length<3&&event.num==1){
-					var card=player.getCards('e',function(cardx){
-						return cardx.name=="xjzh_card_lietiangong";
-					});
-					if(card) player.discard(card)._triggered=null;
-				}else{
-					if(event.num==1) event.goto(1);
-				}
-			}
+			trigger.targets.addArray(targets);
+			//trigger.targets.sort(()=>Math.random()-0.5);
+			game.log(targets,"成为此【杀】的额外目标");
+			/*player.when({source:"damageAfter"})
+			.assign({
+				firstDo:true,
+			})
+			.filter(()=>{
+				if(event.name!="xjzh_diablo_luanshe") return false;
+				if(event.player!=player) return false;
+				return true;
+			})
+			.then(()=>{
+				trigger.player.changexjzhBUFF('mumang',1);
+			});*/
 		},
 		ai:{
 			order:8,
 			result:{
-				player:function(player){
-					var targets=game.filterPlayer(function(current){
-						return player.inRange(current);
-					});
-					var num=0
-					for(var name of targets){
-						if(player.isFriendsOf(name)) num++
+				player(player,target,card){
+					if(get.name(card,player)!="sha") return;
+					let targets=game.filterPlayer(current=>player.canUse("sha",current)&&current!=target&&current!=player),num=0
+					for(let name of targets){
+						if(player.isFriendsOf(name)) num++;
 					}
 					if(num>targets-num) return 0.2;
 					return 1.5;
@@ -499,20 +457,26 @@ export const diabloSkills={
 	},
 	"xjzh_diablo_jingshe":{
 		trigger:{
-			source:"damageAfter",
+			player:"useCard2",
 		},
 		forced:true,
 		locked:true,
 		priority:-3,
-		filter:function(event,player){
-			if(event.getParent('xjzh_diablo_luanshe').name!="xjzh_diablo_luanshe") return false;
-			return event.num>0;
+		filter(event,player){
+			if(get.name(event.cards[0],player)!="sha") return false;
+			if(!event.targets||!event.targets.length) return false;
+			if(event.targets.length==1) return false;
+			let targets=event.targets.slice(0);
+			if(targets.every(item=>get.xjzhBUFFNum(item,'yishang')>=get.xjzhBUFFInfo('yishang','limit'))) return false;
+			return true;
 		},
-		content:function(){
-			"step 0"
-			trigger.player.changexjzhBUFF('yishang',1);
-			"step 1"
-			if(get.xjzhBUFFNum(trigger.player,'yishang')>0) trigger.player.turnOver(true);
+		async content(event,trigger,player){
+			const targets=await player.chooseTarget("〖劲射〗：选择一名角色令其获得1层易伤",(card,player,target)=>{
+				return get.xjzhBUFFNum(target,'yishang')<get.xjzhBUFFInfo('yishang','limit')&&target!=player&&trigger.targets.includes(target);
+			}).set('ai',target=>-get.attitude(player,target)).forResultTargets();
+			if(targets){
+				targets[0].changexjzhBUFF('yishang',1);
+			};
 		},
 	},
 	"xjzh_diablo_guanzhu":{
@@ -521,105 +485,79 @@ export const diabloSkills={
 		},
 		frequent:true,
 		group:["xjzh_diablo_guanzhu_use","xjzh_diablo_guanzhu_damage"],
-		filter:function(event,player){
-			if(player.countCards('h',function(card){
-				return get.tag(card,'damage')&&!card.hasGaintag("xjzh_diablo_guanzhu");
-			})&&player.countCards('h',function(card){
-				return card.hasGaintag("xjzh_diablo_guanzhu");
-			})<2) return true;
+		filter(event,player){
+			if(player.countCards('h',card=>get.tag(card,'damage')&&!card.hasGaintag("xjzh_diablo_guanzhu"))&&player.countCards('h',card=>card.hasGaintag("xjzh_diablo_guanzhu"))<2) return true;
 			return false;
 		},
 		mod:{
-			cardUsable:function(card,player,num){
+			cardUsable(card,player,num){
 				if(!card.cards) return;
-				if(card.name=="sha"||card.name=="jiu"){
-					for(var i of card.cards){
-						if(i.hasGaintag("xjzh_diablo_guanzhu")) return Infinity;
-					}
+				if(["jiu","sha"].includes(get.name(card,player))){
+					if(card.cards.some(item=>item.hasGaintag("xjzh_diablo_guanzhu"))) return true;
 				}
 			},
 		},
-		content:function(){
-			"step 0"
-			var cards=player.getCards('h',function(card){
-				return get.tag(card,'damage')&&!card.hasGaintag("xjzh_diablo_guanzhu");
-			});
-			var num=player.countCards('h',function(card){
-				return card.hasGaintag("xjzh_diablo_guanzhu");
-			});
-			player.chooseCardButton(cards,[1,2-num],"〖灌注〗：请选择至多"+get.translation(2-num)+"张伤害卡牌令其获得灌注效果").set('ai',function(button){
-				var player=_status.event.player;
+		async content(event,trigger,player){
+			let cards=player.getCards('h',card=>get.tag(card,'damage'));
+			const links=await player.chooseCardButton(cards,cards.length==1?1:[1,2],"〖灌注〗：请选择至多"+get.translation(cards.length==1?1:2)+"张[伤害]卡牌令其获得灌注效果").set('ai',button=>{
+				let player=get.player();
 				if(player.hasUseTarget(button.link)) return player.getUseValue(button.link);
-				return 0;
+				return cards.randomGets(cards.length==1?1:[1,2]);
+			}).forResultLinks();
+			if(!links) return;
+			let controlList=[
+				'冰霜灌注：令你被灌注的牌造成冰属性伤害',
+				'火焰灌注：令你被灌注的牌造成火属性伤害',
+				'毒素灌注：令你被灌注的牌造成毒属性伤害'
+			];
+			const index=await player.chooseControlList(get.prompt(event.name,player),true,controlList)
+			.set("ai",()=>{
+				return get.rand(0,2);
+			})
+			.forResult("index");
+			let storage=new Map();
+			storage.set('guanzhu',{
+				nature:{
+					0:"ice",
+					1:"fire",
+					2:"poison"
+				},
+				index:index,
+				cards:links
 			});
-			"step 1"
-			if(result.links){
-				event.cards=result.links
-			}else{
-				event.finish();
-			}
-			"step 2"
-			var dialog=ui.create.dialog('forcebutton','hidden','〖灌注〗：请选择一种灌注效果');
-			var str='<div class="popup text" style="width:calc(100%-10px);display:inline-block">';
-			str+='冰霜灌注：令你被灌注的牌造成冰属性伤害<br><br><br>';
-			str+='火焰灌注：令你被灌注的牌造成火属性伤害</div>';
-			dialog.add(str);
-			var chooseList=['冰霜灌注','火焰灌注'];
-			player.chooseControl(chooseList,'cancel2').set('ai',function(){
-				return chooseList.randomGet();
-			}).set('dialog',dialog);
-			"step 3"
-			if(result.control!='cancel2'){
-				var cards=event.cards;
-				player.addGaintag(cards,'xjzh_diablo_guanzhu');
-				if(!player.storage.xjzh_diablo_guanzhu2) player.storage.xjzh_diablo_guanzhu2=cards.slice(0);
-				player.storage.xjzh_diablo_guanzhu2.push(cards.slice(0));
-				switch(result.control){
-					case '冰霜灌注':
-					player.storage.xjzh_diablo_guanzhu=1;
-					break;
-					case '火焰灌注':
-					player.storage.xjzh_diablo_guanzhu=2;
-					break;
-				}
-			}else{
-				event.finish();
-			}
+			player.removeGaintag('xjzh_diablo_guanzhu');
+			player.addGaintag(links,'xjzh_diablo_guanzhu');
+			player.storage.xjzh_diablo_guanzhu=storage;
 		},
 		subSkill:{
 			"damage":{
 				trigger:{
-					source:"damageBegin",
+					source:"damageBefore",
 				},
 				direct:true,
 				sub:true,
-				filter:function(event,player){
+				filter(event,player){
+					let storage=player.storage.xjzh_diablo_guanzhu;
 					if(!event.cards||!event.cards.length) return false;
-					if(!player.storage.xjzh_diablo_guanzhu) return false;
-					if(!player.storage.xjzh_diablo_guanzhu2) return false;
-					return player.storage.xjzh_diablo_guanzhu2.includes(event.cards[0]);
+					if(!storage||!storage.get("guanzhu")) return false;
+					return storage.get("guanzhu").cards.includes(event.cards[0]);
 				},
-				content:function(){
-					"step 0"
-					if(player.storage.xjzh_diablo_guanzhu==1){
-						game.setNature(trigger,'ice',false)
-					}else{
-						game.setNature(trigger,'fire',false)
-					}
-					"step 1"
+				async content(event,trigger,player){
+					let storage=player.storage.xjzh_diablo_guanzhu;
+					await game.setNature(trigger,storage.get("guanzhu").nature[storage.get("guanzhu").index],false)
 					switch(trigger.nature){
-						case "ice":
-						trigger.player.changexjzhBUFF('binghuan',1);
+						case "ice":{
+							trigger.player.changexjzhBUFF('binghuan',1);
+						}
 						break;
-						case "fire":
-						trigger.player.changexjzhBUFF('ranshao',1);
+						case "fire":{
+							trigger.player.changexjzhBUFF('ranshao',1);
+						}
 						break;
-					}
-					"step 2"
-					if(player.storage.xjzh_diablo_guanzhu2.length){
-						player.storage.xjzh_diablo_guanzhu2.remove(trigger.cards[0]);
-					}else{
-						delete player.storage.xjzh_diablo_guanzhu2;
+						case "poison":{
+							trigger.player.changexjzhBUFF('zhongdu',1);
+						}
+						break;
 					}
 				},
 			},
@@ -628,16 +566,16 @@ export const diabloSkills={
 				forced:true,
 				priority:-1,
 				sub:true,
-				filter:function(event,player){
+				filter(event,player){
 					if(event.card.name=='sha'||event.card.name=="jiu"){
 						if(event.cards[0].hasGaintag("xjzh_diablo_guanzhu")) return true;
 					};
 					return false;
 				},
-				content:function(){
+				async content(event,trigger,player){
 					if(trigger.addCount!==false){
 						trigger.addCount=false;
-						var stat=player.getStat();
+						let stat=player.getStat();
 						if(stat&&stat.card&&stat.card[trigger.card.name]) stat.card[trigger.card.name]--;
 					};
 				},
@@ -651,120 +589,83 @@ export const diabloSkills={
 		forced:true,
 		locked:true,
 		priority:3,
-		init:function(player){
-			player.storage.xjzh_diablo_sushe=false;
+		filter(event,player){
+			return get.name(event.card)=="sha";
 		},
-		filter:function(event,player){
-			return event.card.name=="sha";
-		},
-		content:function(){
-			if(player.storage.xjzh_diablo_sushe==true){
-				if(!trigger.baseDamage) trigger.baseDamage=1
-				trigger.baseDamage*=2;
-				player.storage.xjzh_diablo_sushe=false;
-			}
-			else{
-				var num=get.rand(1,3);
-				trigger.effectCount+=num;
-				game.log(trigger.card,'额外结算'+num+'次');
-				if(num==3) player.storage.xjzh_diablo_sushe=true;
-			}
+		async content(event,trigger,player){
+			let num=get.rand(1,2);
+			trigger.effectCount+=num;
+			game.log(trigger.card,'额外结算'+num+'次');
 		},
 	},
 	"xjzh_diablo_yingbi":{
 		enable:"phaseUse",
 		usable:1,
-		filter:function(event,player){
-			return !player.isTurnedOver();
+		filter(event,player){
+			return get.xjzh_deEffect(player)||game.countPlayer(current=>current.inRangeOf(player));
 		},
-		mod:{
-			globalTo:function(from,to,distance){
-				if(to.isTurnedOver()) return distance+1;
+		async content(event,trigger,player){
+			await game.claerRestraint(player);
+			let targets=game.filterPlayer(current=>current.inRangeOf(player));
+			if(targets.length){
+				for(let target of targets) target.changexjzhBUFF('yishang',1);
 			}
-		},
-		content:function(){
-			player.addTempSkill('xjzh_diablo_yingbi_turn',{player:'damageAfter'});
-		},
-		subSkill:{
-			"turn":{
-				sub:true,
-				init:function(player){
-					if(player.isIn()&&!player.isTurnedOver()) player.turnOver(true);
-				},
-				onremove:function(player,skill){
-					if(player.isTurnedOver()) player.turnOver(false);
-					if(!player.hasSkill("xjzh_diablo_yingbi_damage")) player.addSkill("xjzh_diablo_yingbi_damage");
-				},
-				ai:{
-					maixie:true,
-					maixie_hp:true,
-				},
-			},
-			"damage":{
-				trigger:{
-					source:"damageAfter",
-				},
-				forced:true,
-				sub:true,
-				priority:6,
-				filter:function(event,player){
-					if(event.source==player&&event.player==player) return false;
-					return !event.numFixed;
-				},
-				mark:true,
-				marktext:"隐",
-				intro:{
-					name:"隐蔽",
-					content:"下一次造成伤害令目标获得一层易伤然后你摸两张牌",
-				},
-				content:function(){
-					trigger.player.changexjzhBUFF('yishang',1);
-					player.draw(2);
-					player.removeSkill("xjzh_diablo_yingbi_damage");
-				},
-			},
+			player.draw(targets.length);
 		},
 		ai:{
-			order:0.1,
+			order:12,
 			result:{
-				player:function(player,target){
-					if(!player.hasFriend) return;
-					return 1;
+				player(player,target,card){
+					if(get.xjzh_deEffect(player)) return 1;
+					return game.countPlayer(current=>current.inRangeOf(player));
 				},
 			},
 		},
 	},
 	"xjzh_diablo_jianyu":{
 		enable:"phaseUse",
-		round:2,
 		skillAnimation:"epic",
 		animationColor:"thunder",
 		animationStr:"箭雨",
-		group:"xjzh_diablo_jianyu_damage",
-		content:function(){
-			player.chooseUseTarget({name:'wanjian'},false);
+		filter(event,player){
+			return !player.storage.xjzh_diablo_jianyu;
 		},
-		subSkill:{
-			"damage":{
-				trigger:{
-					source:"damageBegin",
-				},
-				direct:true,
-				priority:10,
-				sub:true,
-				filter:function(event,player){
-					return event.getParent('xjzh_diablo_jianyu').name=="xjzh_diablo_jianyu";
-				},
-				content:function(){
-					game.setNature(trigger,"poison",false);
-					if(Math.random()<=Math.random()) trigger.player.changexjzhBUFF('zhongdu',1);
-				},
-			},
+		async content(event,trigger,player){
+			let names=get.nameList(player),bool=false;
+			if(names.some(name=>game.xjzh_hasEquiped("xjzh_qishu_hakankouyu",name))) bool=true;
+
+			let next=await player.useCard({name:'wanjian',isCard:true},game.filterPlayer(current=>current!=player),false).set("effectCount",bool&&Math.random()<=0.3?2:1);
+
+			let xjzh_diablo_jianyuTimer,cooldown=1000*120*(1-0.425),elapsedTime=0,startTime=new Date().getTime();
+
+			player.storage.xjzh_diablo_jianyu=null;
+
+			xjzh_diablo_jianyuTimer=setInterval(()=>{
+				elapsedTime+=100;
+
+				let remainingTime=cooldown-elapsedTime,endTime=new Date().getTime(),remainderTime=endTime-startTime;
+
+				player.storage.xjzh_diablo_jianyu=new Map(
+					[
+						["cooldown",remainingTime],
+						["remainder",remainderTime],
+					]
+				);
+
+				if(remainingTime<=0){
+					clearInterval(xjzh_diablo_jianyuTimer);
+					delete player.storage.xjzh_diablo_jianyu;
+				}
+			},100);
+
 		},
 		ai:{
-			order:6,
+			order:8,
 			result:{
-				player:1,
+				player(player,target,card){
+					let targets=player.getFriends(),targets2=player.getEnemies();
+					return targets2.length>=targets.length?1:0.5;
+				},
 			},
 		},
 	},

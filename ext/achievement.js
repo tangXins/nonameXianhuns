@@ -1987,7 +1987,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 						game.xjzh_gainEquip(item);
 						result.push(item);
 					}else{
-					    var num=get.rand(1,10);
+					    var num=get.rand(5,35);
 						var item=["suipian",num];
 						game.xjzh_changeSuipian(num)
 						result.push(item);
@@ -2139,6 +2139,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				'xjzh_qishu_binglengjiqiao',
 				"xjzh_qishu_jiandun",
 				//等阶4
+				"xjzh_qishu_wuyexinjie",
+				"xjzh_qishu_rongjiezhixin",
+				"xjzh_qishu_mingyunzhiquan",
 				"xjzh_qishu_suoding",
 				"xjzh_qishu_junmao",
 				"xjzh_qishu_tongkuhushou",
@@ -2147,7 +2150,9 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				'xjzh_qishu_waxilidedaogao',
 				'xjzh_qishu_fenglangkx',
 				'xjzh_qishu_fengbaopaoxiao',
-				'xjzh_qishu_wumingzhe'
+				'xjzh_qishu_wumingzhe',
+				'xjzh_qishu_lietiangong',
+				'xjzh_qishu_hakankouyu'
 
 				];
 				for(var i=0;i<list.length;i++){

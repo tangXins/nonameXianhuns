@@ -550,8 +550,8 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			}
 		}
 	};
-	//获取BUFF的代码名（除这里之外一般用不上）
-	//现在支持的写法：_xjzh_buff_BUFF名、BUFF名、xjzh_buff_BUFF名
+	//获取BUFF的代码id（除这里之外一般用不上）
+	//现在支持的写法：_xjzh_buff_BUFF、BUFF、xjzh_buff_BUFF
 	get.xjzhBUFFName=function(name,iscomplete){
 		if(typeof name!='string') return;
 		var buff=name;
@@ -563,6 +563,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			if(buff.indexOf('xjzh_buff_')==0) buff=buff.replace('xjzh_buff_','');
 		}
 		return buff;
+	};
+	//获取BUFF的翻译
+	get.xjzhBUFFtranslate=function(name){
+		if(typeof name!='string') return;
+		let info;
+		if(lib.xjzhBUFF[name]) info=lib.xjzhBUFF[name].intro;
+		else return;
+		return info.name;
 	};
 	//获取BUFF的层数
 	get.xjzhBUFFNum=function(player,name){

@@ -166,20 +166,6 @@ const cards={
             }
         },
     },
-    "xjzh_card_lietiangong":{
-        audio:"ext:仙家之魂/audio/card/",
-        image:"ext:仙家之魂/image/cardpicture/xjzh_card_lietiangong.png",
-        derivation:"xjzh_diablo_moruina",
-        fullskin:true,
-        type:"equip",
-        subtype:"equip1",
-        distance:{attackFrom:-3},
-        ai:{
-            basic:{
-                equipValue:3
-            }
-        },
-    },
     "xjzh_card_mojianklls":{
         audio:"ext:仙家之魂/audio/card/",
         image:"ext:仙家之魂/image/cardpicture/xjzh_card_mojianklls.png",

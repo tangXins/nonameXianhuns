@@ -1550,7 +1550,10 @@ export const starsSkills={
 			while(cards.length){
 				let storage=player.storage.xjzh_zxzh_shiqiao;
 				let card=cards.pop().fix();
-				ui.cardPile.insertBefore(card,ui.cardPile.childNodes[get.rand(ui.cardPile.childElementCount)]);
+				game.cardsGotoPile(card, () => {
+					return ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)];
+				});
+				//ui.cardPile.insertBefore(card,ui.cardPile.childNodes[get.rand(ui.cardPile.childElementCount)]);
 				let number=get.number(card);
 				if(storage.includes(number)){
 					let card2=get.cardPile(cardx=>{
@@ -1628,27 +1631,18 @@ export const starsSkills={
 					let controlList=[
 						`移除点数${get.number(trigger.cards[0])}摸两张牌`,
 						`移除点数${get.number(trigger.cards[0])}令${get.translation(trigger.cards[0])}额外结算一次`,
-					]
-					const index=await player.chooseControlList(get.prompt(event.name,player),controlList).set('ai',()=>{
-						var player=_status.event.player
+					],storage=player.storage.xjzh_zxzh_shiqiao;
+					const index=await player.chooseControlList(get.prompt(event.name,player),controlList,true).set('ai',()=>{
+						let player=get.player();
 						if(player.countCards('h')<=1) return 0;
 						return 1;
 					}).forResult("index");
-					if(index){
-						switch(index){
-							case 0:{
-								player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
-								player.draw(2);
-							};
-							break;
-							case 1:{
-								player.storage.xjzh_zxzh_shiqiao.remove(get.number(trigger.cards[0]));
-								trigger.effectCount++
-								game.log(trigger.cards[0],'额外结算1次');
-							};
-							break;
-						}
-					}
+					storage.remove(get.number(trigger.cards[0]));
+					if(index==1){
+						trigger.effectCount++
+						game.log(trigger.cards[0],'额外结算1次');
+					}else player.draw(2);
+					if(storage.length==0) lib.skill.xjzh_zxzh_shiqiao.init(player);
 				},
 			},
 		},

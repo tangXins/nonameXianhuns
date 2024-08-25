@@ -276,7 +276,7 @@ const skills={
 				const {result:{bool,targets}}=await player.chooseTarget("〖伤逝〗：请选择并弃置一名角色的牌",(card,player,target)=>{
 					if(!target.countCards("hej")) return false;
 					return target!=player;
-				}).set('ai',(player,target)=>lib.card.guohe.ai.result.target(player,target));
+				}).set('ai',target=>lib.card.guohe.ai.result.target(player,target));
 				if(!bool) return;
 				const target=targets[0];
 				player.discardPlayerCard("hej",target,true).set('target',target).set('ai',button=>lib.card.guohe.ai.button(button));
@@ -327,7 +327,7 @@ const skills={
 		init(player,skill){
 			player.addSkillBlocker(skill);
 		},
-		content(){
+		async content(event,trigger,player){
 			player.logSkill("xjzh_sanguo_huishi");
 			player.removeSkill("xjzh_sanguo_huishi2");
 		},
@@ -335,7 +335,7 @@ const skills={
 			player.removeSkillBlocker(skill);
 		},
 		skillBlocker(skill,player){
-			var info=lib.skill[skill]
+			let info=lib.skill[skill]
 			if(info&&(info.juexingji||info.limited||info.zhuSkill||info.dutySkill||info.jy_bangpai||info.zhuanshuSkill)){
 				if(info.xjzh_xinghunSkill) return false;
 				return true
@@ -10196,6 +10196,7 @@ const skills={
 		frequent:true,
 		check(event,player){return 1;},
 		skillList:[
+			"weisong",
 			"liuzhuan",
 			"chongsu",
 			"shunying",

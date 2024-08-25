@@ -1,7 +1,15 @@
 'use strict';
 window.XJZHimport(function(lib,game,ui,get,ai,_status){
-	lib.arenaReady.push(function(){
-        let characters;
+	lib.arenaReady.push(async()=>{
+        let characters,qishumingyushi=false;
+
+        Object.defineProperty(window, 'qishumingyushi', {
+            value: qishumingyushi,
+            enumerable: true, // 可以被枚举，默认为false
+            writable: true,   // 可以被修改，默认为false
+            configurable: true // 可以被删除或再次修改特性，默认为false
+        });
+
 	    if(lib.characterPack['XWTZ']){
 	        characters=lib.characterPack['XWTZ']
 	    }else{
@@ -165,7 +173,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         text.innerHTML=str2;
     };
 
-    lib.onover.push(async function(ret){
+    lib.onover.push(async(ret)=>{
         if(!game.getExtensionConfig("仙家之魂","xjzh_qishuyaojianOption")) return;
         if(ret){
             //统计本剧得分
@@ -195,7 +203,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             //var num2=Math.floor(((draw>use?use+draw/2:use)+(source-damage)+(source==kill?kill:source)+recover)*num);
             //对局得分不再计算摸牌数
             var num3=Math.floor(use+(source-damage)+(source==kill?kill:source)+recover);
-            var num2=Math.floor((use+(source-damage)+(source==kill?kill:source)+recover)*num)
+            var num2=(use+(source-damage)+(source==kill?kill:source)+recover)*num;
 
             var qishuReward={
         		"jingpo":0,
@@ -210,25 +218,20 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         	};
             //碎片获得
             var suipian=Math.floor(num2);
-            qishuReward["suipian"]+=qishumingyushi==true?suipian:suipian*2;
+            qishuReward["suipian"]+=window.qishumingyushi===true?suipian*2:suipian;
 
             //材料获得
             var {...cailiaoList}=lib.config.xjzh_qishuyaojians.cailiao;
             var cailiaoList2=Object.keys(cailiaoList).filter(function(item){
-	            return ["xjzh_cailiao_enianzhixin","xjzh_cailiao_gangtie","xjzh_cailiao_kongju","xjzh_cailiao_xianxue","xjzh_cailiao_mingyushi"].includes(item);
+	            return ["xjzh_cailiao_enianzhixin","xjzh_cailiao_gangtie","xjzh_cailiao_kongju","xjzh_cailiao_xianxue"].includes(item);
 	        });
 
-	        var numx=0;
-	        while(numx<4){
-	            if(Math.random()<=num2/300){
-	                var index=cailiaoList2.randomGet();
-                    if(index=="xjzh_cailiao_mingyushi"){
-                        if(Math.random()<=0.2*(qishumingyushi?2:1)) qishuReward["cailiao"][index]+=1;
-                    }
-                    else qishuReward["cailiao"][index]+=1;
-	            }
-	            numx++
-	        }
+            for(let num=1;num<=3;num++){
+                let randomNum=suipian<50?0.25:num2/200,index=cailiaoList2.randomGet();
+	            if(Math.random()<=randomNum) qishuReward["cailiao"][index]+=1;
+            }
+
+            if(Math.random()<=0.25*(qishumingyushi?2:1)) qishuReward["cailiao"]["xjzh_cailiao_mingyushi"]+=1;
 
             var qishuList=[];
             for(var i in lib.xjzh_qishuyaojians){
@@ -386,7 +389,7 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             }
 
             //展示奖励结算面板数据
-            var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+num2+'<br><br>对局奖励：';
+            var str='当前模式：'+get.translation(get.mode())+'<br><br>当前玩家：'+lib.config.xjzh_qishuyaojians.name+'（'+get.translation(game.me.name)+'）<br><br>总计得分：'+suipian+'<br><br>对局奖励：';
 
             str+='<br>&emsp;&emsp;经验（'+num3+'）';
 
@@ -459,10 +462,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
         filter:function(event,player){
             return game.boss!=game.me;
         },
-        init:function(player){
-            window.qishumingyushi=false;
+        init(player){
             if(game.getExtensionConfig("仙家之魂","xjzh_qishuBossPower")){
-                if(get.xjzh_cailiao("xjzh_cailiao_mingyushi")>1) window.qishumingyushi=true;
+                if(get.xjzh_cailiao("xjzh_cailiao_mingyushi")>1) Object.defineProperty(window, 'qishumingyushi', {
+                    value: true,
+                    enumerable: true, // 可以被枚举，默认为false
+                    writable: true,   // 可以被修改，默认为false
+                    configurable: true // 可以被删除或再次修改特性，默认为false
+                });//window.qishumingyushi=true;
             }
 
             if(!player.storage.xjzh_qishu_materialRemove) player.storage.xjzh_qishu_materialRemove=player.getOriginalSkills();

@@ -60,7 +60,7 @@ const dynamicTranslates = {
 	},
 	"xjzh_sanguo_tongxuan":function(player){
 		var str="出牌阶段限"+get.cnNumber(get.info("xjzh_sanguo_tongxuan").usable)+"次、游戏开始时、你的回合结束时，你可以移除因〖通玄〗获得的技能并从除〖双生〗之外的所有增益技能中选择"
-		var str2="<span style=\"color:#eb1100\">"+get.translation(player.storage.xjzh_sanguo_tongxuan2)+"</span>";
+		var str2="<span style=\"color:#eb1100\">"+get.translation(player.storage.xjzh_sanguo_tongxuan)+"</span>";
 		var str3="个技能获得之。"
 		return str+str2+str3;
 	},

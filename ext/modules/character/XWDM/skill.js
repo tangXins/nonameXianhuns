@@ -786,9 +786,7 @@ const skills={
 			}
 			else{
 				player.storage.xjzh_huoying_xianzhang=true;
-				player.addTempSkill('xjzh_huoying_xianzhang_1',{
-					player:'phaseUseBegin'
-				});
+				player.addTempSkill('xjzh_huoying_xianzhang_1',{player:'phaseUseBegin'});
 			}
 		},
 		subSkill:{
@@ -1033,98 +1031,44 @@ const skills={
 	},
 	"xjzh_huoying_kaobei":{
 		trigger:{
-			global:'$logSkill',
+			global:["logSkill","useSkillAfter"],
 		},
 		usable:1,
 		bannedList:[
 			"ywhy_youli"
 		],
-		direct:true,
+		forced:true,
 		firstDo:true,
 		priority:100,
-		marktext:"拷",
-		intro:{
-			name:"拷贝",
-			content:'$',
-		},
 		audio:"ext:仙家之魂/audio/skill:1",
-		//check:function(event,player){return 1;},
-		filter:function(event,player){
-			var skills=event.skill
-			var skills2=player.getStockSkills();
-			var info=get.info(skills)
-			if(skills2.includes(event.skill)) return false;
-			if(lib.skill.xjzh_huoying_kaobei.bannedList.includes(skills)) return false;
-			if(!lib.translate[event.skill+'_info']) return false;
-			if(lib.skill.global.includes(event.skill)) return false;
-			if(player.getExpansions("xjzh_huoying_shenwei").length<=0) return false;
-			if(info&&(info.limited||info.juexingji||info.dutySkill||info.equipSkill||info.sub||info.unique)) return false;
+		filter(event,player){
+			let skill=event.skill||event.sourceSkill,info=get.info(skill)
+			if(player.hasSkill(skill)) return false;
+			if(lib.skill.xjzh_huoying_kaobei.bannedList.includes(skill)) return false;
+			if(!lib.translate[skill+'_info']||!lib.translate[skill]) return false;
+			if(lib.skill.global.includes(skill)) return false;
+			if(!player.getExpansions("xjzh_huoying_shenwei").length) return false;
+			if(!info||(info&&(info.limited||info.juexingji||info.dutySkill||info.equipSkill||info.sub||info.unique))) return false;
 			if(info.ai&&(info.ai.combo||info.ai.notemp||info.ai.neg)) return false;
-			return true;
+			return event.player!=player;
 		},
-		/*prompt:function(event,player){
-		return "〖拷贝〗：是否移除一张“雷”发动技能〖"+get.translation(event.skill)+"〗";
-		},*/
-		content:function(){
-			"step 0"
-			var bool=false;
-			var skills=trigger.skill
-			var skills2=trigger.player.skills;
-			for(var i=0;i<skills2.length;i++){
-				var info=lib.skill[skills2[i]]
-				if(typeof info.group=='string'){
-					if(info.group==skills) bool=true;
-					break;
-				}
-				else if(Array.isArray(info.group)){
-					for(var j of info.group){
-						if(j==skills) bool=true;
-						break;
-					}
-				}
-			}
-			if(bool){
-				event.finish();
-				return;
-			}
-			"step 1"
-			if(trigger.player==player){
-				if(player.getStorage('xjzh_huoying_kaobei').includes(trigger.skill)){
-					player.unmarkAuto('xjzh_huoying_kaobei',[trigger.skill])
-					player.addAdditionalSkill('xjzh_huoying_kaobei',player.getStorage('xjzh_huoying_kaobei'));
-					player.syncStorage('xjzh_huoying_kaobei');
-					player.markSkill('xjzh_huoying_kaobei');
-				}
-				event.finish();
-				return;
-			}
-			else{
-				if(player.getStorage('xjzh_huoying_kaobei').includes(trigger.skill)){
-					event.finish();
-					return;
-				}
-			}
-			"step 2"
-			var cards=player.getExpansions("xjzh_huoying_shenwei");
-			player.chooseCardButton(cards,1,"〖拷贝〗：选择移除一张“雷”获得"+get.translation(trigger.player)+"的技能〖"+get.translation(trigger.skill)+"〗").set('ai',function(button){
-				var valuex=get.value(button.link)
-				var number=get.number(button.link)
+		async content(event,trigger,player){
+			let skill=trigger.skill||trigger.sourceSkill;
+			let cards=player.getExpansions("xjzh_huoying_shenwei");
+			const links=await player.chooseCardButton(cards,1,"〖拷贝〗：选择移除一张“雷”获得"+get.translation(trigger.player)+"的技能〖"+get.translation(trigger.skill)+"〗").set('ai',button=>{
+				let valuex=get.value(button.link),number=get.number(button.link)
 				return 6-valuex+number;
-			});
-			"step 3"
-			if(result.bool){
-				player.loseToDiscardpile(result.links);
-				player.markAuto('xjzh_huoying_kaobei',[trigger.skill]);
-				player.addAdditionalSkill('xjzh_huoying_kaobei', player.getStorage('xjzh_huoying_kaobei'));
-				player.syncStorage('xjzh_huoying_kaobei');
-				player.markSkill('xjzh_huoying_kaobei');
+			}).forResultLinks();
+			if(links){
+				player.loseToDiscardpile(links);
+				player.addTempSkills(skill,{player:`${skill}After`});
 			}
 		},
 	},
 	"xjzh_huoying_shenwei":{
 		trigger:{
-			global:["gameStart"],
-			player:["enterGame"],
+			global:["gameStart","roundStart"],
+			player:["enterGame","dying"],
 		},
 		forced:true,
 		mark:true,
@@ -1134,134 +1078,68 @@ const skills={
 			markcount:"expansion",
 		},
 		audio:"ext:仙家之魂/audio/skill:1",
-		onremove:function(player,skill){
-			var cards=player.getExpansions(skill);
+		onremove(player,skill){
+			let cards=player.getExpansions(skill);
 			if(cards.length) player.loseToDiscardpile(cards);
 		},
-		group:["xjzh_huoying_shenwei_round","xjzh_huoying_shenwei_dying"],
-		filter:function(event,player){
-			return true;
+		filter(event,player){
+			if(event.name=="game") return true;
+			if(event.name=="dying") return player.getExpansions("xjzh_huoying_shenwei").length;
+			return game.roundNumber%2!=0;
 		},
-		content:function(){
-			"step 0"
-			var cards=get.cards(7);
-			player.chooseCardButton(cards,4,true,"〖神威〗：选择4张牌将其置于你的武将牌上").set('ai',function(button){
-				return get.number(button.link)+get.value(button.link);
-			});
-			"step 1"
-			if(result.links){
-				player.addToExpansion(result.links,"giveAuto",player).gaintag.add("xjzh_huoying_shenwei");
+		async content(event,trigger,player){
+			let name=trigger.name,cards;
+			if(name=="game"){
+				cards=get.cards(7);
+				const links=await player.chooseCardButton(cards,4,true,"〖神威〗：选择4张牌将其置于你的武将牌上").set('ai',button=>{
+					return get.number(button.link)+get.value(button.link);
+				}).forResultLinks();
+				if(links) player.addToExpansion(links,"giveAuto",player).gaintag.add("xjzh_huoying_shenwei");
 			}
-		},
-		subSkill:{
-			round:{
-				trigger:{
-					global:"roundStart",
-				},
-				forced:true,
-				audio:"xjzh_huoying_shenwei",
-				filter:function(event,player){
-					return game.roundNumber%2!=0;
-				},
-				content:function(){
-					var list=Array.from(ui.cardPile.childNodes);
-					var cards=list.randomGets(4);
-					player.gain(cards,player,"giveAuto");
-				},
-			},
-			dying:{
-				trigger:{
-					player:"dyingBegin",
-				},
-				prompt:function(event,player){
-					return "〖神威〗：令一名角色获得所有“雷”或令其弃置点数不小于“雷”的任意张牌";
-				},
-				audio:"xjzh_huoying_shenwei",
-				filter:function(event,player){
-					return player.getExpansions("xjzh_huoying_shenwei").length;
-				},
-				content:function(){
-					"step 0"
-					draw=false;
-					event.num=0
-					var cardx=player.getExpansions("xjzh_huoying_shenwei");
-					for(var i of cardx){
-						event.num+=get.number(i);
-					}
-					player.chooseControlList(get.prompt(event.name,player), [
-					'令一名角色获得所有“雷”',
-					'令其弃置任意张点数不小于'+get.translation(event.num)+'的牌',
-					],function(){
-						var att=get.attitude(player,target);
-						if(player.hasFriend()&&att>=0) return 0;
-						return 1;
+			else if(name=="dying"){
+				let num=0;
+				cards=player.getExpansions("xjzh_huoying_shenwei");
+				cards.forEach(card=>{
+					num+=get.number(card);
+				});
+				const index=await player.chooseControlList(get.prompt(event.name,player),true,[
+					`令一名角色获得所有“雷”`,
+					`令一名角色弃置任意张点数不小于${get.translation(num)}的牌`
+				])
+				.set("ai",target=>{
+					let att=get.attitude(player,target);
+					if(player.hasFriend()&&att>=0) return 0;
+					return 1;
+				})
+				.forResult("index");
+				const targets=await player.chooseTarget(true,index==0?"令一名角色获得所有“雷”":`令一名角色弃置任意张点数和不小于${get.translation(num)}的牌,否则其失去所有体力`,lib.filter.notMe).set('ai',target=>{
+					return index==0?get.attitude(player,target):-get.attitude(player,target);
+				}).forResultTargets();
+				if(index==0){
+					targets[0].gain(cards,player,"giveAuto");
+				}else{
+					const bool=await targets[0].chooseCard(`弃置任意张点数和不小于${get.translation(num)}的牌,否则失去所有体力`,'h')
+					.set('complexCard',true)
+					.set('complexSelect',true)
+					.set('selectCard',()=>{
+						let num2=0;
+						for(var i=0;i<ui.selected.cards.length;i++){
+							num2+=get.number(ui.selected.cards[i]);
+						}
+						if(num2>=num) return ui.selected.cards.length;
+						return targets[0].countCards("h");
 					})
-					.set("player",player);
-					"step 1"
-					if(result.index==0){
-						draw=true;
-						player.chooseTarget(true,"令一名角色获得所有“雷”",function(target){
-							return target!=player;
-						})
-						.set('ai',function(target){
-							return get.attitude(player,target)>=0;
-						});
-					}
-					else{
-						player.chooseTarget(true,"令一名角色弃置任意张点数不小于"+get.translation(event.num)+"的牌",function(card,player,target){
-							return target!=player&&target.countCards("h");
-						})
-						.set('ai',function(target){
-							return get.attitude(player,target)<0;
-						});
-					}
-					"step 2"
-					if(result.bool){
-						if(draw){
-							var cardx=player.getExpansions("xjzh_huoying_shenwei");
-							result.targets[0].gain(cardx,player,"giveAuto");
-							event.finish();
-						}
-						else{
-							var cardx=player.getExpansions("xjzh_huoying_shenwei");
-							event.num2=result.targets[0].countCards("h");
-							event.target=result.targets[0]
-							var next=event.target.chooseCard('弃置任意张点数之和不小于'+get.translation(event.num)+'的牌，否则失去所有体力','h');
-							next.set('numx',event.num);
-							next.set('complexCard',true);
-							next.set('complexSelect',true);
-							next.set('selectCard',function(){
-								var num2=0;
-								for(var i=0;i<ui.selected.cards.length;i++){
-									num2+=get.number(ui.selected.cards[i]);
-								}
-								if(num2>=_status.event.numx) return ui.selected.cards.length;
-								return event.num2;
-							});
-							next.set('ai',function(card){
-								return 4-get.value(card);
-							});
-						}
-					}
-					"step 3"
-					if(result.bool){
-						event.target.discard(result.cards);
-						/*num=0
-						for(var i of result.cards){
-						num+=get.number(i)
-						}
-						if(num<event.num&&result.cards.length!=event.num2){
-						event.target.loseHp(event.target.hp);
-						}*/
-					}
-					else{
-						event.target.loseHp(event.target.hp);
-					}
-					"step 4"
-					var cards=player.getExpansions("xjzh_huoying_shenwei");
-					if(cards.length) player.loseToDiscardpile(cards);
-				},
-			},
+					.set('ai',card=>{
+						return 4-get.value(card);
+					})
+					.forResultBool();
+					if(!bool) targets[0].loseHp(targets[0].getHp(true));
+				}
+			}
+			else{
+				cards=Array.from(ui.cardPile.childNodes).randomGets(4);
+				player.gain(cards,player,"giveAuto");
+			}
 		},
 	},
 	"xjzh_huoying_leiqie":{
