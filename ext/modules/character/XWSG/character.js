@@ -251,7 +251,7 @@ const characters = {
 		sex:"male",
 		group:"qun",
 		hp:4,
-		skills:["mashu","xjzh_sanguo_shenji","xjzh_sanguo_baonulvbu"],
+		skills:["mashu","xjzh_sanguo_shenji","xjzh_sanguo_shenwei"],
 		names:"吕|布",
 		isZhugong:true,
 	},

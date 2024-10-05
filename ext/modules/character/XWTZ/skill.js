@@ -1236,7 +1236,7 @@ const skills={
 			var {...cards}=lib.xjzh_qishuyaojians;
 			var list=[]
 			for(var i in cards){
-				if(["xjzh_qishu_wuyan","xjzh_qishu_fengbaopaoxiao","xjzh_qishu_waxilidedaogao","xjzh_qishu_fenglangkx"].includes(i)) continue;
+				if(["xjzh_qishu_wuyan","xjzh_qishu_fengbaopaoxiao","xjzh_qishu_waxilidedaogao","xjzh_qishu_fenglangkx","xjzh_qishu_hakankouyu","xjzh_qishu_lietiangong","xjzh_qishu_wumingzhe"].includes(i)) continue;
 				var cardname=i;
 				lib.card[cardname]={
 					fullimage:false,
@@ -1285,7 +1285,7 @@ const skills={
 			next.set('ai',function(button){
 				var link=button.link[2];
 				var level=cards[link].level;
-				return level<5||1;
+				return get.rand(1,4);
 			})
 			next.set('selectButton',function(){
 				var player=_status.event.player

@@ -44,13 +44,13 @@ const translates = {
 	"xjzh_huoying_shenwei":"神威",
 	"xjzh_huoying_shenwei_info":"<b><font color=orange>〖神威〗</font>游戏开始时，你观看牌堆顶7张牌，并将其中4张置于武将牌上称为“雷”；一轮游戏开始时，若当前轮数为奇数，你获得牌堆随机4张牌；当你濒死时，你可以弃置所有“雷”并选择一名角色，然后你选择执行：1，其获得所有“雷”；2，其需弃置任意张点数不小于“雷”的牌，不足则全弃，否则其失去所有体力。",
 	"xjzh_huoying_leiqie":"雷切",
-	"xjzh_huoying_leiqie_info":"<b><font color=orange>〖雷切〗</font>出牌阶段限一次，你可以交换“雷”和手牌中的任意张牌，然后对一名角色随机发动以下效果：1，其与场上随机一名角色交换位置，直到其下个回合结束前，其不可打出或使用[伤害]卡牌；2，其受到一点雷电伤害，然后其跳过下个出牌阶段。",
+	"xjzh_huoying_leiqie_info":"<b><font color=orange>〖雷切〗</font>出牌阶段限一次，你可以交换“雷”和手牌中的任意张牌，然后对一名角色造成1点雷属性伤害。",
 	"xjzh_huoying_bietian":"别天",
-	"xjzh_huoying_bietian_info":"<b><font color=orange>〖别天神〗</font>本局游戏限两次，出牌阶段，你可以选择一名其他角色，此后的对局中，其摸牌阶段额外摸两张牌且你接管其出牌阶段；若你无法发动该技能，你禁用〖须佐〗。",
+	"xjzh_huoying_bietian_info":"<b><font color=orange>〖别天神〗</font>当你造成不小于2的伤害后，你可以失去一点体力上限随机偷取目标一个回合阶段；锁定技，你每有一个偷取的额外阶段，你的回合摸牌数+1，若你有额外的阶段，你的回合阶段顺序随机执行。",
 	"xjzh_huoying_shunshen":"瞬身",
-	"xjzh_huoying_shunshen_info":"<b><font color=orange>〖瞬身术〗</font>当你受到伤害时，你可以弃置一张牌与其交换位置，若此时其手牌区有牌，你获得其一张手牌，然后你可以使用这张牌，若此牌为【闪】，你可以弃置此牌防止该伤害。",
+	"xjzh_huoying_shunshen_info":"<b><font color=orange>〖瞬身术〗</font>锁定技，你的回合开始时，你与一名随机角色交换位置，然后你可以选择使用一张手牌；你防止上家/下家对你造成的伤害。",
 	"xjzh_huoying_xuzuo":"须佐",
-	"xjzh_huoying_xuzuo_info":"<b><font color=orange>〖须佐能乎〗</font>锁定技，当你至少发动一次〖别天〗后，你每发动一次〖瞬身〗获得一点护甲；当你使用【杀】造成伤害时，你可以移除所有护甲令此牌伤害+x（x为你移除的护甲数量）。",
+	"xjzh_huoying_xuzuo_info":"<b><font color=orange>〖须佐能乎〗</font>锁定技，你每发动一次〖瞬身〗与其他角色交换位置获得一点护甲；当你受到伤害时，若你的护甲不小于2，你移除所有护甲，然后获得x/2点体力上限（向下取整）。",
 
 };
 

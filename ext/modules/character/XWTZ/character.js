@@ -15,7 +15,7 @@ const characters = {
 		sex:"male",
 		group:"shen",
 		hp:4,
-		skills:["xjzh_boss_jiwu","xjzh_boss_feijiang","xjzh_boss_benxi","xjzh_boss_xiuluo"],
+		skills:["xjzh_boss_dianxing","xjzh_boss_qingling"],
 		names:"张|角",
 		isBoss:true,
 		isBossAllowed:true,

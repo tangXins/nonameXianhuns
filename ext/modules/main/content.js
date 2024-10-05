@@ -41,7 +41,7 @@ export async function content(config,pack){
 	//第一次导入本扩展自动开启本扩展所有武将包
 	try{
 		if(!game.getExtensionConfig("仙家之魂","xjzh_enableCharacters")){
-			let list=["XWSG","XWTR","XWDM","XWCS","XWTZ","JLBC"];
+			let list=["XWSG","XWTR","XWDM","XWCS","XWTZ"];
 			for(let i of list){
 				if(!lib.config.characters.includes(i)){
 					game.saveConfig('characters',lib.config.characters.concat(i));
@@ -500,7 +500,6 @@ export async function content(config,pack){
 						xjzh_sanguo_sphuatuo:'sp华佗',
 					};
 					var xjzhjiexian={
-						xjzh_sanguo_tongyuan:'界童渊',
 						xjzh_sanguo_machao:'界马超',
 						xjzh_sanguo_zhangrang:'界张让',
 						xjzh_sanguo_guanlu:'界管辂',
@@ -780,6 +779,40 @@ export async function content(config,pack){
 		});
 	};
 	// ---------------------------------------定义函数------------------------------------------//
+	get.xjzh_zhengyiSkills=function(player){
+		let list=[
+			"mieque","weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
+		];
+		if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
+		let type;
+		if (typeof player == "undefined" || ((type = typeof player), type != "object") || ((type = get.itemtype(player)), type != "player")) {
+			throw new Error(`函数接受了一个不是Player的东西: ${type}: ${player}`);
+		};
+		if(get.is.playerNames(player,"xjzh_sanguo_zuoyou")) list.removeArray(["shuangsheng","pianxian"]);
+		return list;
+	};
+	/**
+	 * 随机成功函数
+	 *
+	 * 该函数用于生成一个随机决策，它比较两次随机数生成的结果，以决定是否“成功”。
+	 * 返回值为一个布尔值，如果生成的第一个随机数大于或等于第二个随机数，则返回true，表示“成功”；否则返回false。
+	 *
+	 * @returns {boolean} 根据生成的随机数决定返回true（成功）还是false（失败）
+	 */
+	game.xjzh_randomSuccess=function(){
+		const num=Math.random();
+		return Math.random()<=num;
+	},
+	/**
+	 * 清除玩家身上的所有控制效果
+	 *
+	 * 该函数用于解除玩家身上的各种控制效果，包括弃置延时锦囊牌、翻面、横置、恢复装备栏位以及移除减益BUFF
+	 * 它首先检查传入的player参数是否为有效的Player对象，然后执行一系列操作来解除上述限制状态
+	 *
+	 * @param {Object} player - 要清除控制的玩家对象，必须是有效的Player实例
+	 * @returns {Object} 返回经过控制效果清除操作后的玩家对象
+	 * @throws {Error} 如果传入的player参数不是有效的Player对象，则抛出错误
+	 */
 	game.claerRestraint=function(player){
 		let type;
 		if (typeof player == "undefined" || ((type = typeof player), type != "object") || ((type = get.itemtype(player)), type != "player")) {
@@ -850,7 +883,13 @@ export async function content(config,pack){
 
 		return arabicNum;
 	};
-
+	/**
+	 * 更新文本中的次数限制信息
+	 * 该函数主要用于在文本中找到次数限制的表述，并将其更新为新的次数
+	 * @param {string} text - 需要更新的文本
+	 * @param {number} num - 需要增加到原始次数上的数值
+	 * @returns {string} - 更新后的文本字符串
+	 */
 	game.xjzh_updateText=function(text,num) {
 		// 匹配"限数字次"或"限中文数字次"的模式
 		const pattern = /限(\d+次|\d+|一|二|三|四|五|六|七|八|九|十|百|千)+次/g;

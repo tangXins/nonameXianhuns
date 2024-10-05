@@ -8,7 +8,6 @@ export async function precontent(xjzh){
 		`character/XWCS/index.js`,
 		`character/XWDM/index.js`,
 		`character/XWTZ/index.js`,
-		`character/JLBC/index.js`,
     ];
     Promise.all(
         scriptPaths.map(path => import(`../${path}`))

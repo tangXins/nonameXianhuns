@@ -5,7 +5,34 @@ let jsonInfo=await lib.init.promises.json(`${rootURL}/extension/仙家之魂/inf
 export const updateLog={
     version:`${jsonInfo.version}`,
 	onlyVersion:`${jsonInfo.onlyVersion}`,
-	'3.08193':{
+	'3.10051':{
+        changeLog:[
+			"重做宇智波止水",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:["xjzh_huoying_zhishui"],
+		cards:[],
+    },
+	'3.09281':{
+        changeLog:[
+			"移除“极略补充”武将包",
+			"新增增益技能〖灭却〗",
+			"重做sp吕布",
+			"修复奇术要件“谐角之冠”，技能次数错误",
+			"调整林霜〖清泉〗，出牌阶段分配护甲改为回复体力后令其他角色执行选项",
+			"调整林霜〖凛冬〗，具体看技能介绍",
+			"调整董卓〖揽政〗，需弃牌的手牌数小于其体力值时获得1点体力上限",
+			"调整董卓〖暴敛〗，具体看技能介绍",
+			"调整旗木卡卡西〖雷切〗，随机效果改为造成1点雷属性伤害",
+			"优化林嘉笙〖妙法〗代码",
+		    "修复许多bug",
+	    	"优化许多细节",
+        ],
+	    players:["xjzh_sanguo_dongzhuo","xjzh_sanguo_splvbu","xjzh_huoying_kakaxi","xjzh_meiren_linshuang"],
+		cards:[],
+    },
+	'3.08251':{
         changeLog:[
 			"新增奇术要件“塞利格的溶解之心”",
 			"新增奇术要件“无夜星空之戒”",
@@ -19,7 +46,7 @@ export const updateLog={
 		    "修复许多bug",
 	    	"优化许多细节",
         ],
-	    players:["xjzh_diablo_moruina","xjzh_huoying_kakaxi"],
+	    players:["xjzh_diablo_moruina","xjzh_diablo_kaxia"],
 		cards:[],
     },
 	'3.08191':{

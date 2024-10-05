@@ -277,9 +277,8 @@ const skills={
         intro:{
             name:"熔岩铠甲",
             content(storage,player){
-                let damageList=player.storage.xjzh_card_rongyankaijia_skill.slice(0);
                 let num=0;
-                for(let list of damageList){
+                for(let list of storage){
                     num+=list.find(evt=>{
                         return typeof evt==="number";
                     });
@@ -325,8 +324,10 @@ const skills={
                                 if(player.isDead()) break;
                                 player.damage(...(damageList.slice(0)));
                             }
-                            delete player.storage.xjzh_card_rongyankaijia_skill;
-                            player.unmarkSkill("xjzh_card_rongyankaijia_skill");
+                            if(player.isAlive()){
+                                delete player.storage.xjzh_card_rongyankaijia_skill;
+                                player.unmarkSkill("xjzh_card_rongyankaijia_skill");
+                            }
                         }
                     });
                 }

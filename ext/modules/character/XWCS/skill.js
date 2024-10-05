@@ -8,51 +8,27 @@ const skills={
 			player:"recoverAfter",
 		},
 		forced:true,
+		locked:true,
 		priority:-2,
-		group:["xjzh_meiren_qingquan_use"],
-		content:function(){
-			var num=player.hasSkill("xjzh_meiren_lingdong")?2:1;
-			player.changeHujia(num);
-		},
-		subSkill:{
-			"use":{
-				enable:"phaseUse",
-				sub:true,
-				filterTarget:function(card,player,target){
-					return player!=target;
-				},
-				filter:function(event,player){
-					return player.hujia>0;
-				},
-				content:function(){
-					"step 0"
-					var num=player.hujia;
-					var list=[];
-					for(var i=1;i<=num;i++){
-						list.push(i);
-					}
-					player.chooseControl(list).set('ai',function(){
-						return list.randomGet();
-					});
-					"step 1"
-					if(result.control){
-						player.changeHujia(-result.control);
-						target.changeHujia(result.control);
-					}
-				},
-			},
-			ai:{
-				order:6,
-				result:{
-					player:-1,
-					target:1,
-				},
-			},
+		async content(event,trigger,player){
+			player.changeHujia(player.awakenedSkills.includes("xjzh_meiren_hanshuang")?2:1);
+			let str=`〖清泉〗：选择${player.awakenedSkills.includes("xjzh_meiren_hanshuang")?"任意名目标令其":"一名角色令其"}${player.awakenedSkills.includes("xjzh_meiren_hanshuang")?"执行":"随机执行"}①回复一点体力；②摸一张牌；③获得一点护甲`,num=player.awakenedSkills.includes("xjzh_meiren_hanshuang")?game.countPlayer(current=>current!=player):1;
+			const targets=await player.chooseTarget(str,num==1?1:[1,num],lib.filter.notMe).set('ai',target=>get.attitude(player,target)>0).forResultTargets();
+			if(targets){
+				for(let target of targets){
+					let list=[
+						"recover",
+						"draw",
+						"changeHujia"
+					];
+					player.awakenedSkills.includes("xjzh_meiren_hanshuang")?list.forEach(item=>target[item]()):target[list.randomGet()]();
+				}
+			}
 		},
 		ai:{
 			pretao:true,
 			nokeep:true,
-			skillTagFilter:function(player,tag,arg){
+			skillTagFilter(player,tag,arg){
 				if(tag=='nokeep'){
 					if(player==arg){
 						if(player.countCards('h','tao')) return true;
@@ -74,83 +50,30 @@ const skills={
 		skillAnimation:true,
 		animationColor:'water',
 		animationStr:"凛冬已至",
-		init:function(player,skill){
-			player.storage[skill]=false;
-		},
-		filter:function(event,player){
-			return !player.storage.xjzh_meiren_hanshuang;
-		},
-		derivation:['xjzh_meiren_lingdong'],
-		content:function (){
-			"step 0"
+		derivation:["xjzh_meiren_lingdong"],
+		async content(event,trigger,player){
 			player.awakenSkill("xjzh_meiren_hanshuang");
-			player.storage.xjzh_sanguo_hanshuang=true;
-			"step 1"
 			trigger.cancel();
 			player.loseMaxHp();
 			player.recoverTo(1);
-			player.addSkillLog("xjzh_meiren_lingdong");
+			player.addSkills(get.info(event.name).derivation);
 		},
 	},
 	"xjzh_meiren_lingdong":{
 		trigger:{
 			global:"recoverAfter",
+			player:"changeHujiaAfter",
 		},
 		forced:true,
 		priority:-2,
-		group:["xjzh_meiren_lingdong_ice","xjzh_meiren_lingdong_phase"],
-		filter:function(event,player){
-			return event.player!=player;
+		filter(event,player,name){
+			if(name=='recoverAfter') return event.player!=player;
+			return event.type=="damage";
 		},
-		content:function(){
-			player.changeHujia();
-		},
-		subSkill:{
-			"ice":{
-				trigger:{
-					source:"damageBegin",
-				},
-				direct:true,
-				sub:true,
-				priority:3,
-				filter:function(event,player){
-					if(game.hasNature(event,"ice")) return false;
-					return true;
-				},
-				content:function(){
-					game.setNature(trigger,'ice',false);
-					var evt=event.getParent('damage');
-					var next=game.createEvent('xjzh_meiren_lingdong_after',false,evt.getParent());
-					next.player=trigger.player;
-					next.setContent(function(){
-						if(Math.random()<=Math.random()) player.changexjzhBUFF('binghuan',1);
-					});
-				},
-			},
-			"phase":{
-				trigger:{
-					player:"phaseBegin",
-				},
-				direct:true,
-				sub:true,
-				priority:3,
-				filter:function(event,player){
-					var num=game.countPlayer(function(current){
-						return current!=player&&get.xjzhBUFFNum(current,'binghuan')>0;
-					});
-					return num==game.players.length-1;
-				},
-				content:function(){
-					var targets=game.filterPlayer(function(current){
-						return current!=player&&get.xjzhBUFFNum(current,'binghuan')>0;
-					});
-					for(var target of targets){
-						var num=get.xjzhBUFFNum(target,'binghuan');
-						target.damage(num,player,'ice','nocard')._triggered=null;
-						target.changexjzhBUFF('binghuan',-num);
-					}
-				},
-			},
+		async content(event,trigger,player){
+			let name=event.triggername;
+			if(name=='recoverAfter') player.changeHujia();
+			else player.drawTo(player.maxHp);
 		},
 	},
 	"xjzh_meiren_ganling":{
@@ -175,7 +98,7 @@ const skills={
 			trigger.cancel(null,null,'notrigger');
 			switch(trigger.name){
 				case "damage":
-					game.log("你防止受到所有伤害");
+					game.log(player,"防止受到所有伤害");
 				break;
 				case "loseMaxHp":
 					game.log(player,'的回合外无法失去体力上限');
@@ -194,10 +117,10 @@ const skills={
 			nodamage:true,
 			threaten:0.8,
 			effect:{
-				target:function (card,player,target){
+				target(card,player,target){
 					if(!target.hasFriend()) return;
 					if(get.tag(card,'damage')) return [0,0];
-					//if(get.tag(card,'loseHp')) return [0,0];
+					if(get.tag(card,'loseHp')) return [0,0];
 					if(player.hasSkillTag('jueqing',false,target)) return [0,0];
 					return [1,-1];
 				},
@@ -214,7 +137,7 @@ const skills={
 		locked:true,
 		unique:true,
 		priority:11,
-		bannedList:[
+		bannedCharacter:[
 			"xjzh_meiren_linjiasheng",
 			"xjzh_sanguo_zuoci",
 			"xjzh_sanguo_zhongda",
@@ -224,86 +147,72 @@ const skills={
 			"xjzh_boss_zuoyou",
 			"xjzh_boss_mianhuatang"
 		],
-		bannedList2:[
+		bannedSkills:[
 			"xjzh_poe_choice",
 			"xjzh_poe_choice2",
 			"xjzh_dnf_levelUp",
 		],
-		init:function(player){
-			player.storage.xjzh_meiren_miaofa=[]
-			lib.skill.xjzh_meiren_miaofa.getSkillList(player);
+		init(player,skill){
+			player.storage[skill]=[]
+			lib.skill[skill].getSkillList(player);
 		},
-		getSkillList:function(player){
-			var list=[];
-			var list2=[];
-			var players=game.players.concat(game.dead);
-			for(var i=0;i<players.length;i++){
-				list2.add(players[i].name);
-				list2.add(players[i].name1);
-				list2.add(players[i].name2);
-			}
-			for(var i in lib.character){
-				if(list2.includes(i)||lib.skill.xjzh_meiren_miaofa.bannedList.includes(i)) continue;
-				if(i.indexOf('xjzh_boss_')!=-1) continue;
-				if(i.indexOf('xjzh_diablo_')!=-1) continue;
-				if(i.indexOf('xjzh_')==0){
-					for(var j=0;j<lib.character[i][3].length;j++){
-						if(lib.skill[lib.character[i][3][j]]&&lib.translate[lib.character[i][3][j]]&&lib.translate[lib.character[i][3][j]+'_info']){
-							var info=lib.skill[lib.character[i][3][j]];
-							if(info&&(info.gainable||!info.unique)&&!info.zhuSkill&&!info.juexingji&&!info.limited&&!info.dutySkill&&!lib.skill.xjzh_meiren_miaofa.bannedList2.includes(lib.character[i][3][j])){
-								if(!lib.skill.global.includes(lib.character[i][3])&&!info.nogainsSkill) list.add(lib.character[i][3][j]);
+		getSkillList(player){
+			let list=game.xjzh_wujiangpai().filter(name=>{
+				if(lib.skill.xjzh_meiren_miaofa.bannedCharacter.includes(name)) return false;
+				if(["xjzh_boss_","xjzh_diablo_"].some(item=>name.includes(item))) return false;
+				return name.startsWith("xjzh_");
+			}),skills=[];
+
+			list.forEach(name=>{
+				let characters=lib.character[name];
+				if(characters.skills&&characters.skills.length){
+					for(let skill of characters.skills){
+						if(lib.translate[skill]&&lib.translate[skill+'_info']){
+							let info=get.info(skill);
+							if(info&&(info.gainable||!info.unique)&&!info.zhuSkill&&!info.juexingji&&!info.limited&&!info.dutySkill&&!lib.skill.xjzh_meiren_miaofa.bannedSkills.includes(skill)){
+								if(!lib.skill.global.includes(skill)&&!info.nogainsSkill) skills.add(skill);
 							}
 						}
 					}
 				}
-			}
-			player.storage.xjzh_meiren_miaofa.addArray(list);
+			});
+
+			player.storage.xjzh_meiren_miaofa.addArray(skills);
 		},
-		content:function (){
-			"step 0"
-			var list=player.storage.xjzh_meiren_miaofa.slice(0);
-			var skills=player.skills.slice(0);
-			for(var i=0;i<skills.length;i++){
-				list.remove(skills[i]);
-			}
-			if(list.length>2){
-				event.skills=list.randomGets(2);
-			}else{
-				var link=list[0];
-				player.addSkill(link);
-				game.log(player, '获得技能', '〖' + get.translation(link) + '〗');
-				event.goto(3);
-			}
-			"step 1"
+		async content(event,trigger,player){
+			let skills=player.storage[event.name].slice(0).filter(skill=>{
+				let info=get.info(skill);
+				if(info.ai&&info.combo&&!player.hasSkill(info.combo)) return false;
+				return !player.hasSkill(skill)
+			}).randomGets(2),dialog=ui.create.dialog('forcebutton');
 			if(event.isMine()){
-				var dialog=ui.create.dialog('forcebutton');
 				dialog.add('请选择获得一项技能');
-				for(i=0;i<event.skills.length;i++){
-					if(lib.translate[event.skills[i]+'_info']){
-						var translation=get.translation(event.skills[i]);
+				for(let i=0;i<skills.length;i++){
+					if(lib.translate[skills[i]+'_info']){
+						let translation=get.translation(skills[i]);
 						if(translation[0]=='新'&&translation.length==3){
 							translation=translation.slice(1,3);
 						}
 						else{
 							translation=translation.slice(0,2);
 						}
-						var item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[event.skills[i]+'_info']+'</div></div>');
-						item.firstChild.link=event.skills[i];
+						let item=dialog.add('<div class="popup pointerdiv" style="width:95%;display:inline-block"><div class="skill">〖'+translation+'〗</div><div>'+lib.translate[skills[i]+'_info']+'</div></div>');
+						item.firstChild.link=skills[i];
 					}
 				}
 			}
-			player.chooseControl(event.skills).set('prompt','请选择一个技能获得之').set('ai',function(){
-				return event.skills.randomGet();
+
+			const {result:{control}}=skills.length==1?
+				{result:{control:skills[0]}}:
+				await player.chooseControl(skills).set('prompt','请选择一个技能获得之').set('ai',()=>{
+				return get.max(skills,get.skillRank,"item");
 			}).set('dialog',dialog);
-			"step 2"
-			if(result&&result.control){
-				player.addSkill(result.control);
-				game.log(player, '获得技能', '〖' + get.translation(result.control) + '〗');
+			if(control){
+				player.addSkills(control);
+				player.loseHp();
+				player.draw();
+				player.update();
 			}
-			"step 3"
-			player.loseHp();
-			player.draw();
-			player.update();
 		},
 	},
 	"xjzh_meiren_juese":{
@@ -2225,7 +2134,7 @@ const skills={
 					lib.translate[newSkill+"_info"]=str3;
 				}
 				if(!trigger.source.hasSkill(newSkill)){
-					trigger.source.changeSkills(Array.of(newSkill),Array.of(skill));
+					trigger.source.changeSkills([newSkill],[skill]);
 				}
 			}
 		},

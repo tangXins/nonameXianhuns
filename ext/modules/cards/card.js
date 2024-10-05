@@ -534,7 +534,7 @@ const cards={
         onEquip(){
             let cards=lib.inpile.filter(card=>{
                 if(!["equip1","qeuip2","equip5"].includes(get.subtype(card))) return false;
-                if(get.name(card)=="muniu") return false;
+                if(["jydiybiaoche","muniu"].includes(get.name(card))) return false;
                 if(player.countCards('e')&&player.getCards("e").some(item=>get.name(item)==get.name(card))) return false;
                 return true;
             });

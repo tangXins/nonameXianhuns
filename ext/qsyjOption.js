@@ -502,9 +502,10 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
             if(qishumingyushi){
                 game.xjzh_changeCailiao("xjzh_cailiao_mingyushi",-2);
                 let boss=game.boss;
-                await game.boss.gainMaxHp(game.boss.maxHp);
-                await game.boss.recoverTo(game.boss.maxHp);
-                await game.boss.drawTo(game.boss.maxHp);
+                await boss.gainMaxHp(boss.maxHp);
+                await boss.recoverTo(boss.maxHp);
+                await boss.drawTo(boss.maxHp);
+                game.log(`${get.translation(boss)}被冥狱石强化了`);
             }
 
             switch(get.nameList(game.boss)[0]){

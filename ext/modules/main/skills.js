@@ -11,13 +11,10 @@ export const skills={
 			silent:true,
 			filter(event,player){
 				if(game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")==='close') return false;
-				let list=[
-					"weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
-				];
 				if(get.mode()=="boss"){
 					if(["xjzh_boss_lilisi","xjzh_boss_duruier","xjzh_boss_waershen","xjzh_boss_geligaoli","xjzh_boss_qier","xjzh_boss_bingchuanjushou"].includes(get.nameList(game.boss)[0])) return false;
 				}
-				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
+				let list=get.xjzh_zhengyiSkills(player);
 				if(list.some(skill=>player.hasSkill("xjzh_zengyi_"+skill))) return false;
 				if(player.hasSkill("xjzh_zengyi_off")) return false;
 				if(!player.isUnderControl(true))  return false;
@@ -25,10 +22,7 @@ export const skills={
 				return true;
 			},
 			async content(event,trigger,player){
-				let list=[
-					"weisong","liuzhuan","pianxian","chongsu","shunying","fengyue","hunqian","mengdie","poxiao","shuangsheng","xuanbian","moran","shenghua","chaoti","jinghong","shefan","longfei","yunchui","fengyang","dizai","tianfu","jiehuo","xuanbing","jifeng","jinglei","lieshi","lianyu","raoliang","difu","tianze","zhangyi","tunshi"
-				];
-				if(get.mode()=="identity") list.addArray(["daoge","zhuanpo"]);
+				let list=get.xjzh_zhengyiSkills(player);
 				let skill=list.randomGet();
 				player.addSkill("xjzh_zengyi_off",false);
 				game.getExtensionConfig("仙家之魂","xjzh_zengyiSetting")=="player"?player.addSkills("xjzh_zengyi_"+skill):get.isXHwujiang(player)?player.addSkills("xjzh_zengyi_"+skill):null;
@@ -177,6 +171,39 @@ export const skills={
 			sub:true,
 			onremove(player){
 				player.addSkill("xjzh_zengyi_off");
+			},
+		},
+		"xjzh_zengyi_mieque":{
+			trigger:{
+				global:["damageBegin","dying"],
+			},
+			unique:true,
+			mark:true,
+			marktext:"灭",
+			intro:{
+			    name:"灭却",
+			    content:"锁定技，你对其他角色造成伤害时，你令其随机失去等量技能。未拥有技能的其他角色跳过濒死阶段。",
+			},
+			forced:true,
+			locked:true,
+			global:"xjzh_zengyi_mieque_dying",
+			filter(event,player){
+				if(event.name=="dying") return event.player!=player;
+				if(event.numFixed||event.cancelled) return false;
+				let skills=event.player.getSkills(null,false,false).filter(skill=>{
+					if(skill.startsWith('jycw')) return false;
+					return lib.translate[skill]&&lib.translate[skill+"_info"];
+				});
+				if(event.source==player) return event.player!=player;
+				return !skills.length;
+			},
+			async content(event,trigger,player){
+				let num=trigger.num,skills=trigger.player.getSkills(null,false,false).filter(skill=>{
+					if(skill.startsWith('jycw')) return false;
+					return lib.translate[skill]&&lib.translate[skill+"_info"];
+				});;
+				if(skills.length) await trigger.player.removeSkills(skills.randomGets(num));
+				if(trigger.name=="dying"&&!skills.length) trigger.player.die(trigger.source?trigger.source:'nosource');
 			},
 		},
 		"xjzh_zengyi_weisong":{
@@ -1454,6 +1481,7 @@ export const skills={
 
 	},
 	translate:{
+		"xjzh_zengyi_mieque":"灭却",
 		"xjzh_zengyi_weisong":"威讼",
 		"xjzh_zengyi_liuzhuan":"流转",
 		"xjzh_zengyi_pianxian":"翩跹",

@@ -466,12 +466,18 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 				superChocolate:true,
 				priority:10,
 				filter(event,player){
-					const evt=event.getParent();
-					if(evt&&evt.name=="xjzh_qishu_junmao") return false;
-					return event.addSkill&&event.addSkill.length;
+					console.log(event);
+					if(!event.addSkill||!event.addSkill.length) return false;
+					if(event.getParent().name=="xjzh_qishu_junmao") return false;
+					return event.addSkill.every(skill=>{
+						return !skill.includes("_xiejiaozhiguan");
+					});
 				},
 				async content(event,trigger,player){
-					let skills=trigger.addSkill;
+					let skills=trigger.addSkill.filter(skill=>{
+						return !skill.includes("_xiejiaozhiguan");
+					});
+					if(!skills.length) return;
 					for await(let skill of skills){
 						let info=get.info(skill);
 						if(!info.enable||info.enable!="phaseUse") continue;
@@ -1394,11 +1400,11 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
 			translate:"冒险命运",
 			translate_info:"若你造成伤害的点数不小于2，则该伤害增加100%，否则减少100％。",
 			extra:"等阶：1<br><br>获取途径：抽奖、兑换、对局有概率掉落。<br><br>抽奖概率：35%<br><br>兑换所需：50碎片",
-			noTranslate:true,
+			noTranslate:false,
 			level:1,
 			skill:{
     		    trigger:{
-    		        player:"damageBegin1",
+    		        source:"damageBegin1",
     		    },
     		    direct:true,
     		    priority:4,
@@ -1446,13 +1452,14 @@ window.XJZHimport(function(lib,game,ui,get,ai,_status){
     		    },
     		    forced:true,
     		    priority:6,
-    			filter:function(event,player){
+    			filter(event,player){
     			    if(event.player==player) return false;
     			    if(!player.hasUseTarget(event.card)) return false;
-    			    return Math.random<=Math.random();
+    			    return game.xjzh_randomSuccess();
     			},
-    			content:function(){
-    			    player.chooseUseTarget(trigger.card);
+				async content(event,trigger,player){
+    			    let card=game.createCard(get.name(trigger.card),get.number(trigger.card),get.suit(trigger.card));
+    			    await player.chooseUseTarget(card);
                 },
             },
         },

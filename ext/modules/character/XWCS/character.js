@@ -74,7 +74,7 @@ const characters = {
 		skills:["xjzh_qixia_jiyuan","xjzh_qixia_jibian"],
 		names:"null|null",
 	},
-	"xjzh_qixia_maybe":{
+	"xjzh_qixia_mumuxiao":{
 		sex:"male",
 		group:"qun",
 		hp:3,

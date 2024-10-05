@@ -1145,87 +1145,44 @@ const skills={
 	"xjzh_huoying_leiqie":{
 		enable:"phaseUse",
 		audio:"ext:仙家之魂/audio/skill:1",
-		filter:function(event,player){
-			return player.countCards('h');
+		filter(event,player){
+			return player.countCards('h')||player.getExpansions('xjzh_huoying_shenwei').length;
 		},
 		usable:1,
-		content:function(){
-			"step 0"
-			var cards=player.getExpansions('xjzh_huoying_shenwei');
+		async content(event,trigger,player){
+			let cards=player.getExpansions('xjzh_huoying_shenwei');
 			if(!cards.length||!player.countCards('h')){
 				event.finish();
 				return;
 			}
-			var next=player.chooseToMove('〖雷切〗：是否交换“雷”和手牌？');
-			next.set('list',[
+			const moved=await player.chooseToMove('〖雷切〗：是否交换“雷”和手牌？')
+			.set('list',[
 				[get.translation(player)+'（你）的雷',cards],
 				['手牌区',player.getCards('h')],
-			]);
-			next.set('filterMove',function(from,to,moved){
+			])
+			.set('filterMove',function(from,to,moved){
 				if(to==0) return moved[0].length<4;
 				return typeof to!='number';
-			});
-			next.set('processAI',function(list){
-				var player=_status.event.player,cards=list[0][1].concat(list[1][1]).sort(function(a,b){
-					return get.value(a)-get.value(b);
-				}),cards2=cards.splice(0,player.getExpansions('xjzh_huoying_shenwei').length);
+			})
+			.set('processAI',function(list){
+				let player=get.player(),cards=list[0][1].concat(list[1][1]).sort((a,b)=>get.value(a)-get.value(b)),cards2=cards.splice(0,player.getExpansions('xjzh_huoying_shenwei').length);
 				return [cards2,cards];
-			});
-			"step 1"
-			if(result.bool){
-				var pushs=result.moved[0],gains=result.moved[1];
+			})
+			.forResult("moved");
+			if(moved){
+				let pushs=moved[0],gains=moved[1];
 				pushs.removeArray(player.getExpansions('xjzh_huoying_shenwei'));
 				gains.removeArray(player.getCards('h'));
 				player.addToExpansion(pushs,player,'giveAuto').gaintag.add('xjzh_huoying_shenwei');
 				if(pushs.length) game.log(player,'将',pushs,'作为“雷”置于武将牌上');
 				player.gain(gains,'gain2');
 			}
-			"step 2"
-			player.chooseTarget("〖雷切〗:请选择一个目标",function(card,player,target){
-				return target!=player;
-			}).set('ai',function(target){
-				return get.damageEffect(target,player,player);
-			});
-			"step 3"
-			if(result.bool){
-				var list=[1,2].randomGet();
-				if(list==1){
-					var players=game.filterPlayer().randomGet();
-					game.swapSeat(players,result.targets[0]);
-					result.targets[0].addTempSkill("xjzh_huoying_leiqie_1","phaseJieshuBegin");
-				}
-				else if(list==2){
-					result.targets[0].damage(1,"noCard","thunder");
-					result.targets[0].addTempSkill("xjzh_huoying_leiqie_2");
-				}
+			const targets=await player.chooseTarget("〖雷切〗:请选择一个目标对其造成1点雷属性伤害",lib.filter.notMe).set('ai',target=>{
+				return get.damageEffect(target,player,player,"thunder");
+			}).forResultTargets();
+			if(targets){
+				targets[0].damage(1,player,"noCard","thunder");
 			}
-		},
-		subSkill:{
-			"1":{
-				mod:{
-					cardEnabled:function(card,player){
-						if(get.tag(card,"damage")) return false;
-					},
-					"cardEnabled2":function(card,player){
-						if(get.tag(card,"damage")) return false;
-					},
-				},
-				sub:true,
-				locked:true,
-			},
-			"2":{
-				trigger:{
-					player:"phaseUseBegin",
-				},
-				direct:true,
-				priority:-2,
-				firstDo:true,
-				sub:true,
-				locked:true,
-				content:function(){
-					trigger.cancel();
-				},
-			},
 		},
 		ai:{
 			order:8,
@@ -1235,194 +1192,128 @@ const skills={
 		},
 	},
 	"xjzh_huoying_bietian":{
-		enable:"phaseUse",
-		audio:"ext:仙家之魂/audio/skill:1",
-		init:function(player){
-			player.addMark("xjzh_huoying_bietian",2,false);
-			player.update();
+		trigger:{
+			source:"damageAfter",
+			player:"phaseDrawBegin",
+			global:"phaseBegin",
 		},
+		/*prompt(event,player){
+			let str=`〖别天神〗：是否失去一点体力随机偷取${event.source==player?`${get.translation(event.player)}`:`${get.translation(event.source)}`}一个回合阶段`;
+			return str;
+		},*/
+		forced:true,
+		locked:true,
+		priority:5,
 		mark:true,
-		marktext:"天",
+		marktext:"别",
 		intro:{
 			name:"别天神",
-			content:"本局游戏限#次",
-		},
-		group:["xjzh_huoying_bietian_control"],
-		filterTarget:function(card,player,target){
-			if(target.hasSkill("xjzh_huoying_bietian_draw")) return false;
-			return target!=player;
-		},
-		filter:function(event,player){
-			if(!player.hasMark("xjzh_huoying_bietian")) return false;
-			return true;
-		},
-		content:function(){
-			"step 0"
-			player.removeMark("xjzh_huoying_bietian",1,false);
-			if(!player.hasMark("xjzh_huoying_bietian")) player.disableSkill('xjzh_huoying_bietian',"xjzh_huoying_xuzuo");
-			"step 1"
-			target.addSkill("xjzh_huoying_bietian_draw");
-		},
-		ai:{
-			order:8,
-			result:{
-				target:function(player,target){
-					var att=get.attitude(player,target)
-					if(att<=0) return -2;
-					return 0.1;
-				},
-				player:function(player,target){
-					var num=player.countMark("xjzh_huoying_bietian");
-					if(num>1) return 1;
-					if(game.countPlayer(function(current){return current!=player})<=3) return 1;
-					return 0.01;
-				},
+			content(storage,player){
+				return `额外阶段${storage.length-6}个`;
+			},
+			markcount(storage,player){
+				return storage.length-6;
 			},
 		},
-		subSkill:{
-			"draw":{
-				mark:true,
-				marktext:"别",
-				intro:{
-					name:"别天神",
-					content:"出牌阶段由<span style=\"color: gold\">宇智波止水</span>接管",
-				},
-				trigger:{player:"phaseDrawBegin"},
-				direct:true,
-				firstDo:true,
-				content:function(){
-					player.draw(2);
-				},
-			},
-			"control":{
-				trigger:{global:'phaseBeginStart'},
-				filter:function(event,player){
-					return player!=event.player&&!event.player._trueMe&&event.player.hasSkill("xjzh_huoying_bietian_draw");
-				},
-				forced:true,
-				priority:100,
-				sub:true,
-				logTarget:'player',
-				skillAnimation:true,
-				animationColor:'key',
-				content:function(){
-					trigger.player._trueMe=player;
-					game.addGlobalSkill('autoswap');
-					if(trigger.player==game.me){
-						game.notMe=true;
-						if(!_status.auto) ui.click.auto();
+		init(player,skill){
+			game.countPlayer(current=>{
+				current.storage[skill]=["phaseZhunbei","phaseJudge","phaseDraw","phaseUse","phaseDiscard","phaseJieshu"];
+			});
+		},
+		filter(event,player){
+			if(event.name=="phase") return event.player.storage.xjzh_huoying_bietian&&event.player.storage.xjzh_huoying_bietian.length;
+			if(event.name=="phaseDraw") return player.storage.xjzh_huoying_bietian&&player.storage.xjzh_huoying_bietian.length>=6;
+			if(event.name=="damage") return !event.numFixed&&!event.cancelled&&event.num>=2;
+		},
+		async content(event,trigger,player){
+			let name=trigger.name;
+			switch(name){
+				case "damage":{
+					let storage=trigger.player.storage[event.name];
+					let str=`〖别天神〗：是否失去一点体力上限随机偷取${get.translation(trigger.player)}一个回合阶段`;
+					const bool=await player.chooseBool().set("prompt",str).set('ai',()=>{
+						if(player.maxHp<=1) return false;
+						if(storage.some(item=>["phaseDraw","phaseUse"].includes(item))) return true;
+						return false;
+					}).forResultBool();
+					if(bool){
+						player.loseMaxHp();
+						let results=storage.randomGet();
+						storage.remove(results);
+						trigger.player.storage[event.name]=storage;
+						player.storage[event.name].push(results);
+						game.log(player,'偷取',trigger.player,"的",results);
+						player.update();
 					}
-					trigger.player.addSkill('xjzh_huoying_bietian_remove');
-				},
-			},
-			"remove":{
-				trigger:{
-					player:['phaseAfter','dieAfter'],
-					global:'phaseBefore',
-				},
-				lastDo:true,
-				charlotte:true,
-				forceDie:true,
-				forced:true,
-				silent:true,
-				sub:true,
-				content:function(){
-					player.removeSkill('xjzh_huoying_bietian_remove');
-				},
-				onremove:function(player){
-					if(player==game.me){
-						if(!game.notMe) game.swapPlayerAuto(player._trueMe)
-						else delete game.notMe;
-						if(_status.auto) ui.click.auto();
-					}
-					delete player._trueMe;
-				},
-			},
+				}
+				break;
+				case "phase":{
+					let phaseList=trigger.player.storage[event.name];
+					trigger.phaseList=trigger.player==player?phaseList.randomSort():phaseList;
+				}
+				break;
+				case "phaseDraw":{
+					let storage=player.storage[event.name];
+					trigger.num+=storage.length-6;
+				}
+				break;
+			}
 		},
 	},
 	"xjzh_huoying_shunshen":{
 		trigger:{
-			player:"damageBegin",
+			player:["phaseBefore","damageBegin1"],
 		},
-		filter:function(event,player){
-			return player.countCards('he')>0;
+		forced:true,
+		locked:true,
+		priority:5,
+		filter(event,player){
+			if(event.name=="damage") return event.source&&[player.getNext(),player.getPrevious()].includes(event.source)&&!event.numFixed;
+			return true;
 		},
-		check:function(event,player){return 1},
-		content:function(){
-			"step 0"
-			player.chooseToDiscard('he','〖瞬身〗：是否弃置一张牌与其交换位置？').set('ai',function(card){
-				return 6-get.value(card);
-			});
-			"step 1"
-			if(result.bool){
-				if(trigger.source!=player) game.swapSeat(player,trigger.source);
-				game.delay(0.5);
-				player.gainPlayerCard(trigger.source,true,'h').set('ai',function(button){
-					var card=button.link;
-					return get.value(card);
-				});
-			}else{
-				event.finish();
-			}
-			"step 2"
-			if(result.bool&&result.cards.length){
-				if(get.name(result.cards[0])!="shan"){
-					if(player.hasUseTarget(result.cards[0])){
-						player.chooseUseTarget(result.cards[0]);
-						event.finish();
-					}else{
-						event.finish();
-					}
-				}else{
-					event.cards=result.cards[0]
-					player.chooseBool("〖瞬身〗：是否弃置"+get.translation(result.cards[0])+"防止该伤害？").set('ai',function(){
-						return 1;
-					});
-				}
-			}else{
-				event.finish();
-			}
-			"step 3"
-			if(result.bool){
-				player.discard(event,cards);
+		async content(event,trigger,player){
+			if(trigger.name=="damage"){
 				trigger.changeToZero();
-				game.log(player,"发动〖瞬身〗防止此伤害");
+				return;
 			}
+			let targets=game.filterPlayer(current=>current!=player).randomGet();
+			game.swapSeat(player,targets);
+			event.trigger("xjzh_huoying_shunshen_trigger");
+			player.chooseToUse({
+				filterCard(card,player,event){
+					if (get.itemtype(card)!="card"||(get.position(card)!="h"&&get.position(card)!="s")) return false;
+					return lib.filter.filterCard.apply(this,arguments);
+				},
+				prompt:"〖瞬身〗：选择使用一张手牌",
+				addCount:false,
+				ai1:(card)=>get.order(card),
+			});
+		},
+		ai:{
+			swapSeat:true,
+			effect:{
+				target(card,player,target){
+					if(get.tag(card,"damage")&&[target.getNext(),target.getPrevious()].includes(player)) return 0;
+				},
+			},
 		},
 	},
 	"xjzh_huoying_xuzuo":{
 		trigger:{
-			player:"logSkill",
+			player:["xjzh_huoying_shunshen_trigger","damageBegin1"],
 		},
 		forced:true,
 		priority:3,
 		locked:true,
-		filter:function(event,player){
-			if(event.skill!="xjzh_huoying_shunshen") return false;
-			if(player.countMark('xjzh_huoying_bietian')>=2) return false;
+		filter(event,player){
+			if(event.name=="damage") return player.hujia>=2;
 			return true;
 		},
-		group:["xjzh_huoying_xuzuo_sha"],
-		content:function(){
-			player.changeHujia(1);
-		},
-		subSkill:{
-			"sha":{
-				trigger:{
-					source:"damageBegin1",
-				},
-				filter:function(event,player){
-					return player.hujia>0;
-				},
-				sub:true,
-				prompt:function(event,player){
-					return "〖须佐〗：是否移除所有护甲令此牌伤害加"+get.translation(player.hujia)+"？";
-				},
-				content:function(){
-					trigger.num+=player.hujia
-					player.changeHujia(-player.hujia)
-				},
-			},
+		async content(event,trigger,player){
+			if(trigger.name=="damage"){
+				await player.gainMaxHp(Math.floor(player.hujia/2));
+				await player.changeHujia(-player.hujia);
+			}else player.changeHujia(1);
 		},
 	},
 
