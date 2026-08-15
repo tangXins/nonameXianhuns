@@ -1,0 +1,288 @@
+@font-face {
+    font-family: '行书szs';
+    src: url('font/孙中山行书字体.ttf');
+}
+
+.xjzh-achiWindow {
+    display: block;
+    background-size: cover;
+    z-index: 21;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.xjzh-achiWindow-bk {
+    z-index: 1;
+    display: block;
+    background-size: 100% 100%;
+    width: 50%;
+    height: 50%;
+    background-image: url('./images/achievement/background.png');
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+}
+
+.xjzh-achiWindow-tips {
+    background-size: 100% 100%;
+    width: 15%;
+    padding: 7% 0 0;
+    top: 0%;
+    left: 2%;
+}
+
+.xjzh-achiWindow-bk-cover {
+    z-index: 3;
+    display: block;
+    left: 0;
+    background-size: 100% 100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/achievement/background_cover.png');
+    pointer-events: none;
+}
+
+.xjzh-achiWindow-return {
+    z-index: 5;
+    background-size: 100% 100%;
+    display: block;
+    left: 90.5%;
+    top: 11%;
+    background-image: url('images/achievement/exit_icon.png');
+    width: 3.5vw;
+    height: 3.5vw;
+}
+
+.xjzh-achiWindow-text {
+    display: block;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    left: calc(8.177%);
+    top: calc(13.33%);
+    width: calc(83.976%);
+    height: calc(76.13%);
+}
+
+.xjzh-achiWindow-textinner {
+    display: block;
+    width: calc(90%);
+    height: calc(100%);
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 55%;
+    box-shadow: none;
+    text-shadow: none;
+    color: black;
+    font-family: 'yuanli';
+    overflow: scroll;
+}
+
+.xjzh-achiWindow-openFilter {
+    width: 8%;
+    height: 0;
+    padding: 9.6% 1px 0;
+    top: 80%;
+    left: 88.5%;
+    background-image: url('images/achievement/button_openFilter.png');
+    background-size: 100%;
+}
+
+.xjzh-achiWindow-filterWindow {
+    z-index: 7;
+    height: 100%;
+    width: 0;
+    left: 50%;
+    padding: 0 50% 0 0;
+    background-size: 100%;
+    background-image: url('images/achievement/filter_bg.png');
+}
+
+.xjzh-achiWindow-filterExit {
+    z-index: 8;
+    background-size: 100% 100%;
+    display: block;
+    left: calc(100% - 86px);
+    top: 30px;
+    background-image: url('images/achievement/exit_icon.png');
+    width: 3.5vw;
+    height: 3.5vw;
+}
+
+.xjzh-achiWindow-filter-icon {
+    width: 33%;
+    height: 33%;
+    left: 0;
+    top: 0;
+    background-size: 100%;
+    font-size: 3.5vw;
+    background-image: url('images/achievement/star.png');
+}
+
+.xjzh-achiWindow-filter-lv1 {
+    width: 72%;
+    height: 22%;
+    top: 12.6%;
+    left: 13.5%;
+    background-size: 100%;
+    background-image: url('images/achievement/filter_optional.png');
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #604b1f;
+    font-size: 3vw;
+}
+
+.xjzh-achiWindow-filter-lv2 {
+    width: 72%;
+    height: 22%;
+    top: 32.8%;
+    left: 13.5%;
+    background-size: 100%;
+    background-image: url('images/achievement/filter_optional.png');
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #604b1f;
+    font-size: 3vw;
+}
+
+.xjzh-achiWindow-filter-lv3 {
+    width: 72%;
+    height: 22%;
+    top: 53%;
+    left: 13.5%;
+    background-size: 100%;
+    background-image: url('images/achievement/filter_optional.png');
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #604b1f;
+    font-size: 3vw;
+}
+
+.xjzh-achiWindow-filter-lv4 {
+    width: 72%;
+    height: 22%;
+    top: 73.2%;
+    left: 13.5%;
+    background-size: 100%;
+    background-image: url('images/achievement/filter_optional.png');
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #604b1f;
+    font-size: 3vw;
+}
+
+/* 材料背包卡片样式 */
+.xjzh-cailiao-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.xjzh-cailiao-card:active {
+    transform: translateY(0);
+}
+
+/* 网格容器滚动条样式 */
+div[style*="overflow-y: auto"]::-webkit-scrollbar {
+    width: 8px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
+    background: rgba(201, 169, 97, 0.5);
+    border-radius: 4px;
+}
+
+div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 169, 97, 0.7);
+}
+
+/* 材料图标容器样式 */
+.xjzh-cailiao-icon-box {
+    position: relative;
+}
+
+.xjzh-cailiao-icon-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* 品质光效 */
+.xjzh-cailiao-card[data-quality="shishi"] {
+    animation: epicGlow 2s ease-in-out infinite;
+}
+
+.xjzh-cailiao-card[data-quality="shenhua"] {
+    animation: divineGlow 2s ease-in-out infinite;
+}
+
+@keyframes epicGlow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(156, 39, 176, 0.6);
+    }
+}
+
+@keyframes divineGlow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* 背包卡片悬停效果 */
+#xjzhBagOverlay .xjzh-bag-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 15px rgba(201, 169, 97, 0.3) !important;
+    z-index: 10;
+}
+
+/* 背包卡片聚焦效果 */
+#xjzhBagOverlay .xjzh-bag-card:active {
+    transform: translateY(-2px) !important;
+}
+
+/* 确保背包面板和符文面板在移动端可以正常点击 */
+#xjzhBagOverlay,
+#xjzhBagOverlay *,
+#xjzhRunePackOverlay,
+#xjzhRunePackOverlay * {
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* 覆盖全局 div { position: absolute } 的影响 */
+#xjzhBagOverlay > div,
+#xjzhRunePackOverlay > div {
+    position: relative !important;
+}
+
+#xjzhBagOverlay .xjzh-bag-card,
+#xjzhRunePackOverlay > div > div > div {
+    position: relative !important;
+}

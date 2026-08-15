@@ -1,0 +1,15 @@
+export { skills } from './main/skills.js';
+export { xjzhTitle } from './designation/index.js';
+export { designation } from './designation/index.js';
+export { updateLog } from './update/index.js';
+export { introduces } from './introduce/index.js';
+export { basic } from './main/basic.js';
+export { content } from './main/content.js';
+export { precontent } from './main/precontent.js';
+export { help } from './main/help.js';
+export { config } from './main/config.js';
+export { packages } from './main/package.js';
+export { arenaReady } from './main/arenaReady.js';
+export { prepare } from './main/prepare.js';
+export { onremove } from './main/onremove.js';
+export { files } from './main/files.js';

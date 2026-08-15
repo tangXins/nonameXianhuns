@@ -1,0 +1,61 @@
+.xjzh-memberCenterPage {
+    display: block;
+    background-size: cover;
+    z-index: 21;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.xjzh-memberCenterPage-bk {
+    z-index: 1;
+    display: block;
+    background-size: 100% 100%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    overflow: visible;
+    position: absolute;
+}
+
+.xjzh-memberCenterPage-bk::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    border-radius: 30px;
+    z-index: -1;
+}
+
+.xjzh-memberCenterPage-return {
+    z-index: 20;
+    display: block;
+    left: 85.7%;
+    top: 13%;
+    width: 2vw;
+    height: 2vw;
+    background-size: 100%;
+    background-position: 50% 50%;
+    background-image: url('./images/achievement/exit_icon.png');
+    background-repeat: no-repeat;
+}
+
+.xjzh-memberCenterPage-names {
+    z-index: 10;
+    display: block;
+    left: 11%;
+    bottom: 28%;
+    width: 78%;
+    height: 100%;
+    background-size: 100% 20%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-image: url('./images/memberCenter/intro.png');
+}

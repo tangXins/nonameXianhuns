@@ -1,0 +1,31 @@
+
+const translates = {
+
+    "xjzh_danyao": "丹药",
+    //卡牌
+    "xjzh_card_zhishijingsai": "知识竞赛",
+    "xjzh_card_zhishijingsai_info": "出牌阶段对自己使用，你从题库中随机抽取5道题，进行一次知识竞赛，按照你答对的题目数量获得奖惩：<li>答对0道，受到一点无来源伤害并弃置一张牌。<li>答对1道，弃置一张牌。<li>答对2道，摸一张牌。<li>答对3道，摸两张牌。<li>答对4道，摸三张牌并回复一点体力。<li>答对5道，摸三张牌并回复一点体力，然后补全装备栏。",
+    "xjzh_card_mingyunyingbi": "命运硬币",
+    "xjzh_card_mingyunyingbi_info": "出牌阶段对自己使用，你有50%几率回复体力值至体力上限，有50%几率受到x点雷电伤害（x为你的体力值减1）",
+    "xjzh_card_cuimaidan": "摧脉丹",
+    "xjzh_card_cuimaidan_info": "出牌阶段对距离为1的其他角色使用，令其选择移除一项技能或流失一点体力",
+    "xjzh_card_numa": "驽马",
+    "xjzh_card_numa_info": "你可以装备此坐骑牌或将此坐骑牌置入其他角色坐骑栏，其他角色计算与装备此牌的角色距离-1。",
+    "xjzh_card_yizhihuhuan": "意志呼唤",
+    "xjzh_card_yizhihuhuan_info": "你造成伤害视为雷属性伤害，若该伤害点数不小于2，则改为重复执行x+1次点数为1的冰属性伤害。",
+    "xjzh_card_yizhihuhuan_append": "<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>坚毅自己的内心，掌控冰雷之元素，出现吧！雷之精灵、冰之精灵！</font></span>",
+    "xjzh_card_kadelanzhichu": "卡德兰戒",
+    "xjzh_card_kadelanzhichu_info": "当你装备此牌时，其随机反射一张装备牌的技能。",
+    "xjzh_card_kadelanzhichu_append": "<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>镜像之湖制造的仿品，传说能用他复制世间的一切存在，遗憾的是这只是仿品。</font></span>",
+    "xjzh_card_rongyankaijia": "熔岩铠甲",
+    "xjzh_card_rongyankaijia_info": "你防止火焰伤害；受到非火焰伤害的50%（向上取整）会在你的结束阶段结算。",
+    "xjzh_card_rongyankaijia_append": "<span style=\"color:#f9ed89;font-family:xinwei\"><font size =3px>火焰之神闲暇时随手制作的一件残次品，它不会为你增加任何防御力量，但当你穿戴它时，你会感觉到无比的强大。</font></span>",
+
+    //技能
+    "xjzh_card_yizhihuhuan_skill": "意志呼唤",
+    "xjzh_card_yizhihuhuan_skill_info": "",
+    "xjzh_card_rongyankaijia_skill": "熔岩铠甲",
+
+};
+
+export default translates;

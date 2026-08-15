@@ -1,0 +1,48 @@
+# ================================
+# 仙家之魂独立仓库的忽略规则
+# ================================
+
+# ---- IDE / 编辑器 ----
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.iml
+.DS_Store
+Thumbs.db
+
+# ---- 临时/备份文件 ----
+# 所有文件名含 "副本" 的文件/目录（如 forge/index - 副本.js、forge - 副本.css）
+*副本*
+*.bak
+*.tmp
+*.old
+*.orig
+
+# ---- 压缩包/打包产物 ----
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ---- 日志 ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- 大体积二进制（如果体积超限则建议使用 Git LFS 再纳入，可按需注释掉）----
+# *.mp3
+# *.wav
+# *.ogg
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.webp
+# *.ttf
+# *.woff
+# *.woff2
+# *.avifs
+# *.xlsx

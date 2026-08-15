@@ -1,0 +1,676 @@
+/* 装备锻造台样式 - 优化布局和显示效果 */
+.xjzh-forging-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #121212;
+    z-index: 1000;
+    font-family: "Microsoft YaHei", sans-serif;
+    padding: 10px;
+    /* 缩小外边距 */
+    box-sizing: border-box;
+}
+
+.xjzh-forging-container {
+    width: 100%;
+    max-width: 1200px;
+    /* 缩小最大宽度 */
+    margin: 0 auto;
+    height: calc(100vh - 20px);
+    /* 调整高度计算 */
+    position: relative;
+}
+
+.xjzh-forging-return {
+    position: absolute;
+    right: 15px;
+    /* 调整位置 */
+    top: 15px;
+    width: 35px;
+    /* 缩小按钮 */
+    height: 35px;
+    background: #d4af37;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    /* 调整字体 */
+    font-weight: bold;
+    color: #121212;
+}
+
+.xjzh-forging-return::before {
+    content: "×";
+}
+
+/* 使用绝对定位确保左右列正确分布 */
+.xjzh-forging-main {
+    position: relative;
+    left: 2.5vw;
+    height: calc(100vh - 300px);
+    /* 显著减小高度，避免过长 */
+    width: 100%;
+}
+
+.xjzh-forging-col {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    /* 适度减小内边距 */
+    overflow-y: auto;
+    /* 恢复必要的滚动 */
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.xjzh-forging-col:first-child {
+    left: 0;
+    right: 50%;
+    margin-right: 10px;
+    /* 调整列间距 */
+}
+
+.xjzh-forging-col:last-child {
+    left: 50%;
+    right: 0;
+    margin-left: 10px;
+}
+
+.xjzh-col-title {
+    font-size: 16px;
+    /* 调整标题大小 */
+    font-weight: bold;
+    padding-bottom: 10px;
+    /* 缩小内边距 */
+    border-bottom: 2px solid #444;
+    margin-bottom: 16px;
+    /* 缩小外边距 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.xjzh-col-title-left {
+    width: 50%;
+    color: #d4af37;
+    border-color: #d4af37;
+}
+
+.xjzh-col-title-right {
+    width: 50%;
+    top: 15%;
+    color: #4fc3f7;
+    border-color: #4fc3f7;
+}
+
+.xjzh-selected-tip {
+    font-size: 14px;
+    /* 调整字体大小 */
+    color: #ffb74d;
+    font-weight: normal;
+}
+
+.xjzh-unselected-tip {
+    font-size: 14px;
+    color: #666;
+    font-weight: normal;
+}
+
+/* 词条卡片样式 */
+/* 移动词条卡片位置 - 调整整体布局 */
+.xjzh-affix-card {
+    width: 28vw;
+    left: 3.5%;
+    min-height: 35px;
+    background: #282828;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+    border: 2px solid transparent;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    /* 新增：调整卡片位置 */
+    transform: translateY(4.5vh);
+    /* 向右移动5px */
+}
+
+.xjzh-affix-card.prefix-last {
+    margin-bottom: 12vh;
+    /* 增加底部间距 */
+    position: relative;
+}
+
+.xjzh-affix-card.prefix-last::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    opacity: 0.6;
+}
+
+.xjzh-affix-card.suffix-first::before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ef5350, transparent);
+    opacity: 0.6;
+}
+
+/* 可选：如果需要更明显的视觉分隔 */
+.xjzh-affix-card.prefix-last+.xjzh-affix-card.suffix-first {
+    margin-top: 40px;
+    /* 在相邻的前后缀卡片间增加额外间距 */
+}
+
+.xjzh-affix-card.suffix-first {
+    margin-top: 30px;
+    /* 增加上部间距 */
+    position: relative;
+}
+
+.xjzh-affix-card.selected {
+    border: 3px solid #d4af37;
+    background: #201b12;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), 0 0 8px rgba(212, 175, 55, 0.4) inset;
+}
+
+.xjzh-affix-card.empty {
+    color: #666;
+    background: #28282850;
+}
+
+.xjzh-affix-card.t0-card {
+    border: 3px solid #ffd700;
+    background: #252000;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.5) inset;
+}
+
+.xjzh-affix-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* 增大间距 */
+    width: 100%;
+}
+
+.xjzh-affix-tag {
+    width: 8px;
+    height: 8px;
+    border: 5px solid transparent;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.xjzh-tag-prefix {
+    border-left-color: #4fc3f7;
+    top: 10%;
+}
+
+.xjzh-tag-suffix {
+    border-left-color: #ef5350;
+}
+
+.xjzh-affix-content {
+    flex: 1;
+    width: 100%;
+    left: 10%;
+    padding-left: 10px;
+    /* 增加左侧内边距配合位置调整 */
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.xjzh-affix-prop {
+    font-size: 16px;
+    color: #ccc;
+    line-height: 1.5;
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+    /* 添加文字溢出处理 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    /* 最多显示3行 */
+    line-clamp: 3;
+    /* 标准属性，提高兼容性 */
+    -webkit-box-orient: vertical;
+}
+
+/* 等级标签 */
+.xjzh-affix-level-tag {
+    position: absolute;
+    /* 调整位置 */
+    right: 5%;
+    top: 1%;
+    font-size: 15px;
+    /* 增大字体 */
+    font-weight: bold;
+    color: #fff;
+    padding: 4px 10px;
+    /* 增大内边距 */
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.xjzh-tag-T0 {
+    background: #ffd700;
+    color: #121212;
+    font-weight: 900;
+}
+
+.xjzh-tag-T1 {
+    background: #81c784;
+}
+
+.xjzh-tag-T2 {
+    background: #4fc3f7;
+}
+
+.xjzh-tag-T3 {
+    background: #ffb74d;
+}
+
+/* 升阶按钮+预览容器 */
+.xjzh-upgrade-wrap {
+    position: absolute;
+    top: 20px;
+    /* 调整位置 */
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    /* 增大间距 */
+    width: 130px;
+    /* 增大宽度 */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 10px;
+    /* 增大内边距 */
+}
+
+.xjzh-upgrade-btn {
+    width: 110px;
+    /* 增大宽度 */
+    height: 32px;
+    /* 增大高度 */
+    font-size: 14px;
+    /* 增大字体 */
+    font-weight: bold;
+    color: #121212;
+    background: #ffd700;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 32px;
+}
+
+.xjzh-upgrade-btn:hover:not(.disabled) {
+    background: #fff;
+}
+
+.xjzh-upgrade-btn.disabled {
+    background: #666;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.xjzh-upgrade-preview {
+    font-size: 12px;
+    /* 增大字体 */
+    color: #ffd700;
+    text-align: center;
+    line-height: 1.6;
+    /* 增大行高 */
+    width: 100%;
+}
+
+.xjzh-upgrade-cost {
+    font-size: 11px;
+    /* 增大字体 */
+    color: #ccc;
+    text-align: center;
+    line-height: 1.6;
+    /* 增大行高 */
+    width: 100%;
+}
+
+/* 真理化石按钮 */
+.xjzh-truth-fossil-btn {
+    width: 80%;
+    left: 10%;
+    padding: 18px;
+    /* 增大内边距 */
+    border: none;
+    border-radius: 8px;
+    background: #7b5e2f;
+    border: 2px solid #d4af37;
+    color: #fff;
+    font-size: 17px;
+    /* 增大字体 */
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 25px;
+    /* 增大间距 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    /* 增大间距 */
+}
+
+.xjzh-truth-fossil-btn:disabled {
+    background: #444;
+    border-color: #666;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* 材料卡片 */
+.xjzh-material-card {
+    width: 28vw;
+    left: 3.5%;
+    min-height: 35px;
+    /* 增大高度 */
+    background: #282828;
+    border-radius: 8px;
+    padding: 20px;
+    /* 增大内边距 */
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    /* 增大间距 */
+    cursor: pointer;
+    border: 2px solid transparent;
+    margin-bottom: 15px;
+    /* 增大间距 */
+    position: relative;
+    transition: all 0.2s ease;
+    /* 新增：调整卡片位置 */
+    transform: translateY(13.5vh);
+}
+
+.xjzh-material-card:hover,
+.xjzh-material-card.active {
+    border-color: #d4af37;
+    background: #30281b;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.xjzh-material-icon {
+    width: 45px;
+    /* 增大图标 */
+    height: 45px;
+    background: #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    /* 增大字体 */
+    color: #ccc;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+.xjzh-material-info {
+    flex: 1;
+    width: 100%;
+    left: 10%;
+    padding-left: 10px;
+    /* 增加左侧内边距配合位置调整 */
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.xjzh-material-name {
+    font-size: 20px;
+    bottom: 0.5vh;
+    left: 1.5vw;
+    /* 增大字体 */
+    line-height: 1.5;
+    /* 增大行高 */
+    font-weight: bold;
+}
+
+.xjzh-material-num {
+    font-size: 16px;
+    left: 1.5vw;
+    /* 增大字体 */
+    color: #ccc;
+    margin-top: 4px;
+    /* 增大间距 */
+}
+
+.xjzh-material-type {
+    position: absolute;
+    right: 20px;
+    /* 调整位置 */
+    font-size: 14px;
+    /* 增大字体 */
+    padding: 4px 8px;
+    /* 增大内边距 */
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.xjzh-type-prefix {
+    background: rgba(79, 195, 247, 0.2);
+    color: #4fc3f7;
+    border: 1px solid rgba(79, 195, 247, 0.4);
+}
+
+.xjzh-type-suffix {
+    background: rgba(239, 83, 80, 0.2);
+    color: #ef5350;
+    border: 1px solid rgba(239, 83, 80, 0.4);
+}
+
+.xjzh-type-both {
+    background: rgba(212, 175, 55, 0.2);
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.xjzh-level-rate-title {
+    font-size: 17px;
+    /* 增大字体 */
+    color: #ccc;
+    margin-bottom: 15px;
+    /* 增大间距 */
+    font-weight: bold;
+}
+
+.xjzh-level-rate-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* 增大间距 */
+    font-size: 15px;
+    /* 增大字体 */
+}
+
+.xjzh-level-rate-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 15px;
+    /* 增大内边距 */
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.xjzh-level-1 {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.xjzh-level-2 {
+    color: #4fc3f7;
+}
+
+.xjzh-level-3 {
+    color: #ffb74d;
+}
+
+.xjzh-rate-fail {
+    color: #ef5350;
+}
+
+.xjzh-material-affix-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.xjzh-material-affix-item {
+    font-size: 16px;
+    top: 42vh;
+    left: 1.5vw;
+    /* 增大字体 */
+    padding: 15px 20px;
+    /* 增大内边距 */
+    background: #282828;
+    border-radius: 6px;
+    padding-left: 30px;
+    /* 增大左内边距 */
+    position: relative;
+    line-height: 1.6;
+    /* 增大行高 */
+}
+
+.xjzh-material-affix-item::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    /* 调整位置 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 7px;
+    /* 增大圆点 */
+    height: 7px;
+    border-radius: 50%;
+}
+
+.xjzh-mat-prefix {
+    color: #4fc3f7;
+}
+
+.xjzh-mat-prefix::before {
+    background: #4fc3f7;
+}
+
+.xjzh-mat-suffix {
+    color: #ef5350;
+}
+
+.xjzh-mat-suffix::before {
+    background: #ef5350;
+}
+
+.xjzh-placeholder {
+    text-align: center;
+    color: #eadff9;
+    top: 30%;
+    padding: 3%;
+    /* 增大内边距 */
+    background: rgba(174, 14, 14, 0.3);
+    border-radius: 6px;
+    font-size: 5vh;
+}
+
+/* 底部按钮区域 - 确保可见 */
+.xjzh-forging-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    border-radius: 8px;
+    margin-top: 15px;
+    position: relative;
+    z-index: 10;
+}
+
+.xjzh-forging-btn {
+    padding: 10px 40px;
+    /* 调整内边距 */
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    /* 调整字体 */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.xjzh-btn-reset {
+    background: #282828;
+    color: #ccc;
+    bottom: -3.5vh;
+    left: 20%;
+    border: 1px solid #444;
+}
+
+.xjzh-btn-reset:hover {
+    background: #333;
+    color: #fff;
+}
+
+.xjzh-btn-forge {
+    background: #d4af37;
+    color: #121212;
+    bottom: -3.5vh;
+    left: 75%;
+    border: 2px solid #b8953f;
+}
+
+.xjzh-btn-forge:disabled {
+    background: #66582f;
+    color: #444;
+    cursor: not-allowed;
+    border-color: #554a28;
+}
+
+.xjzh-btn-forge:hover:not(:disabled) {
+    background: #e6c84f;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    transform: scale(1.05);
+}
+
+.xjzh-forge-hidden {
+    display: none !important;
+}
+
+/* 无材料提示样式 */
+.xjzh-no-material-tip {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 14px;
+}

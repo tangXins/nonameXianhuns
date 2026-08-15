@@ -1,0 +1,683 @@
+.xjzh_wujinHomePage {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0, 0, 0, 0.65);
+	-webkit-transition: all 0s;
+	transition: all 0s;
+	z-index: 20;
+}
+
+.xjzh_wujinHomePageBody {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	left: 50%;
+	top: 50%;
+	display: block;
+	transform: translate(-50%, -50%);
+	-webkit-transition: all 0s;
+	transition: all 0s;
+	z-index: 10;
+}
+
+.xjzh_wujinHomeBgPage {
+	position: absolute;
+	min-width: 100%;
+	min-height: 100%;
+	top: 50%;
+	left: 50%;
+	display: block;
+	transform: translate(-50%, -50%);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url(./images/wujinMode/background.avifs);
+	z-index: 10;
+}
+
+.xjzh_wujinHomeBg {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	left: 50%;
+	top: 50%;
+	display: block;
+	transform: translate(-50%, -50%);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url(./images/wujinMode/background2.png);
+	-webkit-transition: all 0s;
+	transition: all 0s;
+	z-index: 20;
+}
+
+
+.xjzh_wujinHomeBg2 {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0%;
+	bottom: 0%;
+	display: block;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url(./images/wujinMode/background3.png);
+	z-index: 20;
+}
+
+.xjzh_wujinGroupBg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	right: 0%;
+	bottom: 0%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	-webkit-transition: all 0.1s;
+	background-size: 100% 100%;
+	transition: all 0.1s;
+}
+
+.xjzh_wujinCharaterBg {
+	position: absolute;
+	width: 78.8%;
+	height: 95.25%;
+	right: 3.15%;
+	bottom: 2.45%;
+	border-radius: 10px 10px 10px 10px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+}
+
+.xjzh_wujinCharaterBg2 {
+	position: absolute;
+	width: 100%;
+	height: 114.5%;
+	right: 0%;
+	bottom: 0%;
+	border-radius: 34px 34px 8px 8px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+}
+
+.xjzh_wujinCharaterNameBg {
+	position: absolute;
+	text-align: center;
+	width: 10%;
+	height: 42%;
+	top: 15%;
+	right: 86%;
+	color: rgb(255, 255, 255);
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	line-height: 100%;
+	font-size: 100%;
+	text-shadow: none;
+	z-index: 20;
+	white-space: pre-wrap;
+}
+
+.xjzh_wujinCharaterHpBox {
+	position: absolute;
+	width: 10%;
+	height: 45%;
+	bottom: 3%;
+	left: 5.5%;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	display: -webkit-flex;
+	-webkit-flex-direction: row-reverse;
+	display: flex;
+	flex-direction: column-reverse;
+	z-index: 20;
+}
+
+.xjzh_wujinCharaterHpIcon {
+	position: relative;
+	width: 100%;
+	height: 0;
+	left: 0%;
+	padding-bottom: 100%;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin: 10% 0% 0% 0%;
+}
+
+.xjzh_wujinCharaterHpIcon2 {
+	position: relative;
+	width: 100%;
+	height: 0;
+	left: 0%;
+	bottom: 65%;
+	padding-bottom: 100%;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin: 10% 0% 0% 0%;
+}
+
+.xjzh_wujinLevelText {
+	position: absolute;
+	width: 30%;
+	height: 10%;
+	left: 35%;
+	bottom: 84%;
+	text-align: center;
+	text-indent: 10%;
+	letter-spacing: 1vw;
+	font-size: 6.5dvh;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	z-index: 10;
+}
+
+.xjzh_layout_bar {
+	position: absolute;
+	width: 85%;
+	height: 9.2%;
+	top: 6%;
+	right: 7.5%;
+	white-space: normal;
+}
+
+.xjzh_layout_left {
+	position: absolute;
+	width: 30%;
+	height: 100%;
+	top: 0%;
+	left: 0%;
+	white-space: normal;
+}
+
+.xjzh_layout_right {
+	position: absolute;
+	width: 30%;
+	height: 100%;
+	top: 0%;
+	right: 0%;
+	white-space: normal;
+}
+
+.xjzh_layout_achievementbutton {
+	position: absolute;
+	width: 40%;
+	height: 100%;
+	left: 15%;
+	bottom: 0%;
+	text-align: center;
+	letter-spacing: 1vw;
+	font-size: 200%;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	background-size: 100% 100%;
+	background-image: url(./images/wujinMode/achievementbutton.png);
+	z-index: 10;
+}
+
+.xjzh_layout_recordbutton {
+	position: absolute;
+	width: 40%;
+	height: 100%;
+	left: 65%;
+	bottom: 0%;
+	text-align: center;
+	letter-spacing: 1vw;
+	font-size: 200%;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	background-size: 100% 100%;
+	background-image: url(./images/wujinMode/recordbutton.png);
+	z-index: 10;
+}
+
+.xjzh_layout_coin {
+	position: absolute;
+	width: 65%;
+	height: 100%;
+	left: 0%;
+	bottom: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-indent: 10%;
+	letter-spacing: 0.2vw;
+	font-size: clamp(16px, 4vw, 32px);
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	background-size: 100% 100%;
+	background-image: url(./images/wujinMode/daoyun.png);
+	z-index: 10;
+}
+
+.xjzh_wujinDataLeftBody {
+	position: absolute;
+	width: 50%;
+	height: 80%;
+	top: 18%;
+	left: 0%;
+	white-space: normal;
+}
+
+.xjzh_wujinDataRightBody {
+	position: absolute;
+	width: 50%;
+	height: 80%;
+	top: 18%;
+	left: 50%;
+	white-space: normal;
+}
+
+.xjzh_wujinDatashopBody {
+	position: absolute;
+	width: 80%;
+	height: 20%;
+	top: 2%;
+	left: 15%;
+	white-space: normal;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: flex-start;
+	overflow: auto;
+	background-size: 100% 100%;
+	justify-content: center;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	font-size: 300%;
+	color: #D9D919;
+	align-items: center;
+	background-image: url(./images/wujinMode/shopBody.png);
+}
+
+.xjzh_wujinDataSkillBody {
+	position: absolute;
+	width: 80%;
+	height: 60%;
+	top: 25%;
+	left: 15%;
+	white-space: normal;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: flex-start;
+	background-color: rgba(0, 0, 0, 0.35);
+	overflow: auto;
+}
+
+.xjzh_wujinDataPlayBody {
+	position: absolute;
+	width: 80%;
+	height: 35%;
+	top: 2%;
+	left: 5%;
+	white-space: normal;
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+.xjzh_wujinDataBuffBody {
+	position: absolute;
+	width: 80%;
+	height: 45%;
+	top: 40%;
+	left: 5%;
+	white-space: normal;
+	display: block;
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+.xjzh_wujinDataIcon {
+	position: absolute;
+	width: 25%;
+	height: 10%;
+	bottom: 3%;
+	text-align: center;
+	line-height: 135%;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	background-size: 100% 100%;
+	z-index: 10;
+	overflow-x: auto;
+	font-size: 200%;
+}
+
+.xjzh_wujinDataIcon0 {
+	left: 25%;
+	background-image: url(./images/wujinMode/resetButton.png);
+}
+
+.xjzh_wujinDataIcon1 {
+	left: 60%;
+	background-image: url(./images/wujinMode/skillButton.png);
+}
+
+.xjzh_wujinDataIcon2 {
+	left: 5%;
+	background-image: url(./images/wujinMode/exitButton.png);
+}
+
+.xjzh_wujinDataIcon3 {
+	left: 32.5%;
+	background-image: url(./images/wujinMode/skillButton.png);
+}
+
+.xjzh_wujinDataIcon4 {
+	left: 60%;
+	background-image: url(./images/wujinMode/resetButton.png);
+}
+
+.xjzh_wujinDataBuffIcon {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	top: 3%;
+	left: 2%;
+	text-align: center;
+	font-size: 200%;
+	line-height: 300%;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	white-space: normal;
+	background-image: url(./images/wujinMode/bufficon.png);
+}
+
+.xjzh_wujinBuffInfo {
+	position: absolute;
+	width: 25%;
+	height: 63.5%;
+	border: 1px solid white;
+	top: 21%;
+	text-align: left;
+	font-size: 200%;
+	background-color: rgba(0, 0, 0, 0.65);
+	color: #e5dba5;
+	font-family: SimKai, NSimKai, KaiTi, WenQuanYi Zen Hei, AR PL UKai CN, sans-serif;
+	z-index: 20;
+	transform-origin: center bottom;
+	overflow-x: auto;
+}
+
+.xjzh_playerBody {
+	position: absolute;
+	width: 30%;
+	height: 95%;
+	left: 0%;
+	bottom: 3.2%;
+	z-index: 20;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+}
+
+.xjzh_hpDataRevive {
+	position: relative;
+	width: 10%;
+	height: 43%;
+	left: 35%;
+	top: 29.5%;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-image: url(./images/wujinMode/revive_hp1.png);
+	margin: 0% 0% 0% 0%;
+}
+
+.xjzh_hpDataRevive2 {
+	position: relative;
+	width: 10%;
+	height: 43%;
+	left: 35%;
+	top: 29.5%;
+	-webkit-transition: all 0.1s;
+	transition: all 0.1s;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-image: url(./images/wujinMode/revive_hp2.png);
+	margin: 0% 0% 0% 0%;
+}
+
+.xjzh_wujinDataBuffCommon {
+	position: absolute;
+	width: 22%;
+	height: 22%;
+	left: 100%;
+	text-align: center;
+	font-size: 200%;
+	line-height: 160%;
+	color: #e5dba5;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	background-size: 100% 100%;
+	background-image: url(./images/wujinMode/skillButton.png);
+	z-index: 10;
+}
+
+.xjzh_wujinDataBuffBodySkill {
+	bottom: 78%;
+}
+
+.xjzh_wujinDataBuffBodyBuff {
+	bottom: 39.5%;
+}
+
+.xjzh_wujinDataBuffBodyCell {
+	bottom: 0%;
+}
+
+.xjzh_wujinDataBuffBodyDiv {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0.5%;
+	left: -1%;
+	white-space: normal;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: flex-start;
+	background-color: rgba(0, 0, 0, 0.35);
+	overflow: auto;
+}
+
+#xjzh_wujinMessagePopupHome {
+	width: 100%;
+	height: 70%;
+	left: 0%;
+	bottom: 20%;
+	pointer-events: none;
+	text-align: center;
+	z-index: 2025;
+}
+
+.xjzh_wujinMessagePopupDiv {
+	position: relative;
+	width: 100%;
+	height: 5%;
+	top: 100%;
+	left: 0%;
+	text-align: center;
+	animation-duration: 1.6s;
+	animation-fill-mode: both;
+	animation-name: messagePopupAnimation-1;
+	animation-iteration-count: 1;
+	transform-origin: center center;
+	margin: 0% 0% 0% 0%;
+}
+
+@keyframes messagePopupAnimation-1 {
+	0% {
+		opacity: 0;
+		top: 100%;
+	}
+
+	25% {
+		opacity: 1;
+		top: 95%;
+	}
+
+	80% {
+		opacity: 1;
+		top: 95%;
+	}
+
+	to {
+		opacity: 0;
+		top: 80%;
+	}
+}
+
+.xjzh_wujinMessagePopupDivBg {
+	position: absolute;
+	width: 20%;
+	height: 120%;
+	top: 50%;
+	left: 50%;
+	opacity: 1;
+	transform: translate(-50%, -50%);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-image: url(./images/wujinMode/popup.png);
+	-webkit-transition: all 0s;
+	transition: all 0s;
+}
+
+.xjzh_wujinMessagePopupDivText {
+	position: absolute;
+	height: 100%;
+	left: 50%;
+	top: 50%;
+	opacity: 1;
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	white-space: nowrap;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-size: 1.8vw;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	color: #FFF;
+	text-shadow: 0 0 3px red, 0 0 3px red, 0 0 5px red, 0 0 7px red;
+	-webkit-transition: all 0s;
+	transition: all 0s;
+}
+
+.xjzh_saveData_background {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-size: 100% 100%;
+	z-index: 30;
+}
+
+.xjzh_saveData_background>.xjzh_saveDtatBgBody {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(62, 65, 65, 0.8);
+	position: absolute;
+}
+
+.xjzh_saveData_background>.xjzh_saveDtatBgBody>.xjzh_saveDataBgDisPlay {
+	width: 85%;
+	height: 75%;
+	position: absolute;
+	top: 20%;
+	left: 7.5%;
+	border: 1px solid black;
+	overflow-y: auto;
+}
+
+.xjzh_saveData_characters {
+	left: calc(-35%);
+}
+
+.xjzh_saveData_table {
+	left: calc(31%);
+	width: calc(67%);
+	top: calc(-13%);
+	font-size: 14px;
+}
+
+.xjzh_saveData_textBg {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 2%;
+	left: 7.5%;
+	width: 85%;
+	height: 16%;
+	z-index: 30;
+	background-image: url(./images/wujinMode/bg.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: #FFD700;
+	font-size: 10dvh;
+	font-family: hwxinkai, "Microsoft YaHei", SimSun, sans-serif;
+	border-radius: 10px;
+}
+
+.xjzh_saveDataIntro {
+	position: relative;
+	width: 100%;
+	max-width: 1200px;
+	justify-content: center;
+	align-items: center;
+	bottom: 3vh;
+	margin: 2rem auto;
+	padding: 1.5rem;
+	border: 1px solid #dddddd;
+	border-radius: 0.5rem;
+	background-color: #656565;
+	box-sizing: border-box;
+	/* 让 padding 和 border 包含在元素宽度内 */
+}
+
+.xjzh_saveDataIntro h2,
+.xjzh_saveDataIntro h3 {
+	text-align: center;
+	color: #ffffff;
+}
+
+.xjzh_saveDataIntro table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1dvw;
+	background-color: #fff;
+}
+
+.xjzh_saveDataIntro table thead {
+	background-color: #f4f4f4;
+}
+
+.xjzh_saveDataIntro th,
+.xjzh_saveDataIntro td {
+	border: 0.1dvw solid #000000;
+	padding: 0.8dvw;
+	text-align: center;
+	font-size: 0.8dvw;
+}
+
+.xjzh_saveDataIntro th {
+	background-color: #000000;
+}
+
+.xjzh_saveDataIntro tbody tr {
+	background-color: #000000;
+}

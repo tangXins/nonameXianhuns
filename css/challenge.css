@@ -1,0 +1,172 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.xjzh-challengePage {
+    display: block;
+    background-size: cover;
+    z-index: 21;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.xjzh-challengePage-bk {
+    z-index: 1;
+    display: block;
+    background-size: 100% 100%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    overflow: visible;
+}
+
+.xjzh-challengePage-return {
+    z-index: 7;
+    display: block;
+    left: 75%;
+    top: 10%;
+    width: 3vw;
+    height: 3vw;
+}
+
+.xjzh-challengePage-mainWindow {
+    pointer-events: none;
+    z-index: 2;
+    left: 5%;
+    top: 5%;
+    width: 90%;
+    height: 90%;
+    background-size: 100%;
+    background-position: 50% 50%;
+    background-image: url('./images/challenges/mainWindow.png');
+    background-repeat: no-repeat;
+}
+
+.xjzh-challengePage-showWindow {
+    z-index: 1;
+    left: 10%;
+    top: 14.5%;
+    width: 66%;
+    height: 68%;
+    background-size: 100% 105%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    overflow-y: hidden;
+}
+
+.xjzh-challengePage-scrollBar::-webkit-scrollbar {
+    display: none;
+}
+
+.xjzh-challengePage-scrollBar {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    position: absolute;
+}
+
+.xjzh-challengePage-scrollBar-item-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+}
+
+.xjzh-challengePage-scrollBar-item {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 2s;
+    transform-origin: 35% 50%;
+    box-sizing: border-box;
+}
+
+@media (min-width: 844px) and (max-width: 926px) {
+    .xjzh-challengePage-scrollBar-item {
+        background-size: 12% auto, 12% auto;
+        background-repeat: no-repeat;
+        background-origin: padding-box;
+    }
+}
+
+.xjzh-challengePage-entry {
+    z-index: 10;
+    top: 80%;
+    left: 40%;
+    height: 12%;
+    width: 24.5%;
+    background-size: 100% 100%;
+    background-image: url('./images/challenges/openButton.png');
+}
+
+.xjzh-challengePage-introButton {
+    z-index: 10;
+    top: 80%;
+    left: 86%;
+    width: 6%;
+    height: 11%;
+    border-radius: 50%;
+    background-size: 100%;
+    background-position: 50% 50%;
+    background-image: url('./images/challenges/intro.png');
+}
+
+.xjzh-challengePage-introWindow {
+    z-index: 15;
+    left: 20%;
+    top: 10%;
+    width: 70%;
+    height: 75%;
+    background-image: url('./images/challenges/introWindow.png');
+    background-size: 100%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+.xjzh-challengePage-talentButton {
+    z-index: 10;
+    top: 80%;
+    left: 10%;
+    width: 6%;
+    height: 11%;
+    border-radius: 50%;
+    background-size: 100%;
+    background-position: 50% 50%;
+    background-image: url('./images/challenges/talent/talentBg.png');
+}
+
+.xjzh-challengePage-introWindow-container {
+    overflow-y: auto;
+    color: black;
+    top: 13%;
+    left: 12%;
+    font-family: 'Suits';
+    width: 82%;
+    height: 73%;
+    font-size: 20px;
+    text-shadow: 0 0 black;
+}
+
+
+.player[data-identity='enemy_boss']>.identity {
+    background-image: url('./images/challenges/identity/enemy_boss.png');
+}
+
+.player[data-identity='enemy']>.identity {
+    background-image: url('./images/challenges/identity/enemy.png');
+}
+
+.player[data-identity='friend']>.identity {
+    background-image: url('./images/challenges/identity/friend.png');
+}

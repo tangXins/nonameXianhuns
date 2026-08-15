@@ -1,0 +1,70 @@
+name: Auto Generate Manifest
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  generate-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate manifest.json
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const crypto = require('crypto');
+          
+          function walkDir(dir) {
+            let results = {};
+            const items = fs.readdirSync(dir);
+            
+            for (const item of items) {
+              if (item === '.git' || item === 'node_modules' || item.startsWith('.')) continue;
+              
+              const fullPath = path.join(dir, item);
+              const stat = fs.statSync(fullPath);
+              
+              if (stat.isDirectory()) {
+                Object.assign(results, walkDir(fullPath));
+              } else if (stat.isFile()) {
+                if (item === 'manifest.json') continue;
+                const content = fs.readFileSync(fullPath);
+                const hash = crypto.createHash('sha256').update(content).digest('hex');
+                results[fullPath] = 'sha256:' + hash;
+              }
+            }
+            return results;
+          }
+          
+          let version = '0.0.0';
+          try {
+            if (fs.existsSync('info.json')) {
+              const info = JSON.parse(fs.readFileSync('info.json', 'utf-8'));
+              version = info.version || '0.0.0';
+            }
+          } catch(e) {
+            console.warn('Cannot read info.json:', e.message);
+          }
+          
+          const manifest = {
+            version: version,
+            generatedAt: new Date().toISOString(),
+            files: walkDir('.')
+          };
+          
+          fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
+          console.log('✅ Generated manifest.json');
+          console.log('   Version:', version);
+          console.log('   Files:', Object.keys(manifest.files).length);
+          "
+
+      - name: Commit manifest
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: auto-update manifest.json'
+          file_patterns: 'manifest.json'

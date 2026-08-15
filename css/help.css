@@ -1,0 +1,466 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            line-height: 1.8;
+            padding: 20px;
+            overflow-y: auto;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #f9ed89;
+            text-shadow: 0 0 10px rgba(249, 237, 137, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 26px;
+            color: #f9ed89;
+            border-left: 4px solid #f9ed89;
+            padding-left: 15px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(249, 237, 137, 0.3);
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #fff;
+            margin: 20px 0 15px 0;
+            padding-left: 10px;
+        }
+
+        p, li {
+            font-size: 16px;
+            line-height: 1.8;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: #f9ed89;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: rgba(255, 102, 102, 0.2);
+            border: 1px solid #ff6666;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tip {
+            background: rgba(102, 255, 102, 0.2);
+            border: 1px solid #66ff66;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card h4 {
+            color: #f9ed89;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .version-info {
+            background: rgba(102, 126, 234, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        th, td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(249, 237, 137, 0.2);
+            color: #f9ed89;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .toc {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+        }
+
+        .toc a {
+            color: #f9ed89;
+            text-decoration: none;
+            display: block;
+            margin: 8px 0;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            color: #fff;
+            padding-left: 10px;
+        }
+
+        /* 联系开发者按钮样式 */
+        .feedback-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 80px;
+            background: rgba(102, 255, 102, 0.8);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 关闭帮助按钮样式 */
+        .close-help-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 80px;
+            background: rgba(255, 102, 102, 0.9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-help-btn:hover {
+            background: rgba(255, 102, 102, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .close-help-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .feedback-btn:hover {
+            background: rgba(102, 255, 102, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .feedback-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 返回顶部按钮样式 */
+        .back-to-top-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.8);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1000;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .back-to-top-btn:hover {
+            background: rgba(102, 126, 234, 1);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-to-top-btn.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 102, 102, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 102, 102, 1);
+            transform: scale(1.1);
+        }
+
+        /* 反馈弹窗样式 */
+        .feedback-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .feedback-modal {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8) translateY(-50px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feedback-modal-overlay.active .feedback-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .feedback-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .feedback-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .feedback-modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .feedback-modal-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #f9ed89;
+            text-shadow: 0 0 10px rgba(249, 237, 137, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .feedback-modal-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .feedback-modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feedback-modal-groups {
+            margin-bottom: 20px;
+        }
+
+        .feedback-modal-group-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f9ed89;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feedback-modal-group-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .feedback-modal-group-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f9ed89;
+            margin-bottom: 5px;
+        }
+
+        .feedback-modal-group-number {
+            font-size: 18px;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .feedback-modal-copy-hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .feedback-modal-section {
+            margin-top: 20px;
+        }
+
+        .feedback-modal-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #f9ed89;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-modal-section-content {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+
+        .feedback-modal-section-content li {
+            margin-bottom: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(249, 237, 137, 0.5);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(249, 237, 137, 0.8);
+        }
+
+        /* 隐藏滚动条但保留滚动功能 */
+        body {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }

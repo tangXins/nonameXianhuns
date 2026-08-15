@@ -1,0 +1,270 @@
+.xjzh_full-flash {
+  position: relative; /* 为包含伪元素做准备 */
+}
+
+.xjzh_full-flash::before {
+  content: ""; /* 伪元素必须有内容 */
+  position: absolute; /* 脱离文档流，覆盖在原始元素上 */
+  top: -4px; right: -4px; bottom: -4px; left: -4px; /* 调整位置以包裹原始元素 */
+  border: 4px solid yellow; /* 设置边框 */
+  border-radius: 50px; /* 添加圆角效果，根据需要调整大小 */
+  opacity: 1;
+  animation: xjzh_fullflash 2s ease-in-out infinite; /* 应用动画 */
+}
+
+@keyframes xjzh_fullflash {
+  0% { opacity: 1; }
+  50% { opacity: 0; } /* 改为完全透明以增强闪烁效果 */
+  100% { opacity: 1; }
+}
+
+@font-face{
+  font-family: lier;
+  src: url("font/font_fzlier.ttf");
+}
+@font-face{
+  font-family: hwxinkai;
+  src: url("font/华文行楷.ttf");
+}
+@font-face{
+  font-family: lb;
+  src: url("font/font_fzlb.ttf");
+}
+
+@font-face{
+  font-family: biaokaiti;
+  src: url("font/font_biaokaiti.ttf");
+}
+
+@font-face{
+  font-family: sxsgysj;
+  src: url("font/font_sxsgysj.ttf");
+}
+
+.xjzh_animation{
+    transition: transform 0s;
+    animation: none;
+    background-repeat: no-repeat;
+    display: block;
+    z-index: 998;
+    overflow: hidden;
+    pointer-events:none;
+}
+.player>.xjzh_animation_onplayer{
+    transition: transform 0s;
+    animation: none;
+    background-repeat: no-repeat;
+    display: block;
+    z-index: 998;
+    overflow: hidden;
+    pointer-events:none;
+}
+
+.xjzh-dialog {
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 1000px;
+	height: 528px;
+	background-size: 100% 100%;
+	background-image: url('images/ui/xjzh_info0.png');
+	transform: translate(-50%, -50%);
+	z-index: 51;
+}
+
+/*词条解释的文字属性*/
+.xjzh-dialog-div {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.801);
+}
+
+.xjzh-dialog>
+.xjzh-dialog-text {
+	position: absolute;
+	margin: 5px;
+	top: 130px;
+	left: 500px;
+	width: 326px;
+	height: 300px;
+	font-family: biaokaiti;
+	letter-spacing: 1px;
+	line-height: 1.2;
+	overflow: scroll;
+	font-size: 25px;
+	color: #885f33;
+	text-align: justify;
+	overflow-y:auto;
+	text-shadow: none;
+	-webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+
+/*词条名的文字属性*/
+
+.xjzh-dialog>
+.xjzh-dialog-name {
+	position: absolute;
+	margin: 5px;
+	top: 196px;
+	left: 407px;
+	width: 20px;
+	height: 20px;
+	font-family: sxsgysj;
+	font-size: 30px;
+	color: #f0cb85;
+	text-shadow: none;
+	-webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+.xjzh-dialog>
+.xjzh-dialog-remove {
+	position: absolute;
+	margin: 5px;
+	right: 10px;
+	top: 5px;
+	height: 20px;
+	width: 20px;
+	background-size: 100% 100%;
+	background-image: url('images/ui/xjzh_pic_close.jpg');
+}
+.xjzh-loading {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 500px;
+    height: 300px;
+    background-size: 100% 100%;
+    background-image: url('images/ui/xjzh_info.png');
+    transform: translate(-50%, -50%);
+    z-index: 22;
+}
+.xjzh-loading>.xjzh-loading-text {
+    display: table-cell;
+    position: absolute;
+    margin: 5px;
+    top: 55%;
+    left: 50%;
+    width: 380px;
+    height: 100px;
+    font-family: 'xinwei';
+    overflow: scroll;
+    font-size: 18px;
+    transform: translate(-50%, -50%);
+    color: black !important;
+    text-align: center;
+    vertical-align: middle;
+}
+.save{
+	background-color: rgba(0,0,0,0.5);
+	width: 100%;
+	height: 100%;
+	z-index: 7;
+	background-size: cover;
+}
+.xjzh_save {
+	z-index: 10 !important;
+}
+.xjzh_save2 {
+	position: absolute;
+	width: calc(50% - 200px);
+	top: calc(50% - 200px);
+
+}
+.xjzh_dialog {
+	background-image: url('images/lamasi/background.jpg');
+	width: 400px;
+	height: 250px;
+	font-size: 20px;
+	padding: 25px;
+	overflow: auto;
+	vertical-align:middle;
+	line-height: 250px;
+	background-size: 100% 100%;
+	left: calc(50% - 200px);
+	top: calc(50% - 150px);
+	animation: 0.2s xjzh_tanchu linear;
+}
+@keyframes xjzh_tanchu {
+	from {
+		transform: scaleY(0);
+	}
+
+	to {
+		transform: scaleY(1);
+	}
+}
+.xjzh_select {
+	width: 300px;
+	height: 30px;
+	left: calc(50% - 125px);
+	top: calc(50% + 180px);
+	text-align: center;
+}
+.xjzh_select>div {
+	background-image: url('images/lamasi/select.png');
+	width: 45%;
+	height: 100%;
+	font-size: 25px;
+	padding: 5px;
+	background-size: 100% 100%;
+	position: unset;
+}
+.xjzh_select>div:active {
+	background-image: url('images/lamasi/select.png');
+}
+.player.huanxing {
+	z-index: 1;
+	filter: grayscale(1);
+	-webkit-filter: grayscale(1);
+}
+.player .mp{
+  position:absolute;
+  top:-20px;
+  left:0;
+  width:100%;
+  height:15px;
+  border-radius: 7px;
+  background-color: darkgray;
+  z-index: 89;
+}
+.player .mp .mpdiv{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background-color: blue;
+  line-height: 1;
+}
+.player .mp .mpdiv .mptext{
+  padding-left: 5px;
+}
+.player .xjzhhp{
+  position:absolute;
+  top:-15px;
+  left:0;
+  width:100%;
+  height:15px;
+  border-radius: 7px;
+  background-color: darkgray;
+  z-index: 89;
+}
+.player .xjzhhp .xjzhhpdiv{
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background-color: red;
+  line-height: 1;
+}
+.player .xjzhhp .xjzhhpdiv .xjzhhptext{
+  padding-left: 5px;
+}
