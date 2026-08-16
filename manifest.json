@@ -1,6 +1,6 @@
 {
   "version": "5.08132",
-  "generatedAt": "2026-08-16T05:57:06.390Z",
+  "generatedAt": "2026-08-16T06:06:43.316Z",
   "files": {
     "@types/game.d.ts": "sha256:5661c1ddc43fab9448ad53cee83b573befe66fff2cdd3909ab28a6d511d4b965",
     "@types/get.d.ts": "sha256:d1269324c340999087fee1f15e0fd76b47b1606268f909c228d893aa51f1f364",
@@ -822,7 +822,7 @@
     "ext/cropper.min.js": "sha256:45f7809b3c670140e946c9162e5f263ba58663e1adcb44f61784582ec9f93886",
     "ext/gifuct.js": "sha256:b1c2e50a4ba31bb46656bfc2f79d16f965da4160e0db5642907dfe42a41d10c7",
     "ext/html/help.html": "sha256:152b1a50505a88c11fb352b3cfc6965f9d3956b95d7203c4ad35f9b43b70f384",
-    "ext/html/tycoon.html": "sha256:4d6c88594c5a9d28252adc70c2af9a6e8d3995abc8a0831fca33e8c2a6f3b2e5",
+    "ext/html/tycoon.html": "sha256:91750926d10a016f7130fe5fd96bbcccee8fa6c8b18cacefa9d47e4f8d9fabcc",
     "ext/modules/achievement/achievementList.js": "sha256:1be856d362adab72f9a096c274cd03a5e8d816c65b54366439febc46629cde07",
     "ext/modules/achievement/components/AvatarPicker.js": "sha256:7ed43b909d22f2f7b6c7b7a175a77656f06036b4bb138c32fd58b8e8db2523e0",
     "ext/modules/achievement/components/SvipPanel.js": "sha256:1db4145612e2ce02df62962e1e91a476bc356e815418cddb295fb7a5f70bda6e",
