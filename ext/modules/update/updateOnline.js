@@ -320,9 +320,38 @@ async function performFullUpdateCompat(version, remoteManifest, resetButton) {
 
 // ============ Vue 组件可用的 API ============
 
+function formatTimestamp() {
+    const d = new Date();
+    return d.toLocaleTimeString('zh-CN', { hour12: false });
+}
+
 const updateApi = {
 
     getCurrentVersion() {
+        try {
+            const info = lib.extensionPack['仙家之魂'];
+            if (info && info.version) return info.version;
+            const url = `${lib.assetURL}extension/仙家之魂/info.json`;
+            return fetch(url, { cache: 'no-store' })
+                .then(r => r.json())
+                .then(data => data.version || '0.0.0')
+                .catch(() => '0.0.0');
+        } catch (e) {
+            return '0.0.0';
+        }
+    },
+
+    async getCurrentVersionAsync() {
+        try {
+            const url = `${lib.assetURL}extension/仙家之魂/info.json`;
+            const response = await fetch(url, { cache: 'no-store' });
+            if (response.ok) {
+                const info = await response.json();
+                return info.version || '0.0.0';
+            }
+        } catch (e) {
+            console.warn('[Update] 读取版本号失败:', e.message);
+        }
         return lib.extensionPack['仙家之魂']?.version || '0.0.0';
     },
 
@@ -342,8 +371,14 @@ const updateApi = {
     },
 
     async checkForUpdate(callbacks = {}) {
-        const { onStatus } = callbacks;
-        
+        const { onStatus, onLog } = callbacks;
+
+        const log = (msg, type = 'info') => {
+            const entry = { time: formatTimestamp(), msg, type };
+            if (onLog) onLog(entry);
+            if (onStatus) onStatus(msg);
+        };
+
         if (game.Updating) {
             throw new Error('正在更新游戏文件，请勿重复点击');
         }
@@ -352,26 +387,65 @@ const updateApi = {
 
         try {
             game.print('正在检查更新...');
-            if (onStatus) onStatus('准备读取本地版本信息...');
+            log('开始检查更新流程', 'info');
+            log('准备读取本地版本信息...', 'info');
 
+            const localVersion = await this.getCurrentVersionAsync();
+            log(`本地版本号: v${localVersion}`, 'success');
+            log(`扩展版本信息获取成功`, 'success');
+
+            log('正在读取本地 manifest 文件...', 'info');
             const localManifest = await loadLocalManifest();
-            if (onStatus) onStatus('本地版本信息读取完成');
-            
-            if (onStatus) onStatus('正在连接远程服务器获取最新版本...');
+            const localFileCount = Object.keys(localManifest?.files || {}).length;
+            if (localFileCount > 0) {
+                log(`本地 manifest 读取成功，包含 ${localFileCount} 个文件记录`, 'success');
+            } else {
+                log('本地 manifest 为空，将进行全量对比', 'warning');
+            }
+
             const source = game.getExtensionConfig('仙家之魂', 'xjzh_update_source') || 'jsDelivr';
-            if (onStatus) onStatus(`正在连接 ${source} 服务器...`);
-            
+            log(`正在连接远程服务器 (${source}源)...`, 'info');
+
+            log('正在下载远程 manifest.json...', 'info');
             const remoteManifest = await fetchManifest();
-            if (onStatus) onStatus('远程版本信息获取成功');
+            const remoteVersion = remoteManifest?.version || '0.0.0';
 
-            const localVersion = this.getCurrentVersion();
-            const remoteVersion = remoteManifest.version;
+            if (remoteManifest && remoteManifest.files) {
+                const remoteFileCount = Object.keys(remoteManifest.files).length;
+                log(`远程服务器响应成功，获取到 ${remoteFileCount} 个文件记录`, 'success');
+            } else {
+                log('远程服务器响应成功，但 manifest 格式异常', 'warning');
+            }
 
-            if (onStatus) onStatus(`正在对比版本信息 (本地: v${localVersion}, 远程: v${remoteVersion})...`);
+            log(`远程版本号: v${remoteVersion}`, 'info');
+
+            log(`正在对比版本信息...`, 'info');
+            log(`对比详情: 本地版本 v${localVersion} vs 远程版本 v${remoteVersion}`, 'info');
             const versionCompare = checkVersionUpdate(localVersion, remoteVersion);
 
             if (versionCompare === 0) {
-                if (onStatus) onStatus('版本对比完成，当前版本已是最新');
+                log('版本号相同，检查文件差异...', 'info');
+
+                const safeLocalManifest = localManifest || { version: localVersion, files: {} };
+                const comparison = compareManifests(safeLocalManifest, remoteManifest);
+
+                const totalFiles = comparison.summary.newFiles + comparison.summary.changedFiles + comparison.summary.deletedFiles;
+
+                if (totalFiles > 0) {
+                    log(`检测到 ${totalFiles} 个文件变更，需要更新`, 'warning');
+                    return {
+                        hasUpdate: true,
+                        localVersion,
+                        remoteVersion,
+                        isHigher: false,
+                        comparison,
+                        useRelease: false,
+                        remoteManifest,
+                        message: `检测到 ${totalFiles} 个文件需要更新`
+                    };
+                }
+
+                log('版本相同且文件无差异，已是最新版本', 'success');
                 return {
                     hasUpdate: false,
                     localVersion,
@@ -380,34 +454,61 @@ const updateApi = {
                 };
             }
 
-            const isHigher = versionCompare > 0;
+            if (versionCompare < 0) {
+                log(`版本检测: 本地版本低于远程版本`, 'success');
+                log(`发现新版本! v${localVersion} → v${remoteVersion}`, 'success');
+            } else {
+                log(`版本检测: 本地版本高于远程版本`, 'warning');
+                log(`本地版本(v${localVersion})比远程版本(v${remoteVersion})更高`, 'warning');
+            }
 
-            if (onStatus) onStatus('正在对比本地与远程文件列表...');
-            const comparison = compareManifests(localManifest, remoteManifest);
+            log('正在对比本地与远程文件列表...', 'info');
+            const safeLocalManifest = localManifest || { version: localVersion, files: {} };
+            const comparison = compareManifests(safeLocalManifest, remoteManifest);
             const forceFullUpdate = game.getExtensionConfig('仙家之魂', 'xjzh_updateAll');
             const useRelease = forceFullUpdate || comparison.needsFullUpdate;
 
             const totalFiles = comparison.summary.newFiles + comparison.summary.changedFiles + comparison.summary.deletedFiles;
-            if (onStatus) onStatus(`检测到 ${totalFiles} 个变更文件 (新增:${comparison.summary.newFiles} 修改:${comparison.summary.changedFiles} 删除:${comparison.summary.deletedFiles})`);
+            log(`对比完成: 检测到 ${totalFiles} 个变更 (新增:${comparison.summary.newFiles}, 修改:${comparison.summary.changedFiles}, 删除:${comparison.summary.deletedFiles})`, totalFiles > 0 ? 'success' : 'info');
+
+            if (useRelease) {
+                log('变更文件较多，建议使用全量更新', 'warning');
+            }
+
+            log('更新检查完成', 'success');
 
             return {
                 hasUpdate: true,
                 localVersion,
                 remoteVersion,
-                isHigher,
+                isHigher: versionCompare > 0,
                 comparison,
                 useRelease,
                 remoteManifest
             };
         } catch (err) {
             console.error('[Update] 检查更新失败:', err);
-            if (onStatus) onStatus(`检查失败: ${err.message || '未知错误'}`);
+            const log = (msg, type = 'error') => {
+                const entry = { time: formatTimestamp(), msg, type };
+                if (onLog) onLog(entry);
+                if (onStatus) onStatus(msg);
+            };
+            log(`检查失败: ${err.message || '未知错误'}`, 'error');
+
             let errorMsg = '检查更新失败';
             if (err.name === 'AbortError') {
                 errorMsg = '网络连接超时，请检查网络或切换更新源';
+                log('网络请求超时，建议切换更新源或检查网络连接', 'warning');
+            } else if (err.message && err.message.includes('Failed to fetch')) {
+                errorMsg = '无法连接到远程服务器，请检查网络连接';
+                log('网络连接失败，无法访问远程服务器', 'error');
             } else if (err.message) {
                 errorMsg += ': ' + err.message;
             }
+
+            log(`错误详情: ${JSON.stringify(err).substring(0, 200)}`, 'error');
+            log('请检查网络连接或尝试切换更新源', 'warning');
+
             throw new Error(errorMsg);
         } finally {
             game.Updating = false;
@@ -416,14 +517,19 @@ const updateApi = {
 
     async performIncrementalUpdate(comparison, remoteManifest, callbacks = {}) {
         const totalCount = comparison.filesToDownload.length + comparison.filesToDelete.length;
-        const { onProgress, onFileComplete, onComplete, onError, onStatus } = callbacks;
+        const { onProgress, onFileComplete, onComplete, onError, onStatus, onLog } = callbacks;
+
+        const log = (msg, type = 'info') => {
+            const entry = { time: formatTimestamp(), msg, type };
+            if (onLog) onLog(entry);
+            if (onStatus) onStatus(msg);
+        };
 
         try {
             game.print(`开始增量更新，共 ${totalCount} 个文件需要处理...`);
-            if (onStatus) onStatus(`准备下载 ${comparison.filesToDownload.length} 个新文件...`);
+            log(`准备下载 ${comparison.filesToDownload.length} 个新文件，删除 ${comparison.filesToDelete.length} 个旧文件...`, 'info');
 
             let completedCount = 0;
-            let lastStatusTime = 0;
 
             const result = await downloadIncremental(
                 comparison.filesToDownload,
@@ -440,33 +546,27 @@ const updateApi = {
                                 error: error || null
                             });
                         }
-                        const now = Date.now();
-                        if (onStatus && (now - lastStatusTime > 500 || completed === total)) {
-                            lastStatusTime = now;
-                            if (error) {
-                                onStatus(`⚠️ ${currentFile} 更新失败 (${completed}/${total})`);
-                            } else if (currentFile) {
-                                onStatus(`正在处理: ${currentFile} (${completed}/${total})`);
-                            }
-                        }
-                        if (error) {
-                            game.print(`⚠️ ${currentFile} 更新失败: ${error.message}`);
-                        } else {
-                            game.print(`✓ ${currentFile} 更新成功 (${completed}/${total})`);
+                        if (error && completed === total) {
+                            log(`⚠️ ${currentFile} 更新失败 (${completed}/${total})`, 'error');
+                        } else if (completed === total) {
+                            log(`✓ ${currentFile} 处理完成 (${completed}/${total})`, 'success');
                         }
                     },
                     onFileComplete: (filePath, success) => {
                         if (!success) {
                             console.warn(`[Update] 文件更新失败: ${filePath}`);
+                            log(`⚠️ 文件更新失败: ${filePath}`, 'error');
+                        } else {
+                            log(`✓ ${filePath} 更新成功`, 'success');
                         }
                         if (onFileComplete) onFileComplete(filePath, success);
                     }
                 }
             );
 
-            if (onStatus) onStatus('文件下载完成，正在保存版本信息...');
+            log('文件下载完成，正在保存版本信息...', 'info');
             await saveLocalManifest(remoteManifest);
-            if (onStatus) onStatus('版本信息保存成功');
+            log('版本信息保存成功', 'success');
 
             if (onComplete) {
                 onComplete({
@@ -477,11 +577,11 @@ const updateApi = {
                 });
             }
 
-            if (onStatus) onStatus(`增量更新全部完成 (${result.totalCount} 个文件)`);
+            log(`增量更新全部完成 (${result.totalCount} 个文件)`, 'success');
             return result;
         } catch (err) {
             console.error('[Update] 增量更新失败:', err);
-            if (onStatus) onStatus(`增量更新失败: ${err.message || '未知错误'}`);
+            log(`增量更新失败: ${err.message || '未知错误'}`, 'error');
             if (onError) {
                 onError(err);
             }

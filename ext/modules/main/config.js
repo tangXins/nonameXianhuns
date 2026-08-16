@@ -42,26 +42,9 @@ export const config = {
         name: "<u><b>点击此处打开帮助文档</b></u>",
         intro: "查看完整的游戏玩法说明和功能介绍",
         clear: true,
-        async onclick(item) {
+        onclick(item) {
             const helpUrl = lib.assetURL + 'extension/仙家之魂/ext/html/help.html';
-
-            try {
-                // 先检查文件是否存在
-                const response = await fetch(helpUrl, { method: 'HEAD' });
-                if (!response.ok) {
-                    game.xjzh_createDailog('帮助文档不存在，请检查扩展文件是否完整！');
-                    return;
-                }
-
-                // 文件存在，打开新窗口
-                const helpWindow = window.open(helpUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-                if (!helpWindow || helpWindow.closed || typeof helpWindow.closed == 'undefined') {
-                    game.xjzh_createDailog('帮助文档已在新窗口打开，如被拦截请允许弹出窗口！');
-                }
-            } catch (error) {
-                console.error('检查帮助文档失败:', error);
-                game.xjzh_createDailog('无法访问帮助文档，请检查扩展文件完整性！');
-            }
+            game.xjzh_openPageInIframe(helpUrl);
         },
     },
     "xjzh_gameSaveManagement": {
@@ -85,6 +68,14 @@ export const config = {
         clear: true,
         onclick: function () {
             openTycoonPage();
+        },
+    },
+    "xjzh_updateManagement": {
+        name: "<u><b>点击进入更新管理页面</b></u>",
+        clear: true,
+        onclick: function () {
+            const updateUrl = lib.assetURL + 'extension/仙家之魂/ext/html/update.html';
+            game.xjzh_openPageInIframe(updateUrl);
         },
     },
     "xjzh_help": {

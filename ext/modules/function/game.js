@@ -1,21 +1,12 @@
 import { lib, game, ui, get, ai, _status, rootURL } from '../../../../../noname.js';
 import { createProgress } from '../../../../../noname/library/update.js';
 import { introduces } from '../index.js';
+import { updateLog } from '../update/index.js';
+
+game.updateLog = updateLog;
 
 // 魔力弹窗样式缓存，避免重复创建
 let _cachedMpPopupStyle = null;
-
-/**
- * 生成随机颜色
- */
-function getRandomColor() {
-    let letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
 
 /**
  * game方法扩展
@@ -2818,7 +2809,7 @@ const games = {
         for (let i = 0; i < text.length; i++) {
             let keyframes = `@keyframes char-${i}-bianhuan {`;
             for (let j = 0; j <= 100; j += 10) {
-                keyframes += `${j}% { color: ${getRandomColor()}; opacity: 1; }`;
+                keyframes += `${j}% { color: ${this.xjzh_getRandomColor()}; opacity: 1; }`;
             }
             keyframes += '}';
 
@@ -2923,6 +2914,152 @@ const games = {
         ui.window.appendChild(layer);
 
         return layer;
+    },
+    xjzh_openPageInIframe(url) {
+        if (!url) return null;
+
+        if (this._pageIframe && document.body.contains(this._pageIframe)) {
+            return this._pageIframe;
+        }
+
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;border:none;';
+        document.body.appendChild(iframe);
+        this._pageIframe = iframe;
+
+        const self = this;
+
+        const closePage = () => {
+            iframe.remove();
+            self._pageIframe = null;
+            window.removeEventListener('message', messageHandler);
+        };
+
+        const messageHandler = (e) => {
+            const msg = e.data;
+            if (!msg || !msg.type) return;
+            if (!self._pageIframe || self._pageIframe.contentWindow !== e.source) return;
+
+            const reply = (data) => {
+                if (self._pageIframe && self._pageIframe.contentWindow) {
+                    self._pageIframe.contentWindow.postMessage({ id: msg.id, data }, '*');
+                }
+            };
+
+            switch (msg.type) {
+                case 'closePage':
+                    closePage();
+                    break;
+                case 'getUpdateInfo':
+                    if (!msg.id) return;
+                    reply({
+                        version: game.updateLog?.version || '-',
+                        onlyVersion: game.updateLog?.onlyVersion || '-',
+                        updateLog: game.updateLog
+                    });
+                    break;
+                case 'checkUpdate':
+                    if (!msg.id) return;
+                    game.checkUpdateOnline().then(result => {
+                        reply(result);
+                    }).catch(err => {
+                        reply({
+                            connectionOk: false,
+                            hasUpdate: false,
+                            latestVersion: null,
+                            updateSize: null,
+                            error: err.message
+                        });
+                    });
+                    break;
+                case 'performUpdate':
+                    if (!msg.id) return;
+                    reply({ success: true });
+                    break;
+            }
+        };
+
+        window.addEventListener('message', messageHandler);
+
+        iframe.onload = () => {
+            const doc = iframe.contentDocument;
+            if (!doc) return;
+
+            doc.getElementById('btn-close')?.addEventListener('click', closePage);
+            doc.querySelectorAll('[data-close-window]').forEach(el => {
+                el.addEventListener('click', closePage);
+            });
+        };
+
+        return iframe;
+    },
+
+    xjzh_checkUpdateOnline() {
+        const manifestURL = this.updateLog?.manifestURL || 'https://raw.githubusercontent.com/tangXins/nonameXianhuns/main/manifest.json';
+        const releaseURL = this.updateLog?.releaseURL || 'https://github.com/tangXins/nonameXianhuns/releases';
+
+        return fetch(manifestURL)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(manifest => {
+                const localVersion = this.updateLog?.version || '0.0.0';
+                const remoteVersion = manifest.version || '0.0.0';
+                const hasUpdate = this.compareVersions(remoteVersion, localVersion) > 0;
+
+                let updateLogData = null;
+                if (hasUpdate && this.updateLog) {
+                    updateLogData = this.updateLog[remoteVersion] || null;
+                }
+
+                return {
+                    connectionOk: true,
+                    hasUpdate,
+                    latestVersion: hasUpdate ? remoteVersion : null,
+                    currentVersion: localVersion,
+                    updateSize: hasUpdate && manifest.files ? Object.keys(manifest.files).length + ' 个文件' : null,
+                    updateLog: updateLogData,
+                    manifest: hasUpdate ? manifest : null,
+                    downloadUrl: hasUpdate ? releaseURL : null
+                };
+            })
+            .catch(err => {
+                return {
+                    connectionOk: false,
+                    hasUpdate: false,
+                    latestVersion: null,
+                    currentVersion: this.updateLog?.version || '-',
+                    updateSize: null,
+                    updateLog: null,
+                    manifest: null,
+                    downloadUrl: null,
+                    error: err.message
+                };
+            });
+    },
+
+    compareVersions(v1, v2) {
+        const parts1 = v1.split('.').map(Number);
+        const parts2 = v2.split('.').map(Number);
+        const len = Math.max(parts1.length, parts2.length);
+        for (let i = 0; i < len; i++) {
+            const p1 = i < parts1.length ? parts1[i] : 0;
+            const p2 = i < parts2.length ? parts2[i] : 0;
+            if (p1 < p2) return -1;
+            if (p1 > p2) return 1;
+        }
+        return 0;
+    },
+
+    xjzh_getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
     },
 
 };

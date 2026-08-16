@@ -4,1681 +4,2057 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仙家之魂 - 帮助文档</title>
-    <link rel="stylesheet" href="../../css/help.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 98%;
+            height: 96%;
+            max-width: 1500px;
+            background: linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 0 40px rgba(255,215,0,0.4);
+            overflow: hidden;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            flex-shrink: 0;
+        }
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg,#FFD700,#FFA500);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+        }
+        .title-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .title {
+            color: #FFD700;
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255,215,0,0.6);
+            letter-spacing: 2px;
+        }
+        .sub-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg,#FFD700,#FFA500);
+            color: #000;
+            box-shadow: 0 3px 12px rgba(255,215,0,0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(255,215,0,0.5);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+        }
+        .btn-close {
+            width: 36px;
+            height: 36px;
+            background: rgba(244,67,54,0.8);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+        }
+        .btn-close:hover {
+            background: rgba(244,67,54,1);
+        }
+        .main-layout {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+        }
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-title {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,215,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-right: 4px;
+        }
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(255,215,0,0.3);
+            border-radius: 2px;
+        }
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .nav-item:hover {
+            background: rgba(255,215,0,0.1);
+            color: #FFD700;
+            border-color: rgba(255,215,0,0.2);
+        }
+        .nav-item.active {
+            background: rgba(255,215,0,0.15);
+            color: #FFD700;
+            border-color: rgba(255,215,0,0.3);
+            font-weight: bold;
+        }
+        .nav-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .sidebar-footer {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,215,0,0.2);
+            flex-shrink: 0;
+        }
+        .sidebar-footer-info {
+            color: rgba(255,255,255,0.4);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .content-area {
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 12px;
+            padding: 20px 24px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,215,0,0.4) transparent;
+        }
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background: rgba(255,215,0,0.4);
+            border-radius: 4px;
+        }
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,215,0,0.6);
+        }
+        .section {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 18px;
+            transition: all 0.25s ease;
+        }
+        .section:hover {
+            border-color: rgba(255,215,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .section h2 {
+            color: #FFD700;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,215,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h3 {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            font-weight: bold;
+            margin: 16px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section h4 {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 12px 0 8px;
+        }
+        .section p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        .section ul, .section ol {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            line-height: 1.8;
+            padding-left: 22px;
+            margin-bottom: 12px;
+        }
+        .section li {
+            margin-bottom: 4px;
+        }
+        .section ul ul, .section ol ol, .section ul ol, .section ol ul {
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .section strong {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        .section code {
+            background: rgba(255,215,0,0.15);
+            color: #FFD700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Microsoft YaHei', monospace;
+            font-size: 13px;
+        }
+        .section a {
+            color: #66ff66;
+            text-decoration: none;
+        }
+        .section a:hover {
+            text-decoration: underline;
+        }
+        .highlight {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,255,255,0.03));
+            border: 1px solid rgba(255,215,0,0.25);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+        .feature-card h4 {
+            color: #FFD700;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .tip {
+            background: linear-gradient(135deg, rgba(76,175,80,0.15), rgba(255,255,255,0.03));
+            border: 1px solid rgba(76,175,80,0.4);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .tip strong {
+            color: #4ade80;
+        }
+        .warning {
+            background: linear-gradient(135deg, rgba(244,67,54,0.15), rgba(255,255,255,0.03));
+            border: 1px solid rgba(244,67,54,0.4);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .warning strong {
+            color: #f87171;
+        }
+        .version-info {
+            background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(255,255,255,0.03));
+            border: 1px solid rgba(96,165,250,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0;
+        }
+        .version-info h3 {
+            color: #60a5fa;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 14px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,215,0,0.25);
+        }
+        th {
+            background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,215,0,0.1));
+            color: #FFD700;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 2px solid rgba(255,215,0,0.4);
+        }
+        td {
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background: rgba(255,215,0,0.06);
+        }
+        .faq-item {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #FFD700;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 10px 0;
+        }
+        .faq-item h3 {
+            color: #FFD700;
+            font-size: 14px;
+            margin: 0 0 6px;
+        }
+        .faq-item p {
+            margin-bottom: 6px;
+        }
+        .page-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+            transition: all 0.25s ease;
+            z-index: 99998;
+            opacity: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255,215,0,0.6);
+        }
+        .back-to-top.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .feedback-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .feedback-modal-overlay.active {
+            display: flex;
+        }
+        .feedback-modal {
+            width: 90%;
+            max-width: 480px;
+            max-height: 85vh;
+            background: linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 0 40px rgba(255,215,0,0.4);
+        }
+        .feedback-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: rgba(244,67,54,0.8);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .feedback-modal-close:hover {
+            background: rgba(244,67,54,1);
+        }
+        .feedback-modal-header {
+            text-align: center;
+            margin-bottom: 18px;
+            padding-right: 40px;
+        }
+        .feedback-modal-title {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+        .feedback-modal-subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        .feedback-modal-groups {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .feedback-modal-group-item {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .feedback-modal-group-item:hover {
+            background: rgba(255,215,0,0.2);
+            transform: translateX(4px);
+        }
+        .feedback-modal-group-name {
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .feedback-modal-group-number {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Consolas', monospace;
+        }
+        .feedback-modal-copy-hint {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            margin-bottom: 16px;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+        }
+        .feedback-modal-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-top: 10px;
+        }
+        .feedback-modal-section-title {
+            color: #fbbf24;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .feedback-modal-section-content {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            line-height: 1.7;
+            padding-left: 20px;
+            margin: 0;
+        }
+        .feedback-modal-section-content li {
+            margin-bottom: 4px;
+        }
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-height: 160px;
+            }
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .nav-item {
+                flex: 0 0 auto;
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .sidebar-footer {
+                display: none;
+            }
+            .title {
+                font-size: 18px;
+            }
+            .btn span {
+                display: none;
+            }
+        }
+        @media (max-width: 600px) {
+            .section {
+                padding: 14px 16px;
+            }
+            .section h2 {
+                font-size: 17px;
+            }
+            .content-area {
+                padding: 14px;
+            }
+            .panel {
+                padding: 12px;
+            }
+            .header {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 关闭帮助按钮 -->
-        <button id="closeHelpBtn" class="close-help-btn" title="关闭帮助">
-            <svg viewBox="0 0 24 24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
-            关闭帮助
-        </button>
-
-        <!-- 联系开发者按钮 -->
-        <button id="feedbackBtn" class="feedback-btn" title="联系开发者/加群">
-            <svg viewBox="0 0 24 24">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-            </svg>
-            联系开发者
-        </button>
-
-        <!-- 返回顶部按钮 -->
-        <button id="backToTopBtn" class="back-to-top-btn" title="返回顶部">↑</button>
-
-        <!-- 反馈弹窗 -->
-        <div id="feedbackModalOverlay" class="feedback-modal-overlay">
-            <div class="feedback-modal">
-                <button class="feedback-modal-close" onclick="closeFeedbackModal()">×</button>
-                <div class="feedback-modal-header">
-                    <div class="feedback-modal-title">🎮 仙家之魂 - 官方交流群</div>
-                    <div class="feedback-modal-subtitle">问题反馈 · 技术交流 · 更新通知</div>
+    <div class="overlay">
+        <div class="panel">
+            <div class="header">
+                <div class="title-group">
+                    <div class="icon-box">🎮</div>
+                    <div class="title-box">
+                        <div class="title">仙家之魂 · 帮助文档</div>
+                        <div class="sub-title">无名杀扩展包完整游玩指南</div>
+                    </div>
                 </div>
-                <div class="feedback-modal-content">
-                    <div class="feedback-modal-groups" id="qqGroupsList"></div>
-                    <div class="feedback-modal-copy-hint">💡 点击群号即可复制，打开 QQ 搜索群号申请加入</div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" id="feedbackBtn" title="联系开发者/加群">
+                        <span>💬</span><span>联系开发者</span>
+                    </button>
+                    <button class="btn btn-close" id="closeHelpBtn" title="关闭帮助">
+                        ✕
+                    </button>
+                </div>
+            </div>
 
-                    <div class="feedback-modal-section">
-                        <div class="feedback-modal-section-title">
-                            <span>⚠️</span>
-                            <span>问题反馈须知</span>
+            <div class="main-layout">
+                <aside class="sidebar">
+                    <div class="sidebar-title">📑 目录导航</div>
+                    <nav class="sidebar-nav" id="sidebarNav">
+                        <a href="#intro" class="nav-item" data-target="intro">
+                            <span class="nav-icon">📖</span><span>扩展简介</span>
+                        </a>
+                        <a href="#install" class="nav-item" data-target="install">
+                            <span class="nav-icon">📥</span><span>安装与配置要求</span>
+                        </a>
+                        <a href="#features" class="nav-item" data-target="features">
+                            <span class="nav-icon">✨</span><span>核心功能</span>
+                        </a>
+                        <a href="#characters" class="nav-item" data-target="characters">
+                            <span class="nav-icon">🎭</span><span>武将系统</span>
+                        </a>
+                        <a href="#qishu" class="nav-item" data-target="qishu">
+                            <span class="nav-icon">🔮</span><span>奇术要件系统</span>
+                        </a>
+                        <a href="#bag" class="nav-item" data-target="bag">
+                            <span class="nav-icon">🎒</span><span>背包系统</span>
+                        </a>
+                        <a href="#rune" class="nav-item" data-target="rune">
+                            <span class="nav-icon">✨</span><span>符文系统</span>
+                        </a>
+                        <a href="#key" class="nav-item" data-target="key">
+                            <span class="nav-icon">🗝️</span><span>巢穴钥匙</span>
+                        </a>
+                        <a href="#achievement" class="nav-item" data-target="achievement">
+                            <span class="nav-icon">🏆</span><span>成就系统</span>
+                        </a>
+                        <a href="#challenge" class="nav-item" data-target="challenge">
+                            <span class="nav-icon">⚔️</span><span>升华试炼模式</span>
+                        </a>
+                        <a href="#toolbox" class="nav-item" data-target="toolbox">
+                            <span class="nav-icon">🧰</span><span>工具箱</span>
+                        </a>
+                        <a href="#customization" class="nav-item" data-target="customization">
+                            <span class="nav-icon">🎨</span><span>自定义选项</span>
+                        </a>
+                        <a href="#quickstart" class="nav-item" data-target="quickstart">
+                            <span class="nav-icon">🚀</span><span>新手快速上手</span>
+                        </a>
+                        <a href="#glossary" class="nav-item" data-target="glossary">
+                            <span class="nav-icon">📚</span><span>术语解释</span>
+                        </a>
+                        <a href="#faq" class="nav-item" data-target="faq">
+                            <span class="nav-icon">❓</span><span>常见问题</span>
+                        </a>
+                    </nav>
+                    <div class="sidebar-footer">
+                        <div class="sidebar-footer-info">
+                            版本：<span id="sidebar-version">加载中...</span><br>
+                            遵循 GPL3 协议
                         </div>
-                        <ul class="feedback-modal-section-content">
-                            <li>提供无名杀版本号</li>
-                            <li>提供浏览器内核版本</li>
-                            <li>详细描述问题并附截图</li>
-                            <li>说明问题复现步骤</li>
+                    </div>
+                </aside>
+
+                <main class="content-area" id="contentArea">
+                    <div id="intro" class="section">
+                        <h2>📖 扩展简介</h2>
+                        <p>《仙家之魂》是一款基于无名杀引擎开发的大型扩展包，提供了丰富的武将、技能、游戏模式和自定义功能，涵盖三国、动漫、游戏同人等多个主题系列。</p>
+
+                        <div class="feature-card">
+                            <h4>制作团队</h4>
+                            <ul>
+                                <li><span class="highlight">作者：</span>吃朵棉花糖</li>
+                                <li><span class="highlight">技能设计：</span>吃朵棉花糖、光明牛奶</li>
+                                <li><span class="highlight">代码编绎：</span>吃朵棉花糖</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning">
+                            <strong>⚠️ 重要声明：</strong>
+                            <ul>
+                                <li>本扩展依托于无名杀客户端制作，你需要先安装无名杀客户端或网页版</li>
+                                <li>本扩展遵循 GPL3 协议，可自由复制、修改、分发，但必须保留原作者版权声明</li>
+                                <li>禁止某火使用、修改本扩展</li>
+                                <li>二次修改请删除作者自行制作的素材</li>
+                                <li>本扩展完全免费且开源，仅在官方 QQ 群发布，从未进行过任何宣发</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="install" class="section">
+                        <h2>📥 安装与配置要求</h2>
+
+                        <div class="version-info">
+                            <h3>系统要求</h3>
+                            <ul>
+                                <li>无名杀本体版本必须为<strong>最新版本 ≥ <span id="min-version" style="color: #66ff66; font-weight: bold;">检测中...</span></strong>
+                                    <ul>
+                                        <li><strong>当前扩展要求的最低版本：</strong><span id="current-min-version" style="color: #f9ed89;">加载中...</span></li>
+                                        <li><strong>如何查看当前版本：</strong>在游戏设置或关于页面中查看版本号</li>
+                                        <li><strong>版本检查机制：</strong>本扩展会在加载时自动检测无名杀版本，若低于最低要求版本会自动关闭扩展以防止报错</li>
+                                        <li><strong>版本格式说明：</strong>版本号通常格式为 X.Y.Z（如 1.11.2），数字越大表示版本越新</li>
+                                        <li><strong>当前游戏版本：</strong><span id="game-version" style="color: #fff;">检测中...</span></li>
+                                    </ul>
+                                </li>
+                                <li>浏览器内核版本<span class="highlight">≥ 91</span>（Chrome 系或手机 Webview）
+                                    <ul>
+                                        <li><strong>当前浏览器：</strong><span id="browser-name" style="color: #fff;">检测中...</span></li>
+                                        <li><strong>内核版本：</strong><span id="browser-version" style="color: #fff;">检测中...</span></li>
+                                        <li><strong>版本要求：</strong>Chrome/Edge/Firefox ≥ 91，手机 WebView ≥ 91</li>
+                                        <li id="browser-compatibility" style="margin-top: 5px;"></li>
+                                    </ul>
+                                </li>
+                                <li><strong>不支持</strong>清瑶版（版本号带"β"的无名杀）
+                                    <ul>
+                                        <li>清瑶版是基于旧版本修改的非官方分支</li>
+                                        <li>可能存在 API 不兼容问题</li>
+                                        <li>建议使用官方 Chromium91+ 版本</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 下载链接：</strong><br>
+                            无名杀客户端：<a href="https://github.com/libnoname/noname/releases/tag/chromium91-client" style="color: #66ff66;">GitHub 下载</a><br>
+                            <strong>⚠️ 重要提示：</strong>下载后请确认版本号不低于 1.11.2，若版本过低请先升级无名杀本体。
+                        </div>
+
+                        <div class="warning">
+                            <strong>⚠️ 版本兼容性警告：</strong>
+                            <ul>
+                                <li>版本过低会导致技能效果异常、UI 显示错误、功能无法使用等问题</li>
+                                <li>扩展加载时会进行版本检测，版本不符会弹出警告并自动禁用</li>
+                                <li>建议定期检查无名杀更新，保持最新版本以获得最佳体验</li>
+                            </ul>
+                        </div>
+
+                        <h3>如何检查和更新无名杀版本</h3>
+                        <div class="feature-card">
+                            <h4>检查版本步骤</h4>
+                            <ol>
+                                <li>打开无名杀游戏</li>
+                                <li>进入"<strong>设置</strong>"菜单</li>
+                                <li>找到"<strong>关于</strong>"或"<strong>游戏信息</strong>"</li>
+                                <li>查看显示的版本号（如 1.11.2）</li>
+                            </ol>
+
+                            <h4>更新方法</h4>
+                            <ol>
+                                <li>访问无名杀官方 GitHub 发布页</li>
+                                <li>下载最新版本的安装包</li>
+                                <li>备份你的存档和自定义扩展</li>
+                                <li>覆盖安装到原目录（保留 extension 文件夹）</li>
+                                <li>重启游戏验证版本号</li>
+                            </ol>
+
+                            <div class="tip">
+                                <strong>💡 备份建议：</strong>更新前务必备份 save 文件夹和 extension 文件夹，防止数据丢失。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="features" class="section">
+                        <h2>✨ 核心功能</h2>
+
+                        <div class="feature-card">
+                            <h4>🎭 武将系统</h4>
+                            <ul>
+                                <li>6 大武将包，涵盖三国、动漫、游戏同人等多个主题</li>
+                                <li>支持势力替换（魏蜀吴群 → 星势力）</li>
+                                <li>界限突破模式（加强部分武将技能）</li>
+                                <li>露头皮肤切换功能</li>
+                                <li>武将称号系统</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>🎵 视听美化</h4>
+                            <ul>
+                                <li><strong>背景音乐：</strong>12 首精选 BGM 可选 + 随机播放模式</li>
+                                <li><strong>背景图片：</strong>9 张高清背景 + 自动切换功能</li>
+                                <li><strong>卡牌美化：</strong>支持自定义风格素材</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>🎲 游戏功能</h4>
+                            <ul>
+                                <li><strong>增益技能：</strong>开局随机获得强力技能（AI 不可获得）</li>
+                                <li><strong>手牌上限显示：</strong>实时显示手牌数/手牌上限</li>
+                                <li><strong>FPS 显示：</strong>6 个位置可选的性能监控</li>
+                                <li><strong>POE 规则：</strong>POE 武将移除技能选项</li>
+                                <li><strong>反作弊系统：</strong>计数制多信号交叉判定，保障游戏公平</li>
+                            </ul>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>🧰 工具箱</h4>
+                            <ul>
+                                <li>存档管理：奇术要件、死灵之书、元歌碎片三套存档的导出/导入/清除/详情</li>
+                                <li>GM 工具：材料、成就/等级、特殊功能操作（需密码）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="characters" class="section">
+                        <h2>🎭 武将系统</h2>
+
+                        <p>《仙家之魂》包含 6 大武将包，涵盖超过 200 名武将，每个武将包都有独特的主题和风格。</p>
+
+                        <h3>武将包一览</h3>
+                        <table>
+                            <tr>
+                                <th>武将包</th>
+                                <th>中文名称</th>
+                                <th>主题</th>
+                                <th>代表武将</th>
+                            </tr>
+                            <tr>
+                                <td>XWCS</td>
+                                <td>仙武创世</td>
+                                <td>美女如云系列</td>
+                                <td>林霜、高雨、赵玉姝等</td>
+                            </tr>
+                            <tr>
+                                <td>XWDM</td>
+                                <td>仙武动漫</td>
+                                <td>动漫角色系列</td>
+                                <td>漩涡鸣人、宇智波佐助等</td>
+                            </tr>
+                            <tr>
+                                <td>XWSG</td>
+                                <td>仙武三国</td>
+                                <td>三国武将系列（约100名）</td>
+                                <td>文鸯、张春华、蔡琰等</td>
+                            </tr>
+                            <tr>
+                                <td>XWSL</td>
+                                <td>仙武试炼</td>
+                                <td>神将系列</td>
+                                <td>神张角、莉莉丝等</td>
+                            </tr>
+                            <tr>
+                                <td>XWTR</td>
+                                <td>仙武同人</td>
+                                <td>同人系列（含6个子系列）</td>
+                                <td>李白、孙悟空、女巫等</td>
+                            </tr>
+                            <tr>
+                                <td>XWTZ</td>
+                                <td>仙武挑战</td>
+                                <td>特战系列</td>
+                                <td>神吕布等</td>
+                            </tr>
+                        </table>
+
+                        <h3>仙武同人（XWTR）子系列</h3>
+                        <div class="feature-card">
+                            <p>仙武同人包含以下 6 个子系列，每个子系列来自不同的游戏/动漫 IP：</p>
+                            <ul>
+                                <li><span class="highlight">众星之魂：</span>林凌&诗雨、冯媛媛等原创角色</li>
+                                <li><span class="highlight">流放之路（POE）：</span>女巫、元素使等</li>
+                                <li><span class="highlight">王者荣耀：</span>李白、东方曜、元歌等</li>
+                                <li><span class="highlight">暗黑破坏神：</span>拉斯玛、莫瑞娜等</li>
+                                <li><span class="highlight">地下城与勇士（DNF）：</span>索德罗斯、罗什巴赫等</li>
+                                <li><span class="highlight">西游释厄传：</span>孙悟空等</li>
+                            </ul>
+                        </div>
+
+                        <h3>武将特色功能</h3>
+                        <ul>
+                            <li><span class="highlight">势力替换：</span>将传统魏蜀吴群替换为"星"势力（需重启生效）</li>
+                            <li><span class="highlight">界限突破：</span>加强部分武将技能，提升战斗体验</li>
+                            <li><span class="highlight">露头皮肤：</span>切换显示武将露头皮肤</li>
+                            <li><span class="highlight">称号系统：</span>部分武将拥有专属称号展示</li>
                         </ul>
+                    </div>
+
+                    <div id="qishu" class="section">
+                        <h2>🔮 奇术要件系统</h2>
+
+                        <p>奇术要件是本扩展的核心特色系统，允许玩家在对局中收集和装备特殊道具来增强实力。共有约 40 种奇术要件，分为不同等阶和类别。</p>
+
+                        <h3>📱 如何打开奇术要件窗口</h3>
+                        <div class="feature-card">
+                            <h4>方法一：游戏内按钮</h4>
+                            <ol>
+                                <li>在对局中，找到角色头像右侧的<strong>奇术要件按钮</strong>（图标为紫色宝珠）</li>
+                                <li>点击该按钮即可打开奇术要件装备界面</li>
+                                <li>界面中会显示当前武将已装备的奇术要件</li>
+                                <li>点击<strong>退出按钮</strong>或点击空白区域可关闭窗口</li>
+                            </ol>
+
+                            <h4>方法二：成就系统</h4>
+                            <ol>
+                                <li>打开成就系统界面</li>
+                                <li>点击"<strong>奇术要件</strong>"标签页</li>
+                                <li>可以查看已获得的所有奇术要件及其详细信息</li>
+                            </ol>
+
+                            <div class="tip">
+                                <strong>💡 注意事项：</strong>
+                                <ul>
+                                    <li>需要先在游戏设置中开启"奇术要件"功能</li>
+                                    <li>可选"所有武将开启"或"仅仙魂武将开启"</li>
+                                    <li>多武将角色可通过切换按钮查看不同武将的装备</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>🎁 奇术要件获取方式</h3>
+                        <table>
+                            <tr>
+                                <th>获取途径</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>对局掉落</td>
+                                <td>普通对局有概率掉落 1-2 阶奇术要件</td>
+                            </tr>
+                            <tr>
+                                <td>成就奖励</td>
+                                <td>完成特定成就可获得高阶奇术要件（3-5 阶）</td>
+                            </tr>
+                            <tr>
+                                <td>升华试炼</td>
+                                <td>试炼商店购买、关卡奖励、雪莱工作室合成</td>
+                            </tr>
+                            <tr>
+                                <td>兑换码兑换</td>
+                                <td>使用官方发布的兑换码获取特定奇术要件</td>
+                            </tr>
+                            <tr>
+                                <td>碎片兑换</td>
+                                <td>收集足够碎片可在兑换界面换取奇术要件</td>
+                            </tr>
+                        </table>
+
+                        <h3>⚙️ 如何装备奇术要件</h3>
+                        <div class="feature-card">
+                            <h4>装备流程</h4>
+                            <ol>
+                                <li><strong>打开界面：</strong>通过对局中按钮或成就系统打开奇术要件界面</li>
+                                <li><strong>选择位置：</strong>界面显示 3 个装备槽位（左、中、右）</li>
+                                <li><strong>点击槽位：</strong>点击任意槽位打开背包选择</li>
+                                <li><strong>选择要件：</strong>从背包中选择要装备的奇术要件</li>
+                                <li><strong>确认装备：</strong>再次点击确认装备，或拖拽要件到槽位</li>
+                                <li><strong>卸下要件：</strong>点击已装备的要件可选择卸下</li>
+                            </ol>
+
+                            <h4>装备规则</h4>
+                            <ul>
+                                <li>每个武将最多可同时装备<strong>3 个</strong>奇术要件</li>
+                                <li>同名奇术要件通常不可重复装备（特殊说明除外）</li>
+                                <li>部分奇术要件有<strong>专属角色</strong>限制</li>
+                                <li>装备后立即生效，无需额外操作</li>
+                                <li>跨局游戏装备状态会保存</li>
+                            </ul>
+                        </div>
+
+                        <h3>🔧 高级功能</h3>
+                        <ul>
+                            <li><span class="highlight">AI 启用：</span>AI 会根据你的配置自动装备奇术要件
+                                <ul>
+                                    <li>开启后 AI 控制的武将会智能选择强力要件</li>
+                                    <li>适合挂机或 PVE 模式</li>
+                                </ul>
+                            </li>
+                            <li><span class="highlight">全模式启用：</span>除升华试炼外的所有模式均可使用
+                                <ul>
+                                    <li>国战、2V2 等模式也可装备要件</li>
+                                    <li>注意可能影响模式平衡性</li>
+                                </ul>
+                            </li>
+                            <li><span class="highlight">强化奇术 Boss：</span>
+                                <ul>
+                                    <li>挑战时消耗对应品质的巢穴钥匙开启强化 Boss</li>
+                                    <li>胜利后获得巨额奖励（高阶要件、大量碎片等）</li>
+                                    <li>失败不消耗巢穴钥匙</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <div class="tip">
+                            <strong>💡 使用技巧：</strong>
+                            <ul>
+                                <li>新手建议先使用"仅仙魂武将开启"熟悉系统</li>
+                                <li>PVE 推荐搭配：增益类 + 防御类 + 爆发类要件</li>
+                                <li>PVP 推荐搭配：干扰类 + 过牌类 + 爆发类要件</li>
+                                <li>注意要件之间的配合效果，如"朝凰"配"凤凰图"</li>
+                            </ul>
+                        </div>
+
+                        <h3>📊 奇术要件分类</h3>
+                        <table>
+                            <tr>
+                                <th>类型</th>
+                                <th>特点</th>
+                                <th>代表物品</th>
+                            </tr>
+                            <tr>
+                                <td>增益类</td>
+                                <td>直接提升属性或技能效果</td>
+                                <td>猎首、灵感素</td>
+                            </tr>
+                            <tr>
+                                <td>防御类</td>
+                                <td>提供伤害减免或生存能力</td>
+                                <td>冥天照符</td>
+                            </tr>
+                            <tr>
+                                <td>过牌类</td>
+                                <td>增加摸牌或检索能力</td>
+                                <td>诡魅幻影</td>
+                            </tr>
+                            <tr>
+                                <td>特殊类</td>
+                                <td>改变游戏规则或机制</td>
+                                <td>渴瘾症（自定义词缀）</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="bag" class="section">
+                        <h2>🎒 背包系统</h2>
+
+                        <p>背包系统是查看和管理所有材料、钥匙的统一入口。采用卡片式设计，直观展示各类物品的数量和品质。</p>
+
+                        <h3>📱 如何打开背包</h3>
+                        <div class="feature-card">
+                            <h4>打开方式</h4>
+                            <ol>
+                                <li>在成就系统界面找到"<strong>材料</strong>"或"<strong>背包</strong>"按钮</li>
+                                <li>点击即可打开背包界面</li>
+                            </ol>
+
+                            <div class="tip">
+                                <strong>💡 提示：</strong>背包目前支持巢穴钥匙和符文展示，后续将扩展更多物品类型（如宝箱等）。
+                            </div>
+                        </div>
+
+                        <h3>📋 背包内容</h3>
+                        <table>
+                            <tr>
+                                <th>分类</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>巢穴钥匙</td>
+                                <td>副本门票材料，共 5 种品质，用于挑战不同难度的副本</td>
+                            </tr>
+                            <tr>
+                                <td>符文</td>
+                                <td>奇术要件的附加属性系统，分为仪式符文和祷告符文</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="rune" class="section">
+                        <h2>✨ 符文系统</h2>
+
+                        <p>符文是奇术要件的附加强化系统，通过为奇术装备符文可以获得额外的被动效果或主动技能。符文分为两大类：仪式符文和祷告符文。</p>
+
+                        <h3>🔮 仪式符文（7种）</h3>
+                        <div class="feature-card">
+                            <p>仪式符文主要提供被动增益效果，在特定条件触发时获得贡品：</p>
+                            <table>
+                                <tr>
+                                    <th>符文</th>
+                                    <th>效果</th>
+                                </tr>
+                                <tr>
+                                    <td>唤魔符文</td>
+                                    <td>回复魔力时获得20个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>塔姆符文</td>
+                                    <td>使用牌时获得25个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>烈焰符文</td>
+                                    <td>造成火属性伤害后获得65个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>寒霜符文</td>
+                                    <td>造成冰属性伤害后获得75个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>奔雷符文</td>
+                                    <td>造成雷属性伤害后获得55个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>淬毒符文</td>
+                                    <td>造成毒属性伤害后获得80个贡品</td>
+                                </tr>
+                                <tr>
+                                    <td>金刃符文</td>
+                                    <td>造成伤害后获得35个贡品</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <h3>🙏 祷告符文（6种）</h3>
+                        <div class="feature-card">
+                            <p>祷告符文消耗贡品触发主动效果：</p>
+                            <table>
+                                <tr>
+                                    <th>符文</th>
+                                    <th>消耗</th>
+                                    <th>效果</th>
+                                </tr>
+                                <tr>
+                                    <td>扎尔符文</td>
+                                    <td>250</td>
+                                    <td>获得1点体力上限</td>
+                                </tr>
+                                <tr>
+                                    <td>祈愿符文</td>
+                                    <td>150</td>
+                                    <td>摸2张牌</td>
+                                </tr>
+                                <tr>
+                                    <td>暴风符文</td>
+                                    <td>200</td>
+                                    <td>对其他角色造成1点雷属性伤害</td>
+                                </tr>
+                                <tr>
+                                    <td>心灵符文</td>
+                                    <td>300</td>
+                                    <td>获得一个随机技能</td>
+                                </tr>
+                                <tr>
+                                    <td>箭雨符文</td>
+                                    <td>250</td>
+                                    <td>使用一张【万箭齐发】</td>
+                                </tr>
+                                <tr>
+                                    <td>酋首符文</td>
+                                    <td>250</td>
+                                    <td>使用一张【南蛮入侵】</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <h3>⚙️ 如何装备符文</h3>
+                        <div class="feature-card">
+                            <ol>
+                                <li>打开奇术要件详情页面</li>
+                                <li>点击"仪式符文"或"祷告符文"装备槽位</li>
+                                <li>在符文背包中选择要装备的符文</li>
+                                <li>点击确认装备</li>
+                            </ol>
+
+                            <div class="warning">
+                                <strong>⚠️ 注意：</strong>
+                                <ul>
+                                    <li>每个奇术要件最多装备 1 个仪式符文 + 1 个祷告符文</li>
+                                    <li>部分符文组合被禁用（如塔姆+箭雨、奔雷+暴风）</li>
+                                    <li>祷告符文装备后可点击槽位卸下</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="key" class="section">
+                        <h2>🗝️ 巢穴钥匙</h2>
+
+                        <p>巢穴钥匙是挑战副本的门票材料，分为 5 种品质。不同品质的钥匙对应不同难度的副本挑战。</p>
+
+                        <h3>钥匙品质</h3>
+                        <table>
+                            <tr>
+                                <th>品质</th>
+                                <th>颜色</th>
+                                <th>说明</th>
+                            </tr>
+                            <tr>
+                                <td>劣质巢穴钥匙</td>
+                                <td>灰色</td>
+                                <td>最低品质，挑战简单副本</td>
+                            </tr>
+                            <tr>
+                                <td>精良巢穴钥匙</td>
+                                <td>绿色</td>
+                                <td>中等品质，挑战普通副本</td>
+                            </tr>
+                            <tr>
+                                <td>完美巢穴钥匙</td>
+                                <td>蓝色</td>
+                                <td>高品质，挑战困难副本</td>
+                            </tr>
+                            <tr>
+                                <td>史诗巢穴钥匙</td>
+                                <td>紫色</td>
+                                <td>稀有品质，挑战噩梦副本</td>
+                            </tr>
+                            <tr>
+                                <td>神话巢穴钥匙</td>
+                                <td>橙色</td>
+                                <td>传说品质，挑战地狱副本</td>
+                            </tr>
+                        </table>
+
+                        <h3>获取方式</h3>
+                        <ul>
+                            <li>完成副本通关奖励</li>
+                            <li>升华试炼商店兑换</li>
+                            <li>成就系统奖励</li>
+                            <li>GM 工具箱获取</li>
+                        </ul>
+
+                        <div class="tip">
+                            <strong>💡 提示：</strong>旧版本的材料（冥狱石等）已自动转换为巢穴钥匙，请放心游玩。
+                        </div>
+                    </div>
+
+                    <div id="achievement" class="section">
+                        <h2>🏆 成就系统</h2>
+
+                        <p>成就系统记录了玩家在游戏中的各种挑战和里程碑，完成成就可以获得丰厚奖励。成就分为三大类：角色成就、对局成就和特殊成就。</p>
+
+                        <h3>📖 如何查看成就</h3>
+                        <div class="feature-card">
+                            <h4>打开成就界面</h4>
+                            <ol>
+                                <li>在游戏主界面找到"<strong>成就</strong>"按钮</li>
+                                <li>点击进入成就系统界面</li>
+                                <li>界面分为多个标签页：
+                                    <ul>
+                                        <li><strong>成就列表：</strong>显示所有成就及完成进度</li>
+                                        <li><strong>奇术要件：</strong>展示已获得的奇术要件图鉴</li>
+                                        <li><strong>任务奖励：</strong>领取成就完成的奖励</li>
+                                        <li><strong>会员中心：</strong>会员信息和特权展示</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <h3>🎯 成就类型</h3>
+                        <table>
+                            <tr>
+                                <th>类型</th>
+                                <th>说明</th>
+                                <th>示例</th>
+                            </tr>
+                            <tr>
+                                <td>角色成就</td>
+                                <td>使用特定武将达成条件</td>
+                                <td>使用某武将获胜、完成特定技能连招等</td>
+                            </tr>
+                            <tr>
+                                <td>对局成就</td>
+                                <td>在对局中达成特定条件</td>
+                                <td>首次胜利、连胜纪录、伤害输出等</td>
+                            </tr>
+                            <tr>
+                                <td>特殊成就</td>
+                                <td>隐藏成就或活动限定</td>
+                                <td>凌虚证道、节日活动、彩蛋成就等</td>
+                            </tr>
+                        </table>
+
+                        <h3>🎁 成就奖励</h3>
+                        <div class="feature-card">
+                            <h4>奖励类型</h4>
+                            <ul>
+                                <li><strong>碎片奖励：</strong>用于兑换奇术要件或武将</li>
+                                <li><strong>奇术要件：</strong>直接获得高阶奇术要件</li>
+                                <li><strong>专属称号：</strong>独特的游戏内称号展示</li>
+                                <li><strong>特殊道具：</strong>限定皮肤、背景等装饰品</li>
+                            </ul>
+
+                            <h4>领取方式</h4>
+                            <ol>
+                                <li>进入"任务奖励"标签页</li>
+                                <li>找到已完成的成就（显示为可领取状态）</li>
+                                <li>点击成就图标领取奖励</li>
+                                <li>奖励自动发放到背包或账号</li>
+                            </ol>
+                        </div>
+
+                        <h3>💡 成就技巧</h3>
+                        <ul>
+                            <li><strong>优先级：</strong>优先完成简单、奖励丰厚的成就</li>
+                            <li><strong>规划路线：</strong>有些成就可以同时进行，节省时间</li>
+                            <li><strong>关注限时：</strong>活动限定成就不要错过时间</li>
+                            <li><strong>查看条件：</strong>仔细阅读成就完成条件，避免做无用功</li>
+                            <li><strong>利用机制：</strong>某些成就可以通过特定机制快速完成</li>
+                        </ul>
+
+                        <div class="warning">
+                            <strong>⚠️ 注意事项：</strong>
+                            <ul>
+                                <li>部分成就一旦错过无法重新获取</li>
+                                <li>某些成就需要特定武将或配置才能完成</li>
+                                <li>PVP 类成就可能需要较高的技术水平</li>
+                                <li>成就进度可能不会实时更新，对局结束后统一结算</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="challenge" class="section">
+                        <h2>⚔️ 升华试炼模式</h2>
+
+                        <div class="feature-card">
+                            <h4>无尽试炼模式</h4>
+                            <p>高难度挑战模式，测试你的极限操作和策略搭配。</p>
+
+                            <h3>可配置选项</h3>
+                            <ul>
+                                <li><span class="highlight">全扩技能池：</span>商店刷新全扩展技能（关闭则仅限仙家之魂技能）</li>
+                                <li><span class="highlight">全扩武将池：</span>可使用本体及所有扩展武将（默认仅限仙家之魂武将）</li>
+                                <li><span class="highlight">初始 999 道韵：</span>商店初始货币为 999（需先完成成就"凌虚证道"）</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning">
+                            <strong>⚠️ 注意事项：</strong>开启全扩武将池可能导致兼容性问题，如遇到报错请关闭此选项并反馈。
+                        </div>
+                    </div>
+
+                    <div id="toolbox" class="section">
+                        <h2>🧰 工具箱</h2>
+
+                        <p>工具箱是本扩展提供的综合管理工具，包含"存档管理"和"GM 工具"两个功能页签。在游戏设置中点击"点击此处打开工具箱"即可使用。</p>
+
+                        <h3>💾 存档管理</h3>
+                        <p>支持三套独立存档的导出、导入、清除和详情查看：</p>
+
+                        <table>
+                            <tr>
+                                <th>存档名称</th>
+                                <th>存储位置</th>
+                                <th>导出文件名</th>
+                                <th>文件前缀</th>
+                            </tr>
+                            <tr>
+                                <td>奇术要件</td>
+                                <td>qishuyaojians</td>
+                                <td>奇术要件存档.json</td>
+                                <td>存档备份：</td>
+                            </tr>
+                            <tr>
+                                <td>死灵之书</td>
+                                <td>xjzh_diablo_hunhuo</td>
+                                <td>死灵之书存档.json</td>
+                                <td>死灵之书副本：</td>
+                            </tr>
+                            <tr>
+                                <td>元歌碎片</td>
+                                <td>xjzh_wzry_kongou</td>
+                                <td>元歌碎片存档.json</td>
+                                <td>武将碎片：</td>
+                            </tr>
+                        </table>
+
+                        <div class="feature-card">
+                            <h4>导出存档</h4>
+                            <ol>
+                                <li>点击对应存档的"导出"按钮</li>
+                                <li>确认导出操作</li>
+                                <li>存档文件保存至 <code>extension/仙家之魂/save/</code> 目录</li>
+                            </ol>
+                            <div class="tip">
+                                <strong>💡 说明：</strong>系统每次保存奇术要件配置时会自动生成 <code>自动备份.json</code>，手动导出的文件名各不相同，不会互相覆盖。
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>导入存档</h4>
+                            <ol>
+                                <li>点击对应存档的"导入"按钮</li>
+                                <li>选择 .json 格式的存档文件</li>
+                                <li>奇术要件存档需要输入用户名验证（需与原存档一致）</li>
+                                <li>确认覆盖当前存档</li>
+                            </ol>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>清除存档</h4>
+                            <p>安全清理不需要的存档数据，可单独清除某一套存档。</p>
+                            <div class="warning">
+                                <strong>⚠️ 警告：</strong>清除操作不可恢复，请先导出备份！
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>查看详情</h4>
+                            <p>点击"详情"按钮可查看存档的结构化信息：</p>
+                            <ul>
+                                <li><strong>奇术要件：</strong>用户名、等级、碎片、精魄、奇术要件列表（合并计数）、材料列表、会员剩余天数</li>
+                                <li><strong>死灵之书：</strong>死灵之书副本数据详情</li>
+                                <li><strong>元歌碎片：</strong>武将碎片收集进度</li>
+                            </ul>
+                        </div>
+
+                        <h3>⚙️ GM 工具</h3>
+                        <div class="warning">
+                            <strong>⚠️ GM 工具需要密码验证：</strong>默认密码为 <code>xjzh666</code>，每次打开工具箱时自动重置为此密码。
+                        </div>
+                        <p>GM 工具提供以下功能分类：</p>
+                        <ul>
+                            <li><strong>材料：</strong>添加各类游戏材料</li>
+                            <li><strong>成就/等级：</strong>修改玩家等级、成就进度等</li>
+                            <li><strong>特殊：</strong>特殊功能操作</li>
+                        </ul>
+                    </div>
+
+                    <div id="customization" class="section">
+                        <h2>🎨 自定义选项</h2>
+
+                        <h3>视觉装饰</h3>
+                        <ul>
+                            <li><strong>装饰开关：</strong>一键隐藏/显示所有装饰元素</li>
+                            <li><strong>音乐点播：</strong>12 首 BGM + 随机播放
+                                <ul>
+                                    <li>默认音乐、国战鏖战、犬夜叉、风一样的勇士</li>
+                                    <li>痛苦之村、仙剑奇缘、桃花岛</li>
+                                    <li>景天—护甲、雪见-落入凡尘、雪见—仙凡之旅</li>
+                                    <li>GBL女神殿、迷乱之村</li>
+                                    <li>点击选项立即播放，支持随机模式</li>
+                                </ul>
+                            </li>
+                            <li><strong>背景更换：</strong>9 张精美背景 + 自动轮换
+                                <ul>
+                                    <li>默认背景、火影博人、牛仔风华、冰肌玉骨</li>
+                                    <li>吊带连心、池水深深、碧波荡漾、樱花瀑布</li>
+                                    <li>北夜极光、海绵宝宝</li>
+                                    <li>可设置自动切换时间（5 秒 ~ 5 分钟）</li>
+                                    <li>"自动换背景"选项会循环播放所有背景</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h3>游戏设置</h3>
+                        <ul>
+                            <li><strong>露头皮肤：</strong>切换显示武将露头皮肤</li>
+                            <li><strong>势力替换：</strong>将传统势力替换为"星"势力
+                                <ul>
+                                    <li>魏蜀吴群 → 星势力</li>
+                                    <li>需重启游戏生效</li>
+                                </ul>
+                            </li>
+                            <li><strong>界限突破：</strong>加强部分武将技能强度</li>
+                            <li><strong>增益技能：</strong>控制开局随机技能的获取范围
+                                <ul>
+                                    <li>仅玩家可获得：只有人类玩家能获得增益技能</li>
+                                    <li>仅仙魂武将获得：只有扩展武将能获得</li>
+                                    <li>关闭增益：完全禁用此功能</li>
+                                </ul>
+                            </li>
+                            <li><strong>手牌上限显示：</strong>实时显示手牌数/手牌上限
+                                <ul>
+                                    <li>格式示例：2/3（当前 2 张，上限 3 张）</li>
+                                    <li>方便掌握防御和过牌节奏</li>
+                                </ul>
+                            </li>
+                            <li><strong>POE 规则：</strong>POE 武将移除技能选项
+                                <ul>
+                                    <li>开启后 POE 武将会按要求移除技能</li>
+                                    <li>符合官方比赛规则要求</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h3>性能监控</h3>
+                        <p>FPS 显示器提供 6 个位置选择：</p>
+                        <ul>
+                            <li><strong>左上/中上/右上：</strong>适合喜欢上方视角的玩家</li>
+                            <li><strong>左下/中下/右下：</strong>适合喜欢下方视角的玩家</li>
+                            <li>实时显示游戏帧率，帮助优化性能</li>
+                        </ul>
+
+                        <div class="tip">
+                            <strong>💡 美化建议：</strong>
+                            <ul>
+                                <li>可自定义卡牌美化素材</li>
+                                <li>背景音乐建议根据游戏模式选择（激烈战斗用燃曲，休闲用轻音乐）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="faq" class="section">
+                        <h2>❓ 常见问题</h2>
+
+                        <div class="faq-item">
+                            <h3>Q1: 游戏闪退或无法启动？</h3>
+                            <p><strong>A:</strong> 请检查：</p>
+                            <ul>
+                                <li>无名杀本体是否为最新版本</li>
+                                <li>浏览器内核版本是否≥91</li>
+                                <li>是否误用了清瑶版（β版本）</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q2: 奇术要件无法使用？</h3>
+                            <p><strong>A:</strong> 需要在设置中开启"奇术要件"功能，并选择合适的启用范围（所有武将开启 / 仅仙魂武将开启）。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q3: 背景音乐不播放？</h3>
+                            <p><strong>A:</strong> 检查是否选择了正确的音乐选项，某些浏览器需要用户交互后才能播放音频。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q4: 导入存档失败？</h3>
+                            <p><strong>A:</strong> 确保：</p>
+                            <ul>
+                                <li>文件格式为 .json</li>
+                                <li>文件内容前缀与目标存档类型匹配（存档备份：/死灵之书副本：/武将碎片：）</li>
+                                <li>奇术要件存档需要输入与原存档一致的用户名</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q5: 升华试炼报错？</h3>
+                            <p><strong>A:</strong> 尝试关闭"全扩武将池"选项，如仍存在问题请反馈给开发者。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q6: 如何快速刷取奇术要件？</h3>
+                            <p><strong>A:</strong> 推荐方法：</p>
+                            <ul>
+                                <li>完成成就任务获得高阶要件</li>
+                                <li>挑战强化 Boss（消耗巢穴钥匙）</li>
+                                <li>升华试炼商店兑换</li>
+                                <li>使用兑换码获取</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q7: 奇术要件按钮不显示？</h3>
+                            <p><strong>A:</strong> 可能原因：</p>
+                            <ul>
+                                <li>未在游戏设置中开启奇术要件功能</li>
+                                <li>当前模式不支持（需开启"全模式启用"）</li>
+                                <li>该武将没有可装备的奇术要件</li>
+                                <li>AI 控制状态下可能不显示（需开启 AI 启用选项）</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q8: 如何卸下已装备的奇术要件？</h3>
+                            <p><strong>A:</strong> 打开奇术要件界面 → 点击已装备的要件 → 选择卸下 → 确认操作</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q9: 成就是否可以重复完成？</h3>
+                            <p><strong>A:</strong> 大部分成就只能完成一次，少数计数类成就可以累计进度但奖励只领取一次。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q10: 背景图片无法切换？</h3>
+                            <p><strong>A:</strong> 检查：</p>
+                            <ul>
+                                <li>背景文件是否完整（在 picture 文件夹中）</li>
+                                <li>文件名是否正确（xjzh_backgroundPicture1-9.jpg）</li>
+                                <li>重启游戏后再次尝试</li>
+                            </ul>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q11: 工具箱密码忘记？</h3>
+                            <p><strong>A:</strong> 工具箱密码会在每次打开时自动重置为默认密码 <code>xjzh666</code>，无需担心忘记。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3>Q12: 导出显示失败但文件已生成？</h3>
+                            <p><strong>A:</strong> 此问题已修复，导出回调正确处理了成功/失败状态。请确认文件已出现在 <code>extension/仙家之魂/save/</code> 目录。</p>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 更多帮助：</strong>查看更新公告或联系开发者获取技术支持。
+                        </div>
+                    </div>
+
+                    <div id="quickstart" class="section">
+                        <h2>🚀 新手快速上手</h2>
+
+                        <div class="feature-card">
+                            <h4>第一次游玩推荐步骤</h4>
+                            <ol>
+                                <li><strong>安装验证：</strong>
+                                    <ul>
+                                        <li>确保扩展正确安装并启用</li>
+                                        <li>检查游戏版本兼容性</li>
+                                    </ul>
+                                </li>
+                                <li><strong>基础设置：</strong>
+                                    <ul>
+                                        <li>进入设置菜单，开启需要的功能</li>
+                                        <li>建议先开启"手牌上限显示"</li>
+                                        <li>根据喜好设置背景音乐和背景图片</li>
+                                    </ul>
+                                </li>
+                                <li><strong>了解奇术要件：</strong>
+                                    <ul>
+                                        <li>先在设置中开启"奇术要件 - 所有武将开启"</li>
+                                        <li>开始一局身份局游戏</li>
+                                        <li>找到角色头像旁的奇术要件按钮</li>
+                                        <li>尝试装备简单的奇术要件</li>
+                                    </ul>
+                                </li>
+                                <li><strong>熟悉成就系统：</strong>
+                                    <ul>
+                                        <li>打开成就界面查看可完成的成就</li>
+                                        <li>从简单的对战成就开始</li>
+                                        <li>逐步挑战收集和挑战成就</li>
+                                    </ul>
+                                </li>
+                                <li><strong>挑战升华试炼：</strong>
+                                    <ul>
+                                        <li>熟悉基础玩法后再尝试高难度模式</li>
+                                        <li>优先升级核心技能</li>
+                                        <li>合理搭配奇术要件</li>
+                                    </ul>
+                                </li>
+                                <li><strong>存档管理：</strong>
+                                    <ul>
+                                        <li>定期使用工具箱导出存档备份</li>
+                                        <li>重要进度及时保存</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="tip">
+                            <strong>💡 进阶提示：</strong>
+                            <ul>
+                                <li>多查看帮助文档了解机制细节</li>
+                                <li>加入玩家社区交流心得</li>
+                                <li>关注更新公告了解新内容</li>
+                                <li>保存好你的存档数据</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="glossary" class="section">
+                        <h2>📚 术语解释</h2>
+
+                        <table>
+                            <tr>
+                                <th>术语</th>
+                                <th>解释</th>
+                            </tr>
+                            <tr><td>奇术要件</td><td>可装备的特殊道具，提供额外技能或属性加成</td></tr>
+                            <tr><td>巢穴钥匙</td><td>挑战副本的门票材料，分为5种品质：劣质、精良、完美、史诗、神话</td></tr>
+                            <tr><td>道韵</td><td>升华试炼模式的货币，用于购买技能和道具</td></tr>
+                            <tr><td>仙魂武将</td><td>《仙家之魂》扩展原创的武将角色</td></tr>
+                            <tr><td>界限突破</td><td>加强版武将技能，通常强度更高</td></tr>
+                            <tr><td>增益技能</td><td>开局随机获得的额外强力技能</td></tr>
+                            <tr><td>POE</td><td>Path of Exile（流放之路），此处指特定规则模式</td></tr>
+                            <tr><td>卡牌美化</td><td>自定义卡牌的视觉风格和素材</td></tr>
+                            <tr><td>雪莱工作室</td><td>升华试炼中的特殊关卡，可合成自定义奇术要件</td></tr>
+                            <tr><td>词缀</td><td>奇术要件的附加属性或效果</td></tr>
+                            <tr><td>碎片</td><td>用于兑换奇术要件或武将的通用资源</td></tr>
+                            <tr><td>精魄</td><td>游戏内的特殊资源货币</td></tr>
+                            <tr><td>死灵之书</td><td>记录死灵之书副本数据的独立存档系统</td></tr>
+                            <tr><td>元歌碎片</td><td>王者荣耀系列武将的碎片收集存档系统</td></tr>
+                            <tr><td>工具箱</td><td>集存档管理与GM工具于一体的综合管理界面</td></tr>
+                            <tr><td>背包</td><td>查看和管理所有材料、钥匙等物品的统一入口</td></tr>
+                            <tr><td>符文</td><td>奇术要件的附加强化系统，分为仪式符文和祷告符文两大类</td></tr>
+                            <tr><td>仪式符文</td><td>主要提供被动增益效果的符文类型，触发时获得贡品</td></tr>
+                            <tr><td>祷告符文</td><td>消耗贡品触发主动效果的符文类型</td></tr>
+                            <tr><td>贡品</td><td>符文系统的内部货币，由仪式符文触发获得，用于祷告符文释放</td></tr>
+                        </table>
+
+                        <div class="page-footer">
+                            <p>《仙家之魂》扩展帮助文档 | 扩展版本：<span id="footer-version">5.07061</span><br>
+                            遵循 GPL3 协议 | 开发者：吃朵棉花糖</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            <button id="backToTopBtn" class="back-to-top" title="返回顶部">↑</button>
+
+            <div id="feedbackModalOverlay" class="feedback-modal-overlay">
+                <div class="feedback-modal">
+                    <button class="feedback-modal-close" onclick="closeFeedbackModal()">×</button>
+                    <div class="feedback-modal-header">
+                        <div class="feedback-modal-title">🎮 仙家之魂 - 官方交流群</div>
+                        <div class="feedback-modal-subtitle">问题反馈 · 技术交流 · 更新通知</div>
+                    </div>
+                    <div class="feedback-modal-content">
+                        <div class="feedback-modal-groups" id="qqGroupsList"></div>
+                        <div class="feedback-modal-copy-hint">💡 点击群号即可复制，打开 QQ 搜索群号申请加入</div>
+                        <div class="feedback-modal-section">
+                            <div class="feedback-modal-section-title">
+                                <span>⚠️</span>
+                                <span>问题反馈须知</span>
+                            </div>
+                            <ul class="feedback-modal-section-content">
+                                <li>提供无名杀版本号</li>
+                                <li>提供浏览器内核版本</li>
+                                <li>详细描述问题并附截图</li>
+                                <li>说明问题复现步骤</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <h1>🎮 仙家之魂 · 帮助文档</h1>
-        <p class="subtitle">无名杀扩展包完整游玩指南</p>
-
-        <!-- 目录 -->
-        <div class="toc">
-            <h3>📑 目录导航</h3>
-            <a href="#intro">📖 扩展简介</a>
-            <a href="#install">📥 安装与配置要求</a>
-            <a href="#features">✨ 核心功能</a>
-            <a href="#characters">🎭 武将系统</a>
-            <a href="#qishu">🔮 奇术要件系统</a>
-            <a href="#bag">🎒 背包系统</a>
-            <a href="#rune">✨ 符文系统</a>
-            <a href="#key">🗝️ 巢穴钥匙</a>
-            <a href="#achievement">🏆 成就系统</a>
-            <a href="#challenge">⚔️ 升华试炼模式</a>
-            <a href="#toolbox">🧰 工具箱</a>
-            <a href="#customization">🎨 自定义选项</a>
-            <a href="#quickstart">🚀 新手快速上手</a>
-            <a href="#glossary">📚 术语解释</a>
-            <a href="#faq">❓ 常见问题</a>
-        </div>
-
-        <!-- 扩展简介 -->
-        <div id="intro" class="section">
-            <h2>📖 扩展简介</h2>
-            <p>《仙家之魂》是一款基于无名杀引擎开发的大型扩展包，提供了丰富的武将、技能、游戏模式和自定义功能，涵盖三国、动漫、游戏同人等多个主题系列。</p>
-
-            <div class="feature-card">
-                <h4>制作团队</h4>
-                <ul>
-                    <li><span class="highlight">作者：</span>吃朵棉花糖</li>
-                    <li><span class="highlight">技能设计：</span>吃朵棉花糖、光明牛奶</li>
-                    <li><span class="highlight">代码编绎：</span>吃朵棉花糖</li>
-                </ul>
-            </div>
-
-            <div class="warning">
-                <strong>⚠️ 重要声明：</strong>
-                <ul>
-                    <li>本扩展依托于无名杀客户端制作，你需要先安装无名杀客户端或网页版</li>
-                    <li>本扩展遵循 GPL3 协议，可自由复制、修改、分发，但必须保留原作者版权声明</li>
-                    <li>禁止某火使用、修改本扩展</li>
-                    <li>二次修改请删除作者自行制作的素材</li>
-                    <li>本扩展完全免费且开源，仅在官方 QQ 群发布，从未进行过任何宣发</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 安装与配置要求 -->
-        <div id="install" class="section">
-            <h2>📥 安装与配置要求</h2>
-
-            <div class="version-info">
-                <h3>系统要求</h3>
-                <ul>
-                    <li>无名杀本体版本必须为<strong>最新版本 ≥ <span id="min-version" style="color: #66ff66; font-weight: bold;">检测中...</span></strong>
-                        <ul>
-                            <li><strong>当前扩展要求的最低版本：</strong><span id="current-min-version" style="color: #f9ed89;">加载中...</span></li>
-                            <li><strong>如何查看当前版本：</strong>在游戏设置或关于页面中查看版本号</li>
-                            <li><strong>版本检查机制：</strong>本扩展会在加载时自动检测无名杀版本，若低于最低要求版本会自动关闭扩展以防止报错</li>
-                            <li><strong>版本格式说明：</strong>版本号通常格式为 X.Y.Z（如 1.11.2），数字越大表示版本越新</li>
-                            <li><strong>当前游戏版本：</strong><span id="game-version" style="color: #fff;">检测中...</span></li>
-                        </ul>
-                    </li>
-                    <li>浏览器内核版本<span class="highlight">≥ 91</span>（Chrome 系或手机 Webview）
-                        <ul>
-                            <li><strong>当前浏览器：</strong><span id="browser-name" style="color: #fff;">检测中...</span></li>
-                            <li><strong>内核版本：</strong><span id="browser-version" style="color: #fff;">检测中...</span></li>
-                            <li><strong>版本要求：</strong>Chrome/Edge/Firefox ≥ 91，手机 WebView ≥ 91</li>
-                            <li id="browser-compatibility" style="margin-top: 5px;"></li>
-                        </ul>
-                    </li>
-                    <li><strong>不支持</strong>清瑶版（版本号带"β"的无名杀）
-                        <ul>
-                            <li>清瑶版是基于旧版本修改的非官方分支</li>
-                            <li>可能存在 API 不兼容问题</li>
-                            <li>建议使用官方 Chromium91+ 版本</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="tip">
-                <strong>💡 下载链接：</strong><br>
-                无名杀客户端：<a href="https://github.com/libnoname/noname/releases/tag/chromium91-client" style="color: #66ff66;">GitHub 下载</a><br>
-                <strong>⚠️ 重要提示：</strong>下载后请确认版本号不低于 1.11.2，若版本过低请先升级无名杀本体。
-            </div>
-
-            <div class="warning">
-                <strong>⚠️ 版本兼容性警告：</strong>
-                <ul>
-                    <li>版本过低会导致技能效果异常、UI 显示错误、功能无法使用等问题</li>
-                    <li>扩展加载时会进行版本检测，版本不符会弹出警告并自动禁用</li>
-                    <li>建议定期检查无名杀更新，保持最新版本以获得最佳体验</li>
-                </ul>
-            </div>
-
-            <h3>如何检查和更新无名杀版本</h3>
-            <div class="feature-card">
-                <h4>检查版本步骤</h4>
-                <ol>
-                    <li>打开无名杀游戏</li>
-                    <li>进入"<strong>设置</strong>"菜单</li>
-                    <li>找到"<strong>关于</strong>"或"<strong>游戏信息</strong>"</li>
-                    <li>查看显示的版本号（如 1.11.2）</li>
-                </ol>
-
-                <h4>更新方法</h4>
-                <ol>
-                    <li>访问无名杀官方 GitHub 发布页</li>
-                    <li>下载最新版本的安装包</li>
-                    <li>备份你的存档和自定义扩展</li>
-                    <li>覆盖安装到原目录（保留 extension 文件夹）</li>
-                    <li>重启游戏验证版本号</li>
-                </ol>
-
-                <div class="tip">
-                    <strong>💡 备份建议：</strong>更新前务必备份 save 文件夹和 extension 文件夹，防止数据丢失。
-                </div>
-            </div>
-        </div>
-
-        <!-- 核心功能 -->
-        <div id="features" class="section">
-            <h2>✨ 核心功能</h2>
-
-            <div class="feature-card">
-                <h4>🎭 武将系统</h4>
-                <ul>
-                    <li>6 大武将包，涵盖三国、动漫、游戏同人等多个主题</li>
-                    <li>支持势力替换（魏蜀吴群 → 星势力）</li>
-                    <li>界限突破模式（加强部分武将技能）</li>
-                    <li>露头皮肤切换功能</li>
-                    <li>武将称号系统</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h4>🎵 视听美化</h4>
-                <ul>
-                    <li><strong>背景音乐：</strong>12 首精选 BGM 可选 + 随机播放模式</li>
-                    <li><strong>背景图片：</strong>9 张高清背景 + 自动切换功能</li>
-                    <li><strong>卡牌美化：</strong>支持自定义风格素材</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h4>🎲 游戏功能</h4>
-                <ul>
-                    <li><strong>增益技能：</strong>开局随机获得强力技能（AI 不可获得）</li>
-                    <li><strong>手牌上限显示：</strong>实时显示手牌数/手牌上限</li>
-                    <li><strong>FPS 显示：</strong>6 个位置可选的性能监控</li>
-                    <li><strong>POE 规则：</strong>POE 武将移除技能选项</li>
-                    <li><strong>反作弊系统：</strong>计数制多信号交叉判定，保障游戏公平</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h4>🧰 工具箱</h4>
-                <ul>
-                    <li>存档管理：奇术要件、死灵之书、元歌碎片三套存档的导出/导入/清除/详情</li>
-                    <li>GM 工具：材料、成就/等级、特殊功能操作（需密码）</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 武将系统 -->
-        <div id="characters" class="section">
-            <h2>🎭 武将系统</h2>
-
-            <p>《仙家之魂》包含 6 大武将包，涵盖超过 200 名武将，每个武将包都有独特的主题和风格。</p>
-
-            <h3>武将包一览</h3>
-            <table>
-                <tr>
-                    <th>武将包</th>
-                    <th>中文名称</th>
-                    <th>主题</th>
-                    <th>代表武将</th>
-                </tr>
-                <tr>
-                    <td>XWCS</td>
-                    <td>仙武创世</td>
-                    <td>美女如云系列</td>
-                    <td>林霜、高雨、赵玉姝等</td>
-                </tr>
-                <tr>
-                    <td>XWDM</td>
-                    <td>仙武动漫</td>
-                    <td>动漫角色系列</td>
-                    <td>漩涡鸣人、宇智波佐助等</td>
-                </tr>
-                <tr>
-                    <td>XWSG</td>
-                    <td>仙武三国</td>
-                    <td>三国武将系列（约100名）</td>
-                    <td>文鸯、张春华、蔡琰等</td>
-                </tr>
-                <tr>
-                    <td>XWSL</td>
-                    <td>仙武试炼</td>
-                    <td>神将系列</td>
-                    <td>神张角、莉莉丝等</td>
-                </tr>
-                <tr>
-                    <td>XWTR</td>
-                    <td>仙武同人</td>
-                    <td>同人系列（含6个子系列）</td>
-                    <td>李白、孙悟空、女巫等</td>
-                </tr>
-                <tr>
-                    <td>XWTZ</td>
-                    <td>仙武挑战</td>
-                    <td>特战系列</td>
-                    <td>神吕布等</td>
-                </tr>
-            </table>
-
-            <h3>仙武同人（XWTR）子系列</h3>
-            <div class="feature-card">
-                <p>仙武同人包含以下 6 个子系列，每个子系列来自不同的游戏/动漫 IP：</p>
-                <ul>
-                    <li><span class="highlight">众星之魂：</span>林凌&诗雨、冯媛媛等原创角色</li>
-                    <li><span class="highlight">流放之路（POE）：</span>女巫、元素使等</li>
-                    <li><span class="highlight">王者荣耀：</span>李白、东方曜、元歌等</li>
-                    <li><span class="highlight">暗黑破坏神：</span>拉斯玛、莫瑞娜等</li>
-                    <li><span class="highlight">地下城与勇士（DNF）：</span>索德罗斯、罗什巴赫等</li>
-                    <li><span class="highlight">西游释厄传：</span>孙悟空等</li>
-                </ul>
-            </div>
-
-            <h3>武将特色功能</h3>
-            <ul>
-                <li><span class="highlight">势力替换：</span>将传统魏蜀吴群替换为"星"势力（需重启生效）</li>
-                <li><span class="highlight">界限突破：</span>加强部分武将技能，提升战斗体验</li>
-                <li><span class="highlight">露头皮肤：</span>切换显示武将露头皮肤</li>
-                <li><span class="highlight">称号系统：</span>部分武将拥有专属称号展示</li>
-            </ul>
-        </div>
-
-        <!-- 奇术要件系统 -->
-        <div id="qishu" class="section">
-            <h2>🔮 奇术要件系统</h2>
-
-            <p>奇术要件是本扩展的核心特色系统，允许玩家在对局中收集和装备特殊道具来增强实力。共有约 40 种奇术要件，分为不同等阶和类别。</p>
-
-            <h3>📱 如何打开奇术要件窗口</h3>
-            <div class="feature-card">
-                <h4>方法一：游戏内按钮</h4>
-                <ol>
-                    <li>在对局中，找到角色头像右侧的<strong>奇术要件按钮</strong>（图标为紫色宝珠）</li>
-                    <li>点击该按钮即可打开奇术要件装备界面</li>
-                    <li>界面中会显示当前武将已装备的奇术要件</li>
-                    <li>点击<strong>退出按钮</strong>或点击空白区域可关闭窗口</li>
-                </ol>
-
-                <h4>方法二：成就系统</h4>
-                <ol>
-                    <li>打开成就系统界面</li>
-                    <li>点击"<strong>奇术要件</strong>"标签页</li>
-                    <li>可以查看已获得的所有奇术要件及其详细信息</li>
-                </ol>
-
-                <div class="tip">
-                    <strong>💡 注意事项：</strong>
-                    <ul>
-                        <li>需要先在游戏设置中开启"奇术要件"功能</li>
-                        <li>可选"所有武将开启"或"仅仙魂武将开启"</li>
-                        <li>多武将角色可通过切换按钮查看不同武将的装备</li>
-                    </ul>
-                </div>
-            </div>
-
-            <h3>🎁 奇术要件获取方式</h3>
-            <table>
-                <tr>
-                    <th>获取途径</th>
-                    <th>说明</th>
-                </tr>
-                <tr>
-                    <td>对局掉落</td>
-                    <td>普通对局有概率掉落 1-2 阶奇术要件</td>
-                </tr>
-                <tr>
-                    <td>成就奖励</td>
-                    <td>完成特定成就可获得高阶奇术要件（3-5 阶）</td>
-                </tr>
-                <tr>
-                    <td>升华试炼</td>
-                    <td>试炼商店购买、关卡奖励、雪莱工作室合成</td>
-                </tr>
-                <tr>
-                    <td>兑换码兑换</td>
-                    <td>使用官方发布的兑换码获取特定奇术要件</td>
-                </tr>
-                <tr>
-                    <td>碎片兑换</td>
-                    <td>收集足够碎片可在兑换界面换取奇术要件</td>
-                </tr>
-            </table>
-
-            <h3>⚙️ 如何装备奇术要件</h3>
-            <div class="feature-card">
-                <h4>装备流程</h4>
-                <ol>
-                    <li><strong>打开界面：</strong>通过对局中按钮或成就系统打开奇术要件界面</li>
-                    <li><strong>选择位置：</strong>界面显示 3 个装备槽位（左、中、右）</li>
-                    <li><strong>点击槽位：</strong>点击任意槽位打开背包选择</li>
-                    <li><strong>选择要件：</strong>从背包中选择要装备的奇术要件</li>
-                    <li><strong>确认装备：</strong>再次点击确认装备，或拖拽要件到槽位</li>
-                    <li><strong>卸下要件：</strong>点击已装备的要件可选择卸下</li>
-                </ol>
-
-                <h4>装备规则</h4>
-                <ul>
-                    <li>每个武将最多可同时装备<strong>3 个</strong>奇术要件</li>
-                    <li>同名奇术要件通常不可重复装备（特殊说明除外）</li>
-                    <li>部分奇术要件有<strong>专属角色</strong>限制</li>
-                    <li>装备后立即生效，无需额外操作</li>
-                    <li>跨局游戏装备状态会保存</li>
-                </ul>
-            </div>
-
-            <h3>🔧 高级功能</h3>
-            <ul>
-                <li><span class="highlight">AI 启用：</span>AI 会根据你的配置自动装备奇术要件
-                    <ul>
-                        <li>开启后 AI 控制的武将会智能选择强力要件</li>
-                        <li>适合挂机或 PVE 模式</li>
-                    </ul>
-                </li>
-                <li><span class="highlight">全模式启用：</span>除升华试炼外的所有模式均可使用
-                    <ul>
-                        <li>国战、2V2 等模式也可装备要件</li>
-                        <li>注意可能影响模式平衡性</li>
-                    </ul>
-                </li>
-                <li><span class="highlight">强化奇术 Boss：</span>
-                    <ul>
-                        <li>挑战时消耗对应品质的巢穴钥匙开启强化 Boss</li>
-                        <li>胜利后获得巨额奖励（高阶要件、大量碎片等）</li>
-                        <li>失败不消耗巢穴钥匙</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <div class="tip">
-                <strong>💡 使用技巧：</strong>
-                <ul>
-                    <li>新手建议先使用"仅仙魂武将开启"熟悉系统</li>
-                    <li>PVE 推荐搭配：增益类 + 防御类 + 爆发类要件</li>
-                    <li>PVP 推荐搭配：干扰类 + 过牌类 + 爆发类要件</li>
-                    <li>注意要件之间的配合效果，如"朝凰"配"凤凰图"</li>
-                </ul>
-            </div>
-
-            <h3>📊 奇术要件分类</h3>
-            <table>
-                <tr>
-                    <th>类型</th>
-                    <th>特点</th>
-                    <th>代表物品</th>
-                </tr>
-                <tr>
-                    <td>增益类</td>
-                    <td>直接提升属性或技能效果</td>
-                    <td>猎首、灵感素</td>
-                </tr>
-                <tr>
-                    <td>防御类</td>
-                    <td>提供伤害减免或生存能力</td>
-                    <td>冥天照符</td>
-                </tr>
-                <tr>
-                    <td>过牌类</td>
-                    <td>增加摸牌或检索能力</td>
-                    <td>诡魅幻影</td>
-                </tr>
-                <tr>
-                    <td>特殊类</td>
-                    <td>改变游戏规则或机制</td>
-                    <td>渴瘾症（自定义词缀）</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- 背包系统 -->
-        <div id="bag" class="section">
-            <h2>🎒 背包系统</h2>
-
-            <p>背包系统是查看和管理所有材料、钥匙的统一入口。采用卡片式设计，直观展示各类物品的数量和品质。</p>
-
-            <h3>📱 如何打开背包</h3>
-            <div class="feature-card">
-                <h4>打开方式</h4>
-                <ol>
-                    <li>在成就系统界面找到"<strong>材料</strong>"或"<strong>背包</strong>"按钮</li>
-                    <li>点击即可打开背包界面</li>
-                </ol>
-
-                <div class="tip">
-                    <strong>💡 提示：</strong>背包目前支持巢穴钥匙和符文展示，后续将扩展更多物品类型（如宝箱等）。
-                </div>
-            </div>
-
-            <h3>📋 背包内容</h3>
-            <table>
-                <tr>
-                    <th>分类</th>
-                    <th>说明</th>
-                </tr>
-                <tr>
-                    <td>巢穴钥匙</td>
-                    <td>副本门票材料，共 5 种品质，用于挑战不同难度的副本</td>
-                </tr>
-                <tr>
-                    <td>符文</td>
-                    <td>奇术要件的附加属性系统，分为仪式符文和祷告符文</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- 符文系统 -->
-        <div id="rune" class="section">
-            <h2>✨ 符文系统</h2>
-
-            <p>符文是奇术要件的附加强化系统，通过为奇术装备符文可以获得额外的被动效果或主动技能。符文分为两大类：仪式符文和祷告符文。</p>
-
-            <h3>🔮 仪式符文（7种）</h3>
-            <div class="feature-card">
-                <p>仪式符文主要提供被动增益效果，在特定条件触发时获得贡品：</p>
-                <table>
-                    <tr>
-                        <th>符文</th>
-                        <th>效果</th>
-                    </tr>
-                    <tr>
-                        <td>唤魔符文</td>
-                        <td>回复魔力时获得20个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>塔姆符文</td>
-                        <td>使用牌时获得25个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>烈焰符文</td>
-                        <td>造成火属性伤害后获得65个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>寒霜符文</td>
-                        <td>造成冰属性伤害后获得75个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>奔雷符文</td>
-                        <td>造成雷属性伤害后获得55个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>淬毒符文</td>
-                        <td>造成毒属性伤害后获得80个贡品</td>
-                    </tr>
-                    <tr>
-                        <td>金刃符文</td>
-                        <td>造成伤害后获得35个贡品</td>
-                    </tr>
-                </table>
-            </div>
-
-            <h3>🙏 祷告符文（6种）</h3>
-            <div class="feature-card">
-                <p>祷告符文消耗贡品触发主动效果：</p>
-                <table>
-                    <tr>
-                        <th>符文</th>
-                        <th>消耗</th>
-                        <th>效果</th>
-                    </tr>
-                    <tr>
-                        <td>扎尔符文</td>
-                        <td>250</td>
-                        <td>获得1点体力上限</td>
-                    </tr>
-                    <tr>
-                        <td>祈愿符文</td>
-                        <td>150</td>
-                        <td>摸2张牌</td>
-                    </tr>
-                    <tr>
-                        <td>暴风符文</td>
-                        <td>200</td>
-                        <td>对其他角色造成1点雷属性伤害</td>
-                    </tr>
-                    <tr>
-                        <td>心灵符文</td>
-                        <td>300</td>
-                        <td>获得一个随机技能</td>
-                    </tr>
-                    <tr>
-                        <td>箭雨符文</td>
-                        <td>250</td>
-                        <td>使用一张【万箭齐发】</td>
-                    </tr>
-                    <tr>
-                        <td>酋首符文</td>
-                        <td>250</td>
-                        <td>使用一张【南蛮入侵】</td>
-                    </tr>
-                </table>
-            </div>
-
-            <h3>⚙️ 如何装备符文</h3>
-            <div class="feature-card">
-                <ol>
-                    <li>打开奇术要件详情页面</li>
-                    <li>点击"仪式符文"或"祷告符文"装备槽位</li>
-                    <li>在符文背包中选择要装备的符文</li>
-                    <li>点击确认装备</li>
-                </ol>
-
-                <div class="warning">
-                    <strong>⚠️ 注意：</strong>
-                    <ul>
-                        <li>每个奇术要件最多装备 1 个仪式符文 + 1 个祷告符文</li>
-                        <li>部分符文组合被禁用（如塔姆+箭雨、奔雷+暴风）</li>
-                        <li>祷告符文装备后可点击槽位卸下</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- 巢穴钥匙 -->
-        <div id="key" class="section">
-            <h2>🗝️ 巢穴钥匙</h2>
-
-            <p>巢穴钥匙是挑战副本的门票材料，分为 5 种品质。不同品质的钥匙对应不同难度的副本挑战。</p>
-
-            <h3>钥匙品质</h3>
-            <table>
-                <tr>
-                    <th>品质</th>
-                    <th>颜色</th>
-                    <th>说明</th>
-                </tr>
-                <tr>
-                    <td>劣质巢穴钥匙</td>
-                    <td>灰色</td>
-                    <td>最低品质，挑战简单副本</td>
-                </tr>
-                <tr>
-                    <td>精良巢穴钥匙</td>
-                    <td>绿色</td>
-                    <td>中等品质，挑战普通副本</td>
-                </tr>
-                <tr>
-                    <td>完美巢穴钥匙</td>
-                    <td>蓝色</td>
-                    <td>高品质，挑战困难副本</td>
-                </tr>
-                <tr>
-                    <td>史诗巢穴钥匙</td>
-                    <td>紫色</td>
-                    <td>稀有品质，挑战噩梦副本</td>
-                </tr>
-                <tr>
-                    <td>神话巢穴钥匙</td>
-                    <td>橙色</td>
-                    <td>传说品质，挑战地狱副本</td>
-                </tr>
-            </table>
-
-            <h3>获取方式</h3>
-            <ul>
-                <li>完成副本通关奖励</li>
-                <li>升华试炼商店兑换</li>
-                <li>成就系统奖励</li>
-                <li>GM 工具箱获取</li>
-            </ul>
-
-            <div class="tip">
-                <strong>💡 提示：</strong>旧版本的材料（冥狱石等）已自动转换为巢穴钥匙，请放心游玩。
-            </div>
-        </div>
-
-        <!-- 成就系统 -->
-        <div id="achievement" class="section">
-            <h2>🏆 成就系统</h2>
-
-            <p>成就系统记录了玩家在游戏中的各种挑战和里程碑，完成成就可以获得丰厚奖励。成就分为三大类：角色成就、对局成就和特殊成就。</p>
-
-            <h3>📖 如何查看成就</h3>
-            <div class="feature-card">
-                <h4>打开成就界面</h4>
-                <ol>
-                    <li>在游戏主界面找到"<strong>成就</strong>"按钮</li>
-                    <li>点击进入成就系统界面</li>
-                    <li>界面分为多个标签页：
-                        <ul>
-                            <li><strong>成就列表：</strong>显示所有成就及完成进度</li>
-                            <li><strong>奇术要件：</strong>展示已获得的奇术要件图鉴</li>
-                            <li><strong>任务奖励：</strong>领取成就完成的奖励</li>
-                            <li><strong>会员中心：</strong>会员信息和特权展示</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <h3>🎯 成就类型</h3>
-            <table>
-                <tr>
-                    <th>类型</th>
-                    <th>说明</th>
-                    <th>示例</th>
-                </tr>
-                <tr>
-                    <td>角色成就</td>
-                    <td>使用特定武将达成条件</td>
-                    <td>使用某武将获胜、完成特定技能连招等</td>
-                </tr>
-                <tr>
-                    <td>对局成就</td>
-                    <td>在对局中达成特定条件</td>
-                    <td>首次胜利、连胜纪录、伤害输出等</td>
-                </tr>
-                <tr>
-                    <td>特殊成就</td>
-                    <td>隐藏成就或活动限定</td>
-                    <td>凌虚证道、节日活动、彩蛋成就等</td>
-                </tr>
-            </table>
-
-            <h3>🎁 成就奖励</h3>
-            <div class="feature-card">
-                <h4>奖励类型</h4>
-                <ul>
-                    <li><strong>碎片奖励：</strong>用于兑换奇术要件或武将</li>
-                    <li><strong>奇术要件：</strong>直接获得高阶奇术要件</li>
-                    <li><strong>专属称号：</strong>独特的游戏内称号展示</li>
-                    <li><strong>特殊道具：</strong>限定皮肤、背景等装饰品</li>
-                </ul>
-
-                <h4>领取方式</h4>
-                <ol>
-                    <li>进入"任务奖励"标签页</li>
-                    <li>找到已完成的成就（显示为可领取状态）</li>
-                    <li>点击成就图标领取奖励</li>
-                    <li>奖励自动发放到背包或账号</li>
-                </ol>
-            </div>
-
-            <h3>💡 成就技巧</h3>
-            <ul>
-                <li><strong>优先级：</strong>优先完成简单、奖励丰厚的成就</li>
-                <li><strong>规划路线：</strong>有些成就可以同时进行，节省时间</li>
-                <li><strong>关注限时：</strong>活动限定成就不要错过时间</li>
-                <li><strong>查看条件：</strong>仔细阅读成就完成条件，避免做无用功</li>
-                <li><strong>利用机制：</strong>某些成就可以通过特定机制快速完成</li>
-            </ul>
-
-            <div class="warning">
-                <strong>⚠️ 注意事项：</strong>
-                <ul>
-                    <li>部分成就一旦错过无法重新获取</li>
-                    <li>某些成就需要特定武将或配置才能完成</li>
-                    <li>PVP 类成就可能需要较高的技术水平</li>
-                    <li>成就进度可能不会实时更新，对局结束后统一结算</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 升华试炼模式 -->
-        <div id="challenge" class="section">
-            <h2>⚔️ 升华试炼模式</h2>
-
-            <div class="feature-card">
-                <h4>无尽试炼模式</h4>
-                <p>高难度挑战模式，测试你的极限操作和策略搭配。</p>
-
-                <h3>可配置选项</h3>
-                <ul>
-                    <li><span class="highlight">全扩技能池：</span>商店刷新全扩展技能（关闭则仅限仙家之魂技能）</li>
-                    <li><span class="highlight">全扩武将池：</span>可使用本体及所有扩展武将（默认仅限仙家之魂武将）</li>
-                    <li><span class="highlight">初始 999 道韵：</span>商店初始货币为 999（需先完成成就"凌虚证道"）</li>
-                </ul>
-            </div>
-
-            <div class="warning">
-                <strong>⚠️ 注意事项：</strong>开启全扩武将池可能导致兼容性问题，如遇到报错请关闭此选项并反馈。
-            </div>
-        </div>
-
-        <!-- 工具箱 -->
-        <div id="toolbox" class="section">
-            <h2>🧰 工具箱</h2>
-
-            <p>工具箱是本扩展提供的综合管理工具，包含"存档管理"和"GM 工具"两个功能页签。在游戏设置中点击"点击此处打开工具箱"即可使用。</p>
-
-            <h3>💾 存档管理</h3>
-            <p>支持三套独立存档的导出、导入、清除和详情查看：</p>
-
-            <table>
-                <tr>
-                    <th>存档名称</th>
-                    <th>存储位置</th>
-                    <th>导出文件名</th>
-                    <th>文件前缀</th>
-                </tr>
-                <tr>
-                    <td>奇术要件</td>
-                    <td>qishuyaojians</td>
-                    <td>奇术要件存档.json</td>
-                    <td>存档备份：</td>
-                </tr>
-                <tr>
-                    <td>死灵之书</td>
-                    <td>xjzh_diablo_hunhuo</td>
-                    <td>死灵之书存档.json</td>
-                    <td>死灵之书副本：</td>
-                </tr>
-                <tr>
-                    <td>元歌碎片</td>
-                    <td>xjzh_wzry_kongou</td>
-                    <td>元歌碎片存档.json</td>
-                    <td>武将碎片：</td>
-                </tr>
-            </table>
-
-            <div class="feature-card">
-                <h4>导出存档</h4>
-                <ol>
-                    <li>点击对应存档的"导出"按钮</li>
-                    <li>确认导出操作</li>
-                    <li>存档文件保存至 <code>extension/仙家之魂/save/</code> 目录</li>
-                </ol>
-                <div class="tip">
-                    <strong>💡 说明：</strong>系统每次保存奇术要件配置时会自动生成 <code>自动备份.json</code>，手动导出的文件名各不相同，不会互相覆盖。
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <h4>导入存档</h4>
-                <ol>
-                    <li>点击对应存档的"导入"按钮</li>
-                    <li>选择 .json 格式的存档文件</li>
-                    <li>奇术要件存档需要输入用户名验证（需与原存档一致）</li>
-                    <li>确认覆盖当前存档</li>
-                </ol>
-            </div>
-
-            <div class="feature-card">
-                <h4>清除存档</h4>
-                <p>安全清理不需要的存档数据，可单独清除某一套存档。</p>
-                <div class="warning">
-                    <strong>⚠️ 警告：</strong>清除操作不可恢复，请先导出备份！
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <h4>查看详情</h4>
-                <p>点击"详情"按钮可查看存档的结构化信息：</p>
-                <ul>
-                    <li><strong>奇术要件：</strong>用户名、等级、碎片、精魄、奇术要件列表（合并计数）、材料列表、会员剩余天数</li>
-                    <li><strong>死灵之书：</strong>死灵之书副本数据详情</li>
-                    <li><strong>元歌碎片：</strong>武将碎片收集进度</li>
-                </ul>
-            </div>
-
-            <h3>⚙️ GM 工具</h3>
-            <div class="warning">
-                <strong>⚠️ GM 工具需要密码验证：</strong>默认密码为 <code>xjzh666</code>，每次打开工具箱时自动重置为此密码。
-            </div>
-            <p>GM 工具提供以下功能分类：</p>
-            <ul>
-                <li><strong>材料：</strong>添加各类游戏材料</li>
-                <li><strong>成就/等级：</strong>修改玩家等级、成就进度等</li>
-                <li><strong>特殊：</strong>特殊功能操作</li>
-            </ul>
-        </div>
-
-        <!-- 自定义选项 -->
-        <div id="customization" class="section">
-            <h2>🎨 自定义选项</h2>
-
-            <h3>视觉装饰</h3>
-            <ul>
-                <li><strong>装饰开关：</strong>一键隐藏/显示所有装饰元素</li>
-                <li><strong>音乐点播：</strong>12 首 BGM + 随机播放
-                    <ul>
-                        <li>默认音乐、国战鏖战、犬夜叉、风一样的勇士</li>
-                        <li>痛苦之村、仙剑奇缘、桃花岛</li>
-                        <li>景天—护甲、雪见-落入凡尘、雪见—仙凡之旅</li>
-                        <li>GBL女神殿、迷乱之村</li>
-                        <li>点击选项立即播放，支持随机模式</li>
-                    </ul>
-                </li>
-                <li><strong>背景更换：</strong>9 张精美背景 + 自动轮换
-                    <ul>
-                        <li>默认背景、火影博人、牛仔风华、冰肌玉骨</li>
-                        <li>吊带连心、池水深深、碧波荡漾、樱花瀑布</li>
-                        <li>北夜极光、海绵宝宝</li>
-                        <li>可设置自动切换时间（5 秒 ~ 5 分钟）</li>
-                        <li>"自动换背景"选项会循环播放所有背景</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>游戏设置</h3>
-            <ul>
-                <li><strong>露头皮肤：</strong>切换显示武将露头皮肤</li>
-                <li><strong>势力替换：</strong>将传统势力替换为"星"势力
-                    <ul>
-                        <li>魏蜀吴群 → 星势力</li>
-                        <li>需重启游戏生效</li>
-                    </ul>
-                </li>
-                <li><strong>界限突破：</strong>加强部分武将技能强度</li>
-                <li><strong>增益技能：</strong>控制开局随机技能的获取范围
-                    <ul>
-                        <li>仅玩家可获得：只有人类玩家能获得增益技能</li>
-                        <li>仅仙魂武将获得：只有扩展武将能获得</li>
-                        <li>关闭增益：完全禁用此功能</li>
-                    </ul>
-                </li>
-                <li><strong>手牌上限显示：</strong>实时显示手牌数/手牌上限
-                    <ul>
-                        <li>格式示例：2/3（当前 2 张，上限 3 张）</li>
-                        <li>方便掌握防御和过牌节奏</li>
-                    </ul>
-                </li>
-                <li><strong>POE 规则：</strong>POE 武将移除技能选项
-                    <ul>
-                        <li>开启后 POE 武将会按要求移除技能</li>
-                        <li>符合官方比赛规则要求</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>性能监控</h3>
-            <p>FPS 显示器提供 6 个位置选择：</p>
-            <ul>
-                <li><strong>左上/中上/右上：</strong>适合喜欢上方视角的玩家</li>
-                <li><strong>左下/中下/右下：</strong>适合喜欢下方视角的玩家</li>
-                <li>实时显示游戏帧率，帮助优化性能</li>
-            </ul>
-
-            <div class="tip">
-                <strong>💡 美化建议：</strong>
-                <ul>
-                    <li>可自定义卡牌美化素材</li>
-                    <li>背景音乐建议根据游戏模式选择（激烈战斗用燃曲，休闲用轻音乐）</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 常见问题 -->
-        <div id="faq" class="section">
-            <h2>❓ 常见问题</h2>
-
-            <h3>Q1: 游戏闪退或无法启动？</h3>
-            <p><strong>A:</strong> 请检查：</p>
-            <ul>
-                <li>无名杀本体是否为最新版本</li>
-                <li>浏览器内核版本是否≥91</li>
-                <li>是否误用了清瑶版（β版本）</li>
-            </ul>
-
-            <h3>Q2: 奇术要件无法使用？</h3>
-            <p><strong>A:</strong> 需要在设置中开启"奇术要件"功能，并选择合适的启用范围（所有武将开启 / 仅仙魂武将开启）。</p>
-
-            <h3>Q3: 背景音乐不播放？</h3>
-            <p><strong>A:</strong> 检查是否选择了正确的音乐选项，某些浏览器需要用户交互后才能播放音频。</p>
-
-            <h3>Q4: 导入存档失败？</h3>
-            <p><strong>A:</strong> 确保：</p>
-            <ul>
-                <li>文件格式为 .json</li>
-                <li>文件内容前缀与目标存档类型匹配（存档备份：/死灵之书副本：/武将碎片：）</li>
-                <li>奇术要件存档需要输入与原存档一致的用户名</li>
-            </ul>
-
-            <h3>Q5: 升华试炼报错？</h3>
-            <p><strong>A:</strong> 尝试关闭"全扩武将池"选项，如仍存在问题请反馈给开发者。</p>
-
-            <h3>Q6: 如何快速刷取奇术要件？</h3>
-            <p><strong>A:</strong> 推荐方法：</p>
-            <ul>
-                <li>完成成就任务获得高阶要件</li>
-                <li>挑战强化 Boss（消耗巢穴钥匙）</li>
-                <li>升华试炼商店兑换</li>
-                <li>使用兑换码获取</li>
-            </ul>
-
-            <h3>Q7: 奇术要件按钮不显示？</h3>
-            <p><strong>A:</strong> 可能原因：</p>
-            <ul>
-                <li>未在游戏设置中开启奇术要件功能</li>
-                <li>当前模式不支持（需开启"全模式启用"）</li>
-                <li>该武将没有可装备的奇术要件</li>
-                <li>AI 控制状态下可能不显示（需开启 AI 启用选项）</li>
-            </ul>
-
-            <h3>Q8: 如何卸下已装备的奇术要件？</h3>
-            <p><strong>A:</strong> 打开奇术要件界面 → 点击已装备的要件 → 选择卸下 → 确认操作</p>
-
-            <h3>Q9: 成就是否可以重复完成？</h3>
-            <p><strong>A:</strong> 大部分成就只能完成一次，少数计数类成就可以累计进度但奖励只领取一次。</p>
-
-            <h3>Q10: 背景图片无法切换？</h3>
-            <p><strong>A:</strong> 检查：</p>
-            <ul>
-                <li>背景文件是否完整（在 picture 文件夹中）</li>
-                <li>文件名是否正确（xjzh_backgroundPicture1-9.jpg）</li>
-                <li>重启游戏后再次尝试</li>
-            </ul>
-
-            <h3>Q11: 工具箱密码忘记？</h3>
-            <p><strong>A:</strong> 工具箱密码会在每次打开时自动重置为默认密码 <code>xjzh666</code>，无需担心忘记。</p>
-
-            <h3>Q12: 导出显示失败但文件已生成？</h3>
-            <p><strong>A:</strong> 此问题已修复，导出回调正确处理了成功/失败状态。请确认文件已出现在 <code>extension/仙家之魂/save/</code> 目录。</p>
-
-            <div class="tip">
-                <strong>💡 更多帮助：</strong>查看更新公告或联系开发者获取技术支持。
-            </div>
-        </div>
-
-        <!-- 快速上手指南 -->
-        <div id="quickstart" class="section">
-            <h2>🚀 新手快速上手</h2>
-
-            <div class="feature-card">
-                <h4>第一次游玩推荐步骤</h4>
-                <ol>
-                    <li><strong>安装验证：</strong>
-                        <ul>
-                            <li>确保扩展正确安装并启用</li>
-                            <li>检查游戏版本兼容性</li>
-                        </ul>
-                    </li>
-                    <li><strong>基础设置：</strong>
-                        <ul>
-                            <li>进入设置菜单，开启需要的功能</li>
-                            <li>建议先开启"手牌上限显示"</li>
-                            <li>根据喜好设置背景音乐和背景图片</li>
-                        </ul>
-                    </li>
-                    <li><strong>了解奇术要件：</strong>
-                        <ul>
-                            <li>先在设置中开启"奇术要件 - 所有武将开启"</li>
-                            <li>开始一局身份局游戏</li>
-                            <li>找到角色头像旁的奇术要件按钮</li>
-                            <li>尝试装备简单的奇术要件</li>
-                        </ul>
-                    </li>
-                    <li><strong>熟悉成就系统：</strong>
-                        <ul>
-                            <li>打开成就界面查看可完成的成就</li>
-                            <li>从简单的对战成就开始</li>
-                            <li>逐步挑战收集和挑战成就</li>
-                        </ul>
-                    </li>
-                    <li><strong>挑战升华试炼：</strong>
-                        <ul>
-                            <li>熟悉基础玩法后再尝试高难度模式</li>
-                            <li>优先升级核心技能</li>
-                            <li>合理搭配奇术要件</li>
-                        </ul>
-                    </li>
-                    <li><strong>存档管理：</strong>
-                        <ul>
-                            <li>定期使用工具箱导出存档备份</li>
-                            <li>重要进度及时保存</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <div class="tip">
-                <strong>💡 进阶提示：</strong>
-                <ul>
-                    <li>多查看帮助文档了解机制细节</li>
-                    <li>加入玩家社区交流心得</li>
-                    <li>关注更新公告了解新内容</li>
-                    <li>保存好你的存档数据</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- 术语表 -->
-        <div id="glossary" class="section">
-            <h2>📚 术语解释</h2>
-
-            <table>
-                <tr>
-                    <th>术语</th>
-                    <th>解释</th>
-                </tr>
-                <tr>
-                    <td>奇术要件</td>
-                    <td>可装备的特殊道具，提供额外技能或属性加成</td>
-                </tr>
-                <tr>
-                    <td>巢穴钥匙</td>
-                    <td>挑战副本的门票材料，分为5种品质：劣质、精良、完美、史诗、神话</td>
-                </tr>
-                <tr>
-                    <td>道韵</td>
-                    <td>升华试炼模式的货币，用于购买技能和道具</td>
-                </tr>
-                <tr>
-                    <td>仙魂武将</td>
-                    <td>《仙家之魂》扩展原创的武将角色</td>
-                </tr>
-                <tr>
-                    <td>界限突破</td>
-                    <td>加强版武将技能，通常强度更高</td>
-                </tr>
-                <tr>
-                    <td>增益技能</td>
-                    <td>开局随机获得的额外强力技能</td>
-                </tr>
-                <tr>
-                    <td>POE</td>
-                    <td>Path of Exile（流放之路），此处指特定规则模式</td>
-                </tr>
-                <tr>
-                    <td>卡牌美化</td>
-                    <td>自定义卡牌的视觉风格和素材</td>
-                </tr>
-                <tr>
-                    <td>雪莱工作室</td>
-                    <td>升华试炼中的特殊关卡，可合成自定义奇术要件</td>
-                </tr>
-                <tr>
-                    <td>词缀</td>
-                    <td>奇术要件的附加属性或效果</td>
-                </tr>
-                <tr>
-                    <td>碎片</td>
-                    <td>用于兑换奇术要件或武将的通用资源</td>
-                </tr>
-                <tr>
-                    <td>精魄</td>
-                    <td>游戏内的特殊资源货币</td>
-                </tr>
-                <tr>
-                    <td>死灵之书</td>
-                    <td>记录死灵之书副本数据的独立存档系统</td>
-                </tr>
-                <tr>
-                    <td>元歌碎片</td>
-                    <td>王者荣耀系列武将的碎片收集存档系统</td>
-                </tr>
-                <tr>
-                    <td>工具箱</td>
-                    <td>集存档管理与GM工具于一体的综合管理界面</td>
-                </tr>
-                <tr>
-                    <td>背包</td>
-                    <td>查看和管理所有材料、钥匙等物品的统一入口</td>
-                </tr>
-                <tr>
-                    <td>符文</td>
-                    <td>奇术要件的附加强化系统，分为仪式符文和祷告符文两大类</td>
-                </tr>
-                <tr>
-                    <td>仪式符文</td>
-                    <td>主要提供被动增益效果的符文类型，触发时获得贡品</td>
-                </tr>
-                <tr>
-                    <td>祷告符文</td>
-                    <td>消耗贡品触发主动效果的符文类型</td>
-                </tr>
-                <tr>
-                    <td>贡品</td>
-                    <td>符文系统的内部货币，由仪式符文触发获得，用于祷告符文释放</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- 页脚 -->
-        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2);">
-            <p style="color: #aaa; font-size: 14px;">
-                《仙家之魂》扩展帮助文档 | 扩展版本：<span id="footer-version">5.07061</span><br>
-                遵循 GPL3 协议 | 开发者：吃朵棉花糖
-            </p>
         </div>
     </div>
 
     <script>
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // 键盘快捷键
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                try { window.close(); } catch(err) {}
-                setTimeout(function() {
-                    if (window.history.length > 1) window.history.back();
-                }, 100);
-            }
-        });
-
-        // ========== 快速反馈功能 ==========
-
-        /**
-         * 获取 info.json 的正确路径
-         * help.html 位于 extension/仙家之魂/ext/html/ 目录
-         * info.json 位于 extension/仙家之魂/ 目录
-         * 需要向上返回两级
-         */
         function getInfoJsonUrl() {
             const path = window.location.pathname;
-            // 标准化路径，处理反斜杠（Windows file:// 协议）
             const normalizedPath = path.replace(/\\/g, '/');
-            // 找到 /ext/html/ 的位置，截取到 extension/仙家之魂/
             const marker = '/ext/html/';
             const markerIndex = normalizedPath.lastIndexOf(marker);
             if (markerIndex !== -1) {
                 return normalizedPath.substring(0, markerIndex + 1) + 'info.json';
             }
-            // 兜底：向上两级
             const parts = normalizedPath.split('/');
-            parts.pop(); // 去掉 help.html
-            parts.pop(); // 去掉 html/
-            parts.pop(); // 去掉 ext/
+            parts.pop();
+            parts.pop();
+            parts.pop();
             return parts.join('/') + '/info.json';
         }
 
-        /**
-         * 打开反馈弹窗
-         */
         async function openFeedbackModal() {
             const modalOverlay = document.getElementById('feedbackModalOverlay');
             const groupsList = document.getElementById('qqGroupsList');
-
             try {
                 const infoUrl = getInfoJsonUrl();
                 const response = await fetch(infoUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
                 const qqGroups = data.qqGroups || [];
-
-                // 构建 QQ 群列表
                 groupsList.innerHTML = '';
                 if (qqGroups.length > 0) {
-                    qqGroups.forEach((group, index) => {
-                        const groupItem = document.createElement('div');
-                        groupItem.className = 'feedback-modal-group-item';
-                        groupItem.onclick = () => copyGroupNumber(group.number);
-
-                        groupItem.innerHTML = `
-                            <div class="feedback-modal-group-name">${group.name}</div>
-                            <div class="feedback-modal-group-number">${group.number}</div>
-                        `;
-
-                        groupsList.appendChild(groupItem);
+                    qqGroups.forEach(function(group) {
+                        const item = document.createElement('div');
+                        item.className = 'feedback-modal-group-item';
+                        item.onclick = function() { copyGroupNumber(group.number); };
+                        item.innerHTML = '<div class="feedback-modal-group-name">' + group.name + '</div><div class="feedback-modal-group-number">' + group.number + '</div>';
+                        groupsList.appendChild(item);
                     });
-
-                    // 自动复制第一个群号
-                    setTimeout(() => {
-                        copyGroupNumber(qqGroups[0].number);
-                    }, 500);
+                    setTimeout(function() { copyGroupNumber(qqGroups[0].number); }, 500);
                 } else {
-                    groupsList.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.8);">暂无 QQ 群信息</p>';
+                    groupsList.innerHTML = '<p style="text-align:center;color:rgba(255,255,255,0.8);">暂无 QQ 群信息</p>';
                 }
-
-                // 显示弹窗
                 modalOverlay.classList.add('active');
             } catch (error) {
                 console.error('读取 info.json 失败:', error);
-                // 兜底：显示默认群号
                 groupsList.innerHTML = '';
                 const defaultGroups = [
                     { name: '无名杀《仙家之魂》交流群', number: '1028575505' },
                     { name: '无名杀金庸群侠传', number: '697310426' },
                     { name: '海欧公司交流群', number: '839180892' }
                 ];
-                defaultGroups.forEach(group => {
-                    const groupItem = document.createElement('div');
-                    groupItem.className = 'feedback-modal-group-item';
-                    groupItem.onclick = () => copyGroupNumber(group.number);
-                    groupItem.innerHTML = `
-                        <div class="feedback-modal-group-name">${group.name}</div>
-                        <div class="feedback-modal-group-number">${group.number}</div>
-                    `;
-                    groupsList.appendChild(groupItem);
+                defaultGroups.forEach(function(group) {
+                    const item = document.createElement('div');
+                    item.className = 'feedback-modal-group-item';
+                    item.onclick = function() { copyGroupNumber(group.number); };
+                    item.innerHTML = '<div class="feedback-modal-group-name">' + group.name + '</div><div class="feedback-modal-group-number">' + group.number + '</div>';
+                    groupsList.appendChild(item);
                 });
                 modalOverlay.classList.add('active');
             }
         }
 
-        /**
-         * 关闭反馈弹窗
-         */
         function closeFeedbackModal() {
-            const modalOverlay = document.getElementById('feedbackModalOverlay');
-            modalOverlay.classList.remove('active');
+            document.getElementById('feedbackModalOverlay').classList.remove('active');
         }
 
-        /**
-         * 复制群号到剪贴板
-         * @param {string|number} groupNumber
-         */
         function copyGroupNumber(groupNumber) {
             if (!navigator.clipboard) {
                 alert('您的浏览器不支持剪贴板功能，请手动复制群号：' + groupNumber);
                 return;
             }
-
-            navigator.clipboard.writeText(groupNumber.toString())
-                .then(() => {
-                    showToast(`✓ 群号 ${groupNumber} 已复制到剪贴板`);
-                })
-                .catch(err => {
-                    console.error('复制失败:', err);
-                    alert('复制失败，请手动复制群号：' + groupNumber);
-                });
+            navigator.clipboard.writeText(groupNumber.toString()).then(function() {
+                showToast('✓ 群号 ' + groupNumber + ' 已复制到剪贴板');
+            }).catch(function(err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制群号：' + groupNumber);
+            });
         }
 
-        /**
-         * 显示提示消息
-         * @param {string} message
-         */
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(102, 255, 102, 0.9);
-                color: #000;
-                padding: 12px 24px;
-                border-radius: 25px;
-                font-size: 14px;
-                font-weight: bold;
-                z-index: 10000;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-                animation: toastSlideIn 0.3s ease;
-            `;
+            toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(102,255,102,0.9);color:#000;padding:12px 24px;border-radius:25px;font-size:14px;font-weight:bold;z-index:10000;box-shadow:0 4px 15px rgba(0,0,0,0.3);';
             toast.textContent = message;
             document.body.appendChild(toast);
-
-            // 添加动画样式
             if (!document.getElementById('toast-animation-style')) {
                 const style = document.createElement('style');
                 style.id = 'toast-animation-style';
-                style.textContent = `
-                    @keyframes toastSlideIn {
-                        from {
-                            opacity: 0;
-                            transform: translateX(-50%) translateY(-20px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateX(-50%) translateY(0);
-                        }
-                    }
-                `;
+                style.textContent = '@keyframes toastSlideIn{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}';
                 document.head.appendChild(style);
             }
-
-            // 3 秒后移除
-            setTimeout(() => {
-                toast.style.animation = 'toastSlideIn 0.3s ease reverse';
-                setTimeout(() => toast.remove(), 300);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(function() { toast.remove(); }, 300);
             }, 3000);
         }
 
-        /**
-         * 初始化快速反馈按钮
-         */
         function initFeedback() {
             const feedbackBtn = document.getElementById('feedbackBtn');
-
             feedbackBtn.addEventListener('click', openFeedbackModal);
-
-            // 点击遮罩层关闭弹窗
             const modalOverlay = document.getElementById('feedbackModalOverlay');
             modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) {
-                    closeFeedbackModal();
-                }
-            });
-
-            // ESC 键关闭弹窗
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeFeedbackModal();
-                }
+                if (e.target === modalOverlay) closeFeedbackModal();
             });
         }
 
-        // ========== 返回顶部功能 ==========
-
-        /**
-         * 初始化返回顶部按钮
-         */
         function initBackToTop() {
             const backToTopBtn = document.getElementById('backToTopBtn');
-
-            // 初始化时检查当前滚动位置
-            if (window.scrollY <= 300) {
-                backToTopBtn.classList.add('hidden');
-            } else {
-                backToTopBtn.classList.remove('hidden');
-            }
-
-            // 监听滚动事件，控制按钮显示/隐藏
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
+            const contentArea = document.getElementById('contentArea');
+            if (contentArea.scrollTop <= 300) backToTopBtn.classList.add('hidden');
+            contentArea.addEventListener('scroll', function() {
+                if (contentArea.scrollTop > 300) {
                     backToTopBtn.classList.remove('hidden');
                 } else {
                     backToTopBtn.classList.add('hidden');
                 }
             });
-
-            // 点击按钮滚动到顶部
             backToTopBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                contentArea.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-        // ========== 版本检测功能 ==========
-
-        /**
-         * 对比版本号（参考无名杀 src/noname/library/update.js）
-         * @param {string} ver1 版本号 1
-         * @param {string} ver2 版本号 2
-         * @returns {-1|0|1} -1 为 ver1 < ver2, 0 为 ver1 == ver2, 1 为 ver1 > ver2
-         */
-        function checkVersion(ver1, ver2) {
-            if (typeof ver1 !== "string") {ver1 = String(ver1);}
-            if (typeof ver2 !== "string") {ver2 = String(ver2);}
-
-            // 移除 'v' 开头
-            if (ver1.startsWith("v")) {ver1 = ver1.slice(1);}
-            if (ver2.startsWith("v")) {ver2 = ver2.slice(1);}
-
-            // 验证版本号格式
-            if (/[^0-9.-]/i.test(ver1) || /[^0-9.-]/i.test(ver2)) {
-                throw new Error("Invalid characters found in the version numbers");
+        function initCloseHelp() {
+            const closeHelpBtn = document.getElementById('closeHelpBtn');
+            function closeHelp() {
+                if (closeHelpBtn) {
+                    closeHelpBtn.textContent = '关闭中...';
+                    closeHelpBtn.style.opacity = '0.7';
+                    closeHelpBtn.style.pointerEvents = 'none';
+                }
+                window.parent?.postMessage({ type: 'closePage' }, '*');
+                window.close();
             }
+            closeHelpBtn.addEventListener('click', closeHelp);
+        }
 
-            /** @param {string} str */
-            function* walk(str) {
-                let part = "";
-                for (const char of str) {
-                    if (char === "." || char === "-") {
-                        if (part) {yield Number(part);}
-                        part = "";
-                    } else {
-                        part += char;
+        function initSidebarNav() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentArea = document.getElementById('contentArea');
+            const sections = document.querySelectorAll('.section');
+
+            navItems.forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        const offsetTop = target.offsetTop - 10;
+                        contentArea.scrollTo({ top: offsetTop, behavior: 'smooth' });
                     }
+                });
+            });
+
+            contentArea.addEventListener('scroll', function() {
+                let current = '';
+                sections.forEach(function(section) {
+                    if (contentArea.scrollTop >= section.offsetTop - 50) {
+                        current = section.id;
+                    }
+                });
+                if (current) {
+                    navItems.forEach(function(item) {
+                        item.classList.toggle('active', item.getAttribute('data-target') === current);
+                    });
                 }
-                if (part) {yield Number(part);}
+            });
+        }
+
+        function checkVersion(ver1, ver2) {
+            if (typeof ver1 !== 'string') ver1 = String(ver1);
+            if (typeof ver2 !== 'string') ver2 = String(ver2);
+            if (ver1.startsWith('v')) ver1 = ver1.slice(1);
+            if (ver2.startsWith('v')) ver2 = ver2.slice(1);
+            if (/[^0-9.-]/i.test(ver1) || /[^0-9.-]/i.test(ver2)) throw new Error('Invalid version');
+            function* walk(str) {
+                let part = '';
+                for (const char of str) {
+                    if (char === '.' || char === '-') { if (part) { yield Number(part); } part = ''; }
+                    else part += char;
+                }
+                if (part) yield Number(part);
             }
-
-            const iterator1 = walk(ver1);
-            const iterator2 = walk(ver2);
-
+            const it1 = walk(ver1), it2 = walk(ver2);
             while (true) {
-                const iter1 = iterator1.next();
-                const iter2 = iterator2.next();
-                let { value: item1 } = iter1;
-                let { value: item2 } = iter2;
-
-                // 如果任意一个迭代器已经没有剩余值，将该值视为 0
-                item1 = item1 === undefined ? 0 : item1;
-                item2 = item2 === undefined ? 0 : item2;
-
-                if (isNaN(item1) || isNaN(item2)) {
-                    throw new Error("Non-numeric part found in the version numbers");
-                } else if (item1 > item2) {
-                    return 1;
-                } else if (item1 < item2) {
-                    return -1;
-                } else {
-                    if (iter1.done && iter2.done) {break;}
-                }
+                const v1 = (it1.next().value || 0);
+                const v2 = (it2.next().value || 0);
+                if (isNaN(v1) || isNaN(v2)) throw new Error('Non-numeric');
+                if (v1 > v2) return 1;
+                if (v1 < v2) return -1;
+                if (it1.done && it2.done) break;
             }
-
-            // 若正常遍历结束，说明版本号相等
             return 0;
         }
 
-        /**
-         * 获取当前浏览器内核版本信息（参考无名杀 src/noname/get/compatible.js）
-         * @returns {["firefox"|"chrome"|"safari"|"other", number, number, number]}
-         */
         function getCoreInfo() {
-            const userAgentLowerCase = navigator.userAgent.toLowerCase();
-
-            // 如果存在 process 并且存在 process.versions，则默认为 node 环境
-            if (typeof window.process != "undefined" && typeof window.process.versions == "object") {
-                // 如果存在 versions.chrome，默认为 electron 的 versions.chrome
-                if (window.process.versions.chrome) {
-                    return parseVersion("chrome", window.process.versions.chrome);
-                }
+            const ua = navigator.userAgent.toLowerCase();
+            if (typeof window.process !== 'undefined' && window.process.versions && window.process.versions.chrome) {
+                return parseVersion('chrome', window.process.versions.chrome);
             }
-
-            // Chrome/Chromium下的实验性特性
-            // @ts-expect-error ignore
-            if (typeof navigator.userAgentData != "undefined") {
-                // @ts-expect-error ignore
-                const userAgentData = navigator.userAgentData;
-                if (userAgentData.brands && userAgentData.brands.length) {
-                    const brand = userAgentData.brands.find(({ brand }) => {
-                        let str = brand.toLowerCase();
-                        // 当前支持的浏览器中只有 chrome 支持 userAgentData，故只判断 chrome 的情况
-                        return str.includes("chrome") || str.includes("chromium");
-                    });
-
-                    // 如果能通过 userAgentData 找到对应的浏览器信息，则直接返回
-                    if (brand) {
-                        return ["chrome", parseInt(brand.version), 0, 0];
-                    }
-                }
+            if (navigator.userAgentData && navigator.userAgentData.brands) {
+                const brand = navigator.userAgentData.brands.find(function(b) {
+                    return b.brand.toLowerCase().includes('chrome') || b.brand.toLowerCase().includes('chromium');
+                });
+                if (brand) return ['chrome', parseInt(brand.version), 0, 0];
             }
-
-            // 目前仅考虑Firefox, Chrome和 Safari三种浏览器
-            // 其余均归于 other
             const regex = /(firefox|chrome|safari)\/(\d+(?:\.\d+)+)/;
-            let result = userAgentLowerCase.match(regex);
-            if (result == null) {
-                return ["other", NaN, NaN, NaN];
+            let result = ua.match(regex);
+            if (!result) return ['other', NaN, NaN, NaN];
+            if (result[1] !== 'safari') return parseVersion(result[1], result[2]);
+            if (/macintosh/.test(ua)) {
+                result = ua.match(/version\/(\d+(?:\.\d+)+).*safari/);
+                if (!result) return ['other', NaN, NaN, NaN];
+            } else {
+                result = ua.match(/(?:iphone|ipad); cpu (?:iphone )?os (\d+(?:_\d+)+)/);
+                if (!result) return ['other', NaN, NaN, NaN];
             }
-
-            // 非 Safari 情况可直接返回结果
-            if (result[1] !== "safari") {
-                // @ts-expect-error Type must be right
-                return parseVersion(result[1], result[2]);
-            }
-
-            // 以下是所有 Safari 平台的判断方法
-            // macOS 以及以桌面显示的移动端则直接判断
-            if (/macintosh/.test(userAgentLowerCase)) {
-                result = userAgentLowerCase.match(/version\/(\d+(?:\.\d+)+).*safari/);
-                if (result == null) {
-                    return ["other", NaN, NaN, NaN];
-                }
-            }
-            // 不然则通过 OS 后面的版本号来获取内容
-            else {
-                let safariRegex = /(?:iphone|ipad); cpu (?:iphone )?os (\d+(?:_\d+)+)/;
-                result = userAgentLowerCase.match(safariRegex);
-                if (result == null) {
-                    return ["other", NaN, NaN, NaN];
-                }
-            }
-            return parseVersion("safari", result[1]);
-
-            /**
-             * 通用解析版本号方法
-             * @param {"firefox"|"chrome"|"safari"|"other"} coreName
-             * @param {string} versions
-             * @returns {["firefox"|"chrome"|"safari"|"other", number, number, number]}
-             */
-            function parseVersion(coreName, versions) {
-                const [major, minor, patch] = versions.split(".");
-                const majorVersion = parseInt(major);
-
-                // 如果 major 解析为 NaN，则整体解析为 NaN
-                if (Number.isNaN(majorVersion)) {
-                    return [coreName, NaN, NaN, NaN];
-                }
-
-                // 反之则将不为 NaN 的 minor 和 patch 解析为 0
-                return [coreName, majorVersion, parseInt(minor) || 0, parseInt(patch) || 0];
+            return parseVersion('safari', result[1]);
+            function parseVersion(name, ver) {
+                const parts = ver.split('.');
+                const major = parseInt(parts[0]);
+                if (Number.isNaN(major)) return [name, NaN, NaN, NaN];
+                return [name, major, parseInt(parts[1]) || 0, parseInt(parts[2]) || 0];
             }
         }
 
-        /**
-         * 加载版本信息
-         */
         async function loadVersionInfo() {
             let onlyVersion = '未知';
             let extVersion = '未知';
-
             try {
-                const infoUrl = getInfoJsonUrl();
-                const response = await fetch(infoUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                const response = await fetch(getInfoJsonUrl());
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 const data = await response.json();
                 onlyVersion = data.onlyVersion || '未知';
                 extVersion = data.version || '未知';
-
-                // 更新页脚版本号
-                const footerVersion = document.getElementById('footer-version');
-                if (footerVersion) footerVersion.textContent = extVersion;
+                const fv = document.getElementById('footer-version');
+                if (fv) fv.textContent = extVersion;
+                const sv = document.getElementById('sidebar-version');
+                if (sv) sv.textContent = extVersion;
             } catch (error) {
                 console.error('加载版本信息失败:', error);
-                // 兜底值
                 onlyVersion = '1.11.2';
                 extVersion = '5.07061';
             }
-
-            // 更新版本显示
             document.getElementById('min-version').textContent = onlyVersion;
             document.getElementById('current-min-version').textContent = onlyVersion;
-
-            // 尝试获取当前游戏版本
-            // help.html 在独立窗口中打开，通过 window.opener 访问父窗口
             let gameVersion = null;
             try {
                 if (window.opener) {
-                    const opener = window.opener;
-                    if (opener.lib && opener.lib.version) {
-                        gameVersion = opener.lib.version;
-                    } else if (opener.game && opener.game.getNickname) {
-                        // 确认是游戏窗口
-                        gameVersion = opener.lib?.version || null;
-                    }
+                    const op = window.opener;
+                    if (op.lib && op.lib.version) gameVersion = op.lib.version;
                 }
-                // 也尝试直接访问（游戏内嵌环境）
                 if (!gameVersion) {
-                    if (typeof window.lib !== 'undefined' && window.lib && window.lib.version) {
-                        gameVersion = window.lib.version;
-                    } else if (typeof lib !== 'undefined' && lib.version) {
-                        gameVersion = lib.version;
-                    }
+                    if (typeof window.lib !== 'undefined' && window.lib && window.lib.version) gameVersion = window.lib.version;
+                    else if (typeof lib !== 'undefined' && lib.version) gameVersion = lib.version;
                 }
-            } catch (e) {
-                // 跨域或不在游戏环境中
-            }
-
+            } catch (e) {}
             if (gameVersion) {
-                document.getElementById('game-version').textContent = gameVersion + ' ✓';
+                const gvEl = document.getElementById('game-version');
+                gvEl.textContent = gameVersion + ' ✓';
                 try {
-                    const compareResult = checkVersion(gameVersion, onlyVersion);
-                    if (compareResult >= 0) {
-                        document.getElementById('game-version').style.color = '#66ff66';
-                    } else {
-                        document.getElementById('game-version').style.color = '#ff6666';
-                        document.getElementById('game-version').textContent += ' ⚠️ 版本过低';
-                    }
-                } catch (e) {
-                    document.getElementById('game-version').textContent = gameVersion + ' (版本比较失败)';
-                }
+                    if (checkVersion(gameVersion, onlyVersion) >= 0) gvEl.style.color = '#66ff66';
+                    else { gvEl.style.color = '#ff6666'; gvEl.textContent += ' ⚠️ 版本过低'; }
+                } catch (e) { gvEl.textContent = gameVersion + ' (版本比较失败)'; }
             } else {
-                document.getElementById('game-version').textContent = '不在游戏环境中';
-                document.getElementById('game-version').style.color = '#aaa';
+                const gvEl = document.getElementById('game-version');
+                gvEl.textContent = '不在游戏环境中';
+                gvEl.style.color = '#aaa';
             }
         }
 
-        /**
-         * 更新浏览器信息显示
-         */
         function updateBrowserInfo() {
-            const coreInfo = getCoreInfo();
-            const browserName = coreInfo[0];
-            const majorVersion = coreInfo[1];
-
-            // 浏览器名称映射
-            const browserNameMap = {
-                'chrome': 'Google Chrome',
-                'firefox': 'Mozilla Firefox',
-                'safari': 'Apple Safari',
-                'other': '其他浏览器'
-            };
-
-            document.getElementById('browser-name').textContent = browserNameMap[browserName] || browserName;
-            document.getElementById('browser-version').textContent = (isNaN(majorVersion) ? '未知' : majorVersion) + ' 内核版本';
-
-            // 检查兼容性
-            const compatibilityEl = document.getElementById('browser-compatibility');
-            const minRequiredVersion = 91;
-
-            if (!isNaN(majorVersion) && majorVersion >= minRequiredVersion) {
-                compatibilityEl.innerHTML = '<span style="color: #66ff66;">✓ 符合版本要求，可以正常运行</span>';
+            const info = getCoreInfo();
+            const nameMap = { chrome: 'Google Chrome', firefox: 'Mozilla Firefox', safari: 'Apple Safari', other: '其他浏览器' };
+            document.getElementById('browser-name').textContent = nameMap[info[0]] || info[0];
+            document.getElementById('browser-version').textContent = (isNaN(info[1]) ? '未知' : info[1]) + ' 内核版本';
+            const compatEl = document.getElementById('browser-compatibility');
+            if (!isNaN(info[1]) && info[1] >= 91) {
+                compatEl.innerHTML = '<span style="color:#66ff66;">✓ 符合版本要求，可以正常运行</span>';
             } else {
-                compatibilityEl.innerHTML = '<span style="color: #ff6666;">⚠️ 版本低于要求的 91，可能会出现兼容性问题</span>';
+                compatEl.innerHTML = '<span style="color:#ff6666;">⚠️ 版本低于要求的 91，可能会出现兼容性问题</span>';
             }
         }
 
-        // 页面加载完成后执行检测
         window.addEventListener('DOMContentLoaded', function() {
             initFeedback();
             initBackToTop();
             initCloseHelp();
+            initSidebarNav();
             loadVersionInfo();
             updateBrowserInfo();
         });
 
-        /**
-         * 初始化关闭帮助按钮
-         */
-        function initCloseHelp() {
-            const closeHelpBtn = document.getElementById('closeHelpBtn');
-
-            function closeHelp() {
-                try {
-                    window.close();
-                } catch(e) {}
-                setTimeout(function() {
-                    if (window.history.length > 1) {
-                        window.history.back();
-                    } else {
-                        showToast('请手动关闭此页面');
-                    }
-                }, 100);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFeedbackModal();
             }
-
-            closeHelpBtn.addEventListener('click', closeHelp);
-            closeHelpBtn.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                closeHelp();
-            });
-        }
+        });
     </script>
 </body>
 </html>

@@ -446,6 +446,85 @@ declare interface Gets extends Get {
 	 * @throws 如果没有传入任何参数，抛出错误提示参数不能为空。
 	 */
 	xjzh_translateInfo(...args: (string | boolean)[]): string;
+	/**
+	 * - 检查天赋点是否已解锁
+	 * @param { string } mode - 天赋模式
+	 * @param { string } points - 天赋点标识
+	 * @returns { boolean } 是否解锁
+	 */
+	xjzh_talentUnlock(mode: string, points: string): boolean;
+	/**
+	 * - 获取已打造奇术要件背包
+	 * @returns { Array } 已打造物品数组
+	 */
+	xjzh_qishuCraftedBag(): Array<any>;
+	/**
+	 * - 获取合并后的奇术要件背包（普通+已打造）
+	 * @returns { Object } 合并结果 { counts: Object, crafted: Array }
+	 */
+	xjzh_qishuMergedBag(): { counts: Object, crafted: Array<any> };
+	/**
+	 * - 魔力系统配置常量
+	 */
+	xjzh_mpConfig: {
+		RECOVER_ANIMATION: {
+			PARTICLE_COUNT: number,
+			DURATION: number,
+			PARTICLE_TAIL: number,
+			TEXT_RISE_DISTANCE: number,
+			SPEED_SCALE: number,
+			LIFE_SCALE: number,
+		},
+		UI: {
+			BAR_RADIUS: string,
+			ANIMATION_DURATION: number,
+		},
+	};
+	/**
+	 * - 动画魔力条宽度变化
+	 * @param { HTMLElement } element - DOM元素
+	 * @param { number } targetWidth - 目标宽度（百分比）
+	 * @param { number } [duration=1500] - 动画时长（毫秒）
+	 */
+	xjzh_animateMpWidth(element: HTMLElement, targetWidth: number, duration?: number): void;
+	/**
+	 * - 创建魔力恢复粒子
+	 * @param { Object } config - 粒子配置
+	 * @param { number } x - X坐标
+	 * @param { number } y - Y坐标
+	 * @returns { Object } 粒子对象
+	 */
+	xjzh_createMpParticle(config: Object, x: number, y: number): Object;
+	/**
+	 * - 绘制魔力恢复粒子
+	 * @param { HTMLElement } surface - 画布元素
+	 * @param { Array } particles - 粒子数组
+	 * @param { Object } config - 配置对象
+	 */
+	xjzh_drawMpParticles(surface: HTMLElement, particles: Array<Object>, config: Object): void;
+	/**
+	 * - 更新魔力粒子动画
+	 * @param { Array } particles - 粒子数组
+	 * @param { number } time - 当前时间
+	 * @param { Object } config - 配置对象
+	 */
+	xjzh_updateMpParticles(particles: Array<Object>, time: number, config: Object): void;
+	/**
+	 * - 绘制魔力数字文本
+	 * @param { HTMLElement } surface - 画布元素
+	 * @param { number } progress - 进度值
+	 * @param { number } num - 数值
+	 * @param { number } x - X坐标
+	 * @param { number } y - Y坐标
+	 * @param { Object } config - 配置对象
+	 * @param { Object } textOpacityRef - 文本透明度引用
+	 */
+	xjzh_drawMpText(surface: HTMLElement, progress: number, num: number, x: number, y: number, config: Object, textOpacityRef: Object): void;
+	/**
+	 * - 生成随机颜色（十六进制）
+	 * @returns { string } 随机颜色字符串
+	 */
+	xjzh_randomColor(): string;
 }
 
 export type gets = Gets & Get;

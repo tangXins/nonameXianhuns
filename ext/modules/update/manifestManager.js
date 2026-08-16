@@ -13,12 +13,15 @@ async function loadLocalManifest() {
         const response = await fetch(url, { cache: 'no-store' });
 
         if (response.ok) {
-            return await response.json();
+            const data = await response.json();
+            if (data && typeof data === 'object') {
+                return data;
+            }
         }
-        return null;
+        return { version: '0.0.0', files: {} };
     } catch (err) {
         console.warn('[Manifest] 本地 manifest 读取失败:', err.message);
-        return null;
+        return { version: '0.0.0', files: {} };
     }
 }
 

@@ -6,6 +6,8 @@
 	"forumURL": "",
 	"version": "5.08132",
 	"onlyVersion": "1.11.5",
+	"manifestURL": "https://raw.githubusercontent.com/tangXins/nonameXianhuns/main/manifest.json",
+	"releaseURL": "https://github.com/tangXins/nonameXianhuns/releases",
 	"qqGroups": [
 		{"number": "1028575505", "name": "无名杀《仙家之魂》交流群"},
 		{"number": "697310426", "name": "无名杀金庸群侠传"},

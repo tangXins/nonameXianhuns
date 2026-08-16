@@ -6,6 +6,8 @@ const extensionInfo = await lib.init.promises.json(`${lib.assetURL}extension/仙
 export const updateLog = {
 	version: `${extensionInfo.version}`,
 	onlyVersion: `${extensionInfo.onlyVersion}`,
+	manifestURL: `${extensionInfo.manifestURL || 'https://raw.githubusercontent.com/tangXins/nonameXianhuns/main/manifest.json'}`,
+	releaseURL: `${extensionInfo.releaseURL || 'https://github.com/tangXins/nonameXianhuns/releases'}`,
 	5.08133: {
 		changeLog: {
 			"本体版本要求": [

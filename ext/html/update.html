@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线更新 - 仙家之魂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+        }
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 主面板 */
+        .panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 98%;
+            height: 96%;
+            max-width: 1200px;
+            background: linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 0 40px rgba(255,215,0,0.4);
+            overflow: hidden;
+        }
+        /* 顶部标题栏 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            flex-shrink: 0;
+        }
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg,#FFD700,#FFA500);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 18px rgba(255,215,0,0.4);
+        }
+        .title-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .title {
+            color: #FFD700;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255,215,0,0.6);
+            letter-spacing: 2px;
+        }
+        .sub-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg,#FFD700,#FFA500);
+            color: #000;
+            box-shadow: 0 3px 12px rgba(255,215,0,0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(255,215,0,0.5);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+        }
+        .btn-close {
+            width: 40px;
+            height: 40px;
+            background: rgba(244,67,54,0.8);
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+        }
+        .btn-close:hover {
+            background: rgba(244,67,54,1);
+        }
+        /* 状态卡片区 */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .status-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,255,255,0.04));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px 14px;
+            text-align: center;
+            transition: all 0.25s ease;
+        }
+        .status-card:hover {
+            border-color: rgba(255,215,0,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .status-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        .status-label {
+            color: rgba(255,255,255,0.55);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .status-value {
+            font-size: 17px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 8px rgba(255,215,0,0.3);
+        }
+        .status-value.ok {
+            color: #4ade80;
+            text-shadow: 0 0 8px rgba(74,222,128,0.4);
+        }
+        .status-value.error {
+            color: #f87171;
+            text-shadow: 0 0 8px rgba(248,113,113,0.4);
+        }
+        .status-value.loading {
+            color: #60a5fa;
+            text-shadow: 0 0 8px rgba(96,165,250,0.4);
+        }
+        /* 版本对比区 */
+        .version-section {
+            background: rgba(0,0,0,0.4);
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .section-title {
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .version-compare {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .version-item {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            text-align: center;
+        }
+        .version-item.current {
+            border-color: rgba(96,165,250,0.5);
+            background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(255,255,255,0.02));
+        }
+        .version-item.latest {
+            border-color: rgba(255,215,0,0.5);
+            background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,255,255,0.02));
+        }
+        .version-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .version-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .version-item.latest .version-number {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.4);
+        }
+        .version-arrow {
+            font-size: 24px;
+            color: rgba(255,255,255,0.4);
+        }
+        /* 进度区 */
+        .progress-section {
+            background: rgba(0,0,0,0.4);
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .progress-title {
+            color: #FFD700;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .progress-percent {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 12px rgba(255,215,0,0.5);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 6px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 12px rgba(255,215,0,0.5);
+        }
+        .progress-text {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+        /* 操作区 */
+        .action-section {
+            flex-shrink: 0;
+            display: flex;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.25s ease;
+            border: none;
+        }
+        .action-btn.primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            box-shadow: 0 4px 16px rgba(255,215,0,0.4);
+        }
+        .action-btn.primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,215,0,0.6);
+        }
+        .action-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .action-btn.secondary:hover:not(:disabled) {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+        }
+        .action-btn.danger {
+            background: rgba(244,67,54,0.2);
+            color: #f87171;
+            border: 1px solid rgba(244,67,54,0.4);
+        }
+        .action-btn.danger:hover:not(:disabled) {
+            background: rgba(244,67,54,0.3);
+            border-color: rgba(244,67,54,0.6);
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* 日志区 */
+        .log-section {
+            flex: 1;
+            min-height: 0;
+            background: rgba(0,0,0,0.5);
+            border-radius: 14px;
+            padding: 16px 18px;
+            border: 1px solid rgba(255,215,0,0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .log-title {
+            color: #FFD700;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .log-clear-btn {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .log-clear-btn:hover {
+            background: rgba(244,67,54,0.2);
+            color: #f87171;
+            border-color: rgba(244,67,54,0.4);
+        }
+        .log-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+            font-family: 'Consolas', 'Microsoft YaHei', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .log-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .log-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+        .log-content::-webkit-scrollbar-thumb {
+            background: rgba(255,215,0,0.4);
+            border-radius: 3px;
+        }
+        .log-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,215,0,0.6);
+        }
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .log-entry.info { color: rgba(255,255,255,0.75); }
+        .log-entry.success { color: #4ade80; }
+        .log-entry.error { color: #f87171; }
+        .log-entry.warning { color: #fbbf24; }
+        .log-entry .time {
+            color: rgba(255,255,255,0.35);
+            margin-right: 8px;
+        }
+        /* 版本日志样式 */
+        .version-section {
+            background: rgba(0,0,0,0.4);
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255,215,0,0.2);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .changelog-category {
+            margin-bottom: 14px;
+        }
+        .changelog-category:last-child {
+            margin-bottom: 0;
+        }
+        .changelog-cat-title {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+        }
+        .changelog-items {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .changelog-item {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            line-height: 1.6;
+            padding-left: 12px;
+            position: relative;
+        }
+        .changelog-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: rgba(255,215,0,0.6);
+        }
+        /* 底部状态栏 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            margin-top: 12px;
+            border-top: 1px solid rgba(255,215,0,0.2);
+            flex-shrink: 0;
+        }
+        .status-info {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+        }
+        .date-info {
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 10001;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-box {
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 0 40px rgba(255,215,0,0.4);
+        }
+        .modal-title {
+            color: #FFD700;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+        .modal-message {
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            border: none;
+            transition: all 0.25s ease;
+        }
+        .modal-btn.confirm {
+            background: linear-gradient(135deg,#FFD700,#FFA500);
+            color: #000;
+            box-shadow: 0 3px 12px rgba(255,215,0,0.3);
+        }
+        .modal-btn.confirm:hover {
+            transform: translateY(-2px);
+        }
+        .modal-btn.cancel {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-btn.cancel:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .panel {
+                padding: 14px 16px;
+            }
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .version-compare {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .version-arrow {
+                transform: rotate(90deg);
+            }
+            .action-section {
+                flex-direction: column;
+            }
+            .title {
+                font-size: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            .btn-group {
+                width: 100%;
+            }
+            .btn-group .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 遮罩层 -->
+    <div class="overlay">
+        <div class="panel">
+            <!-- 顶部标题栏 -->
+            <div class="header">
+                <div class="title-group">
+                    <div class="icon-box">🔄</div>
+                    <div class="title-box">
+                        <div class="title">在线更新</div>
+                        <div class="sub-title">仙家之魂扩展自动更新系统</div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="checkBtn" onclick="checkUpdate()">
+                        🔍 检查更新
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeWindow()" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'" onmouseleave="this.style.transform='scale(1)'">
+                        关闭
+                    </button>
+                </div>
+            </div>
+
+            <!-- 状态卡片区 -->
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-icon">📦</div>
+                    <div class="status-label">当前版本</div>
+                    <div class="status-value" id="currentVersion">-</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-icon">🚀</div>
+                    <div class="status-label">最新版本</div>
+                    <div class="status-value" id="latestVersion">-</div>
+                </div>
+                <div class="status-card">
+                    <div class="status-icon">📡</div>
+                    <div class="status-label">连接状态</div>
+                    <div class="status-value" id="connectionStatus">
+                        <span class="loading-spinner"></span>检测中
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-icon">🔧</div>
+                    <div class="status-label">更新状态</div>
+                    <div class="status-value" id="updateStatus">等待检查</div>
+                </div>
+            </div>
+
+            <!-- 版本对比区 -->
+            <div class="version-section">
+                <div class="section-title">📋 版本信息</div>
+                <div class="version-compare">
+                    <div class="version-item current">
+                        <div class="version-label">当前版本</div>
+                        <div class="version-number" id="currentVersionDetail">-</div>
+                    </div>
+                    <div class="version-arrow">➡️</div>
+                    <div class="version-item latest">
+                        <div class="version-label">最新版本</div>
+                        <div class="version-number" id="latestVersionDetail">-</div>
+                    </div>
+                    <div class="version-item">
+                        <div class="version-label">更新大小</div>
+                        <div class="version-number" id="updateSize">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 进度区 -->
+            <div class="progress-section" id="progressSection" style="display: none;">
+                <div class="progress-header">
+                    <div class="progress-title" id="progressTitle">下载进度</div>
+                    <div class="progress-percent" id="progressPercent">0%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progressText">准备中...</div>
+            </div>
+
+            <!-- 版本日志区 -->
+            <div class="version-section" id="changelogSection" style="display: none;">
+                <div class="section-title">📝 更新日志</div>
+                <div id="changelogContent"></div>
+            </div>
+
+            <!-- 操作区 -->
+            <div class="action-section">
+                <button class="action-btn primary" id="updateBtn" onclick="startUpdate()" disabled>
+                    ⬇️ 立即更新
+                </button>
+                <a class="action-btn secondary" id="downloadBtn" href="#" target="_blank" style="display:none;text-decoration:none;text-align:center;">
+                    📦 全量下载
+                </a>
+                <button class="action-btn" id="viewLogBtn" onclick="toggleLog()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;">
+                    📜 查看日志
+                </button>
+                <button class="action-btn danger" onclick="clearLog()">
+                    🗑️ 清空日志
+                </button>
+            </div>
+
+            <!-- 日志区 -->
+            <div class="log-section">
+                <div class="log-header">
+                    <div class="log-title">📜 系统日志</div>
+                    <button class="log-clear-btn" onclick="clearLog()">清空</button>
+                </div>
+                <div class="log-content" id="logContent">
+                    <div class="log-entry info">
+                        <span class="time">[系统]</span>在线更新模块已就绪，点击"检查更新"开始
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部状态栏 -->
+            <div class="status-bar">
+                <div class="status-info" id="statusInfo">就绪</div>
+                <div class="date-info" id="dateInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认弹窗 -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-title" id="modalTitle">确认更新</div>
+            <div class="modal-message" id="modalMessage">
+                确定要更新到最新版本吗？更新过程中请勿关闭窗口。
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeConfirm()">取消</button>
+                <button class="modal-btn confirm" onclick="confirmUpdate()">确定更新</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            currentVersion: '-',
+            onlyVersion: '-',
+            latestVersion: null,
+            updateAvailable: false,
+            isChecking: false,
+            isUpdating: false,
+            updateLog: null,
+            logs: []
+        };
+
+        let messageCallbacks = {};
+        let msgId = 0;
+
+        function sendMessageToParent(type, data) {
+            return new Promise((resolve) => {
+                const id = ++msgId;
+                messageCallbacks[id] = resolve;
+                window.parent?.postMessage({ type, id, data }, '*');
+                setTimeout(() => {
+                    delete messageCallbacks[id];
+                    resolve(null);
+                }, 5000);
+            });
+        }
+
+        window.addEventListener('message', (e) => {
+            const msg = e.data;
+            if (!msg || !msg.id || !messageCallbacks[msg.id]) return;
+            const cb = messageCallbacks[msg.id];
+            delete messageCallbacks[msg.id];
+            cb(msg.data);
+        });
+
+        async function init() {
+            updateDate();
+            setInterval(updateDate, 1000);
+            log('info', '正在从扩展读取版本信息...');
+
+            const info = await sendMessageToParent('getUpdateInfo');
+            if (info) {
+                state.currentVersion = info.version || '-';
+                state.onlyVersion = info.onlyVersion || '-';
+                state.updateLog = info.updateLog || null;
+
+                document.getElementById('currentVersion').textContent = state.currentVersion;
+                document.getElementById('currentVersionDetail').textContent = state.currentVersion;
+                log('success', '当前版本: ' + state.currentVersion);
+                log('info', '本体最低支持版本: ' + state.onlyVersion);
+            } else {
+                log('error', '无法获取版本信息');
+            }
+        }
+
+        function updateDate() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('dateInfo').textContent = timeStr;
+        }
+
+        function log(type, message) {
+            const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            const entry = `<div class="log-entry ${type}"><span class="time">[${time}]</span>${message}</div>`;
+            const logContent = document.getElementById('logContent');
+            logContent.innerHTML += entry;
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logContent').innerHTML = 
+                '<div class="log-entry info"><span class="time">[系统]</span>日志已清空</div>';
+        }
+
+        function toggleLog() {
+            const logSection = document.querySelector('.log-section');
+            if (logSection.style.display === 'none') {
+                logSection.style.display = 'flex';
+            } else {
+                logSection.style.display = 'none';
+            }
+        }
+
+        async function checkUpdate() {
+            if (state.isChecking) return;
+
+            state.isChecking = true;
+            const checkBtn = document.getElementById('checkBtn');
+            checkBtn.disabled = true;
+            checkBtn.innerHTML = '<span class="loading-spinner"></span>检查中...';
+
+            document.getElementById('connectionStatus').innerHTML =
+                '<span class="loading-spinner"></span>连接中...';
+            document.getElementById('updateStatus').textContent = '检查中';
+            document.getElementById('updateStatus').className = 'status-value loading';
+
+            log('info', '开始检查更新...');
+
+            const result = await sendMessageToParent('checkUpdate');
+
+            if (result) {
+                state.latestVersion = result.latestVersion || null;
+                state.updateAvailable = result.hasUpdate || false;
+
+                if (result.connectionOk) {
+                    document.getElementById('connectionStatus').textContent = '已连接';
+                    document.getElementById('connectionStatus').className = 'status-value ok';
+                } else {
+                    document.getElementById('connectionStatus').textContent = '离线';
+                    document.getElementById('connectionStatus').className = 'status-value error';
+                    log('warning', '无法连接到更新服务器');
+                }
+
+                if (state.updateAvailable && state.latestVersion) {
+                    document.getElementById('latestVersion').textContent = state.latestVersion;
+                    document.getElementById('latestVersion').className = 'status-value';
+                    document.getElementById('latestVersionDetail').textContent = state.latestVersion;
+                    document.getElementById('updateSize').textContent = result.updateSize || '-';
+                    document.getElementById('updateStatus').textContent = '有更新';
+                    document.getElementById('updateStatus').className = 'status-value ok';
+
+                    document.getElementById('updateBtn').disabled = false;
+                    document.getElementById('updateBtn').textContent = '⬇️ 更新到 ' + state.latestVersion;
+
+                    const downloadBtn = document.getElementById('downloadBtn');
+                    if (result.downloadUrl) {
+                        downloadBtn.href = result.downloadUrl;
+                        downloadBtn.style.display = 'block';
+                    } else {
+                        downloadBtn.style.display = 'none';
+                    }
+
+                    log('success', '发现新版本: ' + state.latestVersion);
+                    log('info', '增量文件数: ' + (result.updateSize || '未知'));
+                    if (result.updateLog && result.updateLog.changeLog) {
+                        renderChangelog(result.updateLog);
+                    }
+
+                    document.getElementById('statusInfo').textContent = '发现新版本，可选择增量更新或全量下载';
+                } else {
+                    document.getElementById('latestVersion').textContent = '已是最新';
+                    document.getElementById('latestVersion').className = 'status-value ok';
+                    document.getElementById('updateStatus').textContent = '无需更新';
+                    document.getElementById('updateStatus').className = 'status-value ok';
+
+                    log('success', '当前已是最新版本');
+                    document.getElementById('statusInfo').textContent = '当前已是最新版本';
+                }
+            } else {
+                document.getElementById('connectionStatus').textContent = '连接失败';
+                document.getElementById('connectionStatus').className = 'status-value error';
+                document.getElementById('updateStatus').textContent = '检查失败';
+                document.getElementById('updateStatus').className = 'status-value error';
+                log('error', '检查更新失败，请检查网络连接');
+                document.getElementById('statusInfo').textContent = '检查失败，请重试';
+            }
+
+            checkBtn.disabled = false;
+            checkBtn.innerHTML = '🔄 重新检查';
+            state.isChecking = false;
+        }
+
+        function renderChangelog(updateLog) {
+            const changelogSection = document.getElementById('changelogSection');
+            if (!changelogSection || !updateLog) return;
+
+            const { changeLog } = updateLog;
+            let html = '';
+
+            for (const [category, items] of Object.entries(changeLog)) {
+                if (!items || items.length === 0) continue;
+                const iconMap = {
+                    '本体版本要求': '⚠️',
+                    '新增内容': '✨',
+                    '功能性更新': '🔧',
+                    '错误修正': '🐛',
+                    '平衡性更新': '⚖️',
+                    '其他内容': '📝'
+                };
+                const icon = iconMap[category] || '📌';
+                html += `
+                    <div class="changelog-category">
+                        <div class="changelog-cat-title">${icon} ${category}</div>
+                        <div class="changelog-items">
+                            ${items.map(item => `<div class="changelog-item">${item}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (updateLog.players && updateLog.players.length > 0) {
+                html += `
+                    <div class="changelog-category">
+                        <div class="changelog-cat-title">🎴 新增/修改武将</div>
+                        <div class="changelog-items">
+                            ${updateLog.players.map(p => `<div class="changelog-item">${p}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (html) {
+                changelogSection.innerHTML = html;
+                changelogSection.style.display = 'block';
+            }
+        }
+
+        function startUpdate() {
+            if (!state.updateAvailable || state.isUpdating) return;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        async function confirmUpdate() {
+            closeConfirm();
+            if (state.isUpdating) return;
+
+            state.isUpdating = true;
+            document.getElementById('updateBtn').disabled = true;
+            document.getElementById('checkBtn').disabled = true;
+
+            const progressSection = document.getElementById('progressSection');
+            progressSection.style.display = 'block';
+
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressText = document.getElementById('progressText');
+
+            document.getElementById('updateStatus').textContent = '更新中';
+            document.getElementById('updateStatus').className = 'status-value loading';
+            document.getElementById('statusInfo').textContent = '正在下载更新...';
+
+            log('info', '开始下载更新...');
+
+            const result = await sendMessageToParent('performUpdate', {
+                latestVersion: state.latestVersion
+            });
+
+            if (result && result.success) {
+                for (let i = 0; i <= 100; i += 5) {
+                    await new Promise(resolve => setTimeout(resolve, 80));
+                    progressFill.style.width = i + '%';
+                    progressPercent.textContent = i + '%';
+                    progressText.textContent = `正在下载... ${i}%`;
+                }
+
+                progressText.textContent = '下载完成，正在安装...';
+                log('info', '下载完成，开始安装...');
+
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                state.currentVersion = state.latestVersion;
+                document.getElementById('currentVersion').textContent = state.currentVersion;
+                document.getElementById('currentVersionDetail').textContent = state.currentVersion;
+
+                progressFill.style.background = 'linear-gradient(90deg, #4ade80, #22c55e)';
+                progressText.textContent = '✅ 更新完成！';
+
+                document.getElementById('updateStatus').textContent = '已更新';
+                document.getElementById('updateStatus').className = 'status-value ok';
+                document.getElementById('statusInfo').textContent = '更新成功！';
+
+                log('success', '更新成功！已更新到版本 ' + state.currentVersion);
+
+                setTimeout(() => {
+                    progressSection.style.display = 'none';
+                    progressFill.style.width = '0%';
+                    progressFill.style.background = 'linear-gradient(90deg, #FFD700, #FFA500)';
+                    progressPercent.textContent = '0%';
+                    document.getElementById('updateBtn').disabled = true;
+                    document.getElementById('updateBtn').textContent = '✅ 已是最新';
+                    document.getElementById('checkBtn').disabled = false;
+                    document.getElementById('checkBtn').textContent = '🔄 重新检查';
+                    state.isUpdating = false;
+                }, 2000);
+            } else {
+                progressText.textContent = '❌ 更新失败';
+                log('error', result?.error || '更新失败');
+                document.getElementById('updateStatus').textContent = '更新失败';
+                document.getElementById('updateStatus').className = 'status-value error';
+                document.getElementById('statusInfo').textContent = '更新失败，请重试';
+
+                setTimeout(() => {
+                    progressSection.style.display = 'none';
+                    progressFill.style.width = '0%';
+                    progressPercent.textContent = '0%';
+                    document.getElementById('updateBtn').disabled = false;
+                    document.getElementById('checkBtn').disabled = false;
+                    state.isUpdating = false;
+                }, 2000);
+            }
+        }
+
+        function closeWindow() {
+            const btn = document.querySelector('.btn-secondary');
+            if (btn) {
+                btn.textContent = '关闭中...';
+                btn.style.opacity = '0.7';
+                btn.style.pointerEvents = 'none';
+            }
+            window.parent?.postMessage({ type: 'closePage' }, '*');
+            setTimeout(() => {
+                if (btn) {
+                    btn.textContent = '关闭';
+                    btn.style.opacity = '';
+                    btn.style.pointerEvents = '';
+                }
+            }, 1000);
+        }
+
+        init();
+    </script>
+</body>
+</html>

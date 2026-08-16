@@ -570,6 +570,125 @@ declare interface Games extends Game {
 	 * @returns { void }
 	 */
 	xjzh_playAudio(fn: string, dir: string, sex: string): void;
+	/**
+	 * - 获取材料配置信息
+	 * @returns { Object } 材料配置对象
+	 */
+	xjzh_getCailiaoConfig(): Object;
+	/**
+	 * - 迁移材料数据（从旧格式到新格式）
+	 * @returns { void }
+	 */
+	xjzh_migrateCailiao(): void;
+	/**
+	 * - 获取美元宝箱配置
+	 * @returns { Object } 宝箱配置对象
+	 */
+	xjzh_getDollarChestConfig(): Object;
+	/**
+	 * - 获取美元宝箱列表
+	 * @returns { Array } 宝箱列表数组
+	 */
+	xjzh_getDollarChestList(): Array<string>;
+	/**
+	 * - 改变美元宝箱数量
+	 * @param { string } chestKey - 宝箱键名
+	 * @param { number } count - 改变的数量
+	 * @returns { void }
+	 */
+	xjzh_changeDollarChest(chestKey: string, count: number): void;
+	/**
+	 * - 重置所有美元宝箱
+	 * @returns { void }
+	 */
+	xjzh_resetDollarChests(): void;
+	/**
+	 * - 计算美元宝箱掉落
+	 * @param { boolean } isWin - 是否胜利
+	 * @param { number } killNum - 击杀数量
+	 * @param { number } svipLevel - 超级会员等级
+	 * @returns { Object } 掉落结果对象
+	 */
+	xjzh_calculateDollarChestDrop(isWin: boolean, killNum: number, svipLevel: number): Object;
+	/**
+	 * - 打开美元宝箱
+	 * @param { string } chestKey - 宝箱键名
+	 * @returns { void }
+	 */
+	xjzh_openDollarChest(chestKey: string): void;
+	/**
+	 * - 创建页面框架（全屏遮罩层，带平滑过渡动画）
+	 * @param { Object } options - 配置选项
+	 * @param { string } [options.windowClass] - 窗口CSS类名
+	 * @param { string } [options.bgClass] - 背景CSS类名
+	 * @param { string } [options.exitClass] - 退出按钮CSS类名
+	 * @param { number } [options.sizeScale] - 尺寸缩放比例
+	 * @param { Function } [options.onExit] - 退出回调函数
+	 * @returns { HTMLElement } 创建的页面窗口元素
+	 */
+	xjzh_createPageFrame(options: { windowClass?: string, bgClass?: string, exitClass?: string, sizeScale?: number, onExit?: Function }): HTMLElement;
+	/**
+	 * - 创建Toast提示
+	 * @param { string } message - 提示消息
+	 * @param { string } [type='info'] - 提示类型（info/success/warning/error）
+	 * @param { number } [duration=3000] - 显示时长（毫秒）
+	 * @returns { HTMLElement } Toast元素
+	 */
+	xjzh_createToast(message: string, type?: string, duration?: number): HTMLElement;
+	/**
+	 * - 创建确认对话框
+	 * @param { string } message - 确认消息
+	 * @param { Function } onConfirm - 确认回调
+	 * @param { Function } onCancel - 取消回调
+	 * @returns { HTMLElement } 对话框元素
+	 */
+	xjzh_createConfirm(message: string, onConfirm: Function, onCancel: Function): HTMLElement;
+	/**
+	 * - 创建魔力弹窗样式
+	 * @param { string } text - 弹窗文字
+	 * @returns { void }
+	 */
+	xjzh_createMpPopupStyle(text: string): void;
+	/**
+	 * - 创建魔力弹窗
+	 * @param { Array } names - 名称数组
+	 * @param { Object } target - 目标对象
+	 * @returns { HTMLElement } 弹窗元素
+	 */
+	xjzh_createMpPopup(names: Array<string>, target: Object): HTMLElement;
+	/**
+	 * - 在iframe中打开页面
+	 * @param { string } url - 要打开的页面URL
+	 * @returns { HTMLIFrameElement | null } iframe元素
+	 */
+	xjzh_openPageInIframe(url: string): HTMLIFrameElement | null;
+	/**
+	 * - 检查在线更新
+	 * @returns { Object } 更新检查结果
+	 */
+	xjzh_checkUpdateOnline(): Promise<{
+		connectionOk: boolean,
+		hasUpdate: boolean,
+		latestVersion: string | null,
+		currentVersion: string,
+		updateSize: string | null,
+		updateLog: Object | null,
+		manifest: Object | null,
+		downloadUrl: string | null,
+		error?: string
+	}>;
+	/**
+	 * - 比较两个版本号
+	 * @param { string } v1 - 版本号1
+	 * @param { string } v2 - 版本号2
+	 * @returns { number } -1(v1<v2) | 0(相等) | 1(v1>v2)
+	 */
+	compareVersions(v1: string, v2: string): number;
+	/**
+	 * - 生成随机颜色（十六进制）
+	 * @returns { string } 随机颜色字符串（如 "#FF12AB"）
+	 */
+	xjzh_getRandomColor(): string;
 }
 
 export type games = Games & Game;

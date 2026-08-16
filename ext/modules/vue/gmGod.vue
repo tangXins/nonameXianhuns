@@ -12,11 +12,6 @@
 					>存档管理</button>
 					<button
 						class="gm-tab"
-						:class="{ active: activeTab === 'update' }"
-						@click="switchTab('update')"
-					>在线更新</button>
-					<button
-						class="gm-tab"
 						:class="{ active: activeTab === 'gm' }"
 						@click="switchTab('gm')"
 					>GM 工具</button>
@@ -93,13 +88,7 @@
 				</div>
 			</div>
 
-			<!-- 在线更新内容 -->
-			<div class="gm-page" v-if="activeTab === 'update'">
-				<UpdateTab />
-			</div>
-		</div>
-
-			<!-- 通用确认对话框（导出/清除） -->
+		<!-- 通用确认对话框（导出/清除） -->
 			<Transition name="fade">
 				<div class="gm-dialog-mask" v-if="showConfirmSaveDialog" @click.self="showConfirmSaveDialog = false">
 					<div class="gm-dialog" ref="confirmSaveDialog">
@@ -244,7 +233,6 @@
 
 <script>
 import eventListener from '../achievement/eventListener.js';
-import UpdateTab from './UpdateTab.vue';
 import { lib, game, get, ui } from '../../../../../noname.js';
 
 const CHEAT_TABLE = {
@@ -273,7 +261,6 @@ const CHEAT_TABLE = {
 };
 
 export default {
-	components: { UpdateTab },
 	data() {
 		return {
 			isVisible: false,
