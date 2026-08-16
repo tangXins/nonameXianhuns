@@ -23,17 +23,17 @@ jobs:
           const fs = require('fs');
           const path = require('path');
           const crypto = require('crypto');
-          
+
           function walkDir(dir) {
             let results = {};
             const items = fs.readdirSync(dir);
-            
+
             for (const item of items) {
               if (item === '.git' || item === 'node_modules' || item.startsWith('.')) continue;
-              
+
               const fullPath = path.join(dir, item);
               const stat = fs.statSync(fullPath);
-              
+
               if (stat.isDirectory()) {
                 Object.assign(results, walkDir(fullPath));
               } else if (stat.isFile()) {
@@ -45,7 +45,7 @@ jobs:
             }
             return results;
           }
-          
+
           let version = '0.0.0';
           try {
             if (fs.existsSync('info.json')) {
@@ -55,13 +55,13 @@ jobs:
           } catch(e) {
             console.warn('Cannot read info.json:', e.message);
           }
-          
+
           const manifest = {
             version: version,
             generatedAt: new Date().toISOString(),
             files: walkDir('.')
           };
-          
+
           fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 2));
           console.log('✅ Generated manifest.json');
           console.log('   Version:', version);
