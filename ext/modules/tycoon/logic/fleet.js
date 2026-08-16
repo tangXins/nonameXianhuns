@@ -6,7 +6,7 @@ export function getFleetDuration(level) {
 	return 30 + level2 * 15;
 }
 
-export function getFleetCost(level) {
+export function getFleetBaseCost(level) {
 	var level2 = level || 1;
 	return Math.floor(100 * Math.pow(1.4, level2 - 1));
 }
@@ -17,24 +17,56 @@ export function getFleetFailRate(level) {
 	return (level2 - 3) * 0.05;
 }
 
-export function getFleetOutputs(level) {
+export function getFleetOutputs(level, goldInput) {
 	var level2 = level || 1;
+	var baseCost = getFleetBaseCost(level2);
+	var multiplier = 1;
+	if (goldInput && goldInput > 0) {
+		multiplier = Math.pow(goldInput / baseCost, 0.7);
+		if (multiplier > 5) multiplier = 5;
+	}
+
 	var outputs = [];
-	var shardBase = 5 + level2 * 3;
-	outputs.push({ name: '碎片', amount: shardBase });
+	var shardBase = Math.floor((5 + level2 * 3) * multiplier);
+	outputs.push({ name: '碎片', amount: Math.max(1, shardBase) });
 
 	if (level2 >= 3) {
-		var essenceBase = Math.max(0, level2 - 2);
-		outputs.push({ name: '精魄', amount: essenceBase });
+		var essenceBase = Math.max(0, Math.floor((level2 - 2) * multiplier));
+		if (essenceBase > 0) {
+			outputs.push({ name: '精魄', amount: essenceBase });
+		}
 	}
 
-	var matCount = Math.min(level2, 8);
+	var matCount = Math.min(level2, forgeMaterials.length);
 	for (var i = 0; i < matCount; i++) {
 		var mat = forgeMaterials[i];
-		var amount = Math.max(1, Math.floor(level2 * 2 / (i + 1)));
+		var amount = Math.max(1, Math.floor(level2 * 2 / (i + 1) * multiplier));
 		outputs.push({ name: mat.name, amount: amount });
 	}
+
 	return outputs;
+}
+
+export function getRefreshTokenDropRate(goldInput, level) {
+	var baseCost = getFleetBaseCost(level || 1);
+	var rate = 0.15;
+	if (goldInput && goldInput > baseCost) {
+		var bonus = Math.floor((goldInput - baseCost) / 100) * 0.05;
+		rate += bonus;
+	}
+	if (rate > 0.6) rate = 0.6;
+	return rate;
+}
+
+export function getTalentComponentChance(goldInput, level) {
+	var baseCost = getFleetBaseCost(level || 1);
+	var chance = 0.05;
+	if (goldInput && goldInput > baseCost) {
+		var ratio = goldInput / baseCost;
+		chance = 0.05 + (ratio - 1) * 0.08;
+	}
+	if (chance > 0.4) chance = 0.4;
+	return chance;
 }
 
 export function completeFleetOutputs(config, task) {
@@ -43,13 +75,13 @@ export function completeFleetOutputs(config, task) {
 	var failRate = getFleetFailRate(level);
 	var success = Math.random() > failRate;
 
-	if (success) {
-		var outputs = getFleetOutputs(level);
+		if (success) {
+		var outputs = getFleetOutputs(level, task.cost);
 		outputs.forEach(function(out) {
 			var amount = parseInt(out.amount);
 			if (out.name === '金币') tycoonData.gold += amount;
-			else if (out.name === '碎片') config.suipian = (config.suipian || 0) + amount;
-			else if (out.name === '精魄') config.tokens = (config.tokens || 0) + amount;
+			else if (out.name === '碎片') tycoonData.shards = (tycoonData.shards || 0) + amount;
+			else if (out.name === '精魄') tycoonData.essence = (tycoonData.essence || 0) + amount;
 			else {
 				var mat = forgeMaterials.find(function(m) { return m.name === out.name; });
 				if (mat) {
@@ -57,6 +89,11 @@ export function completeFleetOutputs(config, task) {
 				}
 			}
 		});
+
+		var refreshRate = getRefreshTokenDropRate(task.cost, level);
+		if (Math.random() < refreshRate) {
+			tycoonData.refreshTokens = (tycoonData.refreshTokens || 0) + 1;
+		}
 	} else {
 		var refund = Math.floor(task.cost * 0.5);
 		tycoonData.gold += refund;
@@ -65,98 +102,93 @@ export function completeFleetOutputs(config, task) {
 	saveTycoonStorage(config);
 }
 
-export function autoDispatchUnits() {
+export function dispatchFleet(unitId, goldAmount) {
 	var config = loadTycoonStorage();
 	var tycoonData = config.tycoon;
 	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
-
-	var completedTasks = updateTasks(config);
-	for (var ci = 0; ci < completedTasks.length; ci++) {
-		var task = completedTasks[ci];
-		completeFleetOutputs(config, task);
-	}
-
 	var units = config.tycoonConfig.units.helipad || [];
-	var activeTaskIds = {};
-	for (var ti = 0; ti < (config.tycoonConfig.tasks || []).length; ti++) {
-		activeTaskIds[config.tycoonConfig.tasks[ti].unitId] = true;
-	}
+	var unit = units.find(function(u) { return u.id === unitId; });
 
-	var dispatchedCount = 0;
-	for (var ui = 0; ui < units.length; ui++) {
-		var unit = units[ui];
-		if (activeTaskIds[unit.id]) continue;
+	if (!unit) return { success: false, message: '飞空艇不存在' };
 
-		var cost = getFleetCost(zoneLevel);
-		if (tycoonData.gold < cost) continue;
+	var tasks = config.tycoonConfig.tasks || [];
+	var active = tasks.find(function(t) { return t.unitId === unitId; });
+	if (active) return { success: false, message: '该飞空艇正在执行任务' };
 
-		tycoonData.gold -= cost;
-		var task = {
-			type: 'fleet',
-			unitId: unit.id,
-			unitName: unit.name,
-			cost: cost,
-			level: zoneLevel,
-			duration: getFleetDuration(zoneLevel),
-			progress: 0
-		};
-		addTask(config, task);
-		dispatchedCount++;
-	}
+	var cost = Math.max(1, Math.floor(goldAmount));
+	if (tycoonData.gold < cost) return { success: false, message: '金币不足' };
 
-	if (dispatchedCount > 0) {
-		saveTycoonStorage(config);
-	}
-	return dispatchedCount;
+	tycoonData.gold -= cost;
+	var task = {
+		type: 'fleet',
+		unitId: unit.id,
+		unitName: unit.name,
+		cost: cost,
+		level: zoneLevel,
+		duration: getFleetDuration(zoneLevel),
+		progress: 0
+	};
+	addTask(config, task);
+	saveTycoonStorage(config);
+	return { success: true, message: unit.name + ' 已派遣，消耗 ' + cost + ' 金币' };
 }
 
 export function renderFleet(doc, tycoonData, config, qualityColors) {
 	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
-	var units = config.tycoonConfig.units.helipad || [];
+	var allUnits = config.tycoonConfig.units.helipad || [];
+	var units = allUnits.filter(function(u) { return u.type === 'fleet'; });
 	var tasks = config.tycoonConfig.tasks || [];
+	var baseCost = getFleetBaseCost(zoneLevel);
 
 	var activeMap = {};
 	tasks.forEach(function(t) { activeMap[t.unitId] = t; });
 
 	var html = '<div style="display:flex;gap:12px;margin-bottom:14px;align-items:center;">' +
 		'<span style="color:#00BCD4;font-size:13px;">🚢 贸易舰队 Lv.' + zoneLevel + '</span>' +
-		'<span style="color:rgba(255,255,255,0.5);font-size:11px;">每' + getFleetDuration(zoneLevel) + '秒 · 消耗' + getFleetCost(zoneLevel) + '金币</span>' +
-		'<button id="auto-dispatch" style="margin-left:auto;background:linear-gradient(135deg,#00BCD4,#00838F);color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;">⚡ 自动派遣</button>' +
+		'<span style="color:rgba(255,255,255,0.5);font-size:11px;">基础消耗 ' + baseCost + ' 金币 · 耗时 ' + getFleetDuration(zoneLevel) + '秒</span>' +
+		'<span style="margin-left:auto;color:#FFD700;font-size:11px;">🧭 星界罗盘: ' + (tycoonData.refreshTokens || 0) + '</span>' +
 	'</div>';
 
-	html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;">';
+	html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">';
 
 	units.forEach(function(unit) {
 		var active = activeMap[unit.id];
 		var cardBg = active ? 'linear-gradient(135deg,rgba(255,152,0,0.2),rgba(255,87,34,0.2))' : 'linear-gradient(135deg,rgba(0,188,212,0.15),rgba(0,150,136,0.1))';
 		var cardBorder = active ? '#FF9800' : 'rgba(0,188,212,0.3)';
 
-		var progressBar = '';
-		var statusIcon = '✅';
-		var statusText = '空闲';
-
+		var content = '';
 		if (active) {
-			progressBar = '<div style="margin-top:6px;background:rgba(255,255,255,0.1);border-radius:4px;height:8px;overflow:hidden;">' +
-				'<div style="height:100%;width:' + Math.floor(active.progress) + '%;background:linear-gradient(90deg,#FF9800,#FF5722);border-radius:4px;transition:width 0.3s;"></div></div>' +
-				'<div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:3px;">执行中 ' + Math.floor(active.progress) + '%</div>';
-			statusIcon = '🚢';
-			statusText = '执行中';
+			var pct = Math.floor(active.progress);
+			var estOutputs = getFleetOutputs(zoneLevel, active.cost);
+			var estStr = estOutputs.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
+			content = '<div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:2px;">🚢 执行中</div>' +
+				'<div style="margin-top:6px;background:rgba(255,255,255,0.1);border-radius:4px;height:8px;overflow:hidden;">' +
+					'<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#FF9800,#FF5722);border-radius:4px;transition:width 0.3s;"></div></div>' +
+				'<div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:3px;">执行中 ' + pct + '%</div>' +
+				'<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:4px;">消耗: ' + active.cost + '金币 · 耗时 ' + active.duration + 's</div>' +
+				'<div style="color:rgba(255,255,255,0.3);font-size:10px;">预估: ' + estStr + '</div>';
+		} else {
+			var idleOutputs = getFleetOutputs(zoneLevel, baseCost);
+			var idleStr = idleOutputs.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
+			content = '<div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:2px;">✅ 空闲</div>' +
+				'<div class="dispatch-area" data-unit="' + unit.id + '" style="margin-top:6px;">' +
+					'<div style="display:flex;gap:4px;margin-bottom:6px;align-items:center;">' +
+						'<input class="dispatch-gold" type="number" min="1" value="' + baseCost + '" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(0,188,212,0.3);color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;width:60px;" />' +
+						'<button class="dispatch-preset" data-gold="' + baseCost + '" style="background:rgba(0,188,212,0.3);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px;">基础</button>' +
+						'<button class="dispatch-preset" data-gold="' + (baseCost * 3) + '" style="background:rgba(255,152,0,0.3);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px;">3倍</button>' +
+					'</div>' +
+					'<button class="dispatch-btn" data-unit="' + unit.id + '" style="width:100%;background:linear-gradient(135deg,#4CAF50,#388E3C);color:#fff;border:none;padding:6px;border-radius:6px;cursor:pointer;font-size:12px;">派遣</button>' +
+				'</div>' +
+				'<div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">预估: ' + idleStr + '</div>' +
+				'<div style="color:rgba(255,255,255,0.25);font-size:10px;">多投金币 → 多倍收益 · 失败返还50%</div>';
 		}
 
-		var estOutputs = getFleetOutputs(zoneLevel);
-		var estStr = estOutputs.map(function(o) {
-			return o.name + '×' + o.amount;
-		}).join(', ');
-
-		html += '<div class="fleet-card" data-unit="' + unit.id + '" style="background:' + cardBg + ';border:1px solid ' + cardBorder + ';border-radius:10px;padding:10px;cursor:pointer;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'">' +
+		html += '<div class="fleet-card" data-unit="' + unit.id + '" style="background:' + cardBg + ';border:1px solid ' + cardBorder + ';border-radius:10px;padding:10px;transition:transform 0.2s;">' +
 			'<div style="display:flex;align-items:center;gap:6px;">' +
 				'<span style="font-size:18px;">' + (unit.icon || '🚢') + '</span>' +
 				'<span style="color:#fff;font-size:12px;font-weight:bold;">' + unit.name + '</span>' +
 			'</div>' +
-			'<div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:2px;">' + statusIcon + ' ' + statusText + '</div>' +
-			progressBar +
-			'<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:6px;">预估: ' + estStr + '</div>' +
-			(active ? '<div style="color:rgba(255,255,255,0.3);font-size:10px;">耗时 ' + active.duration + 's · 失败率 ' + Math.floor(getFleetFailRate(zoneLevel) * 100) + '%</div>' : '') +
+			content +
 		'</div>';
 	});
 
@@ -164,9 +196,8 @@ export function renderFleet(doc, tycoonData, config, qualityColors) {
 	return html;
 }
 
-export function updateFleetProgress(doc, contentEl, config, autoDispatchUnitsFn, getZoneUnitsFn, getFleetCostFn, getFleetDurationFn, getFleetOutputsFn) {
-	var tycoonData = config.tycoon;
-	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
+export function updateFleetProgress(doc, contentEl) {
+	var config = loadTycoonStorage();
 
 	var completedTasks = updateTasks(config);
 	for (var ci = 0; ci < completedTasks.length; ci++) {
@@ -174,36 +205,12 @@ export function updateFleetProgress(doc, contentEl, config, autoDispatchUnitsFn,
 		completeFleetOutputs(config, task);
 	}
 
-	var dispatchedCount = 0;
-	var units = config.tycoonConfig.units.helipad || [];
-	var activeTaskIds = {};
-	for (var ti = 0; ti < (config.tycoonConfig.tasks || []).length; ti++) {
-		activeTaskIds[config.tycoonConfig.tasks[ti].unitId] = true;
-	}
-
-	for (var ui = 0; ui < units.length; ui++) {
-		var unit = units[ui];
-		if (activeTaskIds[unit.id]) continue;
-		var cost = getFleetCost(zoneLevel);
-		if (tycoonData.gold < cost) continue;
-		tycoonData.gold -= cost;
-		var task = {
-			type: 'fleet',
-			unitId: unit.id,
-			unitName: unit.name,
-			cost: cost,
-			level: zoneLevel,
-			duration: getFleetDuration(zoneLevel),
-			progress: 0
-		};
-		addTask(config, task);
-		dispatchedCount++;
-	}
-
-	if (completedTasks.length > 0 || dispatchedCount > 0) {
+	if (completedTasks.length > 0) {
 		saveTycoonStorage(config);
 	}
 
+	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
+	var units = (config.tycoonConfig.units.helipad || []).filter(function(u) { return u.type === 'fleet'; });
 	var tasks = config.tycoonConfig.tasks || [];
 	var activeMap = {};
 	tasks.forEach(function(t) { activeMap[t.unitId] = t; });
@@ -215,21 +222,13 @@ export function updateFleetProgress(doc, contentEl, config, autoDispatchUnitsFn,
 		var unit = units.find(function(u) { return u.id === unitId; });
 		if (!unit) return;
 
+		var hasDispatch = cardEl.querySelector('.dispatch-area');
 		var hasProgressBar = cardEl.querySelector(':scope > div:nth-child(3) > div');
 
-		if (active && hasProgressBar) {
-			var p = Math.floor(active.progress);
-			var bar = cardEl.querySelector(':scope > div:nth-child(3)');
-			var textEl = cardEl.querySelector(':scope > div:nth-child(4)');
-			if (bar) {
-				var fill = bar.querySelector('div');
-				if (fill) fill.style.width = p + '%';
-			}
-			if (textEl) textEl.textContent = '执行中 ' + p + '%';
-		} else if (active && !hasProgressBar) {
-			var estOutputs = getFleetOutputs(zoneLevel);
-			var estStr = estOutputs.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
+		if (active) {
 			var pct = Math.floor(active.progress);
+			var estOutputs = getFleetOutputs(zoneLevel, active.cost);
+			var estStr = estOutputs.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
 			cardEl.style.background = 'linear-gradient(135deg,rgba(255,152,0,0.2),rgba(255,87,34,0.2))';
 			cardEl.style.borderColor = '#FF9800';
 			cardEl.innerHTML =
@@ -242,13 +241,14 @@ export function updateFleetProgress(doc, contentEl, config, autoDispatchUnitsFn,
 					'<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#FF9800,#FF5722);border-radius:4px;transition:width 0.3s;"></div>' +
 				'</div>' +
 				'<div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:3px;">执行中 ' + pct + '%</div>' +
-				'<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:6px;">预估: ' + estStr + '</div>' +
-				'<div style="color:rgba(255,255,255,0.3);font-size:10px;">耗时 ' + active.duration + 's · 失败率 ' + Math.floor(getFleetFailRate(zoneLevel) * 100) + '%</div>' +
+				'<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:4px;">消耗: ' + active.cost + '金币 · 耗时 ' + active.duration + 's</div>' +
+				'<div style="color:rgba(255,255,255,0.3);font-size:10px;">预估: ' + estStr + '</div>' +
 			'';
-			bindCardClick(doc, contentEl, config);
-		} else if (!active && hasProgressBar) {
-			var estOutputs2 = getFleetOutputs(zoneLevel);
-			var estStr2 = estOutputs2.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
+			bindDispatchEvents(doc, contentEl, config);
+		} else if (hasProgressBar || !active) {
+			var baseCost = getFleetBaseCost(zoneLevel);
+			var idleOutputs = getFleetOutputs(zoneLevel, baseCost);
+			var idleStr = idleOutputs.map(function(o) { return o.name + '×' + o.amount; }).join(', ');
 			cardEl.style.background = 'linear-gradient(135deg,rgba(0,188,212,0.15),rgba(0,150,136,0.1))';
 			cardEl.style.borderColor = 'rgba(0,188,212,0.3)';
 			cardEl.innerHTML =
@@ -257,86 +257,60 @@ export function updateFleetProgress(doc, contentEl, config, autoDispatchUnitsFn,
 					'<span style="color:#fff;font-size:12px;font-weight:bold;">' + unit.name + '</span>' +
 				'</div>' +
 				'<div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:2px;">✅ 空闲</div>' +
-				'<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-top:6px;">预估: ' + estStr2 + '</div>' +
+				'<div class="dispatch-area" data-unit="' + unit.id + '" style="margin-top:6px;">' +
+					'<div style="display:flex;gap:4px;margin-bottom:6px;align-items:center;">' +
+						'<input class="dispatch-gold" type="number" min="1" value="' + baseCost + '" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(0,188,212,0.3);color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;width:60px;" />' +
+						'<button class="dispatch-preset" data-gold="' + baseCost + '" style="background:rgba(0,188,212,0.3);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px;">基础</button>' +
+						'<button class="dispatch-preset" data-gold="' + (baseCost * 3) + '" style="background:rgba(255,152,0,0.3);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px;">3倍</button>' +
+					'</div>' +
+					'<button class="dispatch-btn" data-unit="' + unit.id + '" style="width:100%;background:linear-gradient(135deg,#4CAF50,#388E3C);color:#fff;border:none;padding:6px;border-radius:6px;cursor:pointer;font-size:12px;">派遣</button>' +
+				'</div>' +
+				'<div style="color:rgba(255,255,255,0.3);font-size:10px;margin-top:4px;">预估: ' + idleStr + '</div>' +
+				'<div style="color:rgba(255,255,255,0.25);font-size:10px;">多投金币 → 多倍收益 · 失败返还50%</div>';
 			'';
-			bindCardClick(doc, contentEl, config);
+			bindDispatchEvents(doc, contentEl, config);
 		}
 	});
-
-	var detailEl = contentEl.querySelector('#fleet-detail');
-	if (detailEl) {
-		var unitId = detailEl.dataset.unitId;
-		if (!unitId) {
-			var firstCard = contentEl.querySelector('.fleet-card');
-			if (firstCard) unitId = firstCard.getAttribute('data-unit');
-		}
-		if (unitId) {
-			updateDetailPanel(doc, contentEl, config, unitId, getZoneUnitsFn, getFleetCostFn, getFleetDurationFn, getFleetOutputsFn);
-		}
-	}
-
-	return dispatchedCount;
 }
 
-export function bindFleetEvents(doc, contentEl, config, tycoonData, autoDispatchUnitsFn, showToast, openTycoonPage, getZoneUnitsFn, getFleetCost, getFleetDuration, getFleetOutputs) {
-	contentEl.querySelector('#auto-dispatch').addEventListener('click', function() {
-		var dispatched = autoDispatchUnitsFn();
-		showToast(doc, '已派遣 ' + dispatched + ' 艘贸易舰队');
-		openTycoonPage();
-	});
-
-	bindCardClick(doc, contentEl, config, getZoneUnitsFn, getFleetCost, getFleetDuration, getFleetOutputs);
+export function bindFleetEvents(doc, contentEl, config, tycoonData, showToast, openTycoonPage) {
+	bindDispatchEvents(doc, contentEl, config, showToast, openTycoonPage);
 }
 
-function bindCardClick(doc, contentEl, config, getZoneUnitsFn, getFleetCost, getFleetDuration, getFleetOutputs) {
-	var cards = contentEl.querySelectorAll('.fleet-card');
-	cards.forEach(function(el) {
-		if (el._bound) return;
-		el._bound = true;
-		el.addEventListener('click', function() {
-			var unitId = el.getAttribute('data-unit');
-			var detailEl = contentEl.querySelector('#fleet-detail');
-			if (!detailEl) {
-				detailEl = doc.createElement('div');
-				detailEl.id = 'fleet-detail';
-				detailEl.style.marginTop = '12px';
-				contentEl.appendChild(detailEl);
+function bindDispatchEvents(doc, contentEl, config, showToast, openTycoonPage) {
+	var presets = contentEl.querySelectorAll('.dispatch-preset');
+	presets.forEach(function(btn) {
+		if (btn._bound) return;
+		btn._bound = true;
+		btn.addEventListener('click', function(e) {
+			e.stopPropagation();
+			var gold = btn.getAttribute('data-gold');
+			var area = btn.closest('.dispatch-area');
+			if (area) {
+				var input = area.querySelector('.dispatch-gold');
+				if (input) input.value = gold;
 			}
-			detailEl.dataset.unitId = unitId;
-			updateDetailPanel(doc, contentEl, config, unitId, getZoneUnitsFn, getFleetCost, getFleetDuration, getFleetOutputs);
 		});
 	});
-}
 
-function updateDetailPanel(doc, contentEl, config, unitId, getZoneUnitsFn, getFleetCost, getFleetDuration, getFleetOutputs) {
-	var tasks = config.tycoonConfig.tasks || [];
-	var task = tasks.find(function(t) { return t.unitId === unitId && !t.completed; });
-	var detailEl = contentEl.querySelector('#fleet-detail');
-	if (!detailEl) return;
-
-	if (task) {
-		var p = task.progress || 0;
-		var outputs = getFleetOutputs(task.level);
-		var outputsHtml = outputs.map(function(o) { return o.name + '×' + o.amount; }).join(' + ');
-		detailEl.innerHTML = '<div style="padding:12px;background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.3);border-radius:10px;">' +
-			'<div style="color:#FFD700;font-weight:bold;margin-bottom:8px;">⏳ 执行中</div>' +
-			'<div style="color:rgba(255,255,255,0.7);font-size:12px;margin-bottom:8px;">进度：' + Math.floor(p) + '% | 等级：Lv.' + task.level + '</div>' +
-			'<div style="background:rgba(255,255,255,0.1);border-radius:4px;height:8px;overflow:hidden;margin-bottom:8px;">' +
-				'<div style="width:' + p + '%;height:100%;background:linear-gradient(90deg,#00BCD4,#4CAF50);border-radius:4px;transition:width 0.3s;"></div>' +
-			'</div>' +
-			'<div style="color:rgba(255,255,255,0.6);font-size:12px;">消耗：' + task.cost + '金币 | 预计产出：' + outputsHtml + '</div>' +
-		'</div>';
-	} else {
-		var level = config.tycoonConfig.zones.helipad || 1;
-		var cost = getFleetCost(level);
-		var duration = getFleetDuration(level);
-		var outputs = getFleetOutputs(level);
-		var outputsHtml = outputs.map(function(o) { return o.name + '×' + o.amount; }).join(' + ');
-		detailEl.innerHTML = '<div style="padding:12px;background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.3);border-radius:10px;">' +
-			'<div style="color:#4CAF50;font-weight:bold;margin-bottom:8px;">✅ 空闲中</div>' +
-			'<div style="color:rgba(255,255,255,0.7);font-size:12px;margin-bottom:6px;">下次贸易预估：</div>' +
-			'<div style="color:rgba(255,255,255,0.8);font-size:13px;">💰 消耗：' + cost + ' 金币 | ⏱️ 耗时：' + duration + '秒</div>' +
-			'<div style="color:rgba(255,255,255,0.8);font-size:13px;">📦 产出：' + outputsHtml + '</div>' +
-		'</div>';
-	}
+	var dispatchBtns = contentEl.querySelectorAll('.dispatch-btn');
+	dispatchBtns.forEach(function(btn) {
+		if (btn._bound) return;
+		btn._bound = true;
+		btn.addEventListener('click', function(e) {
+			e.stopPropagation();
+			var unitId = btn.getAttribute('data-unit');
+			var area = btn.closest('.dispatch-area');
+			var goldInput = area ? area.querySelector('.dispatch-gold') : null;
+			var gold = 1;
+			if (goldInput) {
+				gold = Math.max(1, parseInt(goldInput.value) || 1);
+			}
+			var result = dispatchFleet(unitId, gold);
+			showToast(doc, result.message);
+			if (result.success) {
+				openTycoonPage();
+			}
+		});
+	});
 }

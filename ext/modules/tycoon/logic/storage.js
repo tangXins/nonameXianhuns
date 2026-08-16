@@ -4,6 +4,13 @@ import { forgeMaterials } from '../config/forgeConfig.js';
 export function getDefaultTycoonData() {
 	return {
 		gold: 500, coreLevel: 1,
+		refreshTokens: 0,
+		shards: 0,
+		essence: 0,
+		runes: 0,
+		nestKeys: 0,
+		talentComponents: 0,
+		dollarChests: 0,
 		forgeMaterials: { yinyuecao: 30, xingchensha: 15, youlanhua: 8, fengxieshi: 3, longxianguo: 1, niepanhuo: 0, taiguyu: 0, tianmingshi: 0 }
 	};
 }
@@ -47,23 +54,46 @@ export function loadTycoonStorage() {
 		config.bag = [];
 	}
 
-	if (config.tycoon.shards && config.tycoon.shards > 0 && (!config.suipian || config.suipian === 0)) {
-		config.suipian = config.suipian || 0;
-		config.suipian += config.tycoon.shards;
-		config.tycoon.shards = 0;
+	if (config.tycoon.refreshTokens === undefined) {
+		config.tycoon.refreshTokens = 0;
 	}
-	if (config.tycoon.essence && config.tycoon.essence > 0 && (!config.tokens || config.tokens === 0)) {
-		config.tokens = config.tokens || 0;
-		config.tokens += config.tycoon.essence;
-		config.tycoon.essence = 0;
+
+	var newFields = ['shards', 'essence', 'runes', 'nestKeys', 'talentComponents', 'dollarChests'];
+	newFields.forEach(function(field) {
+		if (config.tycoon[field] === undefined) {
+			config.tycoon[field] = 0;
+		}
+	});
+
+	if (config.tycoonConfig.units && config.tycoonConfig.units.helipad) {
+		var units = config.tycoonConfig.units.helipad;
+		var hasGlider = units.some(function(u) { return u.type !== 'fleet'; });
+		if (hasGlider) {
+			var nonFleetUnits = units.filter(function(u) { return u.type !== 'fleet'; });
+			nonFleetUnits.forEach(function(u) {
+				config.tycoonConfig.tasks = (config.tycoonConfig.tasks || []).filter(function(t) {
+					return t.unitId !== u.id;
+				});
+			});
+			config.tycoonConfig.units.helipad = units.filter(function(u) { return u.type === 'fleet'; });
+			saveTycoonStorage(config);
+		}
 	}
+
+	if (config.suipian && config.suipian > 0) {
+		config.tycoon.shards = (config.tycoon.shards || 0) + config.suipian;
+		config.suipian = 0;
+	}
+	if (config.tokens && config.tokens > 0) {
+		config.tycoon.essence = (config.tycoon.essence || 0) + config.tokens;
+		config.tokens = 0;
+	}
+
 	if (config.tycoon.shards > 0) {
 		config.suipian = (config.suipian || 0) + config.tycoon.shards;
-		config.tycoon.shards = 0;
 	}
 	if (config.tycoon.essence > 0) {
 		config.tokens = (config.tokens || 0) + config.tycoon.essence;
-		config.tycoon.essence = 0;
 	}
 
 	return config;
@@ -86,8 +116,13 @@ export function getResourceAmount(resourceId, config) {
 	var tycoonData = config.tycoon;
 	if (tycoonData.forgeMaterials && tycoonData.forgeMaterials[resourceId] !== undefined) return tycoonData.forgeMaterials[resourceId];
 	if (resourceId === 'gold') return tycoonData.gold;
-	if (resourceId === 'shards') return config.suipian || 0;
-	if (resourceId === 'essence') return config.tokens || 0;
+	if (resourceId === 'shards') return tycoonData.shards || 0;
+	if (resourceId === 'essence') return tycoonData.essence || 0;
+	if (resourceId === 'refreshTokens') return tycoonData.refreshTokens || 0;
+	if (resourceId === 'runes') return tycoonData.runes || 0;
+	if (resourceId === 'nestKeys') return tycoonData.nestKeys || 0;
+	if (resourceId === 'talentComponents') return tycoonData.talentComponents || 0;
+	if (resourceId === 'dollarChests') return tycoonData.dollarChests || 0;
 	return 0;
 }
 

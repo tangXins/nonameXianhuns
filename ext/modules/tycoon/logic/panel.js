@@ -68,12 +68,18 @@ export function fillZoneGrid(doc, config, tycoonConfig, maxZoneLevel, getZoneUpg
 
 		var upgradeHtml = '';
 		if (maxed) {
-			upgradeHtml = '<div class="zone-lock-hint">已达最高</div>';
-		} else if (coreLevel < nextLevel) {
-			upgradeHtml = '<div class="zone-lock-hint">🔒 核心需Lv.' + nextLevel + '</div>';
+			upgradeHtml = '<button class="zone-upgrade-btn" disabled style="opacity:0.5;cursor:not-allowed;background:#555;color:#999;border:none;padding:4px 10px;border-radius:4px;font-size:10px;">已满级</button>';
 		} else {
+			var coreLocked = coreLevel < nextLevel;
 			var canAfford = tycoonData.gold >= upgradeCost;
-			upgradeHtml = '<button class="zone-upgrade-btn" data-zone-upgrade="' + zone.id + '"' + (canAfford ? '' : ' disabled') + '>升级 💰' + upgradeCost + '</button>';
+			var disabled = coreLocked || !canAfford;
+			var title = coreLocked ? '需先升级绿洲核心至 Lv.' + nextLevel : (!canAfford ? '金币不足' : '');
+			var btnStyle = disabled
+				? 'opacity:0.5;cursor:not-allowed;background:#555;'
+				: '';
+			var btnText = '升级 💰' + upgradeCost;
+			if (coreLocked) btnText = '🔒 核心Lv.' + nextLevel;
+			upgradeHtml = '<button class="zone-upgrade-btn" data-zone-upgrade="' + zone.id + '"' + (disabled ? ' disabled' : '') + ' title="' + title + '" style="' + btnStyle + '">' + btnText + '</button>';
 		}
 
 		return '<div class="zone-card" data-zone="' + zone.id + '" style="background:linear-gradient(135deg,' + bgColor + ',rgba(255,255,255,0.03));border:1px solid ' + borderColor + ';">' +

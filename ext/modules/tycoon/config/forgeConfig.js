@@ -1,4 +1,4 @@
-﻿// ==================== 天赋打造配置 ====================
+// ==================== 天赋打造配置 ====================
 
 export const forgeMaterials = [
 	{ id: 'yinyuecao', name: '银月草', level: 1, rarity: '普通', icon: '🌿', desc: '最基础的制作材料，常见于绿洲草原', useFor: ['破甲×10', '铁壁×10', '迅捷×5', '生命强化×5', '花准×5'], obtainFrom: ['贸易舰队 Lv.2+', '商贸区 💰50'] },
@@ -81,6 +81,24 @@ export const forgeRecipes = [
 ];
 
 
+
+export const tradeItemTypes = [
+	{ id: 'shards', name: '碎片', icon: '💎', type: 'material', desc: '通用碎片，锻造基础材料' },
+	{ id: 'essence', name: '精魄', icon: '🔮', type: 'material', desc: '通用精魄，高级锻造材料' },
+	{ id: 'talentComponent', name: '奇术要件', icon: '📜', type: 'special', desc: '随机品质的天赋组件，有几率附带稀有天赋' },
+	{ id: 'dollarChest', name: '美元宝箱', icon: '💰', type: 'consumable', desc: '开启可获得大量金币（500~20000）' },
+	{ id: 'rune', name: '符文', icon: '🔯', type: 'special', desc: '神秘符文，可用于特殊系统' },
+	{ id: 'nestKey', name: '巢穴钥匙', icon: '🗝️', type: 'special', desc: '开启特殊巢穴的钥匙' },
+	{ id: 'forgeMat', name: '制作材料', icon: '🌿', type: 'forgeMat', desc: '各种品质的制作材料（随机）' }
+];
+
+export const talentComponentTiers = [
+	{ name: '普通天赋', icon: '📃', chance: 0.50, bonus: '无' },
+	{ name: '优秀天赋', icon: '📜', chance: 0.25, bonus: '+5% 暴击率' },
+	{ name: '稀有天赋', icon: '📜', chance: 0.15, bonus: '+10% 暴击率, +5% 伤害' },
+	{ name: '史诗天赋', icon: '📜', chance: 0.08, bonus: '+15% 暴击率, +10% 伤害' },
+	{ name: '神话天赋', icon: '📜', chance: 0.02, bonus: '+20% 暴击率, +15% 伤害, 特殊效果' }
+];
 
 export const qualityColors = {
 	'普通': '#9E9E9E', '优秀': '#4CAF50', '稀有': '#2196F3',

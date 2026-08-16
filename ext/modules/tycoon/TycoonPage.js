@@ -3,7 +3,7 @@ import { zones, zoneMaxUnits, unitTypes, forgeMaterials, qualityColors, getQuali
 import { unlockHints, maxZoneLevel } from './config/upgradeConfig.js';
 import { loadTycoonStorage, getZoneUnits, getTycoonData } from './logic/storage.js';
 import { hexToRgba, showToast, showMaterialDetail, getModalOpen, setModalOpen } from './logic/ui.js';
-import { getFleetDuration, getFleetCost, getFleetOutputs, autoDispatchUnits, renderFleet, bindFleetEvents, updateFleetProgress } from './logic/fleet.js';
+import { getFleetDuration, getFleetBaseCost, getFleetOutputs, renderFleet, bindFleetEvents, updateFleetProgress } from './logic/fleet.js';
 import { executeTrade, renderTrade, bindTradeEvents } from './logic/trade.js';
 import { getTalentById, renderForge, forgeTalent, bindForgeEvents, showForgeItemSelect, showForgeConfirmDialog, setSelectedForgeTalent, setUpForging, clearForging, getForging } from './logic/forge.js';
 import { getZoneUpgradeCost, canUpgradeCore, canUpgradeZone, executeCoreUpgrade, executeZoneUpgrade, showCoreUpgradeModal, showZoneUpgradeModal, setUpgrading, clearUpgrading, setZoneUpgrading, clearZoneUpgrading } from './logic/upgrade.js';
@@ -19,16 +19,7 @@ const tycoonConfig = {
 
 var currentIframe = null;
 var currentZoneId = null;
-var isAutoProcessing = false;
-var bgTimer = null;
 var uiTimer = null;
-
-function ensureBgTimer() {
-	if (bgTimer) return;
-	bgTimer = setInterval(function() {
-		autoDispatchUnits();
-	}, 5000);
-}
 
 function startUiTimer() {
 	if (uiTimer) return;
@@ -76,7 +67,7 @@ function timerTick() {
 	if (currentZoneId === 'helipad') {
 		var contentEl = doc.getElementById('zone-content');
 		if (contentEl) {
-			updateFleetProgress(doc, contentEl, config, autoDispatchUnits, getZoneUnits, getFleetCost, getFleetDuration, getFleetOutputs);
+			updateFleetProgress(doc, contentEl);
 		}
 	} else if (currentZoneId === null) {
 		updateMainResources(doc, config.tycoon, forgeMaterials);
@@ -84,9 +75,6 @@ function timerTick() {
 }
 
 export function openTycoonPage() {
-	ensureBgTimer();
-	autoDispatchUnits();
-
 	if (currentIframe && document.body.contains(currentIframe)) {
 		var doc = currentIframe.contentDocument;
 		var config = getTycoonData();
@@ -155,7 +143,7 @@ export function openZonePage(zoneId) {
 	switch (zoneId) {
 		case 'helipad':
 			contentEl.innerHTML = renderFleet(doc, tycoonData, config, qualityColors);
-			bindFleetEvents(doc, contentEl, config, tycoonData, autoDispatchUnits, showToast, openTycoonPage, getZoneUnits, getFleetCost, getFleetDuration, getFleetOutputs);
+			bindFleetEvents(doc, contentEl, config, tycoonData, showToast, openTycoonPage);
 			break;
 		case 'trade':
 			contentEl.innerHTML = renderTrade(doc, tycoonData, config, qualityColors);
