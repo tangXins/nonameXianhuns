@@ -21,12 +21,12 @@ export const basePrices = {
 };
 
 export const specialItemPrices = {
-	shards:          { buy: 20,    sell: 10,  rarity: '普通',   stockRange: [50, 500] },
-	essence:         { buy: 200,   sell: 100, rarity: '稀有',   stockRange: [10, 100] },
-	talentComponent: { buy: 5000,  sell: 2000,rarity: '史诗',   stockRange: [1, 5] },
-	dollarChest:     { buy: 3000,  sell: 1500,rarity: '稀有',   stockRange: [1, 8] },
-	rune:            { buy: 1500,  sell: 800, rarity: '优秀',   stockRange: [1, 10] },
-	nestKey:         { buy: 10000, sell: 5000,rarity: '史诗',   stockRange: [1, 3] }
+	shards:          { name: '碎片', icon: '💎', desc: '通用碎片，锻造基础材料', buy: 20,    sell: 10,  rarity: '普通',   stockRange: [50, 500] },
+	essence:         { name: '精魄', icon: '🔮', desc: '通用精魄，高级锻造材料', buy: 200,   sell: 100, rarity: '稀有',   stockRange: [10, 100] },
+	talentComponent: { name: '奇术要件', icon: '📜', desc: '随机品质的天赋组件，有几率附带稀有天赋', buy: 5000,  sell: 2000,rarity: '史诗',   stockRange: [1, 5] },
+	dollarChest:     { name: '美元宝箱', icon: '💰', desc: '开启可获得大量金币（500~20000）', buy: 3000,  sell: 1500,rarity: '稀有',   stockRange: [1, 8] },
+	rune:            { name: '符文', icon: '🔯', desc: '神秘符文，可用于特殊系统', buy: 1500,  sell: 800, rarity: '优秀',   stockRange: [1, 10] },
+	nestKey:         { name: '巢穴钥匙', icon: '🗝️', desc: '开启特殊巢穴的钥匙', buy: 10000, sell: 5000,rarity: '史诗',   stockRange: [1, 3] }
 };
 
 function getLevelMultiplier(level) {
@@ -121,13 +121,13 @@ export function generateShopItems(level, seed) {
 			items.push({
 				id: id,
 				name: spec.name,
-				icon: getSpecialIcon(id),
+				icon: spec.icon,
 				type: 'special',
 				buy: buy,
 				sell: sell,
 				rarity: spec.rarity,
 				stock: stock,
-				desc: getSpecialDesc(id),
+				desc: spec.desc,
 				hasTalent: id === 'talentComponent',
 				isDollarChest: id === 'dollarChest',
 				isRune: id === 'rune',

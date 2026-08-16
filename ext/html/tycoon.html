@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>绿洲大亨</title>
 <style>
 * {
@@ -528,7 +529,7 @@ html, body {
     margin-top: 4px;
 }
 /* 详情面板 */
-.detail-title {
+.detail-title-alt {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
@@ -585,13 +586,15 @@ html, body {
     background: linear-gradient(135deg,rgba(255,152,0,0.15),rgba(255,255,255,0.03));
     border: 1px solid rgba(255,152,0,0.3);
     border-radius: 12px;
-    padding: 14px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .recipe-top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    margin-bottom: 10px;
 }
 .recipe-icon {
     font-size: 36px;
@@ -602,6 +605,8 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    object-fit: cover;
 }
 .recipe-name {
     color: #FF9800;
@@ -964,7 +969,7 @@ html, body {
 .send-panel {
     background: rgba(0,0,0,0.3);
     border-radius: 10px;
-    padding: 12px;
+    padding: 8px;
     border: 1px solid rgba(0,188,212,0.3);
 }
 /* ==================== 单位卡片 ==================== */
@@ -1107,9 +1112,6 @@ html, body {
     color: rgba(255,255,255,0.4);
     font-size: 14px;
     min-height: 200px;
-}
-.send-panel {
-    padding: 8px;
 }
 .send-title {
     display: flex;

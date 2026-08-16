@@ -6,6 +6,16 @@ import { hexToRgba, showToast, setModalOpen } from './ui.js';
 var selectedForgeTalent = null;
 var isForging = false;
 
+window.forgeFallbackIcon = function(img) {
+	var parent = img.parentNode;
+	img.remove();
+	var fallback = document.createElement('div');
+	fallback.className = 'recipe-icon-fallback';
+	fallback.style.cssText = 'width:56px;height:56px;background:rgba(255,255,255,0.08);border-radius:8px;align-items:center;justify-content:center;font-size:28px;display:flex;';
+	fallback.textContent = '📜';
+	if (parent) parent.insertBefore(fallback, parent.firstChild);
+};
+
 export function setSelectedForgeTalent(val) {
 	selectedForgeTalent = val;
 }
@@ -55,7 +65,7 @@ export function renderForge(doc, tycoonData, config, qualityColorsParam) {
 	var availableTalents = getTalentsByLevel(zoneLevel);
 
 	html += '<div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:10px;">选择要打造的天赋：</div>';
-	html += '<div id="talent-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;">';
+	html += '<div id="talent-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">';
 
 	availableTalents.forEach(function(talent) {
 		var costEntries = Object.entries(talent.cost);
@@ -72,9 +82,9 @@ export function renderForge(doc, tycoonData, config, qualityColorsParam) {
 			var mat = forgeMaterials.find(function(m) { return m.id === matId; });
 			var stock = tycoonData.forgeMaterials[matId] || 0;
 			var canAfford = stock >= count;
-			var color = canAfford ? '#4CAF50' : '#F44336';
-			return '<span style="color:' + color + ';">' + (mat ? mat.name : matId) + '×' + count + ' (' + stock + ')</span>';
-		}).join(' + ');
+			var color = canAfford ? '#8BC34A' : '#FF8A80';
+			return '<span style="color:' + color + ';font-weight:500;">' + (mat ? mat.name : matId) + '<span style="color:rgba(255,255,255,0.7);">×</span>' + count + ' <span style="color:rgba(255,255,255,0.5);font-size:10px;">(' + stock + ')</span></span>';
+		}).join('<span style="color:rgba(255,255,255,0.4);margin:0 3px;">+</span>');
 
 		var canAfford = costEntries.every(function(entry) {
 			var matId = entry[0];
@@ -82,15 +92,30 @@ export function renderForge(doc, tycoonData, config, qualityColorsParam) {
 			return (tycoonData.forgeMaterials[matId] || 0) >= count;
 		});
 
-		html += '<div class="forge-talent-card" data-talent="' + talent.id + '" style="background:rgba(255,255,255,0.04);border:1px solid ' + rarityColor + '33;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.02)\'" onmouseout="this.style.transform=\'scale(1)\'">' +
-			'<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
-				'<span style="color:' + rarityColor + ';font-weight:bold;font-size:13px;">' + talent.name + '</span>' +
+		var rarityGlow = '0 0 12px ' + rarityColor + '33';
+		var costItemsHtml = costEntries.map(function(entry) {
+			var matId = entry[0];
+			var count = entry[1];
+			var mat = forgeMaterials.find(function(m) { return m.id === matId; });
+			var stock = tycoonData.forgeMaterials[matId] || 0;
+			var canAfford = stock >= count;
+			var color = canAfford ? '#8BC34A' : '#FF8A80';
+			var icon = mat ? mat.icon : '📦';
+			var name = mat ? mat.name : matId;
+			return '<span style="display:inline-flex;align-items:center;gap:2px;color:' + color + ';font-weight:500;font-size:12px;background:rgba(255,255,255,0.04);padding:2px 6px;border-radius:4px;">' +
+				'<span>' + icon + '</span>' + name + '<span style="color:rgba(255,255,255,0.7);">×</span>' + count +
+				'<span style="color:rgba(255,255,255,0.4);font-size:10px;">(' + stock + ')</span>' +
+			'</span>';
+		}).join(' ');
+
+		html += '<div class="forge-talent-card" data-talent="' + talent.id + '" style="position:relative;background:linear-gradient(135deg,rgba(' + hexToRgba(rarityColor, 0.12) + '),rgba(255,255,255,0.02));border:1px solid ' + rarityColor + '44;border-radius:12px;padding:16px 16px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform=\'scale(1.03)\';this.style.boxShadow=\'' + rarityGlow + '\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
+			'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+				'<span style="color:' + rarityColor + ';font-weight:bold;font-size:15px;text-shadow:0 0 10px ' + rarityColor + '33;">✦ ' + talent.name + '</span>' +
 			'</div>' +
-			'<div style="color:rgba(255,255,255,0.5);font-size:10px;margin-bottom:6px;">' + (talent.desc || '') + '</div>' +
-			'<div style="display:flex;gap:4px;font-size:11px;">' +
-				'<span>消耗: ' + costHtml + '</span>' +
+			'<div style="color:rgba(255,255,255,0.7);font-size:12px;margin-bottom:10px;line-height:1.5;padding:6px 8px;background:rgba(0,0,0,0.2);border-radius:6px;">' + (talent.desc || '') + '</div>' +
+			'<div style="display:flex;gap:4px;flex-wrap:wrap;font-size:12px;align-items:center;margin-bottom:6px;">' + costItemsHtml +
 			'</div>' +
-			(canAfford ? '' : '<div style="color:#F44336;font-size:10px;margin-top:4px;">⚠ 材料不足</div>') +
+			(canAfford ? '' : '<div style="color:#FF8A80;font-size:11px;margin-top:8px;font-weight:500;text-align:center;padding:4px;background:rgba(244,67,54,0.1);border-radius:4px;">⚠ 材料不足</div>') +
 		'</div>';
 	});
 
@@ -170,15 +195,14 @@ export function showForgeItemSelect(doc, contentEl, config, tycoonData, talent, 
 	var itemCards = [];
 	Object.keys(itemCounts).forEach(function(itemId) {
 		var itemInfo = qishuyaojians[itemId];
-		if (!itemInfo) return;
-		var itemName = itemInfo.translate || itemId;
-		var itemLevel = itemInfo.level || 1;
+		var itemName = (itemInfo && itemInfo.translate) ? itemInfo.translate : itemId;
+		var itemLevel = (itemInfo && itemInfo.level) ? itemInfo.level : 1;
 		var count = itemCounts[itemId];
 		var qualityColor = qualityColorsParam[getQualityByLevelFn(itemLevel)] || '#9E9E9E';
 		var cardImg = lib.assetURL + 'extension/仙家之魂/image/qishuyaojian/cards/' + itemId + '.png';
-		var itemDesc = itemInfo.desc || '';
-		var itemType = itemInfo.type || '';
-		var itemStats = itemInfo.stats || '';
+		var itemDesc = itemInfo ? (itemInfo.desc || '') : '';
+		var itemType = itemInfo ? (itemInfo.type || '') : '';
+		var itemStats = itemInfo ? (itemInfo.stats || '') : '';
 
 		var existingTalents = [];
 		if (craftedBag) {
@@ -206,22 +230,23 @@ export function showForgeItemSelect(doc, contentEl, config, tycoonData, talent, 
 
 		var alreadyHas = existingTalents.includes(talent.name);
 
-		itemCards.push('<div class="recipe-card" data-forgeitem="' + itemId + '" style="background:linear-gradient(135deg,' + hexToRgbaFn(qualityColor, 0.15) + ',rgba(255,255,255,0.02));border:1px solid ' + qualityColor + ';">' +
+		var cardHtml = '<div class="recipe-card" data-forgeitem="' + itemId + '" style="background:linear-gradient(135deg,' + hexToRgbaFn(qualityColor, 0.15) + ',rgba(255,255,255,0.02));border:1px solid ' + qualityColor + ';">' +
 			'<div class="recipe-top">' +
-				'<img class="recipe-icon" src="' + cardImg + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';style=\'display:none\'">' +
-				'<div class="recipe-icon-fallback" style="display:none;width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:8px;align-items:center;justify-content:center;font-size:24px;">📜</div>' +
+				'<img class="recipe-icon" src="' + cardImg + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;background:rgba(255,255,255,0.05);" onerror="forgeFallbackIcon(this)">' +
 				'<div>' +
 					'<div class="recipe-name" style="color:' + qualityColor + ';">' + itemName + typeHtml + '</div>' +
 					'<div class="recipe-desc">等阶：' + itemLevel + ' | 持有：' + count + '</div>' +
 					statsHtml +
-					'<div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px;">' + itemDesc + '</div>' +
+					'<div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:2px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + itemDesc + '</div>' +
 					talentsHtml +
 				'</div>' +
 			'</div>' +
 			(alreadyHas
 				? '<div class="action-btn" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.4);cursor:not-allowed;">已拥有此天赋</div>'
 				: '<div class="action-btn" data-selectitem="' + itemId + '" style="background:linear-gradient(135deg,#2196F3,#1976D2);color:#fff;">选择</div>') +
-		'</div>');
+		'</div>';
+
+		itemCards.push(cardHtml);
 	});
 
 	if (itemCards.length === 0) {

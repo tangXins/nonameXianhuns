@@ -12,6 +12,11 @@
 					>存档管理</button>
 					<button
 						class="gm-tab"
+						:class="{ active: activeTab === 'update' }"
+						@click="switchTab('update')"
+					>在线更新</button>
+					<button
+						class="gm-tab"
 						:class="{ active: activeTab === 'gm' }"
 						@click="switchTab('gm')"
 					>GM 工具</button>
@@ -86,6 +91,11 @@
 						</div>
 					</div>
 				</div>
+			</div>
+
+			<!-- 在线更新内容 -->
+			<div class="gm-page" v-if="activeTab === 'update'">
+				<UpdateTab />
 			</div>
 		</div>
 
@@ -234,6 +244,7 @@
 
 <script>
 import eventListener from '../achievement/eventListener.js';
+import UpdateTab from './UpdateTab.vue';
 import { lib, game, get, ui } from '../../../../../noname.js';
 
 const CHEAT_TABLE = {
@@ -262,6 +273,7 @@ const CHEAT_TABLE = {
 };
 
 export default {
+	components: { UpdateTab },
 	data() {
 		return {
 			isVisible: false,

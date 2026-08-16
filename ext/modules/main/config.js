@@ -114,7 +114,6 @@ export const config = {
             "3": "落影逝尘、霸天、寰宇星城、苏婆马里奥、Sukincen、西野七濑、xiaos、鸽尔赞、诗笺、大熊小猫、Maybe、光明牛奶、缘伴随行、锟斤拷烫烫烫",
         },
     },
-    //...updateOnlines,
     //美化类选项
     "xjzh_decoration": {
         name: "<img style=width:260px src=" + lib.assetURL + "extension/仙家之魂/image/title/xjzh_decoration.png>",

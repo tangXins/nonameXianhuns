@@ -91,7 +91,7 @@ export function openTycoonPage() {
 	}
 
 	var iframe = document.createElement('iframe');
-	iframe.src = 'extension/仙家之魂/ext/modules/tycoon/tycoon_preview.html';
+	iframe.src = 'extension/仙家之魂/ext/html/tycoon.html';
 	iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;border:none;';
 	document.body.appendChild(iframe);
 	currentIframe = iframe;

@@ -6,7 +6,7 @@ const extensionInfo = await lib.init.promises.json(`${lib.assetURL}extension/仙
 export const updateLog = {
 	version: `${extensionInfo.version}`,
 	onlyVersion: `${extensionInfo.onlyVersion}`,
-	5.08132: {
+	5.08133: {
 		changeLog: {
 			"本体版本要求": [
 				"本体最低支持版本改为1.11.5",

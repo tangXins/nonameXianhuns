@@ -198,7 +198,7 @@
                 <ul>
                     <li><strong>背景音乐：</strong>12 首精选 BGM 可选 + 随机播放模式</li>
                     <li><strong>背景图片：</strong>9 张高清背景 + 自动切换功能</li>
-                    <li><strong>卡牌美化：</strong>支持十周年UI 风格素材</li>
+                    <li><strong>卡牌美化：</strong>支持自定义风格素材</li>
                 </ul>
             </div>
 
@@ -902,7 +902,7 @@
             <div class="tip">
                 <strong>💡 美化建议：</strong>
                 <ul>
-                    <li>安装十周年UI 后可启用卡牌美化和适配素材</li>
+                    <li>可自定义卡牌美化素材</li>
                     <li>背景音乐建议根据游戏模式选择（激烈战斗用燃曲，休闲用轻音乐）</li>
                 </ul>
             </div>
@@ -1080,8 +1080,8 @@
                     <td>Path of Exile（流放之路），此处指特定规则模式</td>
                 </tr>
                 <tr>
-                    <td>十周年UI</td>
-                    <td>无名杀十周年纪念版界面风格</td>
+                    <td>卡牌美化</td>
+                    <td>自定义卡牌的视觉风格和素材</td>
                 </tr>
                 <tr>
                     <td>雪莱工作室</td>
@@ -1158,7 +1158,10 @@
         // 键盘快捷键
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                window.close();
+                try { window.close(); } catch(err) {}
+                setTimeout(function() {
+                    if (window.history.length > 1) window.history.back();
+                }, 100);
             }
         });
 
@@ -1657,18 +1660,23 @@
         function initCloseHelp() {
             const closeHelpBtn = document.getElementById('closeHelpBtn');
 
-            closeHelpBtn.addEventListener('click', function() {
-                // 尝试关闭窗口
-                if (window.opener || window.parent !== window) {
+            function closeHelp() {
+                try {
                     window.close();
-                } else {
-                    // 如果不是在窗口中打开，显示提示
-                    showToast('正在返回游戏...');
-                    // 1 秒后尝试返回
-                    setTimeout(() => {
+                } catch(e) {}
+                setTimeout(function() {
+                    if (window.history.length > 1) {
                         window.history.back();
-                    }, 1000);
-                }
+                    } else {
+                        showToast('请手动关闭此页面');
+                    }
+                }, 100);
+            }
+
+            closeHelpBtn.addEventListener('click', closeHelp);
+            closeHelpBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                closeHelp();
             });
         }
     </script>

@@ -68,18 +68,20 @@ export function fillZoneGrid(doc, config, tycoonConfig, maxZoneLevel, getZoneUpg
 
 		var upgradeHtml = '';
 		if (maxed) {
-			upgradeHtml = '<button class="zone-upgrade-btn" disabled style="opacity:0.5;cursor:not-allowed;background:#555;color:#999;border:none;padding:4px 10px;border-radius:4px;font-size:10px;">已满级</button>';
+			upgradeHtml = '<button class="zone-upgrade-btn" style="opacity:0.7;cursor:default;background:rgba(158,158,158,0.3);color:#BDBDBD;border:1px solid #666;border-radius:4px;font-size:10px;padding:4px 10px;">已满级</button>';
 		} else {
 			var coreLocked = coreLevel < nextLevel;
 			var canAfford = tycoonData.gold >= upgradeCost;
-			var disabled = coreLocked || !canAfford;
+			var isDisabled = coreLocked || !canAfford;
 			var title = coreLocked ? '需先升级绿洲核心至 Lv.' + nextLevel : (!canAfford ? '金币不足' : '');
-			var btnStyle = disabled
-				? 'opacity:0.5;cursor:not-allowed;background:#555;'
-				: '';
-			var btnText = '升级 💰' + upgradeCost;
-			if (coreLocked) btnText = '🔒 核心Lv.' + nextLevel;
-			upgradeHtml = '<button class="zone-upgrade-btn" data-zone-upgrade="' + zone.id + '"' + (disabled ? ' disabled' : '') + ' title="' + title + '" style="' + btnStyle + '">' + btnText + '</button>';
+			var btnBg = coreLocked ? 'linear-gradient(135deg,rgba(255,152,0,0.4),rgba(245,124,0,0.3))' : (canAfford ? 'linear-gradient(135deg,#4CAF50,#388E3C)' : 'linear-gradient(135deg,rgba(244,67,54,0.4),rgba(198,40,40,0.3))');
+			var btnCursor = isDisabled ? 'not-allowed' : 'pointer';
+			var btnBorder = coreLocked ? '#FF9800' : (canAfford ? '#4CAF50' : '#F44336');
+			var btnTextColor = '#fff';
+			var btnText = coreLocked ? '🔒 核心Lv.' + nextLevel : ('升级 💰' + upgradeCost);
+			var disabledAttr = isDisabled ? 'disabled' : '';
+			var opacityStyle = isDisabled ? 'opacity:0.7;' : '';
+			upgradeHtml = '<button class="zone-upgrade-btn" data-zone-upgrade="' + zone.id + '" title="' + title + '" ' + disabledAttr + ' style="background:' + btnBg + ';color:' + btnTextColor + ';border:1px solid ' + btnBorder + ';border-radius:4px;font-size:10px;padding:4px 10px;cursor:' + btnCursor + ';transition:all 0.2s;' + opacityStyle + '">' + btnText + '</button>';
 		}
 
 		return '<div class="zone-card" data-zone="' + zone.id + '" style="background:linear-gradient(135deg,' + bgColor + ',rgba(255,255,255,0.03));border:1px solid ' + borderColor + ';">' +
@@ -98,7 +100,27 @@ export function fillZoneGrid(doc, config, tycoonConfig, maxZoneLevel, getZoneUpg
 	doc.querySelectorAll('[data-zone-upgrade]').forEach(function(el) {
 		el.addEventListener('click', function(e) {
 			e.stopPropagation();
+			if (el.disabled) return;
 			var zoneId = el.getAttribute('data-zone-upgrade');
+			var title = el.getAttribute('title') || '';
+			if (title.indexOf('需先升级绿洲核心') >= 0) {
+				var hintEl = doc.createElement('div');
+				hintEl.textContent = '🔒 ' + title;
+				hintEl.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,152,0,0.95);color:#fff;padding:10px 20px;border-radius:8px;z-index:99999;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3);pointer-events:none;transition:opacity 0.3s;';
+				doc.body.appendChild(hintEl);
+				setTimeout(function() { hintEl.style.opacity = '0'; }, 1500);
+				setTimeout(function() { hintEl.remove(); }, 2000);
+				return;
+			}
+			if (title.indexOf('金币不足') >= 0) {
+				var hintEl2 = doc.createElement('div');
+				hintEl2.textContent = '💰 金币不足';
+				hintEl2.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(244,67,54,0.95);color:#fff;padding:10px 20px;border-radius:8px;z-index:99999;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3);pointer-events:none;transition:opacity 0.3s;';
+				doc.body.appendChild(hintEl2);
+				setTimeout(function() { hintEl2.style.opacity = '0'; }, 1500);
+				setTimeout(function() { hintEl2.remove(); }, 2000);
+				return;
+			}
 			showZoneUpgradeModal(doc, zoneId);
 		});
 	});

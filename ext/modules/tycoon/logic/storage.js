@@ -67,6 +67,17 @@ export function loadTycoonStorage() {
 
 	if (config.tycoonConfig.units && config.tycoonConfig.units.helipad) {
 		var units = config.tycoonConfig.units.helipad;
+
+		units.forEach(function(u) {
+			if (!u.type) {
+				if (u.id && u.id.indexOf('fleet_') === 0) {
+					u.type = 'fleet';
+				} else {
+					u.type = 'glider';
+				}
+			}
+		});
+
 		var hasGlider = units.some(function(u) { return u.type !== 'fleet'; });
 		if (hasGlider) {
 			var nonFleetUnits = units.filter(function(u) { return u.type !== 'fleet'; });
@@ -76,6 +87,16 @@ export function loadTycoonStorage() {
 				});
 			});
 			config.tycoonConfig.units.helipad = units.filter(function(u) { return u.type === 'fleet'; });
+			saveTycoonStorage(config);
+		}
+
+		if (config.tycoonConfig.units.helipad.length === 0) {
+			config.tycoonConfig.units.helipad = [
+				{ id: 'fleet_1', type: 'fleet', name: '贸易舰队α', icon: '🚢' },
+				{ id: 'fleet_2', type: 'fleet', name: '贸易舰队β', icon: '🚢' },
+				{ id: 'fleet_3', type: 'fleet', name: '贸易舰队γ', icon: '🚢' },
+				{ id: 'fleet_4', type: 'fleet', name: '贸易舰队δ', icon: '🚢' }
+			];
 			saveTycoonStorage(config);
 		}
 	}

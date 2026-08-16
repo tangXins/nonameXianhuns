@@ -136,7 +136,7 @@ export function dispatchFleet(unitId, goldAmount) {
 export function renderFleet(doc, tycoonData, config, qualityColors) {
 	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
 	var allUnits = config.tycoonConfig.units.helipad || [];
-	var units = allUnits.filter(function(u) { return u.type === 'fleet'; });
+	var units = allUnits.filter(function(u) { return !u.type || u.type === 'fleet'; });
 	var tasks = config.tycoonConfig.tasks || [];
 	var baseCost = getFleetBaseCost(zoneLevel);
 
@@ -210,7 +210,7 @@ export function updateFleetProgress(doc, contentEl) {
 	}
 
 	var zoneLevel = config.tycoonConfig.zones.helipad || 1;
-	var units = (config.tycoonConfig.units.helipad || []).filter(function(u) { return u.type === 'fleet'; });
+	var units = (config.tycoonConfig.units.helipad || []).filter(function(u) { return !u.type || u.type === 'fleet'; });
 	var tasks = config.tycoonConfig.tasks || [];
 	var activeMap = {};
 	tasks.forEach(function(t) { activeMap[t.unitId] = t; });
