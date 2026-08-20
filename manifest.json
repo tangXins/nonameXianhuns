@@ -1,6 +1,6 @@
 {
   "version": "5.08132",
-  "generatedAt": "2026-08-16T09:07:37.839Z",
+  "generatedAt": "2026-08-20T02:37:10.595Z",
   "files": {
     "@types/game.d.ts": "sha256:c5506a1853002a62e2fd3bcc0797a227b3bf1d61d82a38da38081cc7f6ffa43c",
     "@types/get.d.ts": "sha256:8be191c66101a93238c2d58386d9033b8c452c2c002a6466c923a585ca2003d1",
@@ -8,7 +8,7 @@
     "@types/qishuyaojian.d.ts": "sha256:e9ada8df4b6add2e57d98efa7c5e429272d0754926ae0c2323c9ef6dc55d473e",
     "@types/rune.d.ts": "sha256:3f1b66c6416df177bce5c1bc6982cc61f6c222aaf64dfe43472df65a0eeb2d12",
     "LICENSE": "sha256:8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
-    "README.md": "sha256:bbdca865ea8d1afcbebed237f2d0352149033c1022da7cb5c9fa57c00aa47eb3",
+    "README.md": "sha256:94534fdd61c57840af8a38544fd3fe97f890eef12f59490066a31448a4eb5c75",
     "audio/card/xjzh_card_cuimaidan_female.mp3": "sha256:2a738e232574ff01b91d3df1714c4023375c0dd9aa1dc76be58563c1aeb7a2ff",
     "audio/card/xjzh_card_cuimaidan_male.mp3": "sha256:244475e4a91b2da95bc5d17ecf8e14c8c8e653afc8a35045abe7bd8f879b68b1",
     "audio/card/xjzh_card_kadelanzhichu_female.mp3": "sha256:49116a778f69bda5e6c98000c5b94af58895ca342cc445232ce22c1f99680941",
